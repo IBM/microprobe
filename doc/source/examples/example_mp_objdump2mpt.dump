@@ -1,0 +1,75 @@
+
+c2mpt_test003.target.bin:     file format elf64-littleriscv
+
+
+Disassembly of section microprobe.text:
+
+0000000010030000 <c2mpt_function>:
+    10030000:	10040637          	lui	a2,0x10040
+    10030004:	00060613          	mv	a2,a2
+    10030008:	00863783          	ld	a5,8(a2) # 10040008 <linkedlist+0x8>
+    1003000c:	05063703          	ld	a4,80(a2)
+    10030010:	00078a63          	beqz	a5,10030024 <c2mpt_function+0x24>
+    10030014:	0007b683          	ld	a3,0(a5)
+    10030018:	0087b783          	ld	a5,8(a5)
+    1003001c:	00d70733          	add	a4,a4,a3
+    10030020:	fe079ae3          	bnez	a5,10030014 <c2mpt_function+0x14>
+    10030024:	00171713          	slli	a4,a4,0x1
+    10030028:	04e63823          	sd	a4,80(a2)
+    1003002c:	00008067          	ret
+
+0000000010030030 <my_subroutine>:
+    10030030:	00151513          	slli	a0,a0,0x1
+    10030034:	100407b7          	lui	a5,0x10040
+    10030038:	04a7b823          	sd	a0,80(a5) # 10040050 <count>
+    1003003c:	00008067          	ret
+
+Disassembly of section microprobe.data:
+
+0000000010040000 <linkedlist>:
+    10040000:	0000                	unimp
+    10040002:	0000                	unimp
+    10040004:	0000                	unimp
+    10040006:	0000                	unimp
+    10040008:	0000                	unimp
+    1004000a:	0000                	unimp
+    1004000c:	0000                	unimp
+    1004000e:	0000                	unimp
+    10040010:	0000                	unimp
+    10040012:	0000                	unimp
+    10040014:	0000                	unimp
+    10040016:	0000                	unimp
+    10040018:	0000                	unimp
+    1004001a:	0000                	unimp
+    1004001c:	0000                	unimp
+    1004001e:	0000                	unimp
+    10040020:	0000                	unimp
+    10040022:	0000                	unimp
+    10040024:	0000                	unimp
+    10040026:	0000                	unimp
+    10040028:	0000                	unimp
+    1004002a:	0000                	unimp
+    1004002c:	0000                	unimp
+    1004002e:	0000                	unimp
+    10040030:	0000                	unimp
+    10040032:	0000                	unimp
+    10040034:	0000                	unimp
+    10040036:	0000                	unimp
+    10040038:	0000                	unimp
+    1004003a:	0000                	unimp
+    1004003c:	0000                	unimp
+    1004003e:	0000                	unimp
+    10040040:	0000                	unimp
+    10040042:	0000                	unimp
+    10040044:	0000                	unimp
+    10040046:	0000                	unimp
+    10040048:	0000                	unimp
+    1004004a:	0000                	unimp
+    1004004c:	0000                	unimp
+    1004004e:	0000                	unimp
+
+0000000010040050 <count>:
+    10040050:	cafe                	sw	t6,84(sp)
+    10040052:	cafe                	sw	t6,84(sp)
+    10040054:	0000                	unimp
+    10040056:	0000                	unimp

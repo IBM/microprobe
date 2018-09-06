@@ -1,0 +1,3 @@
+py:class list
+py:class tuple 
+py:class argparse.HelpFormatter

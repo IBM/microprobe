@@ -1,0 +1,65 @@
+language: python
+python:
+    - 2.7
+    - 3.6
+sudo: required
+cache:
+    apt: true
+    directories:
+        - toolchain_riscv/install
+    timeout: 1000
+dist: trusty
+git:
+    submodules: false
+addons:
+    apt:
+        packages:
+            - autoconf 
+            - automake 
+            - autotools-dev 
+            - curl 
+            - libmpc-dev 
+            - libmpfr-dev 
+            - libgmp-dev 
+            - gawk 
+            - build-essential 
+            - bison 
+            - flex 
+            - texinfo 
+            - gperf 
+            - libtool 
+            - patchutils 
+            - bc 
+            - zlib1g-dev
+            - graphviz
+            - shellcheck
+before_install:
+    - set -e
+    - echo "Before install"
+    - shellcheck -x -s sh *.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh) 
+    - env
+install:
+    - set -e
+    - echo "Install"
+    - pip install -U -r requirements_devel.txt
+    - export NEEDINSTALL=False
+    - ./dev_tools/ci/install_riscv_toolchain.sh
+    - export PATH=$PATH:$(pwd)/toolchain_riscv/install/bin
+    - for file in ./targets/*/dev_tools/ci/travis.sh ; do if [ -f $file ]; then . $file; fi; done; 
+script:
+    - set -e
+    - echo "Script"
+    # Code Conventions (always run)
+    - ./dev_tools/ci/code_conventions_001_pycodestyle.sh
+    - ./dev_tools/ci/code_conventions_002_pylint.sh
+    - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ]; then ./dev_tools/ci/code_conventions_003_documentation.sh; fi;
+    # Functional/Integration tests (always run)
+    - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_001_end2end_tools.sh RISCV
+    - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_002_end2end_examples.sh RISCV
+    - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_003_end2end_targets.sh RISCV
+    # Build Release (always run)
+    - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ]; then ./dev_tools/ci/build_001_distribution.sh ; fi;
+    # Test Release Deploy (always run)
+    - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ]; then ./dev_tools/ci/test_deploy_001_install.sh ${TRAVIS_PYTHON_VERSION} ; fi;
+before_cache:
+    - rm -fr $HOME/.cache/pip/log

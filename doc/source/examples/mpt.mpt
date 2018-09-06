@@ -1,0 +1,139 @@
+; Microprobe Test Definition File
+[MPT]
+mpt_version = 0.5 ;  Format version of this MPT file.
+
+[REGISTERS] ; Section to specify the initial register values
+
+; Format: register = value. E.g.:
+
+; Set GR0, GR1 and GR2 register to 0, 1, 2 values respectively
+GR0 = 0x0
+GR1 = 0x1
+GR2 = 0x2
+
+[DATA] ; Section to specify the variables
+
+; Data section default address. Variables will be placed from this address
+; if their address is not specified
+
+default_address = 0x00200000
+
+; Variable Declaration
+; Format: var_name = [ "type", nelems, address, alignment, init_values ]
+; where:
+;   - "type": is a string specifying the type of elements in the variable
+;   - nelems: is the number of elements in the variable
+;   - address : is the address of the variable, if set the address will be
+;               fixed, otherwise, it will be computer by microprobe
+;   - alignment : alignment requirements of the variable. It should not
+;                 conflict with address if specified. It can be set to None
+;   - init_values : if it is a single value, all the elements will be 
+;                   initialized to that value, if it is an array, elements
+;                   will be initialized to the values specified in a round-
+;                   robin fashion. Two special keywords can be specified:
+;                   RNDFP and RNDINT to initialize the elements to random FP
+;                   and random INT values
+;
+; Note that variable names ARE NOT case sensitive. I.e. VAR = Var = var
+;
+; Some examples:
+
+; Integer initialized to 1 without address or alignment requirements
+var_sngl_int_1 = [ "int", 1, None, None, 1]  
+
+; Array of 2 double elements initialized to 1.0 placed at address 0x00210000
+var_array_fp_1 = [ "double", 2, 0x00210000, None, 1.0 ] 
+
+; Array of 40 double elements initialized to random FP values placed in 
+; an address aligned to 16 bytes
+var_array_fp_rnd = [ "double", 40, None, 16,  RNDFP ] 
+
+; Array of 10 short elements placed at address 0x00220000 and initialized to
+; 2,4,2 ... 4,2,4 values 
+var_array_int24  = [ "short", 10, 0x00220000,  4,  [2,4]]
+
+[CODE] ; Section to specify the code
+
+; Code section default address. Code will be placed from this address
+; if the instruction address is not specified
+
+default_address = 0x00100000
+
+; The code specified after 'instructions' entry (below) is the code that will be
+; processed by microprobe. The instruction format is similar to GNU assembler
+; format, it also allows the specification of labels (NOT case sensitive) and
+; references to the declared variables. It is also possible to specify instruction
+; addresses and to do code expansion by referencing other user 
+; defined entries. Check the example below to see examples of these features.
+; 
+; *****************************************************************************
+; ******  Although Microprobe performs some sanity checks, it is the   ******** 
+; ******  responsibility of the user to define correct code.           ********
+; ******                                                               ********
+; *****************************************************************************
+
+instructions = 
+    larl    r2, var_array_fp_rnd     ; reference to variable var_array_fp_rnd
+    larl    r5, var_array_fp_1       ; reference to variable var_array_fp_1
+    brcl_v3 15, myalign              ; branch relative to myalign, in some
+                                     ; situations the instruction variant 
+                                     ; (BRCL_V3) has to be specified   
+  0x00000010 <myalign> :             ; declaration of label 'myalign' plus
+                                     ; specification of the address for
+                                     ; the following instruction 
+    vl      v2, 0(r0, r5)            ;
+    lghi    r1, 20                   ;
+  <loop1> :                          ; declaration of label 'loop1'           
+    %(myloop)s                       ; expansion, 'myloop' will be replaced by 
+                                     ; the value of myloop entry (below) .
+                                     ; Useful when the same code snippet has
+                                     ; to be replicated several times
+    brctg   r1, loop1                ; reference to label 'loop1'
+    brcl_v3 15, label1               ;
+  <label1> 0x000100300: bcr    0, 0  ; labels/address can be also specified
+  0x000100302 <label2>: bcr    0, 0  ; in the same line as assembly in 
+  <label3>:             bcr    0, 0  ; different order 
+  0x000100306:          bcr    0, 0  ;
+                                     ; 
+    svc     0                        ; Add your favorite end test sequences
+    brc     15, 0                    ; svc or branch-to-self
+                                     ;
+                                     ;
+myloop =                             ; declaration of myloop entry used
+    vl      v0, 0(r0, r2)            ; expanded within 'instructions' entry
+    vfa     v0, v0, v2, 3, 0         ; 
+    vst     v0, 0(r0, r2)            ;
+    aghi    r2, 16                   ;
+ 
+    
+[RAW] ; Section to specify raw string to be generated in the output file
+
+; Currently, the user can embed 'raw' statements at four different locations
+
+file_header = * ------------------------ FILE HEADER -----------------------
+    * This is going to be embedded 'as is' at the beginning of the 
+    * the generated file.
+    * ------------------------ FILE HEADER -----------------------
+    
+file_footer = * ------------------------ FILE FOOTER -----------------------
+    * This is going to be embedded 'as is' at the end of the 
+    * the generated file.
+    * ------------------------ FILE FOOTER ----------------------- 
+
+code_header = * ------------------------ CODE HEADER -----------------------
+    * This is going to be embedded 'as is' just before the code 
+    * ------------------------ CODE HEADER -----------------------
+
+code_footer = * ------------------------ CODE FOOTER -----------------------
+    * This is going to be embedded 'as is' just after the code
+    * ------------------------ CODE FOOTER ----------------------- 
+
+[TRACE]
+
+roi_start_instruction = 4323      ; Start dynamic instruction of the region of interest
+roi_end_instruction = 5744        ; End dynamic instruction of the region of interest
+roi_start_cycle = 30000           ; Start cycle of the region of interest
+roi_end_cycle = 39982             ; End cycle of the region of interest
+instruction_count = 5744          ; Number of dynamic instructions readed/to_generate
+cycle_count = 39982               ; Number of cycles processed in the source trace
+

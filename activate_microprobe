@@ -1,0 +1,12 @@
+#!/usr/bin/env echo Pleases source me!
+# 
+# MicroProbe support scripts
+#
+# Author: Ramon Bertran Monfort <rbertra@us.ibm.com>
+#
+# Copyright 2011-2018 IBM Corporation
+# IBM (c) 2011-2018 All rights reserved
+#
+scriptpath=$( cd -P -- "$(dirname -- "$(command -v -- "$1")")" && pwd -P )
+if [ ! -d $scriptpath/venv/ ]; then echo Execute $scriptpath/bootstrap_environment.sh first!; 
+else . $scriptpath/venv/bin/activate; fi

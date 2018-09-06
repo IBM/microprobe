@@ -1,0 +1,63 @@
+# Copyright 2018 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: access_storage
+  Description: Boolean indicating if the instruction has storage operands
+  Default: False
+  Values:
+    AMOADD.D_V0: True
+    AMOADD.W_V0: True
+    AMOAND.D_V0: True
+    AMOAND.W_V0: True
+    AMOMAX.D_V0: True
+    AMOMAX.W_V0: True
+    AMOMAXU.D_V0: True
+    AMOMAXU.W_V0: True
+    AMOMIN.D_V0: True
+    AMOMIN.W_V0: True
+    AMOMINU.D_V0: True
+    AMOMINU.W_V0: True
+    AMOOR.D_V0: True
+    AMOOR.W_V0: True
+    AMOSWAP.D_V0: True
+    AMOSWAP.W_V0: True
+    AMOXOR.D_V0: True
+    AMOXOR.W_V0: True
+    BEQ_V0: True
+    BGEU_V0: True
+    BGE_V0: True
+    BLTU_V0: True
+    BLT_V0: True
+    BNE_V0: True
+    FLD_V0: True
+    FLW_V0: True
+    FSD_V0: True
+    FSW_V0: True
+    JALR_V0: True
+    JAL_V0: True
+    LBU_V0: True
+    LB_V0: True
+    LD_V0: True
+    LHU_V0: True
+    LH_V0: True
+    LR.D_V0: True
+    LR.W_V0: True
+    LWU_V0: True
+    LW_V0: True
+    SB_V0: True
+    SC.D_V0: True
+    SC.W_V0: True
+    SD_V0: True
+    SH_V0: True
+    SW_V0: True

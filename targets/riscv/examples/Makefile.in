@@ -1,0 +1,21 @@
+prefix			:= @prefix@
+abs_top_srcdir	:= @abs_top_srcdir@
+XLEN            := @XLEN@
+RISCVTOOLS      := @RISCVTOOLS@
+
+.PHONY: all clean riscv_ipc
+
+all: riscv_ipc
+
+vars = \
+	abs_top_srcdir=$(abs_top_srcdir) \
+	XLEN=$(XLEN) \
+	src_dir=$(abs_top_srcdir)/$@ \
+	RISCVTOOLS=$(RISCVTOOLS)
+
+riscv_ipc:
+	mkdir -p $@
+	$(MAKE) -C $@ -f $(abs_top_srcdir)/$@/Makefile $(vars)
+
+clean:
+	$(MAKE) -C riscv_ipc -f $(abs_top_srcdir)/riscv_ipc/Makefile abs_top_srcdir=$(abs_top_srcdir) src_dir=$(abs_top_srcdir)/riscv_ipc clean

@@ -1,0 +1,240 @@
+# Copyright 2018 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: "@I_12"
+  Description: "Relative displacement (bit size 12)"
+  Relative: True
+  MinDisplacement: -2048
+  MaxDisplacement: 2047
+  Shift: 1
+- Name: "@sb_imm7"
+  Description: "Relative displacement (bit size 7)"
+  Relative: True
+  MinDisplacement: -64
+  MaxDisplacement: 63
+  Shift: 0
+- Name: "@uj_imm20"
+  Description: "Relative displacement (bit size 20)"
+  Relative: True
+  MinDisplacement: -524288
+  MaxDisplacement: 524287
+  Shift: 0
+- Name: Zero
+  Description: Zero operand (special, not shown)
+  Value: 0
+- Name: freg
+  Description: Floating Point Registers
+  Registers:
+    F0 : ['F0']
+    F1 : ['F1']
+    F2 : ['F2']
+    F3 : ['F3']
+    F4 : ['F4']
+    F5 : ['F5']
+    F6 : ['F6']
+    F7 : ['F7']
+    F8 : ['F8']
+    F9 : ['F9']
+    F10 : ['F10']
+    F11 : ['F11']
+    F12 : ['F12']
+    F13 : ['F13']
+    F14 : ['F14']
+    F15 : ['F15']
+    F16 : ['F16']
+    F17 : ['F17']
+    F18 : ['F18']
+    F19 : ['F19']
+    F20 : ['F20']
+    F21 : ['F21']
+    F22 : ['F22']
+    F23 : ['F23']
+    F24 : ['F24']
+    F25 : ['F25']
+    F26 : ['F26']
+    F27 : ['F27']
+    F28 : ['F28']
+    F29 : ['F29']
+    F30 : ['F30']
+    F31 : ['F31']
+- Name: imm12
+  Description: 12-bit immediate
+  Min: 0
+  Max: 4095
+- Name: imm2
+  Description: 2-bit immediate
+  Min: 0
+  Max: 3
+- Name: imm20
+  Description: 20-bit immediate
+  Min: 0
+  Max: 1048575
+- Name: imm3
+  Description: 3-bit immediate
+  Min: 0
+  Max: 7
+- Name: imm4
+  Description: 4-bit immediate
+  Min: 0
+  Max: 15
+- Name: imm5
+  Description: 5-bit immediate
+  Min: 0
+  Max: 31
+- Name: imm7
+  Description: 7-bit immediate
+  Min: 0
+  Max: 127
+- Name: jimm20
+  Description: 20-bit immediate
+  Min: 0
+  Max: 1048575
+- Name: oimm12
+  Description: 12-bit immediate
+  Min: 0
+  Max: 4095
+- Name: oimm20
+  Description: 20-bit immediate
+  Min: 0
+  Max: 1048575
+- Name: pred
+  Description: 4-bit immediate
+  Min: 0
+  Max: 15
+  Except:
+    - 0
+- Name: reg
+  Description: Integer Registers
+  Registers:
+    X0 : ['X0']
+    X1 : ['X1']
+    X2 : ['X2']
+    X3 : ['X3']
+    X4 : ['X4']
+    X5 : ['X5']
+    X6 : ['X6']
+    X7 : ['X7']
+    X8 : ['X8']
+    X9 : ['X9']
+    X10 : ['X10']
+    X11 : ['X11']
+    X12 : ['X12']
+    X13 : ['X13']
+    X14 : ['X14']
+    X15 : ['X15']
+    X16 : ['X16']
+    X17 : ['X17']
+    X18 : ['X18']
+    X19 : ['X19']
+    X20 : ['X20']
+    X21 : ['X21']
+    X22 : ['X22']
+    X23 : ['X23']
+    X24 : ['X24']
+    X25 : ['X25']
+    X26 : ['X26']
+    X27 : ['X27']
+    X28 : ['X28']
+    X29 : ['X29']
+    X30 : ['X30']
+    X31 : ['X31']
+- Name: rega
+  Description: Integer Register (address base)
+  Registers:
+    X0 : ['X0']
+    X1 : ['X1']
+    X2 : ['X2']
+    X3 : ['X3']
+    X4 : ['X4']
+    X5 : ['X5']
+    X6 : ['X6']
+    X7 : ['X7']
+    X8 : ['X8']
+    X9 : ['X9']
+    X10 : ['X10']
+    X11 : ['X11']
+    X12 : ['X12']
+    X13 : ['X13']
+    X14 : ['X14']
+    X15 : ['X15']
+    X16 : ['X16']
+    X17 : ['X17']
+    X18 : ['X18']
+    X19 : ['X19']
+    X20 : ['X20']
+    X21 : ['X21']
+    X22 : ['X22']
+    X23 : ['X23']
+    X24 : ['X24']
+    X25 : ['X25']
+    X26 : ['X26']
+    X27 : ['X27']
+    X28 : ['X28']
+    X29 : ['X29']
+    X30 : ['X30']
+    X31 : ['X31']
+  AddressBase: True
+- Name: s.imm12
+  Description: signed 12-bit immediate
+  Min: -2048
+  Max: 2047
+- Name: s.imm20
+  Description: signed 20-bit immediate
+  Min: -524288
+  Max: 524287
+- Name: s.imm6
+  Description: signed 6-bit immediate
+  Min: -32
+  Max: 31
+- Name: s.imm7
+  Description: signed 7-bit immediate
+  Min: -64
+  Max: 63
+- Name: sbimm12
+  Description: 12-bit immediate
+  Min: 0
+  Max: 4095
+- Name: simm12
+  Description: 12-bit immediate
+  Min: 0
+  Max: 4095
+- Name: succ
+  Description: 4-bit immediate
+  Min: 0
+  Max: 15
+  Except:
+    - 0
+- Name: u.imm1
+  Description: 1-bit immediate
+  Min: 0
+  Max: 1
+- Name: u.imm20
+  Description: 20-bit immediate
+  Min: 0
+  Max: 1048575
+- Name: u.imm3
+  Description: 3-bit immediate
+  Min: 0
+  Max: 7
+- Name: u.imm5
+  Description: 5-bit immediate
+  Min: 0
+  Max: 31
+- Name: u.imm6
+  Description: 6-bit immediate
+  Min: 0
+  Max: 63
+- Name: u.imm7
+  Description: 7-bit immediate
+  Min: 0
+  Max: 127

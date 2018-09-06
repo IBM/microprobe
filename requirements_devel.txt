@@ -1,0 +1,48 @@
+setuptools
+PyYAML
+ordereddict
+argparse
+rxjson
+six
+sphinx
+sphinx_rtd_theme
+sphinxcontrib-websupport
+sphinxcontrib-programoutput
+pep8
+backports.functools_lru_cache
+pylint
+nose
+nose2
+nose_xunitmp
+cov-core
+subprocess32
+coverage
+virtualenv
+wheel
+pycodestyle
+pylint-mccabe
+pep8-naming
+# flake8
+# flake8-author
+# flake8-blind-except
+# flake8-builtins
+# flake8-commas
+# flake8-comprehensions
+# flake8-copyright
+# flake8-deprecated
+# flake8-docstrings
+# flake8-double-quotes
+# flake8-logging-format
+# flake8-sorted-keys
+# flake8-import-order-spoqa
+# flake8-future
+# flake8-string-format
+# flake8-future-import
+# flake8-todo
+# flake8-ownership
+# flake8-pep3101
+# flake8_strict
+# flake8_tuple
+yapf
+isort
+twine

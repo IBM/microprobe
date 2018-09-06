@@ -1,0 +1,91 @@
+#!/usr/bin/env groovy
+
+def runtests(archs) {
+
+  def mysteps = [:]
+  println "Creating tests..."
+
+  for(arch in archs) {
+
+    TESTING_ARCH = arch
+    println "Tests for ${TESTING_ARCH} ..."
+
+    mysteps["Tools ${TESTING_ARCH}"] = tools_tests(TESTING_ARCH) 
+    mysteps["Examples for ${TESTING_ARCH}"] = examples_tests(TESTING_ARCH)
+    mysteps["Targets for ${TESTING_ARCH}"] = targets_tests(TESTING_ARCH) 
+
+  }
+
+  println "Spawning jobs..."
+  parallel mysteps 
+
+}
+
+def tools_tests(myarch) {
+  return { 
+    lock(inversePrecedence: true, resource: 'tools_tests'+myarch) {
+    node('linux') {
+      timeout(time: 240, unit: 'MINUTES') {
+        checkout scm 
+        withEnv(['MP_TESTING_ARCH='+myarch]) {
+          sh '''
+            rm -f test_tools*$MP_TESTING_ARCH.xml
+            PYTHON_VERSION=2 $WORKSPACE/dev_tools/ci/test_001_end2end_tools.sh $MP_TESTING_ARCH
+            PYTHON_VERSION=3 $WORKSPACE/dev_tools/ci/test_001_end2end_tools.sh $MP_TESTING_ARCH
+            ls 
+            '''
+          stash name: "tools"+myarch, includes: "tests_tools*"+myarch+".xml"
+          sh '$WORKSPACE/dev_tools/ci/test_001_end2end_tools.sh -c'
+        }
+      }
+    }
+    }
+  }
+}
+
+def examples_tests(myarch) {
+  return { 
+    lock(inversePrecedence: true, resource: 'examples_tests'+myarch) {
+    node('linux') {
+      timeout(time: 240, unit: 'MINUTES') {
+        checkout scm 
+        withEnv(['MP_TESTING_ARCH='+myarch]) {
+          sh '''
+            env
+            rm -f test_examples*$MP_TESTING_ARCH.xml
+            PYTHON_VERSION=2 $WORKSPACE/dev_tools/ci/test_002_end2end_examples.sh $MP_TESTING_ARCH
+            PYTHON_VERSION=3 $WORKSPACE/dev_tools/ci/test_002_end2end_examples.sh $MP_TESTING_ARCH
+            '''
+          stash name: "examples"+myarch, includes: "tests_examples*"+myarch+".xml"
+          sh '$WORKSPACE/dev_tools/ci/test_002_end2end_examples.sh -c'
+        }
+      }
+    }
+    }
+  }
+}
+
+def targets_tests(myarch) {
+  return { 
+    lock(inversePrecedence: true, resource: 'target_tests'+myarch) {
+    node('linux') {
+      timeout(time: 240, unit: 'MINUTES') {
+        checkout scm 
+        withEnv(['MP_TESTING_ARCH='+myarch]) {
+          sh '''
+            env
+            rm -f test_targets*$MP_TESTING_ARCH.xml
+            PYTHON_VERSION=2 $WORKSPACE/dev_tools/ci/test_003_end2end_targets.sh $MP_TESTING_ARCH
+            PYTHON_VERSION=3 $WORKSPACE/dev_tools/ci/test_003_end2end_targets.sh $MP_TESTING_ARCH
+            '''
+          stash name: "targets"+myarch, includes: "tests_targets*"+myarch+".xml"
+          sh '$WORKSPACE/dev_tools/ci/test_003_end2end_targets.sh -c'
+        }
+      }
+    }
+    }
+  } 
+}
+
+return this
+// vim: ts=2 sw=2 et

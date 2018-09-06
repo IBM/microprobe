@@ -1,0 +1,318 @@
+# Copyright 2018 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: "custom"
+  Fields:
+  - funct7
+  - rc3
+  - rc2
+  - funct3
+  - rc1
+  - opcode
+  Assembly: OPC rc1, rc2, rc3, funct7
+- Name: "i"
+  Fields:
+  - i_imm12
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, rs1, i_imm12
+- Name: "i+l"
+  Fields:
+  - i_imm12
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, i_imm12(rs1) 
+- Name: "i+lf"
+  Fields:
+  - i_imm12
+  - rs1
+  - funct3
+  - frd
+  - opcode
+  Assembly: OPC frd, i_imm12(rs1) 
+- Name: "i+o"
+  Fields:
+  - i_imm12
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, rs1, i_imm12
+- Name: "i-sh5"
+  Fields:
+  - i_imm7
+  - i_shamt5
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, rs1, i_shamt5
+- Name: "i-sh6"
+  Fields:
+  - i_imm6
+  - i_shamt6
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, rs1, i_shamt6
+- Name: "none"
+  Fields:
+  - none_imm12
+  - rs1c
+  - funct3
+  - rdc
+  - opcode
+  Assembly: OPC 
+- Name: "r"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, rs1, rs2
+- Name: "r+3f"
+  Fields:
+  - funct5
+  - funct2
+  - frs2
+  - frs1
+  - funct3
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1, frs2
+- Name: "r+fr"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - rs1
+  - funct3
+  - frd
+  - opcode
+  Assembly: OPC frd, rs1
+- Name: "r+fr2"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - rs1
+  - funct3
+  - frd
+  - opcode
+  Assembly: OPC frd, rs1
+- Name: "r+rf"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - frs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, frs1
+- Name: "r+rf2"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - frs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, frs1
+- Name: "r+rff"
+  Fields:
+  - funct5
+  - funct2
+  - frs2
+  - frs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, frs1, frs2
+- Name: "r-a"
+  Fields:
+  - funct5
+  - aq
+  - rl
+  - rs2
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, rs2,  (rs1) 
+- Name: "r-f"
+  Fields:
+  - imm4
+  - pred
+  - succ
+  - rs1c
+  - funct3
+  - rdc
+  - opcode
+  Assembly: OPC pred, succ
+- Name: "r-l"
+  Fields:
+  - funct5
+  - aq
+  - rl
+  - rs2
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd,  (rs1) 
+- Name: "r-l2"
+  Fields:
+  - funct5
+  - aq
+  - rl
+  - rs2c
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd,  (rs1) 
+- Name: "r-m+3f"
+  Fields:
+  - funct5
+  - funct2
+  - frs2
+  - frs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1, frs2
+- Name: "r-m+ff"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - frs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1
+- Name: "r-m+ff2"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - frs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1
+- Name: "r-m+fr"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - rs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, rs1
+- Name: "r-m+fr2"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - rs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, rs1
+- Name: "r-m+rf"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - frs1
+  - rm
+  - rd
+  - opcode
+  Assembly: OPC rd, frs1
+- Name: "r-m+rf2"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - frs1
+  - rm
+  - rd
+  - opcode
+  Assembly: OPC rd, frs1
+- Name: "r4-m"
+  Fields:
+  - frs3
+  - funct2
+  - frs2
+  - frs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1, frs2, frs3
+- Name: "s"
+  Fields:
+  - s_imm7
+  - rs2
+  - rs1
+  - funct3
+  - s_imm5
+  - opcode
+  Assembly: OPC rs2, s_imm12(rs1) 
+- Name: "s+f"
+  Fields:
+  - s_imm7
+  - frs2
+  - rs1
+  - funct3
+  - s_imm5
+  - opcode
+  Assembly: OPC frs2, s_imm12(rs1) 
+- Name: "sb"
+  Fields:
+  - sb_imm7
+  - rs2
+  - rs1
+  - funct3
+  - sb_imm5
+  - opcode
+  Assembly: OPC rs1, rs2, sb_imm12
+- Name: "u"
+  Fields:
+  - u_imm20
+  - rd
+  - opcode
+  Assembly: OPC rd, u_imm20
+- Name: "u+o"
+  Fields:
+  - u_imm20
+  - rd
+  - opcode
+  Assembly: OPC rd, u_imm20
+- Name: "uj"
+  Fields:
+  - uj_imm20
+  - rd
+  - opcode
+  Assembly: OPC rd, uj_imm20

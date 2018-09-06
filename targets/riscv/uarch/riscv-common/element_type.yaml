@@ -1,0 +1,29 @@
+# Copyright 2018 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: DummyCache
+  Description: DummyCache used when the cache hierarchy is not fully defined
+- Name: Processor
+  Description: Compute processor
+- Name: Core
+  Description: Computing core
+- Name: MEM
+  Description: Main memory
+- Name: L3
+  Description: L3 Cache
+- Name: L2
+  Description: L2 Cache
+- Name: L1D
+  Description: L1 Data Cache
+- Name: L1I
+  Description: L1 Instruction Cache

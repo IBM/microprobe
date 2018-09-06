@@ -1,0 +1,1477 @@
+# Copyright 2018 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: "ADD_V0"
+  Mnemonic: "ADD"
+  Opcode: "33"
+  Description: "Add: Add rs2 to rs1 and place the result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "ADDI_V0"
+  Mnemonic: "ADDI"
+  Opcode: "13"
+  Description: "Add Immediate: Add sign-extended 12-bit immediate to register rs1 and place the result in rd"
+  Format: "i"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+- Name: "ADDIW_V0"
+  Mnemonic: "ADDIW"
+  Opcode: "1b"
+  Description: "Add Immediate Word: Add sign-extended 12-bit immediate to register rs1 and place 32-bit sign extended result in rs2 zeroing upper bits"
+  Format: "i"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+- Name: "ADDW_V0"
+  Mnemonic: "ADDW"
+  Opcode: "3b"
+  Description: "Add Word: Add 32-bit value in rs2 to rs1 and place the 32-bit result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "AMOADD.D_V0"
+  Mnemonic: "AMOADD.D"
+  Opcode: "2f"
+  Description: "Atomic Add Double Word: Load double word from address in rs1 into rd, add rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOADD.W_V0"
+  Mnemonic: "AMOADD.W"
+  Opcode: "2f"
+  Description: "Atomic Add Word: Load word from address in rs1 into rd, add rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOAND.D_V0"
+  Mnemonic: "AMOAND.D"
+  Opcode: "2f"
+  Description: "Atomic And Double Word: Load double word from address in rs1 into rd, and rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['12', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOAND.W_V0"
+  Mnemonic: "AMOAND.W"
+  Opcode: "2f"
+  Description: "Atomic And Word: Load word from address in rs1 into rd, and rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['12', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOMAX.D_V0"
+  Mnemonic: "AMOMAX.D"
+  Opcode: "2f"
+  Description: "Atomic Maximum Double Word: Load double word from address in rs1 into rd, find maximum of rd and rs2, write the result to the address in rs1 (signed)"
+  Format: "r-a"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOMAX.W_V0"
+  Mnemonic: "AMOMAX.W"
+  Opcode: "2f"
+  Description: "Atomic Maximum Word: Load word from address in rs1 into rd, find maximum of rd and rs2, write the result to the address in rs1 (signed)"
+  Format: "r-a"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOMAXU.D_V0"
+  Mnemonic: "AMOMAXU.D"
+  Opcode: "2f"
+  Description: "Atomic Maximum Unsigned Double Word: Load double word from address in rs1 into rd, find maximum of rd and rs2, write the result to the address in rs1 (unsigned)"
+  Format: "r-a"
+  Operands:
+    funct5: ['28', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOMAXU.W_V0"
+  Mnemonic: "AMOMAXU.W"
+  Opcode: "2f"
+  Description: "Atomic Maximum Unsigned Word: Load word from address in rs1 into rd, find maximum of rd and rs2, write the result to the address in rs1 (unsigned)"
+  Format: "r-a"
+  Operands:
+    funct5: ['28', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOMIN.D_V0"
+  Mnemonic: "AMOMIN.D"
+  Opcode: "2f"
+  Description: "Atomic Minimum Double Word: Load double word from address in rs1 into rd, find minimum of rd and rs2, write the result to the address in rs1 (signed)"
+  Format: "r-a"
+  Operands:
+    funct5: ['16', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOMIN.W_V0"
+  Mnemonic: "AMOMIN.W"
+  Opcode: "2f"
+  Description: "Atomic Minimum Word: Load word from address in rs1 into rd, find minimum of rd and rs2, write the result to the address in rs1 (signed)"
+  Format: "r-a"
+  Operands:
+    funct5: ['16', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOMINU.D_V0"
+  Mnemonic: "AMOMINU.D"
+  Opcode: "2f"
+  Description: "Atomic Minimum Unsigned Double Word: Load double word from address in rs1 into rd, find minimum of rd and rs2, write the result to the address in rs1 (unsigned)"
+  Format: "r-a"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOMINU.W_V0"
+  Mnemonic: "AMOMINU.W"
+  Opcode: "2f"
+  Description: "Atomic Minimum Unsigned Word: Load word from address in rs1 into rd, find minimum of rd and rs2, write the result to the address in rs1 (unsigned)"
+  Format: "r-a"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOOR.D_V0"
+  Mnemonic: "AMOOR.D"
+  Opcode: "2f"
+  Description: "Atomic Or Double Word: Load double word from address in rs1 into rd, or rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOOR.W_V0"
+  Mnemonic: "AMOOR.W"
+  Opcode: "2f"
+  Description: "Atomic Or Word: Load word from address in rs1 into rd, or rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOSWAP.D_V0"
+  Mnemonic: "AMOSWAP.D"
+  Opcode: "2f"
+  Description: "Atomic Swap Double Word: Load double word from address in rs1 into rd, swap rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['1', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOSWAP.W_V0"
+  Mnemonic: "AMOSWAP.W"
+  Opcode: "2f"
+  Description: "Atomic Swap Word: Load word from address in rs1 into rd, swap rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['1', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AMOXOR.D_V0"
+  Mnemonic: "AMOXOR.D"
+  Opcode: "2f"
+  Description: "Atomic Xor Double Word: Load double word from address in rs1 into rd, xor rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'IO']
+- Name: "AMOXOR.W_V0"
+  Mnemonic: "AMOXOR.W"
+  Opcode: "2f"
+  Description: "Atomic Xor Word: Load word from address in rs1 into rd, xor rd and rs2, write the result to the address in rs1"
+  Format: "r-a"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'IO']
+- Name: "AND_V0"
+  Mnemonic: "AND"
+  Opcode: "33"
+  Description: "And: Set rd to the bitwise and of rs1 and rs2"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['7', 'funct3', '?']
+- Name: "ANDI_V0"
+  Mnemonic: "ANDI"
+  Opcode: "13"
+  Description: "And Immediate: Set rd to the bitwise and of rs1 with the sign-extended 12-bit immediate"
+  Format: "i"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+- Name: "AUIPC_V0"
+  Mnemonic: "AUIPC"
+  Opcode: "17"
+  Description: "Add Upper Immediate to PC: Place the PC plus the 20-bit signed immediate (shited 12 bits left) into rd (used before JALR)"
+  Format: "u+o"
+- Name: "BEQ_V0"
+  Mnemonic: "BEQ"
+  Opcode: "63"
+  Description: "Branch Equal: Branch to PC relative 12-bit signed immediate (shifted 1 bit left) if rs1 == rs2"
+  Format: "sb"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+    sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
+  MemoryOperands:
+    MEM1 : [['sb_imm7'], [0], 0, 'B']
+- Name: "BGE_V0"
+  Mnemonic: "BGE"
+  Opcode: "63"
+  Description: "Branch Greater than Equal: Branch to PC relative 12-bit signed immediate (shifted 1 bit left) if rs1 >= rs2 (signed)"
+  Format: "sb"
+  Operands:
+    funct3: ['5', 'funct3', '?']
+    sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
+  MemoryOperands:
+    MEM1 : [['sb_imm7'], [0], 0, 'B']
+- Name: "BGEU_V0"
+  Mnemonic: "BGEU"
+  Opcode: "63"
+  Description: "Branch Greater than Equal Unsigned: Branch to PC relative 12-bit signed immediate (shifted 1 bit left) if rs1 >= rs2 (unsigned)"
+  Format: "sb"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+    sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
+  MemoryOperands:
+    MEM1 : [['sb_imm7'], [0], 0, 'B']
+- Name: "BLT_V0"
+  Mnemonic: "BLT"
+  Opcode: "63"
+  Description: "Branch Less Than: Branch to PC relative 12-bit signed immediate (shifted 1 bit left) if rs1 < rs2 (signed)"
+  Format: "sb"
+  Operands:
+    funct3: ['4', 'funct3', '?']
+    sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
+  MemoryOperands:
+    MEM1 : [['sb_imm7'], [0], 0, 'B']
+- Name: "BLTU_V0"
+  Mnemonic: "BLTU"
+  Opcode: "63"
+  Description: "Branch Less Than Unsigned: Branch to PC relative 12-bit signed immediate (shifted 1 bit left) if rs1 < rs2 (unsigned)"
+  Format: "sb"
+  Operands:
+    funct3: ['6', 'funct3', '?']
+    sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
+  MemoryOperands:
+    MEM1 : [['sb_imm7'], [0], 0, 'B']
+- Name: "BNE_V0"
+  Mnemonic: "BNE"
+  Opcode: "63"
+  Description: "Branch Not Equal: Branch to PC relative 12-bit signed immediate (shifted 1 bit left) if rs1 != rs2"
+  Format: "sb"
+  Operands:
+    funct3: ['1', 'funct3', '?']
+    sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
+  MemoryOperands:
+    MEM1 : [['sb_imm7'], [0], 0, 'B']
+- Name: "CUSTOM0_V0"
+  Mnemonic: "CUSTOM0"
+  Opcode: "b"
+  Description: "Custom instruction 0"
+  Format: "custom"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+- Name: "CUSTOM1_V0"
+  Mnemonic: "CUSTOM1"
+  Opcode: "2b"
+  Description: "Custom instruction 1"
+  Format: "custom"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+- Name: "CUSTOM2_V0"
+  Mnemonic: "CUSTOM2"
+  Opcode: "5b"
+  Description: "Custom instruction 2"
+  Format: "custom"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+- Name: "CUSTOM3_V0"
+  Mnemonic: "CUSTOM3"
+  Opcode: "7b"
+  Description: "Custom instruction 3"
+  Format: "custom"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+- Name: "DIV_V0"
+  Mnemonic: "DIV"
+  Opcode: "33"
+  Description: "Divide Signed: Divide rs1 (dividend) by rs2 (divisor) and place the quotient in rd (signed)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['4', 'funct3', '?']
+- Name: "DIVU_V0"
+  Mnemonic: "DIVU"
+  Opcode: "33"
+  Description: "Divide Unsigned: Divide rs1 (dividend) by rs2 (divisor) and place the quotient in rd (unsigned)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "DIVUW_V0"
+  Mnemonic: "DIVUW"
+  Opcode: "3b"
+  Description: "Divide Unsigned Word: Divide lower 32-bits of rs1 (dividend) by lower 32-bits of rs2 (divisor) and place the quotient in rd (unsigned)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "DIVW_V0"
+  Mnemonic: "DIVW"
+  Opcode: "3b"
+  Description: "Divide Signed Word: Divide lower 32-bits of rs1 (dividend) by lower 32-bits of rs2 (divisor) and place the quotient in rd (signed)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['4', 'funct3', '?']
+- Name: "FADD.D_V0"
+  Mnemonic: "FADD.D"
+  Opcode: "53"
+  Description: "FP Add (DP): Add the double-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FADD.S_V0"
+  Mnemonic: "FADD.S"
+  Opcode: "53"
+  Description: "FP Add (SP): Add the single-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCLASS.D_V0"
+  Mnemonic: "FCLASS.D"
+  Opcode: "53"
+  Description: "FP Classify (DP): Set rd to a 10-bit mask indicating the class of the double-precision value in frs1"
+  Format: "r+rf2"
+  Operands:
+    funct5: ['28', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FCLASS.S_V0"
+  Mnemonic: "FCLASS.S"
+  Opcode: "53"
+  Description: "FP Classify (SP): Set rd to a 10-bit mask indicating the class of the single-precision value in frs1"
+  Format: "r+rf2"
+  Operands:
+    funct5: ['28', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FCVT.D.L_V0"
+  Mnemonic: "FCVT.D.L"
+  Opcode: "53"
+  Description: "FP Convert Double Word to Float (DP): Convert the 64-bit signed integer in rs1 to a double-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.D.LU_V0"
+  Mnemonic: "FCVT.D.LU"
+  Opcode: "53"
+  Description: "FP Convert Double Word Unsigned Float (DP): Convert the 64-bit unsigned integer in rs1 to a double-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.D.S_V0"
+  Mnemonic: "FCVT.D.S"
+  Opcode: "53"
+  Description: "FP Convert SP to DP: Convert the single-precision value in frs1 to double-precision, then write the result to frd"
+  Format: "r-m+ff2"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    rm: ['0', 'rm', '?']
+- Name: "FCVT.D.W_V0"
+  Mnemonic: "FCVT.D.W"
+  Opcode: "53"
+  Description: "FP Convert Word to Float (DP): Convert the 64-bit signed integer in rs1 to a double-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    rm: ['0', 'rm', '?']
+- Name: "FCVT.D.WU_V0"
+  Mnemonic: "FCVT.D.WU"
+  Opcode: "53"
+  Description: "FP Convert Word Unsigned to Float (DP): Convert the 64-bit unsigned integer in rs1 to a double-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
+    rm: ['0', 'rm', '?']
+- Name: "FCVT.L.D_V0"
+  Mnemonic: "FCVT.L.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word (DP): Convert the double-precision value in frs1 to a 64-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.L.S_V0"
+  Mnemonic: "FCVT.L.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word (SP): Convert the single-precision value in frs1 to a 64-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.LU.D_V0"
+  Mnemonic: "FCVT.LU.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word Unsigned (DP): Convert the double-precision value in frs1 to a 64-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.LU.S_V0"
+  Mnemonic: "FCVT.LU.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word Unsigned (SP): Convert the single-precision value in frs1 to a 64-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.S.D_V0"
+  Mnemonic: "FCVT.S.D"
+  Opcode: "53"
+  Description: "FP Convert DP to SP: Convert the double-precision value in frs1 to single-precision, then write the result to frd"
+  Format: "r-m+ff2"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.S.L_V0"
+  Mnemonic: "FCVT.S.L"
+  Opcode: "53"
+  Description: "FP Convert Double Word to Float (SP): Convert the 64-bit signed integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.S.LU_V0"
+  Mnemonic: "FCVT.S.LU"
+  Opcode: "53"
+  Description: "FP Convert Double Word Unsigned to Float (SP): Convert the 64-bit unsigned integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.S.W_V0"
+  Mnemonic: "FCVT.S.W"
+  Opcode: "53"
+  Description: "FP Convert Word to Float (SP): Convert the 32-bit signed integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.S.WU_V0"
+  Mnemonic: "FCVT.S.WU"
+  Opcode: "53"
+  Description: "FP Convert Word Unsigned to Float (SP): Convert the 32-bit unsigned integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.W.D_V0"
+  Mnemonic: "FCVT.W.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Word (DP): Convert the double-precision value in frs1 to a 32-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.W.S_V0"
+  Mnemonic: "FCVT.W.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Word (SP): Convert the single-precision value in frs1 to a 32-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.WU.D_V0"
+  Mnemonic: "FCVT.WU.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Word Unsigned (DP): Convert the double-precision value in frs1 to a 32-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FCVT.WU.S_V0"
+  Mnemonic: "FCVT.WU.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Word Unsigned (SP): Convert the single-precision value in frs1 to a 32-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FDIV.D_V0"
+  Mnemonic: "FDIV.D"
+  Opcode: "53"
+  Description: "FP Divide (DP): Divide the double-precision value in frs1 into frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['3', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FDIV.S_V0"
+  Mnemonic: "FDIV.S"
+  Opcode: "53"
+  Description: "FP Divide (SP): Divide the single-precision value in frs1 into frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['3', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FENCE_V0"
+  Mnemonic: "FENCE"
+  Opcode: "f"
+  Description: "Fence: Ordcer device I/O and memory accesses viewed by other threads and devices"
+  Format: "r-f"
+  Operands:
+    imm4: ['0', 'imm4', '?']
+    rs1c: ['0', 'rs1c', '?']
+    funct3: ['0', 'funct3', '?']
+    rdc: ['0', 'rdc', '?']
+- Name: "FENCE.I_V0"
+  Mnemonic: "FENCE.I"
+  Opcode: "f"
+  Description: "Fence Instruction: Synchronize the instruction and data streams"
+  Format: "none"
+  Operands:
+    none_imm12: ['0', 'none_imm12', '?']
+    rs1c: ['0', 'rs1c', '?']
+    funct3: ['1', 'funct3', '?']
+    rdc: ['0', 'rdc', '?']
+- Name: "FEQ.D_V0"
+  Mnemonic: "FEQ.D"
+  Opcode: "53"
+  Description: "FP Equal (DP): Set rd to 1 if frs1 is equal to frs2, otherwise set rd to 0"
+  Format: "r+rff"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['2', 'funct3', '?']
+- Name: "FEQ.S_V0"
+  Mnemonic: "FEQ.S"
+  Opcode: "53"
+  Description: "FP Equal (SP): Set rd to 1 if the single-precision value in frs1 is equal to frs2, otherwise set rd to 0"
+  Format: "r+rff"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['2', 'funct3', '?']
+- Name: "FLD_V0"
+  Mnemonic: "FLD"
+  Opcode: "7"
+  Description: "FP Load (DP): Loads a double-precision foating-point value from memory into foating-point register frd"
+  Format: "i+lf"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'I']
+- Name: "FLE.D_V0"
+  Mnemonic: "FLE.D"
+  Opcode: "53"
+  Description: "FP Less Than Equal (DP): Set rd to 1 if frs1 is less than or equal to frs2, otherwise set rd to 0"
+  Format: "r+rff"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FLE.S_V0"
+  Mnemonic: "FLE.S"
+  Opcode: "53"
+  Description: "FP Less Than Equal (SP): Set rd to 1 if the single-precision value in frs1 is less than or equal to frs2, otherwise set rd to 0"
+  Format: "r+rff"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FLT.D_V0"
+  Mnemonic: "FLT.D"
+  Opcode: "53"
+  Description: "FP Less Than (DP): Set rd to 1 if frs1 is less than frs2, otherwise set rd to 0"
+  Format: "r+rff"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FLT.S_V0"
+  Mnemonic: "FLT.S"
+  Opcode: "53"
+  Description: "FP Less Than (SP): Set rd to 1 if the single-precision value in frs1 is less than frs2, otherwise set rd to 0"
+  Format: "r+rff"
+  Operands:
+    funct5: ['20', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FLW_V0"
+  Mnemonic: "FLW"
+  Opcode: "7"
+  Description: "FP Load (SP): Loads a single-precision foating-point value from memory into foating-point register frd"
+  Format: "i+lf"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'I']
+- Name: "FMADD.D_V0"
+  Mnemonic: "FMADD.D"
+  Opcode: "43"
+  Description: "FP Fused Multiply Add (DP): Multiply the double-precision values in frs1 and frs2, then add rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FMADD.S_V0"
+  Mnemonic: "FMADD.S"
+  Opcode: "43"
+  Description: "FP Fused Multiply Add (SP): Multiply the single-precision values in frs1 and frs2, then add rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FMAX.D_V0"
+  Mnemonic: "FMAX.D"
+  Opcode: "53"
+  Description: "FP Maximum (DP)"
+  Format: "r+3f"
+  Operands:
+    funct5: ['5', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FMAX.S_V0"
+  Mnemonic: "FMAX.S"
+  Opcode: "53"
+  Description: "FP Maximum (SP): Take the larger single-precision value from frs1 and frs2, then write the result to frd: Take the larger double-precision value from frs1 and frs2, then write the result to frd: Take the larger quadruple-precision value from frs1 and frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['5', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FMIN.D_V0"
+  Mnemonic: "FMIN.D"
+  Opcode: "53"
+  Description: "FP Minimum (DP)"
+  Format: "r+3f"
+  Operands:
+    funct5: ['5', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FMIN.S_V0"
+  Mnemonic: "FMIN.S"
+  Opcode: "53"
+  Description: "FP Minimum (SP): Take the smaller single-precision value from frs1 and frs2, then write the result to frd: Take the smaller double-precision value from frs1 and frs2, then write the result to frd: Take the smaller quadruple-precision value from frs1 and frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['5', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FMSUB.D_V0"
+  Mnemonic: "FMSUB.D"
+  Opcode: "47"
+  Description: "FP Fused Multiply Subtract (DP): Multiply the double-precision values in frs1 and frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FMSUB.S_V0"
+  Mnemonic: "FMSUB.S"
+  Opcode: "47"
+  Description: "FP Fused Multiply Subtract (SP): Multiply the single-precision values in frs1 and frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FMUL.D_V0"
+  Mnemonic: "FMUL.D"
+  Opcode: "53"
+  Description: "FP Multiply (DP): Multiply the double-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['2', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FMUL.S_V0"
+  Mnemonic: "FMUL.S"
+  Opcode: "53"
+  Description: "FP Multiply (SP): Multiply the single-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['2', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FMV.D.X_V0"
+  Mnemonic: "FMV.D.X"
+  Opcode: "53"
+  Description: "FP Move from Integer Register (DP): Write the 64-bit integer register rs1 into the double-precision register frd"
+  Format: "r+fr2"
+  Operands:
+    funct5: ['30', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FMV.S.X_V0"
+  Mnemonic: "FMV.S.X"
+  Opcode: "53"
+  Description: "FP Move from Integer Register (SP): Write the lower 32-bits of the integer register rs1 into the single-precision register frd"
+  Format: "r+fr2"
+  Operands:
+    funct5: ['30', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FMV.X.D_V0"
+  Mnemonic: "FMV.X.D"
+  Opcode: "53"
+  Description: "FP Move to Integer Register (DP): Write the sign extended double-precision value in frs1 into integer register rd"
+  Format: "r+rf2"
+  Operands:
+    funct5: ['28', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FMV.X.S_V0"
+  Mnemonic: "FMV.X.S"
+  Opcode: "53"
+  Description: "FP Move to Integer Register (SP): Write the sign extended single-precision value in frs1 into the integer register rd"
+  Format: "r+rf2"
+  Operands:
+    funct5: ['28', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FNMADD.D_V0"
+  Mnemonic: "FNMADD.D"
+  Opcode: "4f"
+  Description: "FP Negate fused Multiply Add (DP): Multiply the double-precision value in frs1 with the negated value in frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FNMADD.S_V0"
+  Mnemonic: "FNMADD.S"
+  Opcode: "4f"
+  Description: "FP Negate fused Multiply Add (SP): Multiply the single-precision value in frs1 with the negated value in frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FNMSUB.D_V0"
+  Mnemonic: "FNMSUB.D"
+  Opcode: "4b"
+  Description: "FP Negate fused Multiply Subtract (DP): Multiply the double-precision value in frs1 with the negated value in frs2, then add rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FNMSUB.S_V0"
+  Mnemonic: "FNMSUB.S"
+  Opcode: "4b"
+  Description: "FP Negate fused Multiply Subtract (SP): Multiply the single-precision value in frs1 with the negated value in frs2, then add rs3 and write the result to frd"
+  Format: "r4-m"
+  Operands:
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FSD_V0"
+  Mnemonic: "FSD"
+  Opcode: "27"
+  Description: "FP Store (DP): Stores a double-precision foating-point value from foating-point register frs2 to memory"
+  Format: "s+f"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'O']
+- Name: "FSGNJ.D_V0"
+  Mnemonic: "FSGNJ.D"
+  Opcode: "53"
+  Description: "FP to Sign-injection (DP): Take the double-precision value from frs1 and inject the sign bit from frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FSGNJ.S_V0"
+  Mnemonic: "FSGNJ.S"
+  Opcode: "53"
+  Description: "FP Sign-injection (SP): Take the single-precision value from frs1 and inject the sign bit from frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "FSGNJN.D_V0"
+  Mnemonic: "FSGNJN.D"
+  Opcode: "53"
+  Description: "FP to Sign-injection Negate (DP): Take the double-precision value from frs1 and inject the negated sign bit from frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FSGNJN.S_V0"
+  Mnemonic: "FSGNJN.S"
+  Opcode: "53"
+  Description: "FP Sign-injection Negate (SP): Take the single-precision value from frs1 and inject the negated sign bit from frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "FSGNJX.D_V0"
+  Mnemonic: "FSGNJX.D"
+  Opcode: "53"
+  Description: "FP to Sign-injection Xor (DP): Take the double-precision value from frs1 and inject the xor of the sign bits frs1 and frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['2', 'funct3', '?']
+- Name: "FSGNJX.S_V0"
+  Mnemonic: "FSGNJX.S"
+  Opcode: "53"
+  Description: "FP Sign-injection Xor (SP): Take the single-precision value from frs1 and inject the xor of the sign bits frs1 and frs2, then write the result to frd"
+  Format: "r+3f"
+  Operands:
+    funct5: ['4', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['2', 'funct3', '?']
+- Name: "FSQRT.D_V0"
+  Mnemonic: "FSQRT.D"
+  Opcode: "53"
+  Description: "Floating Square Root (DP): Calculate the square root of the double-precision value in frs1, then write the result to frd"
+  Format: "r-m+ff2"
+  Operands:
+    funct5: ['11', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FSQRT.S_V0"
+  Mnemonic: "FSQRT.S"
+  Opcode: "53"
+  Description: "FP Square Root (SP): Calculate the square root of the single-precision value in frs1, then write the result to frd"
+  Format: "r-m+ff2"
+  Operands:
+    funct5: ['11', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FSUB.D_V0"
+  Mnemonic: "FSUB.D"
+  Opcode: "53"
+  Description: "FP Subtract (DP): Subtract the double-precision values in frs1 from frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['1', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FSUB.S_V0"
+  Mnemonic: "FSUB.S"
+  Opcode: "53"
+  Description: "FP Subtract (SP): Subtract the single-precision values in frs1 from frs2, then write the result to frd"
+  Format: "r-m+3f"
+  Operands:
+    funct5: ['1', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rm: ['7', 'rm', '?']
+- Name: "FSW_V0"
+  Mnemonic: "FSW"
+  Opcode: "27"
+  Description: "FP Store (SP): Stores a single-precision foating-point value from foating-point register frs2 to memory"
+  Format: "s+f"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'O']
+- Name: "JAL_V0"
+  Mnemonic: "JAL"
+  Opcode: "6f"
+  Description: "Jump and Link: Jump to the PC plus 20-bit signed immediate while saving PC+4 into rd"
+  Format: "uj"
+  Operands:
+    uj_imm20: ['@uj_imm20', 'uj_imm20', 'I']
+  MemoryOperands:
+    MEM1 : [['uj_imm20'], [0], 0, 'B']
+- Name: "JALR_V0"
+  Mnemonic: "JALR"
+  Opcode: "67"
+  Description: "Jump and Link Register: Jump to rs1 plus the 12-bit signed immediate while saving PC+4 into rd"
+  Format: "i+o"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['i_imm12', 'rs1'], [0], 0, 'B']
+- Name: "LB_V0"
+  Mnemonic: "LB"
+  Opcode: "3"
+  Description: "Load Byte: Load 8-bit value from addr in rs1 plus the 12-bit signed immediate and place sign-extended result into rd"
+  Format: "i+l"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [1], 8, 'I']
+- Name: "LBU_V0"
+  Mnemonic: "LBU"
+  Opcode: "3"
+  Description: "Load Byte Unsigned: Load 8-bit value from addr in rs1 plus the 12-bit signed immediate and place zero-extended result into rd"
+  Format: "i+l"
+  Operands:
+    funct3: ['4', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [1], 8, 'I']
+- Name: "LD_V0"
+  Mnemonic: "LD"
+  Opcode: "3"
+  Description: "Load Double: Load 64-bit value from addr in rs1 plus 12-bit signed immediate and place sign-extended result into rd"
+  Format: "i+l"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'I']
+- Name: "LH_V0"
+  Mnemonic: "LH"
+  Opcode: "3"
+  Description: "Load Half: Load 16-bit value from addr in rs1 plus the 12-bit signed immediate and place sign-extended result into rd"
+  Format: "i+l"
+  Operands:
+    funct3: ['1', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [2], 8, 'I']
+- Name: "LHU_V0"
+  Mnemonic: "LHU"
+  Opcode: "3"
+  Description: "Load Half Unsigned: Load 32-bit value from addr in rs1 plus the 12-bit signed immediate and place zero-extended result into rd"
+  Format: "i+l"
+  Operands:
+    funct3: ['5', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [2], 8, 'I']
+- Name: "LR.D_V0"
+  Mnemonic: "LR.D"
+  Opcode: "2f"
+  Description: "Load Reserved Double Word: Load double word from address in rs1, place the sign-extended result in rd and register a reservation on the memory word"
+  Format: "r-l2"
+  Operands:
+    funct5: ['2', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'I']
+- Name: "LR.W_V0"
+  Mnemonic: "LR.W"
+  Opcode: "2f"
+  Description: "Load Reserved Word: Load word from address in rs1, place the sign-extended result in rd and register a reservation on the memory word"
+  Format: "r-l2"
+  Operands:
+    funct5: ['2', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    rs2c: ['0', 'rs2c', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'I']
+- Name: "LUI_V0"
+  Mnemonic: "LUI"
+  Opcode: "37"
+  Description: "Load Upper Immediate: Set and sign extend the 20-bit immediate (shited 12 bits left) and zero the bottom 12 bits into rd"
+  Format: "u"
+- Name: "LW_V0"
+  Mnemonic: "LW"
+  Opcode: "3"
+  Description: "Load Word: Load 32-bit value from addr in rs1 plus the 12-bit signed immediate and place sign-extended result into rd"
+  Format: "i+l"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'I']
+- Name: "LWU_V0"
+  Mnemonic: "LWU"
+  Opcode: "3"
+  Description: "Load Word Unsigned: Load 32-bit value from addr in rs1 plus the 12-bit signed immediate and place zero-extended result into rd"
+  Format: "i+l"
+  Operands:
+    funct3: ['6', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'I']
+- Name: "MUL_V0"
+  Mnemonic: "MUL"
+  Opcode: "33"
+  Description: "Multiply: Multiply rs1 by rs2 and place the result in rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "MULH_V0"
+  Mnemonic: "MULH"
+  Opcode: "33"
+  Description: "Multiply High Signed Signed: Multiply signed rs1 by signed rs2 and place the high bits of the result in rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "MULHSU_V0"
+  Mnemonic: "MULHSU"
+  Opcode: "33"
+  Description: "Multiply High Signed Unsigned: Multiply signed rs1 by unsigned rs2 and place the high bits of the result in rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['2', 'funct3', '?']
+- Name: "MULHU_V0"
+  Mnemonic: "MULHU"
+  Opcode: "33"
+  Description: "Multiply High Unsigned Unsigned: Multiply unsigned rs1 by unsigned rs2 and place the high bits of the result in rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['3', 'funct3', '?']
+- Name: "MULW_V0"
+  Mnemonic: "MULW"
+  Opcode: "3b"
+  Description: "Multiple Word: Multiply with lower 32-bits of rs1 by the lower 32-bits of rs2 and place the result in rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "OR_V0"
+  Mnemonic: "OR"
+  Opcode: "33"
+  Description: "Or: Set rd to the bitwise or of rs1 and rs2"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['6', 'funct3', '?']
+- Name: "ORI_V0"
+  Mnemonic: "ORI"
+  Opcode: "13"
+  Description: "Or Immediate: Set rd to the bitwise or of rs1 with the sign-extended 12-bit immediate"
+  Format: "i"
+  Operands:
+    funct3: ['6', 'funct3', '?']
+- Name: "REM_V0"
+  Mnemonic: "REM"
+  Opcode: "33"
+  Description: "Remainder Signed: Divide rs1 (dividend) by rs2 (divisor) and place the remainder in rd (signed)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['6', 'funct3', '?']
+- Name: "REMU_V0"
+  Mnemonic: "REMU"
+  Opcode: "33"
+  Description: "Remainder Unsigned: Divide rs1 (dividend) by rs2 (divisor) and place the remainder in rd (unsigned)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['7', 'funct3', '?']
+- Name: "REMUW_V0"
+  Mnemonic: "REMUW"
+  Opcode: "3b"
+  Description: "Remainder Unsigned Word: Divide lower 32-bits of rs1 (dividend) by lower 32-bits of rs2 (divisor) and place the remainder in rd (unsigned)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['7', 'funct3', '?']
+- Name: "REMW_V0"
+  Mnemonic: "REMW"
+  Opcode: "3b"
+  Description: "Remainder Signed Word: Divide lower 32-bits of rs1 (dividend) by lower 32-bits of rs2 (divisor) and place the remainder in rd (signed)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    funct3: ['6', 'funct3', '?']
+- Name: "SB_V0"
+  Mnemonic: "SB"
+  Opcode: "23"
+  Description: "Store Byte: Store 8-bit value from the low bits of rs2 to addr in rs1 plus the 12-bit signed immediate"
+  Format: "s"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [1], 8, 'O']
+- Name: "SC.D_V0"
+  Mnemonic: "SC.D"
+  Opcode: "2f"
+  Description: "Store Conditional Double Word: Write double word in rs1 to the address in rs2 if a valid reservation exists, write 0 on success or 1 on failure to rd"
+  Format: "r-a"
+  Operands:
+    funct5: ['3', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'O']
+- Name: "SC.W_V0"
+  Mnemonic: "SC.W"
+  Opcode: "2f"
+  Description: "Store Conditional Word: Write word in rs1 to the address in rs2 if a valid reservation exists, write 0 on success or 1 on failure to rd"
+  Format: "r-a"
+  Operands:
+    funct5: ['3', 'funct5', '?']
+    aq: ['0', 'aq', '?']
+    rl: ['0', 'rl', '?']
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'O']
+- Name: "SD_V0"
+  Mnemonic: "SD"
+  Opcode: "23"
+  Description: "Store Double: Store 64-bit value from the low bits of rs2 to addr in rs1 plus the 12-bit signed immediate"
+  Format: "s"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [8], 8, 'O']
+- Name: "SH_V0"
+  Mnemonic: "SH"
+  Opcode: "23"
+  Description: "Store Half: Store 16-bit value from the low bits of rs2 to addr in rs1 plus the 12-bit signed immediate"
+  Format: "s"
+  Operands:
+    funct3: ['1', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [2], 8, 'O']
+- Name: "SLL_V0"
+  Mnemonic: "SLL"
+  Opcode: "33"
+  Description: "Shift Left Logical: Shift rs1 left by the by the lower 5 or 6 (RV32/64) bits in rs2 and place the result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "SLLI_V0"
+  Mnemonic: "SLLI"
+  Opcode: "13"
+  Description: "Shift Left Logical Immediate: Shift rs1 left by the 5 or 6 (RV32/64) bit (RV64) immediate and place the result into rd"
+  Format: "i-sh6"
+  Operands:
+    i_imm6: ['0', 'i_imm6', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "SLLIW_V0"
+  Mnemonic: "SLLIW"
+  Opcode: "1b"
+  Description: "Shift Left Logical Immediate Word: Shift 32-bit value in rs1 left by the 5 bit immediate and place the result into rd while zeroing upper bits"
+  Format: "i-sh5"
+  Operands:
+    i_imm7: ['0', 'i_imm7', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "SLLW_V0"
+  Mnemonic: "SLLW"
+  Opcode: "3b"
+  Description: "Shift Left Logical Word: Shift 32-bit value in rs1 left by the by the lower 5 bits in rs2 and place the 32-bit result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['1', 'funct3', '?']
+- Name: "SLT_V0"
+  Mnemonic: "SLT"
+  Opcode: "33"
+  Description: "Set Less Than: Set rd to 1 if rs1 is less than rs2, otherwise set rd to 0 (signed)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['2', 'funct3', '?']
+- Name: "SLTI_V0"
+  Mnemonic: "SLTI"
+  Opcode: "13"
+  Description: "Set Less Than Immediate: Set rd to 1 if rs1 is less than the sign-extended 12-bit immediate, otherwise set rd to 0 (signed)"
+  Format: "i"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+- Name: "SLTIU_V0"
+  Mnemonic: "SLTIU"
+  Opcode: "13"
+  Description: "Set Less Than Immediate Unsigned: Set rd to 1 if rs1 is less than the sign-extended 12-bit immediate, otherwise set rd to 0 (unsigned)"
+  Format: "i"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+- Name: "SLTU_V0"
+  Mnemonic: "SLTU"
+  Opcode: "33"
+  Description: "Set Less Than Unsigned: Set rd to 1 if rs1 is less than rs2, otherwise set rd to 0 (unsigned)"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['3', 'funct3', '?']
+- Name: "SRA_V0"
+  Mnemonic: "SRA"
+  Opcode: "33"
+  Description: "Shift Right Arithmetic: Shift rs1 right by the by the lower 5 or 6 (RV32/64) bits in rs2 and place the result into rd while retaining the sign"
+  Format: "r"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SRAI_V0"
+  Mnemonic: "SRAI"
+  Opcode: "13"
+  Description: "Shift Right Arithmetic Immediate: Shift rs1 right by the 5 or 6 (RV32/64) bit immediate and place the result into rd while retaining the sign"
+  Format: "i-sh6"
+  Operands:
+    i_imm6: ['16', 'i_imm6', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SRAIW_V0"
+  Mnemonic: "SRAIW"
+  Opcode: "1b"
+  Description: "Shift Right Arithmetic Immediate Word: Shift 32-bit value in rs1 right by the 5 bit immediate and place the result into rd and retaining the sign"
+  Format: "i-sh5"
+  Operands:
+    i_imm7: ['32', 'i_imm7', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SRAW_V0"
+  Mnemonic: "SRAW"
+  Opcode: "3b"
+  Description: "Shift Right Arithmetic Word: Shift 32-bit value in rs1 right by the by the lower 5 bits in rs2 and place the 32-bit result into rd while retaining the sign"
+  Format: "r"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SRL_V0"
+  Mnemonic: "SRL"
+  Opcode: "33"
+  Description: "Shift Right Logical: Shift rs1 right by the by the lower 5 or 6 (RV32/64) bits in rs2 and place the result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SRLI_V0"
+  Mnemonic: "SRLI"
+  Opcode: "13"
+  Description: "Shift Right Logical Immediate: Shift rs1 right by the 5 or 6 (RV32/64) bit immediate and place the result into rd"
+  Format: "i-sh6"
+  Operands:
+    i_imm6: ['0', 'i_imm6', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SRLIW_V0"
+  Mnemonic: "SRLIW"
+  Opcode: "1b"
+  Description: "Shift Right Logical Immediate Word: Shift 32-bit value in rs1 right by the 5 bit immediate and place the result into rd while zeroing upper bits"
+  Format: "i-sh5"
+  Operands:
+    i_imm7: ['0', 'i_imm7', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SRLW_V0"
+  Mnemonic: "SRLW"
+  Opcode: "3b"
+  Description: "Shift Right Logical Word: Shift 32-bit value in rs1 right by the by the lower 5 bits in rs2 and place the 32-bit result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['5', 'funct3', '?']
+- Name: "SUB_V0"
+  Mnemonic: "SUB"
+  Opcode: "33"
+  Description: "Subtract: Subtract rs2 from rs1 and place the result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "SUBW_V0"
+  Mnemonic: "SUBW"
+  Opcode: "3b"
+  Description: "Subtract Word: Subtract 32-bit value in rs2 from rs1 and place the 32-bit result into rd"
+  Format: "r"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['0', 'funct3', '?']
+- Name: "SW_V0"
+  Mnemonic: "SW"
+  Opcode: "23"
+  Description: "Store Word: Store 32-bit value from the low bits of rs2 to addr in rs1 plus the 12-bit signed immediate"
+  Format: "s"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+    rs1: ['rega', 'rs1', 'I']
+  MemoryOperands:
+    MEM1 : [['rs1'], [4], 8, 'O']
+- Name: "XOR_V0"
+  Mnemonic: "XOR"
+  Opcode: "33"
+  Description: "Xor: Set rd to the bitwise xor of rs1 and rs2"
+  Format: "r"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    funct3: ['4', 'funct3', '?']
+- Name: "XORI_V0"
+  Mnemonic: "XORI"
+  Opcode: "13"
+  Description: "Xor Immediate: Set rd to the bitwise xor of rs1 with the sign-extended 12-bit immediate"
+  Format: "i"
+  Operands:
+    funct3: ['4', 'funct3', '?']

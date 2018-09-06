@@ -1,0 +1,104 @@
+; A Sequence of branches allowing some BPL analysis
+; 
+; Author:  John-David Wellman
+; 
+; Microprobe Test Definition File
+[MPT]
+mpt_version = 0.5 ;  Format version of this MPT file.
+
+[REGISTERS] ; Section to specify the initial register values
+
+; Format: register = value. E.g.:
+
+x1 = 0x12345
+x2 = 0x67899
+f1 = 0x2123
+
+[DATA] ; Section to specify the variables
+
+; Data section default address. Variables will be placed from this address
+; if their address is not specified
+
+default_address = 0x00200000
+
+; Variable Declaration
+; Format: var_name = [ "type", nelems, address, alignment, init_values ]
+; where:
+;   - "type": is a string specifying the type of elements in the variable
+;   - nelems: is the number of elements in the variable
+;   - address : is the address of the variable, if set the address will be
+;               fixed, otherwise, it will be computer by microprobe
+;   - alignment : alignment requirements of the variable. It should not
+;                 conflict with address if specified. It can be set to None
+;   - init_values : if it is a single value, all the elements will be 
+;                   initialized to that value, if it is an array, elements
+;                   will be initialized to the values specified in a round-
+;                   robin fashion. Two special keywords can be specified:
+;                   RNDFP and RNDINT to initialize the elements to random FP
+;                   and random INT values
+;
+; Note that variable names ARE NOT case sensitive. I.e. VAR = Var = var
+;
+; Some examples:
+
+; Array of 16 double elements initialized to 1.0 placed at address 0x00210000
+; var_array_int_1 = [ "int", 16, 0x00210000, 8, [ 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60 ] ] 
+
+; Array of 16 double elements initialized to 1.0 placed at address 0x00210000
+; var_array_int_2 = [ "int", 32, 0x00220000, 8, [ 0x3100, 0x3104, 0x3108, 0x310c, 0x3110, 0x3114, 0x3118, 0x311c, 0x3120, 0x3124, 0x3128, 0x312c, 0x3130, 0x3134, 0x3138, 0x3140 ] ] 
+
+; Array of 10 short elements placed at address 0x00220000 and initialized to
+; 2,4,2 ... 4,2,4 values 
+; var_array_int24  = [ "short", 10, 0x00220000,  4,  [2,4]]
+
+[CODE] ; Section to specify the code
+
+; Code section default address. Code will be placed from this address
+; if the instruction address is not specified
+
+default_address = 0x00100000
+
+; The code specified after 'instructions' entry (below) is the code that will be
+; processed by microprobe. The instruction format is similar to GNU assembler
+; format, it also allows the specification of labels (NOT case sensitive) and
+; references to the declared variables. It is also possible to specify instruction
+; addresses and to do code expansion by referencing other user 
+; defined entries. Check the example below to see examples of these features.
+; 
+; *****************************************************************************
+; ******  Although Microprobe performs some sanity checks, it is the   ******** 
+; ******  responsibility of the user to define correct code.           ********
+; ******                                                               ********
+; *****************************************************************************
+
+instructions = 
+    fence i, rw
+    fence.i
+    0x436fd993
+    0x40465f9b
+    0xd23e7e53
+    0xffa401e3
+    beq     x8,x26,0xffffffffffffffe2
+    beq x8, x26, -0x1d
+
+ddd =
+
+
+[RAW] ; Section to specify raw string to be generated in the output file
+
+; Currently, the user can embed 'raw' statements at four different locations
+
+file_header = /* ------------------------ FILE HEADER ----------------------- */
+    
+file_footer = /* ------------------------ FILE FOOTER ----------------------- */
+
+code_header = /* ------------------------ CODE HEADER ----------------------- */
+
+code_footer = /* ------------------------ CODE FOOTER ----------------------- */
+
+
+
+
+
+
+

@@ -1,0 +1,54 @@
+# Copyright 2018 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: X0
+  Type: ireg
+  Representation: 'x0'
+  Codification: '0'
+  Description: General Purpose Register 0
+  Repeat:
+    From: 0
+    To: 31
+- Name: F0
+  Type: freg
+  Representation: 'f0'
+  Codification: '0'
+  Description: General Purpose Register 0
+  Repeat:
+    From: 0
+    To: 31
+- Name: rm_rne
+  Type: rm
+  Representation: 'rne'
+  Codification: '0'
+  Description: Round to Nearest, ties to Even
+- Name: rm_rtz
+  Type: rm
+  Representation: 'rtz'
+  Codification: '0'
+  Description: Round towards Zero
+- Name: rm_rdn
+  Type: rm
+  Representation: 'rdn'
+  Codification: '0'
+  Description: Round Down (towards minus infinite)
+- Name: rm_rup
+  Type: rm
+  Representation: 'rup'
+  Codification: '0'
+  Description: Round Up (towards plus infinite)
+- Name: rm_rmm
+  Type: rm
+  Representation: 'rmm'
+  Codification: '0'
+  Description: Round to Nearest, ties to Max Magnitude
