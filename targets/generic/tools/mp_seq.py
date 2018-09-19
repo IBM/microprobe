@@ -67,6 +67,14 @@ def _generic_policy_wrapper(all_arguments):
 
     instructions, outputdir, outputname, target, kwargs = all_arguments
 
+    outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
+    outputfile = outputfile.replace(
+        "%DIRTREE%", os.path.join(
+            *[instr.name for instr in instructions]))
+    outputfile = outputfile.replace(
+        "%INSTR%", "_".join(
+            instr.name for instr in instructions))
+
     extension = ""
     if target.name.endswith("linux_gcc"):
 
@@ -86,6 +94,16 @@ def _generic_policy_wrapper(all_arguments):
         )
         extension = "bin"
 
+    elif target.name.endswith("mesa"):
+
+        wrapper_name = "Tst"
+        extension = "tst"
+        wrapper_class = _get_wrapper(wrapper_name)
+        wrapper = wrapper_class(
+            os.path.basename(outputfile.replace("%EXT%", extension)),
+            reset=kwargs['reset']
+        )
+
     else:
         raise NotImplementedError(
             "Unsupported configuration '%s'" % target.name
@@ -94,13 +112,6 @@ def _generic_policy_wrapper(all_arguments):
     if MICROPROBE_RC['debugwrapper']:
         extension = "s"
 
-    outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
-    outputfile = outputfile.replace(
-        "%DIRTREE%", os.path.join(
-            *[instr.name for instr in instructions]))
-    outputfile = outputfile.replace(
-        "%INSTR%", "_".join(
-            instr.name for instr in instructions))
     outputfile = outputfile.replace("%EXT%", extension)
 
     if kwargs['skip'] and outputfile in _DIRCONTENTS:

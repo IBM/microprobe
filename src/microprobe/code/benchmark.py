@@ -314,19 +314,15 @@ class Benchmark(BuildingBlock):
             rvara2 = rvara + rvar.size
 
             if rvara < vara2 and rvara2 >= vara2:
-                print(1)
                 return rvar
 
             if rvara <= vara and rvara2 > vara:
-                print(2)
                 return rvar
 
             if rvara >= vara and rvara2 <= vara2:
-                print(3)
                 return rvar
 
             if rvara <= vara and rvara2 >= vara2:
-                print(4)
                 return rvar
 
         return None

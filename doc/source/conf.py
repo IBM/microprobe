@@ -52,11 +52,11 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.autodoc',
-    # 'sphinx.ext.autosummary',
+    'sphinx.ext.autosummary',
     'sphinx.ext.inheritance_diagram',
 ]
 extensions.append('sphinxcontrib.programoutput')
-extensions.append('myautosummary')
+#extensions.append('myautosummary')
 extensions.append('sphinx.ext.intersphinx')
 
 
@@ -332,15 +332,16 @@ autogen_output_path = "_rsts"
 # private_members = False
 # exclude_members = []
 # include_members = []
-autosummary_generate = ['*']
+
+autosummary_generate = ['api']
 autoclass_content = "class"
 
-autodoc_default_flags = [
-    'members',
-    'show-inheritance',
-    'undoc-members',
-    'inherited-members',
-    'special-members',
-    'private-members',
-]
+autodoc_default_options = {
+        'members':None,
+        'show-inheritance':None,
+        'undoc-members':None,
+        'inherited-members':None,
+        'special-members':None,
+        'private-members':None,
+    }
 autodoc_member_order = "bysource"
