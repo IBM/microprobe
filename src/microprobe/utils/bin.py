@@ -43,6 +43,7 @@ import microprobe.code.ins
 from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeBinaryError, \
     MicroprobeCodeGenerationError, MicroprobeValueError
+from microprobe.target.isa.instruction import instruction_type_from_bin
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress, \
     RejectingDict, int_to_twocs, twocs_to_int
@@ -89,7 +90,7 @@ def interpret_bin(code, target, fmt="hex", safe=None):
     if key in _CODE_CACHE and _CODE_CACHE_ENABLED:
         code = [instrdef.copy() for instrdef in _CODE_CACHE[key]]
     elif safe:
-        code = _interpret_bin_safe(code, target, fmt=fmt)
+        code = _interpret_bin_code_safe(code, target, fmt=fmt)
         if _CODE_CACHE_ENABLED:
             _CODE_CACHE[key] = code[:]
     else:
@@ -116,96 +117,39 @@ def _interpret_bin_code(code, target, fmt="hex"):
     return instructions_and_params
 
 
-def _interpret_bin_safe(code, target, fmt="hex"):
+def _interpret_bin_code_safe(code, target, fmt="hex"):
 
     instructions_and_params = []
 
     binstream = MicroprobeBinInstructionStream(code, target, fmt=fmt,
                                                _data_cache=True)
-    min_cache_length = max(binstream.lengths) * 4
-    skip = ""
 
     min_skip_length = min(
         [ins.format.length for ins in target.instructions.values()]) * 2
+    fmt = "0x%%0%dx" % (min_skip_length)
 
     while not binstream.empty():
-
         try:
-
             bins, instr_type, operands = binstream.decode_next()
-
-            if skip != "":
-
-                lskip = len(skip)
-                skip2 = skip[((lskip // 16) * 16):lskip]
-                skip = skip[0:(lskip // 16) * 16]
-
-                if skip != "":
-                    instr_def = \
-                        microprobe.code.ins.MicroprobeInstructionDefinition(
-                            None, None, None, None, skip, None, None
-                        )
-                    instructions_and_params.append(instr_def)
-
-                if skip2 != "":
-                    instr_def = \
-                        microprobe.code.ins.MicroprobeInstructionDefinition(
-                            None, None, None, None, skip2, None, None
-                        )
-                    instructions_and_params.append(instr_def)
-
-                lcskip = len(skip)
-                while lcskip != 0 and lcskip > min_cache_length:
-
-                    if lcskip % 2 == 1:
-                        lcskip += 1
-
-                    cskip = skip[0:lcskip]
-                    cskip2 = skip[lcskip:]
-
-                    if cskip not in _DATA_CACHE and _DATA_CACHE_ENABLED:
-                        _DATA_CACHE[cskip] = None
-
-                    if (len(cskip) not in _DATA_CACHE_LENGTHS and
-                            _DATA_CACHE_ENABLED):
-                        _DATA_CACHE_LENGTHS.append(len(cskip))
-
-                    if len(cskip2) > min_cache_length and _DATA_CACHE_ENABLED:
-                        if cskip2 not in _DATA_CACHE:
-                            _DATA_CACHE[cskip2] = None
-
-                        if len(cskip2) not in _DATA_CACHE_LENGTHS:
-                            _DATA_CACHE_LENGTHS.append(len(cskip2))
-
-                    lcskip = lcskip // 2
-
-                skip = ""
-
-            assert bins != ""
             instr_def = microprobe.code.ins.MicroprobeInstructionDefinition(
                 instr_type, operands, None, None, bins, None, None
             )
             instructions_and_params.append(instr_def)
-
         except MicroprobeBinaryError:
 
-            skip += binstream.skip(characters=min_skip_length)
-            continue
-
-    if skip != "":
-        instr_def = \
-            microprobe.code.ins.MicroprobeInstructionDefinition(
-                None, None, None, None, skip, None, None
+            skip = binstream.skip(characters=min_skip_length)
+            instr_type = instruction_type_from_bin(skip, target)
+            instr_def = microprobe.code.ins.MicroprobeInstructionDefinition(
+                instr_type, (), None, None, skip, None, None
             )
-        instructions_and_params.append(instr_def)
-        if (len(skip) > min_cache_length and skip not in _DATA_CACHE and
-                _DATA_CACHE_ENABLED):
-            _DATA_CACHE_LENGTHS.append(len(skip))
-            _DATA_CACHE[skip] = instr_def
+            instructions_and_params.append(instr_def)
 
-        skip = ""
+            if _BIN_CACHE_ENABLED:
+                key = (fmt % int(skip, 16)).lower()
+                _BIN_CACHE[key] = (
+                    fmt %
+                    int(skip, 16), instr_type, ())
 
-    assert skip == ""
     return instructions_and_params
 
 
@@ -647,7 +591,7 @@ class MicroprobeBinInstructionStream(object):
 
         if len(matches) == 0:
             raise MicroprobeBinaryError(
-                "Unable to interpret the binary provided"
+                "Unable to interpret the binary provided: %s" % bin_str
             )
 
         if len(set([match[0].mnemonic for match in matches])) > 1:
@@ -712,9 +656,10 @@ class MicroprobeBinInstructionStream(object):
                                                   fmt)
 
                     if _BIN_CACHE_ENABLED:
-                        _BIN_CACHE[(fmt % bin_int).lower()] = (fmt % bin_int,
-                                                               instr_type,
-                                                               operand_values)
+                        key = (fmt % bin_int).lower()
+                        _BIN_CACHE[key] = (fmt % bin_int,
+                                           instr_type,
+                                           operand_values)
 
                     return (fmt % bin_int, instr_type, operand_values)
 

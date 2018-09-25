@@ -35,6 +35,8 @@ from microprobe.property import PropertyHolder, import_properties
 from microprobe.target.isa.operand import MemoryOperand, \
     MemoryOperandDescriptor, OperandConst, \
     OperandConstReg, OperandDescriptor
+from microprobe.target.isa.instruction_field import GenericInstructionField
+from microprobe.target.isa.instruction_format import GenericInstructionFormat
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, getnextf
 from microprobe.utils.yaml import read_yaml
@@ -45,7 +47,10 @@ SCHEMA = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "schemas", "instruction.yaml"
 )
 LOG = get_logger(__name__)
-__all__ = ["import_definition", "InstructionType", "GenericInstructionType"]
+__all__ = ["import_definition",
+           "InstructionType",
+           "GenericInstructionType",
+           "instruction_type_from_bin"]
 
 
 # Functions
@@ -140,6 +145,42 @@ def import_definition(cls, filenames, args):
     LOG.debug("End")
 
     return instructions
+
+
+def instruction_type_from_bin(bin, target):
+    """
+
+    :param bin:
+    :type bin:
+    :param target:
+    :type target:
+    """
+
+    foperand = OperandConst("raw", "raw", int(bin, 16))
+    fields = [GenericInstructionField(
+        "raw", "raw", len(bin) * 4, False, '?', foperand)]
+    iformat = GenericInstructionFormat("raw", "raw", fields, "raw: 0x%s" % bin)
+    instr_type = GenericInstructionType(
+        "raw",
+        "raw",
+        "0",
+        "Unknown raw code",
+        iformat,
+        {'raw': [foperand, '?']},
+        {},
+        [],
+        {},
+        {}
+    )
+
+    for prop in target.nop().properties.values():
+
+        if prop.name == "disable_asm":
+            prop.set_value(True)
+
+        instr_type.register_property(prop)
+
+    return instr_type
 
 
 def _translate_checks(name, filename, cls, checks, dummy_operands):

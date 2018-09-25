@@ -229,6 +229,10 @@ class Property(object):
         """ """
         return self._value
 
+    def set_value(self, val):
+        """ """
+        self._value = val
+
     @property
     def default(self):
         """ """
