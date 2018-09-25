@@ -723,7 +723,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                 with open_generic_fd(content_path, "r") as content_file:
                     lineno = 0
                     for line in content_file:
-                        words = line.split()
+                        words = line.split(";")[0].split()
                         lineno += 1
 
                         # Empty line
