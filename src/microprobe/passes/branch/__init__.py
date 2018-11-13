@@ -572,6 +572,9 @@ class InitializeBranchDecorator(Pass):
 
                 for idx, address in enumerate(target_addr):
 
+                    if isinstance(address, str):
+                        address = int(address, 16)
+
                     if not isinstance(address, InstructionAddress):
 
                         code = 0

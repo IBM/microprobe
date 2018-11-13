@@ -72,10 +72,18 @@ def instruction_to_definition(instr):
 
     label = instr.label
     instr.set_label(None)
+
+    asm = instr.assembly()
+    comments = instr.comments
+    if instr.disable_asm is True:
+        asmfmt = "0x%%0%dX" % (len(instr.binary()) / 4)
+        asm = asmfmt % int(instr.binary(), 2)
+        comments = [instr.assembly()] + instr.comments
+
     return MicroprobeInstructionDefinition(instr.architecture_type, [
         operand.value for operand in instr.operands()
-    ], label, instr.address, instr.assembly(),
-        instr.decorators, instr.comments)
+    ], label, instr.address, asm,
+        instr.decorators, comments)
 
 
 def instruction_from_definition(definition, fix_relative=True):
@@ -255,6 +263,12 @@ def instruction_set_def_properties(instr,
         instr.add_comment("MPT comment: %s" % comment)
 
     for decorator_key, decorator_value in decorators.items():
+
+        if decorator_key in ['MA', 'BT']:
+            if not isinstance(decorator_value, list):
+                decorator_value = [decorator_value]
+            decorator_value = ["0x%016X" % elem for elem in decorator_value]
+
         instr.add_comment("Decorator: %s = %s" % (decorator_key,
                                                   decorator_value))
         instr.add_decorator(decorator_key, decorator_value)
@@ -1867,7 +1881,17 @@ class Instruction(Pickable):
             self._decorators[name]['value'] = value
         except MicroprobeDuplicatedValueError:
             raise MicroprobeCodeGenerationError(
-                "Decorator '%s' already defined for this instruction.")
+                "Decorator '%s' already defined for this instruction." % name)
+
+    def rm_decorator(self, name):
+        """
+
+        """
+        try:
+            self._decorators.pop(name)
+        except KeyError:
+            raise MicroprobeCodeGenerationError(
+                "Decorator '%s' not defined for this instruction." % name)
 
     @property
     def comments(self):

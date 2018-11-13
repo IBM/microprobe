@@ -52,7 +52,8 @@ from microprobe.target.isa.operand import InstructionAddressRelativeOperand, \
     OperandConst, OperandImmRange, OperandValueSet
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import Progress, RejectingDict, twocs_to_int
+from microprobe.utils.misc import Progress, RejectingDict, twocs_to_int, \
+    range_to_sequence
 
 
 # Constants
@@ -133,6 +134,7 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
 
         for process in processes:
             process.join()
+            process.terminate()
 
         return instructions_and_params
 
@@ -374,11 +376,16 @@ def _interpret_decorators(str_decorators):
         key = decorator_def.split("=")[0].upper()
         lvalue = (decorator_def + "=").split("=")[1].split(",")
 
+        nvalue = []
+
         for idx, value in enumerate(lvalue):
+
+            if value == '':
+                continue
 
             if os.path.isfile(value):
                 print(value)
-                exit(-1)
+                raise NotImplementedError
             else:
                 origvalue = value
                 value = value.upper()
@@ -396,20 +403,26 @@ def _interpret_decorators(str_decorators):
             elif value.isdigit():
                 value = int(value)
             elif value.startswith("0X"):
-                try:
-                    value = int(value, 16)
-                except ValueError:
-                    value = origvalue
+                if value.count("-") > 1:
+                    value = range_to_sequence(*value.split("-"))
+                else:
+                    try:
+                        value = int(value, 16)
+                    except ValueError:
+                        value = origvalue
             else:
                 value = origvalue
 
-            lvalue[idx] = value
+            if isinstance(value, list):
+                nvalue.extend(value)
+            else:
+                nvalue.append(value)
 
         try:
             if len(lvalue) == 1:
-                decorators[key] = lvalue[0]
+                decorators[key] = nvalue[0]
             else:
-                decorators[key] = lvalue
+                decorators[key] = nvalue
 
         except MicroprobeDuplicatedValueError:
             raise MicroprobeAsmError(

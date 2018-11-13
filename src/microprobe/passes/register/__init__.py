@@ -1030,7 +1030,7 @@ class RandomAllocationPass(microprobe.passes.Pass):
         super(RandomAllocationPass, self).__init__()
         self._description = "Random Allocation of operands"
 
-    def __call__(self, building_block, target):
+    def __call__(self, building_block, dummy_target):
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:

@@ -45,6 +45,7 @@ LOG = get_logger(__name__)
 __all__ = [
     "MicroprobeTestVariableDefinition",
     "MicroprobeTestRegisterDefinition",
+    "MicroprobeTestMemoryAccessDefinition",
     # "MicroprobeTestRawDefinition",
     "MicroprobeTestDefinition",
     "MicroprobeTestDefinitionDefault",
@@ -77,6 +78,7 @@ def _normalize_variable(definition):
     definition = re.sub(r' +', r' ', definition)
     definition = definition.replace(' NONE,', ' None,')
     definition = definition.replace(' NONE ]', ' None ]')
+    definition = re.sub(", [0]+([0-9])", ", \\1", definition)
 
     return definition
 
@@ -244,6 +246,23 @@ class MicroprobeTestRegisterDefinition(object):
         self.value = value
 
 
+class MicroprobeTestMemoryAccessDefinition(object):
+    def __init__(self, dtype, rw, address, length):
+        self.data_type = dtype
+        self.access_type = rw
+        self.address = address
+        self.length = length
+        assert isinstance(length, int)
+
+    def to_str(self):
+        return "%s %s 0X%016X %03d" % (self.data_type, self.access_type,
+                                       self.address, self.length)
+
+    def __str__(self):
+        return "MemoryAccess(%s, %s, 0X%016X, %03d" % (
+            self.data_type, self.access_type, self.address, self.length)
+
+
 class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
     """Abstract class to represent a Microprobe Test configuration."""
 
@@ -300,6 +319,10 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractproperty
     def roi_cyc(self):
+        raise NotImplementedError
+
+    @abc.abstractproperty
+    def roi_memory_access_trace(self):
         raise NotImplementedError
 
     @abc.abstractproperty
@@ -361,6 +384,11 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def set_roi_memory_access_trace(self, value):
+        """Set memory access trace"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def set_instruction_count(self, value):
         """Set instruction count"""
         raise NotImplementedError
@@ -388,6 +416,7 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
         self._dat_prop = RejectingOrderedDict()
         self._roi_cyc = None
         self._roi_ins = None
+        self._roi_memory_access_trace = []
         self._instruction_count = None
         self._cycle_count = None
 
@@ -438,6 +467,10 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
     @property
     def roi_cyc(self):
         return self._roi_cyc
+
+    @property
+    def roi_memory_access_trace(self):
+        return self._roi_memory_access_trace
 
     @property
     def instruction_count(self):
@@ -501,6 +534,16 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
             )
 
         self._roi_ins = value
+
+    def set_roi_memory_access_trace(self, trace):
+        """Set memory access trace"""
+
+        if not trace:
+            raise MicroprobeMPTFormatError(
+                "Empty memory access trace"
+            )
+
+        self._roi_memory_access_trace = trace
 
     def set_roi_cyc(self, value):
         """Set region of interest (in cycles)"""
@@ -833,8 +876,8 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
             for name, value in items:
 
-                LOG.debug("Parsing '%s = %s'", name, value)
                 value = value.replace("\t", " ")
+                LOG.debug("Parsing '%s = %s'", name, value)
 
                 try:
 
@@ -1049,6 +1092,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
             roi_end_cyc = None
             max_ins = None
             max_cyc = None
+            memory_access_trace_path = None
 
             for name, value in items:
                 if name == "roi_start_instruction":
@@ -1063,6 +1107,11 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                     roi_end_cyc = _parse_value(value)
                 elif name == "cycle_count":
                     max_cyc = _parse_value(value)
+                elif name == "roi_memory_access_trace":
+                    memory_access_trace_path = value
+                    if not os.path.isabs(memory_access_trace_path):
+                        memory_access_trace_path = os.path.join(
+                            self._basepath, memory_access_trace_path)
 
             roi = None
             if roi_start is not None and roi_end is not None:
@@ -1113,6 +1162,71 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                             "Trace cycle_count does not cover "
                             "the region of interest."
                         )
+
+            if memory_access_trace_path is not None:
+                memtrace = []
+                with open_generic_fd(memory_access_trace_path, "r") as \
+                        content_file:
+                    lineno = 0
+                    for line in content_file:
+                        # Remove comments
+                        words = line.split(";")[0].split()
+                        lineno += 1
+
+                        # Empty line
+                        if len(words) == 0:
+                            continue
+
+                        if len(words) != 4:
+                            raise MicroprobeMPTFormatError(
+                                "Unable to parse trace file %s:%d: "
+                                "Bad number of words in format" %
+                                (memory_access_trace_path, lineno)
+                            )
+
+                        dtype, rw, address, length = words
+
+                        if dtype not in ['D', 'I']:
+                            raise MicroprobeMPTFormatError(
+                                "Unable to parse trace file %s:%d: "
+                                "Unknown data type '%d'."
+                                "Only 'D' or 'I' types allowed" %
+                                (memory_access_trace_path, lineno, dtype)
+                            )
+
+                        if rw not in ['R', 'W']:
+                            raise MicroprobeMPTFormatError(
+                                "Unable to parse trace file %s:%d: "
+                                "Unknown access type '%d'."
+                                "Only 'R'or 'W' access type allowed" %
+                                (memory_access_trace_path, lineno, rw)
+                            )
+
+                        try:
+                            address = int(address, 16)
+                        except ValueError:
+                            raise MicroprobeMPTFormatError(
+                                "Unable to parse trace file %s:%d: "
+                                "Invalid address." %
+                                (memory_access_trace_path, lineno)
+                            )
+
+                        try:
+                            length = int(length, 10)
+                        except ValueError:
+                            raise MicroprobeMPTFormatError(
+                                "Unable to parse trace file %s:%d: "
+                                "Invalid length." %
+                                (memory_access_trace_path, lineno)
+                            )
+
+                        memtrace.append(
+                            MicroprobeTestMemoryAccessDefinition(
+                                dtype, rw, address, length
+                            )
+                        )
+
+                test_definition.set_roi_memory_access_trace(memtrace)
 
         return test_definition
 
@@ -1470,10 +1584,12 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
         output_string.extend(
             self._dump_trace(
+                filename,
                 mpt_config.roi_ins,
                 mpt_config.roi_cyc,
                 mpt_config.instruction_count,
                 mpt_config.cycle_count,
+                mpt_config.roi_memory_access_trace
             )
         )
 
@@ -1508,7 +1624,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         mstr.append("")
 
         for register in registers:
-            mstr.append("%s = 0x%X" % (register.name, register.value))
+            mstr.append("%-8s = 0x%016X" % (register.name, register.value))
 
         mstr.append("")
 
@@ -1595,21 +1711,21 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
         address = "None"
         if var.address is not None:
-            if isinstance(var.address, int):
-                address = hex(var.address)
+            if isinstance(var.address, six.integer_types):
+                address = "0x%016X" % var.address
             else:
                 assert var.address.base_address == "code"
-                address = hex(var.address.displacement)
+                address = "0x%016X" % var.address.displacement
 
         alignment = "None"
         if var.alignment is not None:
-            alignment = hex(var.alignment)
+            alignment = "0x%04X" % var.alignment
 
         values = "None"
         if var.init_value is not None:
             values = "%s" % var.init_value
 
-        return "%s\t=\t[ \"%s\", %d, %s, %s, %s ]" % (
+        return "%s = [\"%s\", %08d, %s, %s, %s]" % (
             var.name, var.var_type, var.num_elements, address, alignment,
             values
         )
@@ -1692,7 +1808,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
             address = ""
             fmt = "  "
             if instr.address is not None:
-                address = "0x%016x" % instr.address.displacement
+                address = "0x%016X" % instr.address.displacement
                 fmt += "%s" % address
 
             if instr.label is not None:
@@ -1715,11 +1831,12 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
         if (instr.comments is not None and instr.comments != '' and
                 instr.comments != []):
-            mstr[-1] += " ; %s" % "|".join(instr.comments)
+            mstr[-1] += " ; %s" % " | ".join(instr.comments)
 
         return mstr
 
-    def _dump_trace(self, roi_ins, roi_cyc, instr_count, cyc_count):
+    def _dump_trace(self, filename, roi_ins, roi_cyc, instr_count, cyc_count,
+                    memory_trace):
 
         mstr = []
 
@@ -1743,7 +1860,25 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         if cyc_count is not None:
             mstr.append("cycle_count = %d" % cyc_count)
 
+        if memory_trace:
+            memtracefile = os.path.splitext(filename)[0] + ".memtrace.gz"
+            mstr.append(
+                "roi_memory_access_trace = %s" %
+                os.path.basename(memtracefile))
+            self._dump_memtrace(memtracefile, memory_trace)
+
         return mstr
+
+    def _dump_memtrace(self, ofile, memtrace):
+        with open_generic_fd(ofile, "w") as ofd:
+            for access in memtrace:
+                straccess = access.to_str()
+                if isinstance(straccess, six.string_types) and six.PY3:
+                    ofd.write(straccess.encode())
+                    ofd.write('\n'.encode())
+                else:
+                    ofd.write(straccess)
+                    ofd.write('\n')
 
     def _expand(self, contents, level=0):
         """ """

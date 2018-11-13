@@ -233,8 +233,9 @@ class GenericRegister(Register, Pickable):
                 self_val = int(self_val)
                 other_val = int(other_val)
 
-            if not self_val == other_val:
+            if self_val != other_val:
                 return False
+
         return True
 
     def __ne__(self, other):
@@ -249,8 +250,9 @@ class GenericRegister(Register, Pickable):
                 self_val = int(self_val)
                 other_val = int(other_val)
 
-            if not self_val == other_val:
+            if self_val != other_val:
                 return True
+
         return False
 
     def __lt__(self, other):
@@ -265,10 +267,11 @@ class GenericRegister(Register, Pickable):
                 self_val = int(self_val)
                 other_val = int(other_val)
 
-            if not self_val < other_val:
+            if self_val < other_val:
                 return True
-            elif not self_val > other_val:
+            elif self_val > other_val:
                 return False
+
         return False
 
     def __gt__(self, other):
@@ -283,10 +286,11 @@ class GenericRegister(Register, Pickable):
                 self_val = int(self_val)
                 other_val = int(other_val)
 
-            if not self_val > other_val:
+            if self_val > other_val:
                 return True
-            elif not self_val < other_val:
+            elif self_val < other_val:
                 return False
+
         return False
 
     def __le__(self, other):
@@ -301,10 +305,9 @@ class GenericRegister(Register, Pickable):
                 self_val = int(self_val)
                 other_val = int(other_val)
 
-            if not self_val <= other_val:
-                continue
-            else:
+            if self_val > other_val:
                 return False
+
         return True
 
     def __ge__(self, other):
@@ -319,10 +322,9 @@ class GenericRegister(Register, Pickable):
                 self_val = int(self_val)
                 other_val = int(other_val)
 
-            if not self_val >= other_val:
-                continue
-            else:
+            if not self_val < other_val:
                 return False
+
         return True
 
     def __str__(self):

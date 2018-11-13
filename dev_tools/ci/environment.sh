@@ -29,9 +29,11 @@ else
 fi
 
 # Generic options
-MAXJOBS=$(grep -c processor < /proc/cpuinfo)
-if [ "$MAXJOBS" -gt 48 ]; then
-    MAXJOBS=48
+if [ -z "$MAXJOBS" ] ; then
+    MAXJOBS=$(grep -c processor < /proc/cpuinfo)
+    if [ "$MAXJOBS" -gt 48 ]; then
+        MAXJOBS=48
+    fi
 fi
 
 export MAXJOBS

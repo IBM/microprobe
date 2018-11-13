@@ -648,6 +648,7 @@ class ReproduceSequencePass(microprobe.passes.Pass):
 
             for process in processes:
                 process.join()
+                process.terminate()
 
         return []
 

@@ -147,7 +147,7 @@ def import_definition(cls, filenames, args):
     return instructions
 
 
-def instruction_type_from_bin(bin, target):
+def instruction_type_from_bin(binstr, target):
     """
 
     :param bin:
@@ -156,10 +156,15 @@ def instruction_type_from_bin(bin, target):
     :type target:
     """
 
-    foperand = OperandConst("raw", "raw", int(bin, 16))
+    foperand = OperandConst("raw", "raw", int(binstr, 16))
     fields = [GenericInstructionField(
-        "raw", "raw", len(bin) * 4, False, '?', foperand)]
-    iformat = GenericInstructionFormat("raw", "raw", fields, "raw: 0x%s" % bin)
+        "raw", "raw", len(binstr) * 4, False, '?', foperand)]
+    iformat = GenericInstructionFormat(
+        "raw",
+        "raw",
+        fields,
+        "raw: 0x%s" %
+        binstr)
     instr_type = GenericInstructionType(
         "raw",
         "raw",

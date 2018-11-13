@@ -240,6 +240,11 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         """ """
         raise NotImplementedError
 
+    @abc.abstractproperty
+    def volatile_registers(self):
+        """ """
+        raise NotImplementedError
+
     @abc.abstractmethod
     def set_target(self, target):
         """
@@ -394,6 +399,11 @@ class GenericEnvironment(Environment):
         raise NotImplementedError
 
     def function_return(self, return_address_reg=None):
+        """ """
+        raise NotImplementedError
+
+    @property
+    def volatile_registers(self):
         """ """
         raise NotImplementedError
 

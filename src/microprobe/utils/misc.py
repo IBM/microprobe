@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function
 # Built-in modules
 import bz2
 import gzip
+import itertools
 import os
 import random
 import re
@@ -28,7 +29,6 @@ import sys
 import timeit
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 from microprobe.exceptions import MicroprobeDuplicatedValueError
@@ -303,17 +303,28 @@ def range_to_sequence(start, *args):
 
     step = 1
 
+    if isinstance(start, str):
+        start = int(start, 0)
+
     if len(args) > 0:
         end = args[0]
+        if isinstance(end, str):
+            end = int(end, 0)
     else:
-        return list(range(start, start + 1))
+        return [start]
 
     if len(args) > 1:
         step = args[1]
-        return list(range(start, end + 1, step))
 
-    else:
-        return list(range(start, end + 1))
+        if isinstance(step, str):
+            step = int(step, 0)
+
+    return list(
+        itertools.islice(
+            itertools.count(start, step),
+            (end - start + step - 1 + 2 * (step < 0)) // step
+        )
+    )
 
 
 def which(program):
@@ -478,7 +489,6 @@ class Progress(object):  # pylint: disable-msg=too-few-public-methods
             return
 
         module = self._count % (self._total / 100)
-
         required_time = 0
 
         if module < self._module:
@@ -495,7 +505,7 @@ class Progress(object):  # pylint: disable-msg=too-few-public-methods
 
         self._module = module
 
-        if required_time > 15:
+        if required_time > 1:
             self._fd.write(
                 self._fmt % (
                     self._count, (

@@ -121,7 +121,7 @@ Currently, it only has one entry::
   [STATE]
   contents = <path_to_state_file>
 
-State files are text files where each line follow the following format:
+State files are text files where each line follows the following format:
 
   - a line starting by M, then an address and its contents separated by a single space (to specify memory contents)
   - a line starting by 'R', then the register name and then the value (to specify the reg. contents)
@@ -175,7 +175,26 @@ traced. Currently, this section supports the following entries::
   roi_end_cycle = <integer>             ; End cycle of the region of interest
   instruction_count = <integer>         ; Number of dynamic instructions readed/to_generate
   cycle_count = <integer>               ; Number of cycles processed in the source trace
+  roi_memory_access_trace = <path_to_trace_file> ; Path to trace file containing the memory
+                                                 ; access trace of the test cases.
 
+Memory access trace files are text files where each line describes a memory access in
+progrem execution order. Each line contains the following four fields separated by 
+a space:
+
+  - Type of data: data (D) or code (I) 
+  - Type of access: read/load (R) or write/store (W)
+  - Address in hexadecimal format (0x ....)
+  - Length in bytes in decimal format
+
+Lines can also include comments after the ';' character. Example::
+
+    I R 0x0000000100001000 4 ; Code read of 4 bytes at address 0x100001000
+    I R 0x0000000100001004 4 ; Code read of 4 bytes at address 0x100001004
+    I R 0x0000000100001008 4 ; Code read of 4 bytes at address 0x100001008
+    D R 0x0000000101000000 8 ; Data read of 8 bytes at address 0x101000000
+    D W 0x0000000101000008 8 ; Data write of 8 bytes at address 0x101000008
+    
 ----------------
 Complete example
 ----------------
