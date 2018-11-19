@@ -343,7 +343,7 @@ def _generate_sequences(
         print_info("\tGroup %d:\t Instructions: %s" %
                    ((idx + 1), ",".join([instr.name for instr in igroup])))
         for instr in igroup:
-            instr_names.append(instr.name + "_GRP%s" % (idx + 1))
+            instr_names.append(instr.name + "_GRP%05d" % (idx + 1))
             if instr not in instr_objs:
                 instr_objs.append(instr)
 
@@ -353,7 +353,7 @@ def _generate_sequences(
         allowed_instructions = []
         for group in allowed_groups:
             allowed_instructions += [iname for iname in instr_names
-                                     if iname.endswith("_GRP%s" % group)]
+                                     if iname.endswith("_GRP%05d" % group)]
 
         descriptor = [
             ['%d' % group for group in allowed_groups], allowed_instructions]
@@ -378,7 +378,7 @@ def _generate_sequences(
         valid = True
         for idx, igroup in enumerate(instruction_groups):
             count = len([instr for instr in seq
-                         if instr.endswith("_GRP%s" % (idx + 1))])
+                         if instr.endswith("_GRP%05d" % (idx + 1))])
 
             if count < group_min[idx]:
                 valid = False
@@ -392,7 +392,7 @@ def _generate_sequences(
             sequence = []
             for instrname in seq:
                 for idx in range(0, len(instruction_groups)):
-                    instrname = instrname.replace("_GRP%d" % (idx + 1), "")
+                    instrname = instrname.replace("_GRP%05d" % (idx + 1), "")
                 sequence += [instr_obj for instr_obj in instr_objs
                              if instr_obj.name == instrname]
             yield base_seq + sequence
