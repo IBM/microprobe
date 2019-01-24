@@ -273,7 +273,6 @@ def dump_mpt(input_file, target, init_data, arguments):
     initialized_variables = {}
 
     mindisplacement = None
-    print(type(init_data))
     for data in init_data.split('\n'):
 
         if data.strip() == "":

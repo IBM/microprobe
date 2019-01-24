@@ -40,7 +40,7 @@ setup(
         "Main package"),
     keywords=KEYWORDS,
     url=WEBSITE,
-    download_url=PACKAGEURL,
+    # download_url=PACKAGEURL,
     package_dir={
         '': os.path.join(
             ".",

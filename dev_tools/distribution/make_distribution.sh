@@ -171,7 +171,7 @@ create_tmp_package () {
                 touch "$dir/__init__.py"
             fi
 
-            if [ "$(basename "$dir" | grep -c "\.")" -gt 0 ]; then
+            if [ "$(basename "$dir" | grep -c "\\.")" -gt 0 ]; then
                 echo "Invalid directory name $dir"
                 basename "$dir"
                 echo "Avoid use of dots '.' in directory names"

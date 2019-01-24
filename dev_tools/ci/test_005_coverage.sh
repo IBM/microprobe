@@ -27,7 +27,7 @@ fi
 . "$WORKSPACE/dev_tools/ci/environment.sh"
 start_script "$0"
 
-which coverage
+command -v coverage
 coverage --version
 
 set +e

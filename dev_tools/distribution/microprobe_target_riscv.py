@@ -46,7 +46,7 @@ setup(
         "Target definitions for RISCV"),
     keywords=KEYWORDS,
     url=WEBSITE,
-    download_url=PACKAGEURL,
+    # download_url=PACKAGEURL,
     install_requires=['microprobe_core>=%s' % VERSION],
     package_dir={'': os.path.join(".", 'src')},
     packages=packages,

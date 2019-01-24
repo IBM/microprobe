@@ -28,11 +28,11 @@ fi
 start_script "$0"
 
 echo Running pycodestyle version:
-python "$(which pycodestyle)" --version
+python "$(command -v pycodestyle)" --version
 
 set +e
 # shellcheck disable=SC2046
-$NICE python "$(which pycodestyle)" --count --statistics $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -name "*.py") > pycodestyle$PYTHON_VERSION.out 2> pycodestyle.err
+$NICE python "$(command -v pycodestyle)" --count --statistics $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -name "*.py") > pycodestyle$PYTHON_VERSION.out 2> pycodestyle.err
 error=$?
 set -e
 

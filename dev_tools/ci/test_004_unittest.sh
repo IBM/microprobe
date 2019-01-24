@@ -27,8 +27,8 @@ fi
 . "$WORKSPACE/dev_tools/ci/environment.sh"
 start_script "$0"
 
-which nosetests
-python "$(which nosetests)" --version
+command -v nosetests
+python "$(command -v nosetests)" --version
 
 set +e
 error=$?

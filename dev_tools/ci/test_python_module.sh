@@ -37,7 +37,7 @@ if [ ! -f "$1" ]; then
     exit_error "$0"
 fi
 
-which nosetests
+command -v nosetests
 nosetests --version
 
 NOSEOPTS="-d -v -e load_tests --exe -x --detailed-errors --process-timeout=$TIMEOUT"

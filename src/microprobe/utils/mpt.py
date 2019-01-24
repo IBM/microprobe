@@ -763,6 +763,12 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                     content_path = os.path.join(self._basepath,
                                                 content_path)
 
+                if not os.path.isfile(content_path):
+                    raise MicroprobeMPTFormatError(
+                        "Unable to find state content file:"
+                        " %s" % content_path
+                    )
+
                 with open_generic_fd(content_path, "r") as content_file:
                     lineno = 0
                     for line in content_file:

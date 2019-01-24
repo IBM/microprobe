@@ -47,7 +47,7 @@ fi
 
 VERSION=$1
 set +e
-which "python$VERSION"
+command -v "python$VERSION"
 error=$?
 set -e
 
@@ -58,7 +58,7 @@ fi
 
 tmpdir=$(mktemp -d)
 rm -fr "$tmpdir"
-python "$(which virtualenv)" --no-site-packages --python="python$VERSION" "$tmpdir"
+python "$(command -v virtualenv)" --no-site-packages --python="python$VERSION" "$tmpdir"
 
 # shellcheck source=/dev/null
 . "$tmpdir/bin/activate"
@@ -94,7 +94,7 @@ deactivate
 ($NICE mp_target -T riscv_v22-riscv_generic-riscv64_linux_gcc > /dev/null) || error=1
 
 # Test target definitions
-for file in $WORKSPACE/targets/*/dev_tools/ci/test_deploy_001_install.sh; do
+for file in "$WORKSPACE"/targets/*/dev_tools/ci/test_deploy_001_install.sh; do
     if [ -r "$file" ]; then
         echo "Sourcing $file"
         # shellcheck disable=SC1090
@@ -106,7 +106,7 @@ wait
 set -e
 
 # Test all tools entry
-for elem in $WORKSPACEORIG/targets/*/tools/*.py; do
+for elem in "$WORKSPACEORIG"/targets/*/tools/*.py; do
     echo "$elem"
     elem="$(basename "$elem")"
     elem="$(echo "$elem" | sed "s#.py\$##")"

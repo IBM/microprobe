@@ -49,7 +49,7 @@ setup(
         "A modular and extensible framework to generate microbenchmarks"),
     keywords=KEYWORDS,
     url=WEBSITE,
-    download_url=PACKAGEURL,
+    # download_url=PACKAGEURL,
     install_requires=['microprobe_core>=%s' % VERSION,
                       'microprobe_doc>=%s' % VERSION,
                       'microprobe_target_riscv>=%s' % VERSION,

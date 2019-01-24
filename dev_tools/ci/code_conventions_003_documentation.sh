@@ -27,8 +27,8 @@ fi
 . "$WORKSPACE/dev_tools/ci/environment.sh"
 start_script "$0"
 
-which sphinx-build
-python "$(which sphinx-build)" --version
+command -v sphinx-build
+python "$(command -v sphinx-build)" --version
 
 set +e
 $NICE make -j "$MAXJOBS" -C "$WORKSPACE/doc" clean cleanrst > doc.out

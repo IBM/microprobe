@@ -49,7 +49,7 @@ if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
     fi
     export NOSEOPTS=" -d -v -e load_tests --exe --processes=$MAXJOBS --detailed-errors --process-timeout=$TIMEOUT "
 
-    MP_TESTING_COMPILER_RISCV_V22=$(which riscv64-unknown-elf-gcc)
+    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-unknown-elf-gcc)
     export MP_TESTING_COMPILER_RISCV_V22
 else
     export NICE="nice -n 1"
@@ -62,7 +62,7 @@ else
     # export NOSEOPTS="-d -v -e load_tests --exe --processes=$MAXJOBS -x --detailed-errors --process-timeout=$TIMEOUT"
 
     set +e
-    MP_TESTING_COMPILER_RISCV_V22=$(which riscv64-unknown-elf-gcc)
+    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-unknown-elf-gcc)
     export MP_TESTING_COMPILER_RISCV_V22
     set -e
 
@@ -156,8 +156,8 @@ else
 
         if [ "x$NEEDINSTALL" = "xTrue" ] || [ "$BUILD_TYPE" = "stable" ]; then
 
-            pip=$(which pip)
-            vpython=$(head -n 1 "$pip" | sed "s/#\!//g")
+            pip=$(command -v pip)
+            vpython=$(head -n 1 "$pip" | sed "s/#\\!//g")
 
             # "$vpython" "$pip" install -U -I pip
             "$vpython" "$pip" install -U -I setuptools

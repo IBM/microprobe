@@ -24,15 +24,15 @@ if [ "x$WORKSPACE" = "x" ]; then
 fi
 
 # shellcheck source=dev_tools/ci/environment.sh
-. $WORKSPACE/dev_tools/ci/environment.sh
+. "$WORKSPACE/dev_tools/ci/environment.sh"
 start_script "$0"
 
-which nosetests
-python "$(which nosetests)" --version
+command -v nosetests
+python "$(command -v nosetests)" --version
 
 set +e
 # shellcheck disable=SC2086,SC2046
-$NICE python "$(which nosetests)" $(find "$WORKSPACE/targets/" -type d -name "tools" | grep "tests/tools")  --xunitmp-file="tests_tools${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_tools${PYTHON_VERSION}$1.xml"
+$NICE python "$(command -v nosetests)" $(find "$WORKSPACE/targets/" -type d -name "tools" | grep "tests/tools")  --xunitmp-file="tests_tools${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_tools${PYTHON_VERSION}$1.xml"
 error=$?
 set -e
 

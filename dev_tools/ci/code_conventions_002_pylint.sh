@@ -24,15 +24,15 @@ if [ "x$WORKSPACE" = "x" ]; then
 fi
 
 # shellcheck source=dev_tools/ci/environment.sh
-. $WORKSPACE/dev_tools/ci/environment.sh
+. "$WORKSPACE/dev_tools/ci/environment.sh"
 start_script "$0"
 
 echo "Running pylint version:"
-python "$(which pylint)" --version
+python "$(command -v pylint)" --version
 
 set +e
 # shellcheck disable=SC2046
-$NICE python "$(which pylint)" $(find "$WORKSPACE/src/" "$WORKSPACE/targets/"  -name \*.py) -f parseable -j "$MAXJOBS" -d E0012 > pylint$PYTHON_VERSION.out
+$NICE python "$(command -v pylint)" $(find "$WORKSPACE/src/" "$WORKSPACE/targets/"  -name \*.py) -f parseable -j "$MAXJOBS" -d E0012 > pylint$PYTHON_VERSION.out
 error=$?
 set -e
 

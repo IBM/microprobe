@@ -6,7 +6,7 @@
 set -e
 scriptpath=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
 
-python="$(which "python$1" || echo "python$1 not found in path")"
+python="$(command -v "python$1" || echo "python$1 not found in path")"
 if [ ! -x "$python" ]; then
     echo "$python"
     exit 1
@@ -21,7 +21,7 @@ fi
 rm -fr "$scriptpath/venv"
 rm -fr "$scriptpath/venv-$name"
 
-virtualenv "$scriptpath/venv-$name" --prompt="(Microprobe $name) " --python="$(which "python$1")"
+virtualenv "$scriptpath/venv-$name" --prompt="(Microprobe $name) " --python="$(command -v "python$1")"
 ln -s "$scriptpath/venv-$name" "$scriptpath/venv"
 # shellcheck disable=SC1090
 . "$scriptpath/venv-$name/bin/activate"

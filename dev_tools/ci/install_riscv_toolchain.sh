@@ -56,7 +56,7 @@ fi
 
 PATH=$PATH:$basedir/toolchain_riscv/install/bin
 export PATH
-which riscv64-unknown-elf-gcc
+command -v riscv64-unknown-elf-gcc
 
 rm -fr
 

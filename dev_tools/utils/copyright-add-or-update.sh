@@ -29,9 +29,9 @@
 # limitations under the License.
 
 usage () {
-    echo -e "Usage: $0 [OPTION]... [FILE]...\n\
-\n\
-Options:\n\
+    echo -e "Usage: $0 [OPTION]... [FILE]...\\n\
+\\n\
+Options:\\n\
   -h                         print this help text\
 "
 }
@@ -50,7 +50,7 @@ comment_syntax () {
         scala)
             comment="//"
             ;;
-        *|$1)
+        *)
             echo "Unable to determine comment syntax for file \"$1\"" >&2
             exit 1
             ;;
@@ -93,18 +93,18 @@ copyright_factory () {
     year=$2
     # Build Apache v2 copyright text based on the determined year and
     # comment syntax
-    copyright="$comment Copyright $year IBM Corporation\n\
-$comment\n\
-$comment Licensed under the Apache License, Version 2.0 (the \"License\");\n\
-$comment you may not use this file except in compliance with the License.\n\
-$comment You may obtain a copy of the License at\n\
-$comment\n\
-$comment http://www.apache.org/licenses/LICENSE-2.0\n\
-$comment\n\
-$comment Unless required by applicable law or agreed to in writing, software\n\
-$comment distributed under the License is distributed on an \"AS IS\" BASIS,\n\
-$comment WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n\
-$comment See the License for the specific language governing permissions and\n\
+    copyright="$comment Copyright $year IBM Corporation\\n\
+$comment\\n\
+$comment Licensed under the Apache License, Version 2.0 (the \"License\");\\n\
+$comment you may not use this file except in compliance with the License.\\n\
+$comment You may obtain a copy of the License at\\n\
+$comment\\n\
+$comment http://www.apache.org/licenses/LICENSE-2.0\\n\
+$comment\\n\
+$comment Unless required by applicable law or agreed to in writing, software\\n\
+$comment distributed under the License is distributed on an \"AS IS\" BASIS,\\n\
+$comment WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\\n\
+$comment See the License for the specific language governing permissions and\\n\
 $comment limitations under the License."
 
     echo $copyright
@@ -158,7 +158,7 @@ maybe_copyright_line=$(sed "$start q;d" "$1")
 copyright_re="(^.+(Copyright|copyright).+)[0-9]{4}(.+IBM.+$)"
 if [[ $maybe_copyright_line =~ $copyright_re ]]; then
     echo "Updating copyright for file: $1"
-    sed -i "$start s/[0-9]\{4\}/$year/" "$1"
+    sed -i "$start s/[0-9]\\{4\\}/$year/" "$1"
 else
     echo "Adding copyright for file: $1"
     sed -i "$start i $copyright" "$1"

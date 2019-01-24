@@ -53,11 +53,11 @@ check_style () {
     fi
 
     echo Check pycodestyle "$file"
-    python "$(which pycodestyle)" --count --statistics "$file"
+    python "$(command -v pycodestyle)" --count --statistics "$file"
 
     echo Check pylint "$file"
     set +e
-    python "$(which pylint)" "$file" -r n -f parseable -d I0011,R0902,R0913,W0511,R0912,C0111,R0101,R0915,C0302,R0914,R0904,C0112,W0703,W0125 
+    python "$(command -v pylint)" "$file" -r n -f parseable -d I0011,R0902,R0913,W0511,R0912,C0111,R0101,R0915,C0302,R0914,R0904,C0112,W0703,W0125 
     error=$?
     set -e
 

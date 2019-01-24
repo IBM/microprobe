@@ -27,12 +27,12 @@ fi
 . "$WORKSPACE/dev_tools/ci/environment.sh"
 start_script "$0"
 
-which nosetests
-python "$(which nosetests)" --version
+command -v nosetests
+python "$(command -v nosetests)" --version
 
 set +e
 # shellcheck disable=SC2086,SC2046
-$NICE python "$(which nosetests)" $(find "$WORKSPACE/targets/" -type d -name "examples" | grep "tests/examples")  --xunitmp-file="tests_examples${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_examples${PYTHON_VERSION}$1.xml"
+$NICE python "$(command -v nosetests)" $(find "$WORKSPACE/targets/" -type d -name "examples" | grep "tests/examples")  --xunitmp-file="tests_examples${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_examples${PYTHON_VERSION}$1.xml"
 
 error=$?
 set -e

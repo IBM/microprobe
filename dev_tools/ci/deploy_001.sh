@@ -36,7 +36,7 @@ if [ "$error" -gt 0 ]; then
     exit_error "$0"
 fi
 
-for file in $WORKSPACE/targets/*/dev_tools/ci/deploy_001.sh; do
+for file in "$WORKSPACE"/targets/*/dev_tools/ci/deploy_001.sh; do
     if [ -r "$file" ]; then
         echo "Sourcing $file"
         # shellcheck disable=SC1090
