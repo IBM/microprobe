@@ -20,6 +20,8 @@ set -e # Finish right after a non-zero return command
 
 if [ -f "$0.error" ] && [ "x$1" = "x-c" ]; then
     echo "Error in $0"
+    cat "$0.error"
+    echo "Error in $0"
     exit 1
 elif [ "x$1" = "x-c" ]; then
     echo "Not error in $0"
@@ -114,10 +116,16 @@ exit_success() {
 
 exit_error() {
     if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
-        echo "Error in $0"
+        echo "Error in $1"
+        if [ -f "$2" ]; then
+            cat "$2"
+        fi
         exit 1
     else
-        touch "$0.error"
+        touch "$1.error"
+        if [ -f "$2" ]; then
+            tee "$1.error" < "$2"
+        fi
         exit 0
     fi
 }

@@ -33,7 +33,6 @@ python "$(command -v nosetests)" --version
 set +e
 # shellcheck disable=SC2086,SC2046
 $NICE python "$(command -v nosetests)" $(find "$WORKSPACE/targets/" -type d -name "examples" | grep "tests/examples")  --xunitmp-file="tests_examples${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_examples${PYTHON_VERSION}$1.xml"
-
 error=$?
 set -e
 

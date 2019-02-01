@@ -224,7 +224,6 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         :param target:
 
         """
-
         if not self._skip_unknown:
             for register_name in self._reg_dict:
                 if register_name not in list(target.registers.keys()):

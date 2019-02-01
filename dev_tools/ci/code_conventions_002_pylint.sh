@@ -41,7 +41,7 @@ echo "Return code: $error"
 error=$(echo "obase=2;$error" | bc | /usr/bin/tail -c 3)
 if [ "$error" != "00" ]; then
     echo "Errors found, check pylint$PYTHON_VERSION.out file and fix them"
-	exit_error "$0"
+	exit_error "$0" "pylint$PYTHON_VERSION.out"
 fi
 
 # TODO: check other error codes to be more strict

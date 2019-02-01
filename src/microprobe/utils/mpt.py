@@ -21,6 +21,7 @@ from __future__ import absolute_import
 # Built-in modules
 import abc
 import ast
+import copy
 import io
 import os
 import re
@@ -239,11 +240,17 @@ class MicroprobeTestVariableDefinition(object):
         yield self.alignment
         yield self.init_value
 
+    def copy(self):
+        return copy.deepcopy(self)
+
 
 class MicroprobeTestRegisterDefinition(object):
     def __init__(self, name, value):
         self.name = name
         self.value = value
+
+    def copy(self):
+        return copy.deepcopy(self)
 
 
 class MicroprobeTestMemoryAccessDefinition(object):
@@ -261,6 +268,9 @@ class MicroprobeTestMemoryAccessDefinition(object):
     def __str__(self):
         return "MemoryAccess(%s, %s, 0X%016X, %03d" % (
             self.data_type, self.access_type, self.address, self.length)
+
+    def copy(self):
+        return copy.deepcopy(self)
 
 
 class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):

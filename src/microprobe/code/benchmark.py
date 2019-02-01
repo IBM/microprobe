@@ -26,12 +26,18 @@ from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict
 
-
 # Constants
 LOG = get_logger(__name__)
-__all__ = ["BuildingBlock", "Benchmark"]
+__all__ = ["BuildingBlock", "Benchmark",
+           "MultiThreadedBenchmark", "benchmark_factory"]
+
 
 # Functions
+def benchmark_factory(threads=1):
+    if threads == 1:
+        return Benchmark()
+    else:
+        return MultiThreadedBenchmark(num_threads=threads)
 
 
 # Classes
@@ -142,6 +148,7 @@ class Benchmark(BuildingBlock):
         self._fini = []
         self._vardisplacement = 0
         self._context = None
+        self._num_threads = 1
 
     @property
     def init(self):
@@ -225,6 +232,7 @@ class Benchmark(BuildingBlock):
                 LOG.warning(
                     "Variable: '%s' registered multiple times!", var.name
                 )
+
                 return
 
             LOG.critical("Registered variables: %s",
@@ -301,6 +309,8 @@ class Benchmark(BuildingBlock):
             )
 
     def _check_variable_overlap(self, var):
+
+        return None
 
         vara = var.address
         vara2 = vara + var.size
@@ -420,3 +430,28 @@ class Benchmark(BuildingBlock):
         ]
 
         return labels
+
+    def set_current_thread(self, idx):
+        """ """
+        self._current_thread = idx
+        if not 1 <= idx <= self._num_threads + 1:
+            raise MicroprobeCodeGenerationError(
+                "Unknown thread id: %d (min: 1, max: %d)" %
+                (idx, self._num_threads + 1)
+            )
+
+
+class MultiThreadedBenchmark(Benchmark):
+    """ """
+
+    def __init__(self, num_threads=1):
+        """ """
+        self._num_threads = num_threads
+        self._threads = {}
+        for idx in range(1, num_threads + 1):
+            self._threads[idx] = Benchmark()
+        self._current_thread = 1
+
+    def __getattr__(self, attribute_name):
+        return self._threads[
+            self._current_thread].__getattribute__(attribute_name)

@@ -45,7 +45,7 @@ echo "Num errors: $nerror"
 
 if [ "$error" -ne 0 ]; then
     echo "Errors found, check pycodestyle$PYTHON_VERSION.out file and fix them"
-	exit_error "$0"
+	exit_error "$0" "pycodestyle$PYTHON_VERSION.out"
 fi
 
 echo "No errors found!"

@@ -35,6 +35,7 @@ from microprobe.utils.logger import get_logger
 LOG = get_logger(__name__)
 __all__ = ['DeclareVariablesPass']
 
+
 # Functions
 
 
@@ -87,9 +88,8 @@ class DeclareVariablesPass(microprobe.passes.Pass):
         """
 
         for var in self._variables:
-            if (
-                var.address is not None and not building_block.context.symbolic
-            ):
+            if (var.address is not None and
+                    not building_block.context.symbolic):
                 # This is an absolute address that we need to modify
                 # to be relative to the data segment
 

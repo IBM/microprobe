@@ -242,7 +242,6 @@ def _interpret_instr_def(instr_def, target, labels):
     """
 
     LOG.debug("Start interpret_asm: '%s'", instr_def)
-
     if instr_def.assembly in _ASM_CACHE:
 
         instruction_type, operands = _ASM_CACHE[instr_def.assembly]

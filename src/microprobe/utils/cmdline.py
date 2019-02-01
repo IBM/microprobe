@@ -49,6 +49,7 @@ __all__ = [
     "existing_file_ext",
     "existing_dir",
     "file_with",
+    "float_type",
     "int_type",
     "int_range",
     "ParagraphFormatterML",
@@ -1238,7 +1239,7 @@ class CLI(object):
         :type name: str
 
         :arg short: Single-char name of the option.
-        :type short: str
+        :type short: str or None
 
         :arg descr: Description of the option.
         :type descr: str
@@ -1448,8 +1449,9 @@ class CLI(object):
 
         # assert implicit is None or self._opt_parser.has_option(implicit)
 
-        if "_" in os.environ:   # it seems that some shells do not have the '_'
-                                # environment variable
+        if "_" in os.environ:
+            # it seems that some shells do not have the '_'
+            # environment variable
 
             if (len(options) > 0 and os.environ["_"] == options[0] and
                     implicit is not None):
@@ -1738,7 +1740,7 @@ class CLI(object):
             else:
                 main(self._arguments, *args, **kwargs)
 
-        if MICROPROBE_RC["debug"]:
+        if MICROPROBE_RC["debug"] or MICROPROBE_RC["debugpasses"]:
             self._parse(options, implicit)
             _local_main()
         else:

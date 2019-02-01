@@ -19,6 +19,7 @@
 from __future__ import absolute_import, division, print_function
 
 # Built-in modules
+import copy
 from itertools import product
 
 # Third party modules
@@ -2181,7 +2182,7 @@ class MicroprobeInstructionDefinition(object):
 
         decorators = None
         if self._decorators is not None:
-            decorators = self._decorators[:]
+            decorators = copy.deepcopy(self._decorators)
 
         comments = None
         if self._comments is not None:
