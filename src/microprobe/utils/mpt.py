@@ -540,7 +540,7 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
         if (value[0] >= value[1]):
             raise MicroprobeMPTFormatError(
                 "Empty instruction region of interest range specified "
-                "'%s'" % value
+                "%s" % str(value)
             )
 
         self._roi_ins = value
