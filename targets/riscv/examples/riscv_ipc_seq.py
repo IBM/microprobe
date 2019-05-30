@@ -38,6 +38,7 @@ from microprobe.passes import initialization, instruction, register, structure
 from microprobe.target import import_definition
 
 rs = 0  #random seed
+MAX_INSTR_PERMUTATION_LENGTH = 10   # Max instruction length for which all permutations are to be computed
 
 class RiscvIpcTest(object):
     """RiscvIpc
@@ -139,15 +140,31 @@ class RiscvIpcTest(object):
         #Generate permutations of valid instructions sequence and randomize order
         random.seed(rs)
         instr_seq_count=len(valid_instrs)
-        valid_instr_seq = list(it.permutations(valid_instrs,instr_seq_count))
-        random.shuffle(valid_instr_seq)
-        
+        print ("Instruction sequence count: " +str(instr_seq_count))
         #Select instruction sequence permutations
-        if (self.args.num_permutations > np.math.factorial(instr_seq_count)):
+        if (self.args.num_permutations > np.math.factorial(min(instr_seq_count,MAX_INSTR_PERMUTATION_LENGTH))):
             print("ERROR: Number of selected sequences cannot exceed number of permutations")
             sys.exit()
 
-        selected_valid_instr_seq=valid_instr_seq[:][0:self.args.num_permutations]
+        # Check if number of instructions exceeds maximum permutation length - Fix to prevent permutation function from hanging
+        if (instr_seq_count > MAX_INSTR_PERMUTATION_LENGTH):
+            print("WARNING: Instruction sequence is too long... Selecting from reduced number of permutations!!")
+            reduced_instrs = valid_instrs[0:MAX_INSTR_PERMUTATION_LENGTH]
+            reduced_instr_seq = list(it.permutations(reduced_instrs,len(reduced_instrs)))
+            random.shuffle(reduced_instr_seq)
+            selected_valid_instr_seq = reduced_instr_seq[:][0:self.args.num_permutations]
+
+            #Append remaining instructions to each of the sequences in the list
+            rem_instr_seq = valid_instrs[MAX_INSTR_PERMUTATION_LENGTH:instr_seq_count]
+            for s in range(0,len(selected_valid_instr_seq)):
+                selected_valid_instr_seq[s] = list(selected_valid_instr_seq[s]) + rem_instr_seq
+
+        else:
+            #Generate complete list of permutations
+            valid_instr_seq = list(it.permutations(valid_instrs))
+            random.shuffle(valid_instr_seq)
+            selected_valid_instr_seq = valid_instr_seq[:][0:self.args.num_permutations]
+
         microbenchmarks = []
 
         #Loop over selected sequence permutations
