@@ -317,20 +317,23 @@ class RISCVISA(GenericISA):
             if not isinstance(address.base_address, str):
                 basename = address.base_address.name
 
-            lui_ins = self.new_instruction("LUI_V0")
-            lui_ins.operands()[1].set_value(register)
-            lui_ins.operands()[0].set_value(
-                "%%hi(%s)" % basename,
+            auipc_ins = self.new_instruction("AUIPC_V0")
+            auipc_ins.operands()[1].set_value(register)
+            auipc_ins.operands()[0].set_value(
+                "%%pcrel_hi(%s)" % basename,
                 check=False
             )
+            auipc_ins.set_label(
+                "%s_pcrel" % basename
+            )
 
-            instrs.append(lui_ins)
+            instrs.append(auipc_ins)
 
             addi_ins = self.new_instruction("ADDI_V0")
             addi_ins.operands()[1].set_value(register)
             addi_ins.operands()[2].set_value(register)
             addi_ins.operands()[0].set_value(
-                "%%lo(%s)" % basename,
+                "%%pcrel_lo(%s_pcrel)" % basename,
                 check=False
             )
             instrs.append(addi_ins)

@@ -46,3 +46,9 @@ RVTEST_DATA_END"""
         if not name.endswith(".S"):
             return "%s.S" % name
         return name
+
+    def declare_global_var(self, var):
+        if var.align:
+            return ".comm %s, %d, %d\n" % (var.name, var.size, var.align)
+        else:
+            return ".comm %s, %d\n" % (var.name, var.size)
