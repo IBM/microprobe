@@ -1095,6 +1095,8 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
                         except MicroprobeCodeGenerationError as exc:
                             raise exc
 
+                    instr.add_comment("Address: %s" % taddress)
+
                     # Set length of the memory operand --> default maximum
                     if memoperand.variable_length:
                         length = self._length

@@ -26,6 +26,7 @@ from microprobe.code.address import Address
 from microprobe.code.var import Variable, VariableArray
 from microprobe.target.isa import GenericISA
 from microprobe.utils.logger import get_logger
+from microprobe.utils.misc import twocs_to_int
 
 # Constants
 LOG = get_logger(__name__)
@@ -64,13 +65,20 @@ class RISCVISA(GenericISA):
 
         if register.type.name == "freg":
 
+            LOG.debug("FP register")
+
             if present_reg is not None:
+
+                LOG.debug("Value already present")
 
                 instr = self.new_instruction("FSGNJ.S_V0")
                 instr.set_operands([register, present_reg, present_reg])
                 instrs.append(instr)
 
             else:
+
+                LOG.debug("Setting value to scratch and "
+                          "then move to FP register")
 
                 instrs += self.set_register(self._scratch_registers[0], value,
                                             context)
@@ -81,6 +89,8 @@ class RISCVISA(GenericISA):
 
         elif register.type.name == "ireg":
 
+            LOG.debug("Integer register")
+
             value_highest = int((value & 0xFFFFF00000000000) >> 44)
             value_high = int((value & 0x00000FFF00000000) >> 32)
             value_low = int((value & 0x00000000FFFFF000) >> 12)
@@ -88,24 +98,45 @@ class RISCVISA(GenericISA):
 
             if value == 0:
 
+                LOG.debug("Zero value")
+
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands([0, register, self.registers["X0"]])
                 instrs.append(addi)
 
             elif present_reg is not None:
 
+                LOG.debug("Value already present")
+
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands([register, present_reg, 0])
                 instrs.append(addi)
 
+            elif (current_value is not None and
+                  abs(value - current_value) < (2 ** 12)):
+
+                addi = self.new_instruction("ADDI_V0")
+                addi.set_operands([register, value - current_value])
+                instrs.append(addi)
+
             elif register == self._scratch_registers[0]:
 
+                LOG.debug("This is the scratch register.")
+
                 if (value < -2147483648 or value >= 2147483647):
+
+                    LOG.debug("This is the scratch register. Long path")
 
                     lui = self.new_instruction("LUI_V0")
                     lui.set_operands([value_highest, register])
                     instrs.append(lui)
                     addiw = self.new_instruction("ADDIW_V0")
+
+                    if value_high >= (2**11-1):
+                        addiw.set_operands([2**11-1, register, register])
+                        instrs.append(addiw)
+                        value_high = value_high - (2**11-1)
+
                     addiw.set_operands([value_high, register, register])
                     instrs.append(addiw)
 
@@ -143,6 +174,8 @@ class RISCVISA(GenericISA):
 
                 else:
 
+                    LOG.debug("This is the scratch register. Short path")
+
                     if value_lowest > 2047:
                         value_low = value_low + 1
                         value_lowest = value - (value_low << 12)
@@ -157,31 +190,7 @@ class RISCVISA(GenericISA):
 
             elif (value < -2147483648 or value >= 2147483647):
 
-                instrs.extend(self.set_register(register,
-                                                (value >> 32),
-                                                context))
-
-                instrs.extend(self.set_register(self._scratch_registers[0],
-                                                (value & 0x00000000FFFFFFFF),
-                                                context))
-
-                slli = self.new_instruction("SLLI_V0")
-                slli.set_operands([32, register, register])
-                instrs.append(slli)
-
-                and_inst = self.new_instruction("AND_V0")
-                and_inst.set_operands(
-                    [register, register, self._scratch_registers[0]])
-                instrs.append(and_inst)
-
-            elif (current_value is not None and
-                  abs(value - current_value) < 2 * 12):
-
-                addi = self.new_instruction("ADDI_V0")
-                addi.set_operands([register, value - current_value])
-                instrs.append(addi)
-
-            elif (value < -2147483648 or value >= 2147483647):
+                LOG.debug("Use scratch register. Long path")
 
                 instrs.extend(self.set_register(register,
                                                 (value >> 32),
@@ -200,14 +209,9 @@ class RISCVISA(GenericISA):
                     [register, register, self._scratch_registers[0]])
                 instrs.append(and_inst)
 
-            elif (current_value is not None and
-                  abs(value - current_value) < 2 * 12):
+            elif (value >= -2147483648 and value < 2147483647):
 
-                addi = self.new_instruction("ADDI_V0")
-                addi.set_operands([register, value - current_value])
-                instrs.append(addi)
-
-            else:
+                LOG.debug("Short path")
 
                 if value_lowest > 2047:
                     value_low = value_low + 1
@@ -215,10 +219,17 @@ class RISCVISA(GenericISA):
 
                 lui = self.new_instruction("LUI_V0")
                 lui.set_operands([value_low, register])
+
                 addiw = self.new_instruction("ADDIW_V0")
                 addiw.set_operands([value_lowest, register, register])
                 instrs.append(lui)
                 instrs.append(addiw)
+
+            else:
+
+                LOG.debug("Register: %s set to value %d",
+                          register.name, value)
+                raise NotImplementedError
 
         else:
             LOG.debug("Register: %s set to value %d",
@@ -409,12 +420,24 @@ class RISCVISA(GenericISA):
 
         instrs = []
         if register.type.name == "ireg" and isinstance(value, int):
-            if abs(value) < 0x7FF:
+
+            if value > 0:
+                while(value) > 0x7FF:
+                    addi = self.new_instruction("ADDI_V0")
+                    addi.set_operands([0x7FF, register, register])
+                    instrs.append(addi)
+                    value = value - 0x7FF
+            elif value < 0:
+                while(value) < -0x7FF:
+                    addi = self.new_instruction("ADDI_V0")
+                    addi.set_operands([-0x7FF, register, register])
+                    instrs.append(addi)
+                    value = value + 0x7FF
+
+            if abs(value) != 0:
                 addi = self.new_instruction("ADDI_V0")
-                addi.set_operands([register, value])
+                addi.set_operands([value, register, register])
                 instrs.append(addi)
-            else:
-                raise NotImplementedError
         else:
             raise NotImplementedError
 

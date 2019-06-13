@@ -44,8 +44,8 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         :param name:
 
         """
-        if not name.endswith(".asm"):
-            return "%s.asm" % name
+        if not name.endswith(".s"):
+            return "%s.s" % name
         return name
 
     def headers(self):
@@ -56,7 +56,7 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         """ """
         return ""
 
-    def declare_global_var(self, dummy_var):
+    def declare_global_var(self, var):
         """
 
         :param dummy_var:
@@ -97,7 +97,23 @@ class Assembly(microprobe.code.wrapper.Wrapper):
 
         """
         ins = []
-        ins.append(instr.assembly())
+
+        if isinstance(instr, str):
+            return(instr)
+
+        if instr.comments:
+            asm = instr.assembly()
+            bstr = " " * len(asm) + " /* "
+
+            for idx, comment in enumerate(instr.comments):
+                if idx == 0:
+                    asm = asm + " /* " + comment + " */ "
+                else:
+                    asm = asm + "\n" + bstr + comment + " */ "
+            ins.append(asm)
+        else:
+            ins.append(instr.assembly())
+
         return ins[0] + "\n"
 
     def end_loop(self, dummy_instr):

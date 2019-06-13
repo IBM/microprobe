@@ -104,6 +104,25 @@ def _generic_policy_wrapper(all_arguments):
             reset=kwargs['reset']
         )
 
+    elif target.name.endswith("riscv64_test_p"):
+
+        wrapper_name = "RiscvTestsP"
+        extension = "S"
+        wrapper_class = _get_wrapper(wrapper_name)
+        wrapper = wrapper_class(
+            endless=kwargs['endless'],
+            reset=kwargs['reset']
+        )
+
+    elif target.environment.default_wrapper:
+
+        wrapper_name = target.environment.default_wrapper
+        wrapper_class = _get_wrapper(wrapper_name)
+        wrapper = wrapper_class()
+
+        outputfile = outputfile.replace(".%EXT%", "")
+        outputfile = wrapper.outputname(outputfile)
+
     else:
         raise NotImplementedError(
             "Unsupported configuration '%s'" % target.name
@@ -127,11 +146,12 @@ def _generic_policy_wrapper(all_arguments):
     extra_arguments['benchmark_size'] = kwargs['benchmark_size']
     extra_arguments['dependency_distance'] = kwargs['dependency_distance']
     extra_arguments['force_switch'] = kwargs['force_switch']
+    extra_arguments['endless'] = kwargs['endless']
 
     if wrapper.outputname(outputfile) != outputfile:
         print_error(
-            "Fix outputname to have a proper extension. E.g. '%s'" %
-            wrapper.outputname(outputfile)
+            "Fix outputname '%s' to have a proper extension. E.g. '%s'" %
+            (outputfile, wrapper.outputname(outputfile))
         )
         exit(-1)
 
@@ -291,6 +311,16 @@ def main():
         "force-switch",
         "fs",
         "Force data switching in all instructions, fail if not supported.",
+        group=groupname,
+    )
+
+    cmdline.add_flag(
+        "endless",
+        "e",
+        "Some backends allow the control to wrap the sequence generated in an"
+        " endless loop. Depending on the target specified, this flag will "
+        "force to generate sequences in an endless loop (some targets "
+        " might ignore it)",
         group=groupname,
     )
 
@@ -555,6 +585,9 @@ def _main(arguments):
 
     if 'force_switch' not in arguments:
         arguments['force_switch'] = False
+
+    if 'endless' not in arguments:
+        arguments['endless'] = False
 
     if 'parallel' not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")

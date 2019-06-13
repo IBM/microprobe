@@ -32,7 +32,7 @@ pipeline {
         parallel( 
           "Pycodestyle" : { 
             node('linux') {
-              timeout(time: 5, unit: 'MINUTES') {
+              timeout(time: 10, unit: 'MINUTES') {
                 script { handleCheckout() }
                 sh 'PYTHON_VERSION=2 $WORKSPACE/dev_tools/ci/code_conventions_001_pycodestyle.sh' 
                 stash name: "pycodestyle2", includes: "pycodestyle2.out"
@@ -45,7 +45,7 @@ pipeline {
           },
           "Pylint": { 
             node('linux') {
-              timeout(time: 5, unit: 'MINUTES') {
+              timeout(time: 10, unit: 'MINUTES') {
                 script { handleCheckout() }
                 sh 'PYTHON_VERSION=2 $WORKSPACE/dev_tools/ci/code_conventions_002_pylint.sh' 
                 stash name: "pylint2", includes: "pylint2.out"
@@ -58,7 +58,7 @@ pipeline {
           },
           "Documentation": { 
             node('linux') {
-              timeout(time: 5, unit: 'MINUTES') {
+              timeout(time: 10, unit: 'MINUTES') {
                 script { handleCheckout() }
                 sh '$WORKSPACE/dev_tools/ci/code_conventions_003_documentation.sh' 
                 stash name: "doc", includes: "doc.out"
@@ -327,7 +327,7 @@ pipeline {
       }
       steps{
         node('linux') {
-          timeout(time: 5, unit: 'MINUTES') {
+          timeout(time: 10, unit: 'MINUTES') {
             script { handleCheckout() }
             unstash "html"
             sh '$WORKSPACE/dev_tools/ci/build_001_distribution.sh'
@@ -352,7 +352,7 @@ pipeline {
         parallel( 
           "Testing Python2.7 Environment" : {
             node('python27') {
-              timeout(time: 5, unit: 'MINUTES') {
+              timeout(time: 10, unit: 'MINUTES') {
                 script { handleCheckout() }
                 unstash "distribution"
                 sh '$WORKSPACE/dev_tools/ci/test_deploy_001_install.sh 2.7'
@@ -361,7 +361,7 @@ pipeline {
           },
           "Testing Python3 Environment" : {
             node('python3') {
-              timeout(time: 5, unit: 'MINUTES') {
+              timeout(time: 10, unit: 'MINUTES') {
                 script { handleCheckout() }
                 unstash "distribution"
                 sh '$WORKSPACE/dev_tools/ci/test_deploy_001_install.sh 3'
@@ -385,7 +385,7 @@ pipeline {
       }
       steps{
         node('linux') {
-          timeout(time: 5, unit: 'MINUTES') {
+          timeout(time: 10, unit: 'MINUTES') {
             script { handleCheckout() }
             unstash "html"
             sh '$WORKSPACE/dev_tools/ci/deploy_001.sh'
@@ -407,7 +407,7 @@ pipeline {
       }
       steps{
         node('linux') {
-          timeout(time: 5, unit: 'MINUTES') {
+          timeout(time: 10, unit: 'MINUTES') {
             script { handleCheckout() }
             sh 'git push --set-upstream origin master'
             sh '$WORKSPACE/dev_tools/ci/update_pages.sh'

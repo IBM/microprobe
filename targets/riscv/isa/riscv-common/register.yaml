@@ -23,7 +23,7 @@
   Type: freg
   Representation: 'f0'
   Codification: '0'
-  Description: General Purpose Register 0
+  Description: Floating Point Register 0
   Repeat:
     From: 0
     To: 31
