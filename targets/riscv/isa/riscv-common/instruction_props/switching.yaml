@@ -16,5 +16,5 @@
   Description: Input values required to maximize the computational switching
   Default: None
   Values:
-    ADDI_V0: [[ None, 0x3FFFFFFFFFFFFFFF, 1],
-              [ None, 0x0000000000000000, -1]]
+    ADDI_V0: [[ None, 1, 0x3FFFFFFFFFFFFFFF ],
+              [ None, -1, 0x0000000000000000 ]]

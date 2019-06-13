@@ -207,7 +207,7 @@ def main():
         "instruction-slots",
         "is",
         4,
-        "Number of instructions slots in the sequence. E.g. '-l 4' will "
+        "Number of instructions slots in the sequence. E.g. '-is 4' will "
         "generate sequences of length 4.",
         group=groupname,
         opt_type=int_type(1, 999999999999)
@@ -563,6 +563,11 @@ def _main(arguments):
                                         group_max,
                                         group_min,
                                         base_seq)
+
+    sequences = [seq for seq in sequences if seq]
+    if not sequences:
+        print_error("No instruction sequences defined. Check parameters.")
+        exit(1)
 
     if 'count' in arguments:
         print_info("Total number of sequences defined : %s" %
