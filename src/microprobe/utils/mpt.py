@@ -1189,6 +1189,9 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                         content_file:
                     lineno = 0
                     for line in content_file:
+                        if isinstance(line, six.binary_type):
+                            line = line.decode()
+
                         # Remove comments
                         words = line.split(";")[0].split()
                         lineno += 1
