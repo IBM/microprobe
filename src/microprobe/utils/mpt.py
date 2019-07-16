@@ -252,6 +252,10 @@ class MicroprobeTestRegisterDefinition(object):
     def copy(self):
         return copy.deepcopy(self)
 
+    def __str__(self):
+        return "MicroprobeTestRegisterDefinition(%s, %s)" % (
+            self.name, self.value)
+
 
 class MicroprobeTestMemoryAccessDefinition(object):
     def __init__(self, dtype, rw, address, length):
