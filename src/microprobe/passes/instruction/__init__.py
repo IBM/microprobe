@@ -548,7 +548,7 @@ class ReproduceSequencePass(microprobe.passes.Pass):
 
         """
         super(ReproduceSequencePass, self).__init__()
-        self._sequence = seq
+        self._sequence = seq[:]
         self._description = "Reproduce instruction sequence"
 
     def __call__(self, building_block, target):
