@@ -61,7 +61,7 @@ def _read_yaml(filename):
     with open(filename, 'r') as yaml_fd:
         raw_data = yaml_fd.read()
         try:
-            data = yaml.load(raw_data)
+            data = yaml.safe_load(raw_data)
         except yaml.composer.ComposerError as exc:
             raise MicroprobeYamlFormatError(
                 "YAML parsing error while processing "
