@@ -1647,9 +1647,10 @@ class CLI(object):
 
         definitions = find_isa_definitions()
         if isa_def not in [definition.name for definition in definitions]:
-            msg = "ISA '%s' not available."\
-                  "Use --list-architectures to see the ones "\
-                  "available" % isa_def
+            defstr = ",".join([defi.name for defi in definitions])
+            msg = "ISA '%s' not available. "\
+                "Use --list-architectures for full details of the ones "\
+                "available. Available ones: %s" % (isa_def, defstr)
             self._arg_parser.force_error(msg)
         else:
             isa_def = [
@@ -1661,9 +1662,11 @@ class CLI(object):
         if architecture_def not in [
             definition.name for definition in definitions
         ]:
+            defstr = ",".join([defi.name for defi in definitions])
             msg = "Microarchitecture '%s' not available. " \
-                  "Use --list-microarchitectures to see the ones "\
-                  "available" % architecture_def
+                  "Use --list-microarchitectures for full details "\
+                  "of the ones available. Available ones: %s"\
+                  % (architecture_def, defstr)
             self._arg_parser.force_error(msg)
         else:
             architecture_def = [
@@ -1675,9 +1678,10 @@ class CLI(object):
         definitions = find_env_definitions()
 
         if env_def not in [definition.name for definition in definitions]:
+            defstr = ",".join([defi.name for defi in definitions])
             msg = "Environment '%s' not available. "\
-                  "Use --list-environments to see the ones "\
-                  "available" % env_def
+                  "Use --list-environments for full details of the ones "\
+                  "available. Available ones: %s" % (env_def, defstr)
             self._arg_parser.force_error(msg)
         else:
             env_def = [
