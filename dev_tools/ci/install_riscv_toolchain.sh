@@ -17,8 +17,17 @@
 #
 
 set -e # Finish right after a non-zero return command
-set -u # Finish right after a undefined expression is used
 set -a # All following variables are exported
+
+if [ -z "$MAXJOBS" ] ; then
+    MAXJOBS=$(grep -c processor < /proc/cpuinfo)
+    if [ "$MAXJOBS" -gt 48 ]; then
+        MAXJOBS=48
+    fi
+fi
+
+set -u # Finish right after a undefined expression is used
+export MAXJOBS
 
 basedir=$(pwd)
 
@@ -28,37 +37,39 @@ if [ ! -d "$basedir/toolchain_riscv/install/bin" ]; then
     fi
 
     cd "$basedir/toolchain_riscv"
-    if [ ! -d "$basedir/toolchain_riscv/riscv-gnu-toolchain" ]; then
-        git clone --recursive https://github.com/riscv/riscv-gnu-toolchain
+    if [ ! -f "$basedir/toolchain_riscv/riscv-gnu-toolchain/configure" ]; then
+        git clone --recursive https://github.com/riscv/riscv-gnu-toolchain -j "$MAXJOBS" --depth 1
     fi
 
-    cd "$basedir/toolchain_riscv/riscv-gnu-toolchain"
     if [ ! -d "$basedir/toolchain_riscv/install/bin" ]; then
-        ./configure --prefix="$basedir/toolchain_riscv/install/"
-        make -j 4 > /dev/null 2> /dev/null &
-        pid=$!
+        if [ "$1" -ne "0" ] || [ -z "${1}" ]; then
+            cd "$basedir/toolchain_riscv/riscv-gnu-toolchain"
+            ./configure --prefix="$basedir/toolchain_riscv/install/"
+            make -j "$MAXJOBS" > /dev/null 2> /dev/null &
+            pid=$!
 
-        while [ "$(ps -p $pid | wc -l)" -eq 2 ]; do
-            sleep 60
-            echo "Waiting compilation to finish ..."
-        done;
+            while [ "$(ps -p $pid | wc -l)" -eq 2 ]; do
+                sleep 60
+                echo "Waiting compilation to finish ..."
+            done;
 
-        make install -j 4 > /dev/null 2> /dev/null &
-        pid=$!
+            make install -j 4 > /dev/null 2> /dev/null &
+            pid=$!
 
-        while [ "$(ps -p $pid | wc -l)" -eq 2 ]; do
-            sleep 60
-            echo "Waiting installation to finish ..."
-        done;
+            while [ "$(ps -p $pid | wc -l)" -eq 2 ]; do
+                sleep 60
+                echo "Waiting installation to finish ..."
+            done;
+        else
+            exit 0
+        fi
     fi
-    rm -fr "$basedir/toolchain_riscv/riscv-gnu-toolchain"
+    rm -fr "$basedir/toolchain_riscv/riscv-gnu-toolchain/*"
 fi
 
 PATH=$PATH:$basedir/toolchain_riscv/install/bin
 export PATH
 command -v riscv64-unknown-elf-gcc
-
-rm -fr
 
 cd - || exit 255
 

@@ -307,7 +307,7 @@
     funct3: ['0', 'funct3', '?']
     sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
   MemoryOperands:
-    MEM1 : [['sb_imm7'], [0], 0, 'B']
+    MEM1 : [['@sb_imm7'], [0], 0, 'B']
 - Name: "BGE_V0"
   Mnemonic: "BGE"
   Opcode: "63"
@@ -317,7 +317,7 @@
     funct3: ['5', 'funct3', '?']
     sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
   MemoryOperands:
-    MEM1 : [['sb_imm7'], [0], 0, 'B']
+    MEM1 : [['@sb_imm7'], [0], 0, 'B']
 - Name: "BGEU_V0"
   Mnemonic: "BGEU"
   Opcode: "63"
@@ -327,7 +327,7 @@
     funct3: ['7', 'funct3', '?']
     sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
   MemoryOperands:
-    MEM1 : [['sb_imm7'], [0], 0, 'B']
+    MEM1 : [['@sb_imm7'], [0], 0, 'B']
 - Name: "BLT_V0"
   Mnemonic: "BLT"
   Opcode: "63"
@@ -337,7 +337,7 @@
     funct3: ['4', 'funct3', '?']
     sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
   MemoryOperands:
-    MEM1 : [['sb_imm7'], [0], 0, 'B']
+    MEM1 : [['@sb_imm7'], [0], 0, 'B']
 - Name: "BLTU_V0"
   Mnemonic: "BLTU"
   Opcode: "63"
@@ -347,7 +347,7 @@
     funct3: ['6', 'funct3', '?']
     sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
   MemoryOperands:
-    MEM1 : [['sb_imm7'], [0], 0, 'B']
+    MEM1 : [['@sb_imm7'], [0], 0, 'B']
 - Name: "BNE_V0"
   Mnemonic: "BNE"
   Opcode: "63"
@@ -357,7 +357,7 @@
     funct3: ['1', 'funct3', '?']
     sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
   MemoryOperands:
-    MEM1 : [['sb_imm7'], [0], 0, 'B']
+    MEM1 : [['@sb_imm7'], [0], 0, 'B']
 - Name: "CUSTOM0_V0"
   Mnemonic: "CUSTOM0"
   Opcode: "b"
@@ -705,7 +705,7 @@
     funct3: ['3', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [8], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [8], 8, 'I']
 - Name: "FLE.D_V0"
   Mnemonic: "FLE.D"
   Opcode: "53"
@@ -751,7 +751,7 @@
     funct3: ['2', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [4], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [4], 8, 'I']
 - Name: "FMADD.D_V0"
   Mnemonic: "FMADD.D"
   Opcode: "43"
@@ -919,7 +919,7 @@
     funct3: ['3', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [8], 8, 'O']
+    MEM1 : [['s_imm7', 'rs1'], [8], 8, 'O']
 - Name: "FSGNJ.D_V0"
   Mnemonic: "FSGNJ.D"
   Opcode: "53"
@@ -1021,7 +1021,7 @@
     funct3: ['2', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [4], 8, 'O']
+    MEM1 : [['s_imm7', 'rs1'], [4], 8, 'O']
 - Name: "JAL_V0"
   Mnemonic: "JAL"
   Opcode: "6f"
@@ -1030,7 +1030,7 @@
   Operands:
     uj_imm20: ['@uj_imm20', 'uj_imm20', 'I']
   MemoryOperands:
-    MEM1 : [['uj_imm20'], [0], 0, 'B']
+    MEM1 : [['@uj_imm20'], [0], 0, 'B']
 - Name: "JALR_V0"
   Mnemonic: "JALR"
   Opcode: "67"
@@ -1050,7 +1050,7 @@
     funct3: ['0', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [1], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [1], 8, 'I']
 - Name: "LBU_V0"
   Mnemonic: "LBU"
   Opcode: "3"
@@ -1060,7 +1060,7 @@
     funct3: ['4', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [1], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [1], 8, 'I']
 - Name: "LD_V0"
   Mnemonic: "LD"
   Opcode: "3"
@@ -1070,7 +1070,7 @@
     funct3: ['3', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [8], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [8], 8, 'I']
 - Name: "LH_V0"
   Mnemonic: "LH"
   Opcode: "3"
@@ -1080,7 +1080,7 @@
     funct3: ['1', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [2], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [2], 8, 'I']
 - Name: "LHU_V0"
   Mnemonic: "LHU"
   Opcode: "3"
@@ -1090,7 +1090,7 @@
     funct3: ['5', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [2], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [2], 8, 'I']
 - Name: "LR.D_V0"
   Mnemonic: "LR.D"
   Opcode: "2f"
@@ -1133,7 +1133,7 @@
     funct3: ['2', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [4], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [4], 8, 'I']
 - Name: "LWU_V0"
   Mnemonic: "LWU"
   Opcode: "3"
@@ -1143,7 +1143,7 @@
     funct3: ['6', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [4], 8, 'I']
+    MEM1 : [['i_imm12', 'rs1'], [4], 8, 'I']
 - Name: "MUL_V0"
   Mnemonic: "MUL"
   Opcode: "33"
@@ -1250,7 +1250,7 @@
     funct3: ['0', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [1], 8, 'O']
+    MEM1 : [['s_imm7', 'rs1'], [1], 8, 'O']
 - Name: "SC.D_V0"
   Mnemonic: "SC.D"
   Opcode: "2f"
@@ -1286,7 +1286,7 @@
     funct3: ['3', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [8], 8, 'O']
+    MEM1 : [['s_imm7', 'rs1'], [8], 8, 'O']
 - Name: "SH_V0"
   Mnemonic: "SH"
   Opcode: "23"
@@ -1296,7 +1296,7 @@
     funct3: ['1', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [2], 8, 'O']
+    MEM1 : [['s_imm7', 'rs1'], [2], 8, 'O']
 - Name: "SLL_V0"
   Mnemonic: "SLL"
   Opcode: "33"
@@ -1458,7 +1458,7 @@
     funct3: ['2', 'funct3', '?']
     rs1: ['rega', 'rs1', 'I']
   MemoryOperands:
-    MEM1 : [['rs1'], [4], 8, 'O']
+    MEM1 : [['s_imm7', 'rs1'], [4], 8, 'O']
 - Name: "XOR_V0"
   Mnemonic: "XOR"
   Opcode: "33"

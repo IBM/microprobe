@@ -19,17 +19,88 @@ from microprobe.code import get_wrapper
 
 
 class RiscvTestsP(get_wrapper("Assembly")):
-    def start_main(self):
+
+    def __init__(self, endless=False, reset=False):
+        self._endless = endless
+        self._reset = reset
+        super(RiscvTestsP, self).__init__()
+
+    def headers(self):
         return """\
+
+/* Headers */
 #include "riscv_test.h"
 #include "riscv-tests/isa/macros/scalar/test_macros.h"
 
+"""
+
+    def start_main(self):
+        return """\
+
+/* Start Main */
 RVTEST_RV64UF
 RVTEST_CODE_BEGIN
+
 """
+
+    def outputname(self, name):
+        """
+
+        :param name:
+
+        """
+        if not name.endswith(".S"):
+            return "%s.S" % name
+        return name
+
+    def post_var(self):
+        return "".join("reset:")
+
+    def start_loop(self, instr, instr_reset, dummy_aligned=True):
+        """
+
+        :param instr:
+        :param instr_reset:
+        :param dummy_aligned:  (Default value = True)
+
+        """
+
+        start_loop = ["/* Building block start */\n"]
+        if not self._endless:
+            return "\n".join(start_loop)
+
+        if self._reset:
+            instr_reset.add_comment("Loop start reseting")
+            if not instr_reset.label:
+                instr_reset.set_label("reset")
+                self._loop_label = "reset"
+            else:
+                self._loop_label = instr_reset.label
+
+        else:
+            instr.add_comment("Loop start")
+            if not instr.label:
+                instr.set_label("infloop")
+                self._loop_label = "infloop"
+            else:
+                self._loop_label = instr.label
+
+        return "\n".join(start_loop)
+
+    def end_loop(self, dummy_instr):
+        """
+        """
+        if not self._endless:
+            return "/* Loop End */"
+
+        loop = ["/* Loop End */"]
+        loop.append(self.wrap_ins("j %s" % self._loop_label))
+        return "\n".join(loop)
 
     def end_main(self):
         return """\
+
+/* End Main */
   TEST_CASE( 1, x0, 0, nop )
   TEST_PASSFAIL
 
@@ -40,9 +111,12 @@ RVTEST_DATA_BEGIN
 
   TEST_DATA
 
-RVTEST_DATA_END"""
+RVTEST_DATA_END
 
-    def outputname(self, name):
-        if not name.endswith(".S"):
-            return "%s.S" % name
-        return name
+"""
+
+    def declare_global_var(self, var):
+        if var.align:
+            return ".comm %s, %d, %d\n" % (var.name, var.size, var.align)
+        else:
+            return ".comm %s, %d\n" % (var.name, var.size)

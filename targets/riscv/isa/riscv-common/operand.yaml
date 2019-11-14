@@ -188,6 +188,7 @@
   Description: signed 12-bit immediate
   Min: -2048
   Max: 2047
+  AddressIndex: True 
 - Name: s.imm20
   Description: signed 20-bit immediate
   Min: -524288

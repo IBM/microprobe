@@ -2,13 +2,13 @@ language: python
 python:
     - 2.7
     - 3.6
-sudo: required
 cache:
     apt: true
     directories:
         - toolchain_riscv/install
+        - toolchain_riscv/riscv-gnu-toolchain
     timeout: 1000
-dist: trusty
+dist: xenial
 git:
     submodules: false
 addons:
@@ -33,22 +33,50 @@ addons:
             - zlib1g-dev
             - graphviz
             - shellcheck
-before_install:
-    - set -e
-    - echo "Before install"
-    - shellcheck -x -s sh *.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh) 
-    - env
-install:
-    - set -e
-    - echo "Install"
-    - pip install -U -r requirements_devel.txt
-    - export NEEDINSTALL=False
-    - ./dev_tools/ci/install_riscv_toolchain.sh
-    - export PATH=$PATH:$(pwd)/toolchain_riscv/install/bin
-    - for file in ./targets/*/dev_tools/ci/travis.sh ; do if [ -f $file ]; then . $file; fi; done; 
+stages:
+    - cache
+    - checkout
+    - compile
+    - conventions
+    - tests
+jobs:
+    include:
+        - stage: cache
+          name: prepare cache
+          python: 2.7
+          script: true
+        - stage: checkout
+          name: checkout gcc riscv
+          python: 2.7
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 0
+        - stage: compile
+          name: compile gcc riscv
+          python: 2.7
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 1
+        - stage: checkout
+          name: checkout gcc riscv
+          python: 3.6
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 0
+        - stage: compile
+          name: compile gcc riscv
+          python: 3.6
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 1
+        - stage: conventions
+          name: shell conventions
+          python: 2.7
+          script: 
+              - set -e
+              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh) 
 script:
     - set -e
-    - echo "Script"
+    - pip install -U -r requirements_devel.txt
+    - export NEEDINSTALL=False
+    - export PATH=$PATH:$(pwd)/toolchain_riscv/install/bin
+    - for file in ./targets/*/dev_tools/ci/travis.sh ; do if [ -f $file ]; then . $file; fi; done; 
     # Code Conventions (always run)
     - ./dev_tools/ci/code_conventions_001_pycodestyle.sh
     - ./dev_tools/ci/code_conventions_002_pylint.sh

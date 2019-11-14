@@ -1,6 +1,22 @@
 Getting started
 ===============
 
+[![Build Status](https://travis-ci.org/IBM/microprobe.svg?branch=master)](https://travis-ci.org/IBM/microprobe)
+
+![GitHub](https://img.shields.io/github/license/IBM/microprobe.svg)
+![GitHub forks](https://img.shields.io/github/forks/IBM/microprobe.svg?style=social)
+![GitHub stars](https://img.shields.io/github/stars/IBM/microprobe.svg?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/IBM/microprobe.svg?style=social)
+
+![PyPI - License](https://img.shields.io/pypi/l/microprobe_all.svg)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/microprobe_all.svg)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/microprobe_all.svg)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/microprobe_all.svg)
+
+![PyPI - Downloads - Day](https://img.shields.io/pypi/dd/microprobe_all.svg)
+![PyPI - Downloads - Week](https://img.shields.io/pypi/dw/microprobe_all.svg)
+![PyPI - Downloads - Month](https://img.shields.io/pypi/dm/microprobe_all.svg)
+
 This is a short description. We refer you to the full documentation
 that can be found here: 
 

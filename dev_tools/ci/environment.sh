@@ -133,7 +133,7 @@ exit_error() {
 # Check if we are in travis
 if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
     if [ "$NEEDINSTALL" != "False" ]; then
-        pip install -U -r requirements_devel.txt
+        pip install -U -r requirements_devel.txt --no-cache-dir
         NEEDINSTALL=False
         export NEEDINSTALL
     fi
@@ -153,8 +153,8 @@ else
             mkdir -p ./get_pip
             (cd ./get_pip
             wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
-            python$PYTHON_VERSION get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check
-            PYTHONPATH=$(find ./lib/ -name pip -print0 | xargs -0 dirname) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv
+            python$PYTHON_VERSION get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check --no-cache-dir
+            PYTHONPATH=$(find ./lib/ -name pip -print0 | xargs -0 dirname) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv --no-cache-dir
             PYTHONPATH=$(find ./lib/ -name virtualenv.py -print0 | xargs -0 dirname) ./bin/virtualenv --clear --python=python$PYTHON_VERSION "../venv-python$PYTHON_VERSION"
             )
             rm -fr ./get_pip
@@ -168,14 +168,14 @@ else
             vpython=$(head -n 1 "$pip" | sed "s/#\\!//g")
 
             # "$vpython" "$pip" install -U -I pip
-            "$vpython" "$pip" install -U -I setuptools
+            "$vpython" "$pip" install -U -I setuptools --no-cache-dir
             set +e
-            "$vpython" "$pip" install -U -I -r requirements_devel.txt
+            "$vpython" "$pip" install -U -I -r requirements_devel.txt --no-cache-dir
             # shellcheck disable=SC2181
             if [ $? -ne 0 ]; then
-                "$vpython" "$pip" install -U -I -r requirements_devel.txt
+                "$vpython" "$pip" install -U -I -r requirements_devel.txt --no-cache-dir
                 if [ $? -ne 0 ]; then
-                    "$vpython" "$pip" install -U -I -r requirements_devel.txt
+                    "$vpython" "$pip" install -U -I -r requirements_devel.txt --no-cache-dir
                     if [ $? -ne 0 ]; then
                         echo "Error setting environment"
                         exit 255

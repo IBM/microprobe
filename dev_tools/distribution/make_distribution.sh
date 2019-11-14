@@ -55,8 +55,8 @@ fi
 
 if [ "$packagedir" = "ONLINE" ]; then
     echo "PyPI support not yet implemented"
-    echo "Use: twine upload --repository-url https://pypi.org/legacy/ distribution/common/dev/*.whl"
-    echo "Use: twine upload --repository-url https://pypi.org/legacy/ distribution/common/stable/*.whl"
+    echo "Use: twine upload --repository-url https://upload.pypi.org/legacy/ distribution/common/dev/*.whl"
+    echo "Use: twine upload --repository-url https://upload.pypi.org/legacy/ distribution/common/stable/*.whl"
     exit 0
 else
     mkdir -p "$packagedir"
