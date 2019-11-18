@@ -37,8 +37,12 @@ from microprobe.exceptions import MicroprobeException
 from microprobe.passes import initialization, instruction, register, structure
 from microprobe.target import import_definition
 
-rs = 0  #random seed
-MAX_INSTR_PERMUTATION_LENGTH = 10   # Max instruction length for which all permutations are to be computed
+# Random seed
+rs = 0
+
+# Max instruction length for which all permutations are to be computed
+MAX_INSTR_PERM_LENGTH = 10
+
 
 class RiscvIpcTest(object):
     """RiscvIpc
@@ -137,41 +141,48 @@ class RiscvIpcTest(object):
             i for i in self.target.isa.instructions.values()
             if i.name in self.args.instructions]
 
-        #Generate permutations of valid instructions sequence and randomize order
+        # Generate permutations of instruction sequences and randomize order
         random.seed(rs)
-        instr_seq_count=len(valid_instrs)
-        print ("Instruction sequence count: " +str(instr_seq_count))
-        #Select instruction sequence permutations
-        if (self.args.num_permutations > np.math.factorial(min(instr_seq_count,MAX_INSTR_PERMUTATION_LENGTH))):
-            print("ERROR: Number of selected sequences cannot exceed number of permutations")
+        instr_seq_count = len(valid_instrs)
+        print("Instruction sequence count: "+str(instr_seq_count))
+
+        # Select instruction sequence permutations
+        if (self.args.num_permutations > np.math.factorial(
+           min(instr_seq_count, MAX_INSTR_PERM_LENGTH))):
+            print("ERROR: Selected sequences cannot exceed num. permutations")
             sys.exit()
 
-        # Check if number of instructions exceeds maximum permutation length - Fix to prevent permutation function from hanging
-        if (instr_seq_count > MAX_INSTR_PERMUTATION_LENGTH):
-            print("WARNING: Instruction sequence is too long... Selecting from reduced number of permutations!!")
-            reduced_instrs = valid_instrs[0:MAX_INSTR_PERMUTATION_LENGTH]
-            reduced_instr_seq = list(it.permutations(reduced_instrs,len(reduced_instrs)))
+        # Check if number of instructions exceeds maximum permutation length
+        # -- Fix to prevent permutation function from hanging
+        if (instr_seq_count > MAX_INSTR_PERM_LENGTH):
+            print("WARNING: Instruction sequence is too long...\
+                   Selecting from reduced number of permutations!!")
+            reduced_instrs = valid_instrs[0:MAX_INSTR_PERM_LENGTH]
+            reduced_instr_seq = list(
+                it.permutations(reduced_instrs, len(reduced_instrs)))
             random.shuffle(reduced_instr_seq)
-            selected_valid_instr_seq = reduced_instr_seq[:][0:self.args.num_permutations]
+            selected_valid_instr_seq = reduced_instr_seq[:][
+                0:self.args.num_permutations]
 
-            #Append remaining instructions to each of the sequences in the list
-            rem_instr_seq = valid_instrs[MAX_INSTR_PERMUTATION_LENGTH:instr_seq_count]
-            for s in range(0,len(selected_valid_instr_seq)):
-                selected_valid_instr_seq[s] = list(selected_valid_instr_seq[s]) + rem_instr_seq
-
+            # Append remaining instructions to each of the sequences in list
+            rem_instr_seq = valid_instrs[MAX_INSTR_PERM_LENGTH:instr_seq_count]
+            for s in range(0, len(selected_valid_instr_seq)):
+                selected_valid_instr_seq[s] = list(
+                    selected_valid_instr_seq[s]) + rem_instr_seq
         else:
-            #Generate complete list of permutations
+            # Generate complete list of permutations
             valid_instr_seq = list(it.permutations(valid_instrs))
             random.shuffle(valid_instr_seq)
-            selected_valid_instr_seq = valid_instr_seq[:][0:self.args.num_permutations]
+            selected_valid_instr_seq = valid_instr_seq[:][
+                0:self.args.num_permutations]
 
         microbenchmarks = []
 
-        #Loop over selected sequence permutations
-        for vi in range(0,len(selected_valid_instr_seq)):
+        # Loop over selected sequence permutations
+        for vi in range(0, len(selected_valid_instr_seq)):
             vi_seq = selected_valid_instr_seq[:][vi]
             for d in self.args.dependency_distances:
-                microbenchmark=''
+                microbenchmark = ''
                 cwrapper = get_wrapper('RiscvTestsP')
                 synth = Synthesizer(
                     self.target,
@@ -192,12 +203,18 @@ class RiscvIpcTest(object):
 
                 if (not self.args.microbenchmark_name):
                     for instr in vi_seq:
-                        microbenchmark = microbenchmark + instr.name + '_DD' + str(d)
+                        microbenchmark = microbenchmark
+                        + instr.name + '_DD' + str(d)
                 else:
-                    microbenchmark = self.args.microbenchmark_name + '_DD' +str(d) + '_' + str(vi)
+                    microbenchmark = self.args.microbenchmark_name
+                    + '_DD' + str(d) + '_' + str(vi)
 
                 synth.save(
-                    str.format('{}/{}', self.args.output_dir, microbenchmark),
+                    str.format(
+                        '{}/{}',
+                        self.args.output_dir,
+                        microbenchmark
+                    ),
                     bench=bench
                 )
                 microbenchmarks += [microbenchmark]
@@ -208,7 +225,9 @@ class RiscvIpcTest(object):
 
         # Emit a Makefile fragment (tests.d) that identifies all tests
         # created
-        f = open(str.format('{}/'+ self.args.microbenchmark_name + '_tests.d', self.args.output_dir), 'w')
+        f = open(str.format('{}/'
+                 + self.args.microbenchmark_name
+                 + '_tests.d', self.args.output_dir), 'w')
         f.write(str.format('# Autogenerated by {}\n', sys.argv[0]) +
                 'tests = \\\n\t' + '\\\n\t'.join([m for m in microbenchmarks]))
         f.close()
