@@ -206,8 +206,8 @@ class RiscvIpcTest(object):
                         microbenchmark = microbenchmark
                         + instr.name + '_DD' + str(d)
                 else:
-                    microbenchmark = self.args.microbenchmark_name
-                    + '_DD' + str(d) + '_' + str(vi)
+                    microbenchmark = self.args.microbenchmark_name \
+                        + '_DD' + str(d) + '_' + str(vi)
 
                 synth.save(
                     str.format(
