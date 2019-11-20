@@ -1,7 +1,10 @@
 language: python
+version: ~> 1.0
 python:
     - 2.7
     - 3.6
+os:
+    - linux
 cache:
     apt: true
     directories:
@@ -46,27 +49,27 @@ jobs:
           python: 2.7
           script: true
         - stage: checkout
-          name: checkout gcc riscv
+          name: checkout gcc riscv 2.7
           python: 2.7
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 0
         - stage: compile
-          name: compile gcc riscv
+          name: compile gcc riscv 2.7
           python: 2.7
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 1
         - stage: checkout
-          name: checkout gcc riscv
+          name: checkout gcc riscv 3.6
           python: 3.6
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 0
         - stage: compile
-          name: compile gcc riscv
+          name: compile gcc riscv 3.6
           python: 3.6
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 1
         - stage: conventions
-          name: shell conventions
+          name: shell conventions 2.7
           python: 2.7
           script: 
               - set -e
