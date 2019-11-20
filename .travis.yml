@@ -37,10 +37,10 @@ addons:
             - graphviz
             - shellcheck
 stages:
+    - shell_conventions
     - cache
     - checkout
     - compile
-    - conventions
     - tests
 jobs:
     include:
@@ -68,7 +68,7 @@ jobs:
           python: 3.6
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 1
-        - stage: conventions
+        - stage: shell_conventions
           name: shell conventions 2.7
           python: 2.7
           script: 
@@ -83,14 +83,14 @@ script:
     # Code Conventions (always run)
     - ./dev_tools/ci/code_conventions_001_pycodestyle.sh
     - ./dev_tools/ci/code_conventions_002_pylint.sh
-    - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ]; then ./dev_tools/ci/code_conventions_003_documentation.sh; fi;
+    - ./dev_tools/ci/code_conventions_003_documentation.sh
     # Functional/Integration tests (always run)
     - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_001_end2end_tools.sh RISCV
     - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_002_end2end_examples.sh RISCV
     - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_003_end2end_targets.sh RISCV
     # Build Release (always run)
-    - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ]; then ./dev_tools/ci/build_001_distribution.sh ; fi;
+    - ./dev_tools/ci/build_001_distribution.sh
     # Test Release Deploy (always run)
-    - if [ "$TRAVIS_PYTHON_VERSION" = "2.7" ]; then ./dev_tools/ci/test_deploy_001_install.sh ${TRAVIS_PYTHON_VERSION} ; fi;
+    - ./dev_tools/ci/test_deploy_001_install.sh ${TRAVIS_PYTHON_VERSION}
 before_cache:
     - rm -fr $HOME/.cache/pip/log
