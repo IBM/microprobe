@@ -38,13 +38,18 @@ if [ ! -d "$basedir/toolchain_riscv/install/bin" ]; then
 
     cd "$basedir/toolchain_riscv"
     if [ ! -f "$basedir/toolchain_riscv/riscv-gnu-toolchain/configure" ]; then
-        git clone --recursive https://github.com/riscv/riscv-gnu-toolchain -j "$MAXJOBS" --depth 1
+        # git clone --recursive https://github.com/riscv/riscv-gnu-toolchain -j "$MAXJOBS" --depth 1
+        git clone https://github.com/riscv/riscv-gnu-toolchain -j "$MAXJOBS" --depth 1
+        cd "$basedir/toolchain_riscv/riscv-gnu-toolchain"
+        for module in $(git submodule | sed "s/^ //" | cut -d ' ' -f 2 | grep -v qemu | grep -v gdb); do
+            git submodule update --init --recursive --progress --depth 1 -j "$MAXJOBS" "$module"
+        done;
     fi
 
     if [ ! -d "$basedir/toolchain_riscv/install/bin" ]; then
         if [ "$1" -ne "0" ] || [ -z "${1}" ]; then
             cd "$basedir/toolchain_riscv/riscv-gnu-toolchain"
-            ./configure --prefix="$basedir/toolchain_riscv/install/"
+            ./configure --prefix="$basedir/toolchain_riscv/install/" --disable-multilib --disable-gdb
             make -j "$MAXJOBS" > /dev/null 2> /dev/null &
             pid=$!
 
