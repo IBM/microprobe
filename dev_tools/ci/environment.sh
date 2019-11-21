@@ -154,8 +154,8 @@ else
             (cd ./get_pip
             wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
             python$PYTHON_VERSION get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check --no-cache-dir
-            PYTHONPATH=$(find ./lib/ -name pip -print0 | xargs -0 dirname) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv --no-cache-dir
-            PYTHONPATH=$(find ./lib/ -name virtualenv.py -print0 | xargs -0 dirname) ./bin/virtualenv --clear --python=python$PYTHON_VERSION "../venv-python$PYTHON_VERSION"
+            PYTHONPATH=$(find ./lib/ -name pip -print0 | xargs -0 dirname | grep site-packages$ | tail -n 1) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv --no-cache-dir
+            PYTHONPATH=$(find ./lib/ -name virtualenv.py -print0 | xargs -0 dirname | grep site-packages$ | tail -n 1) ./bin/virtualenv --clear --python=python$PYTHON_VERSION "../venv-python$PYTHON_VERSION"
             )
             rm -fr ./get_pip
         fi

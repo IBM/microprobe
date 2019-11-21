@@ -24,10 +24,10 @@ This generates RISC-V microbenchmarks with a range of dependency distances
 from __future__ import absolute_import
 
 # Built-in modules
+import math
 import os
 import sys
 import itertools as it
-import numpy as np
 import random
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
@@ -147,7 +147,7 @@ class RiscvIpcTest(object):
         print("Instruction sequence count: "+str(instr_seq_count))
 
         # Select instruction sequence permutations
-        if (self.args.num_permutations > np.math.factorial(
+        if (self.args.num_permutations > math.factorial(
            min(instr_seq_count, MAX_INSTR_PERM_LENGTH))):
             print("ERROR: Selected sequences cannot exceed num. permutations")
             sys.exit()
