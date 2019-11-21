@@ -1,9 +1,25 @@
 # RISC-V Microprobe Examples
 
-## tl;dr
+## For single instruction testcases
 
 ```bash
-./riscv_ipc.py
+./riscv_ipc.py [-h] [--output-dir OUTPUT_DIR] [--isa ISA] [--uarch UARCH]
+                    [--env ENV]
+                    [--dependency-distances DEPENDENCY_DISTANCES [DEPENDENCY_DISTANCES ...]]
+                    [--instructions INSTRUCTIONS [INSTRUCTIONS ...]]
+                    [--loop-size LOOP_SIZE]
+
+
+## For a sequence of instructions
+```bash
+./riscv_ipc_seq.py [-h] [--output-dir OUTPUT_DIR] [--isa ISA]
+                        [--uarch UARCH] [--env ENV]
+                        [--dependency-distances DEPENDENCY_DISTANCES [DEPENDENCY_DISTANCES ...]]
+                        [--instructions INSTRUCTIONS [INSTRUCTIONS ...]]
+                        [--loop-size LOOP_SIZE]
+                        [--num_permutations NUM_PERMUTATIONS]
+                        [--microbenchmark_name MICROBENCHMARK_NAME]
+
 autoconf
 mkdir build
 cd build
@@ -43,6 +59,8 @@ This produces a number of benchmarks in `riscv_ipc/`, e.g., `ADD_V0_1.S` and `AD
 Additionally, this produces a Makefile fragment, `tests.d`, that describes all the microbenchmarks that were generated.
 The provided build flow will consume this later.
 
+The program `riscv_ipc_seq.py` is used if we need to generate microbenchmarks containing a sequence of instructions. It generates N microbenchmarks comprising of different randomly selected permutations of the instruction sequence specified, where N is specified by the optional argument: `num_permutations`. By default this value is 1, which generates a single randomly selected permutation of the instruction sequence.
+ 
 Now, we need to setup an out-of-source build environment.
 These microbenchmarks depend on a number of header files provided by [`riscv-tests`](https://github.com/riscv/riscv-tests) and [`riscv-test-env`](https://github.com/riscv/riscv-test-env).
 Hence, when configuring the project, we need to provide a path to an existing clone of `riscv-tools`, represented by the bash variable `$RISCV_TOOLS_DIRECTORY` (substitute in a real path here!)
