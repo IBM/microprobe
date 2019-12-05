@@ -1642,8 +1642,6 @@ class GenericInstructionType(InstructionType):
                 operand, "I" in io_def, "O" in io_def
             )
 
-            print(field, fieldname, operand, io_def)
-
         if "opcode" in operands:
             self.operands["opcode"][0] = OperandConst(
                 "Opcode", "Instruction opcode", int(self.opcode, 16)
