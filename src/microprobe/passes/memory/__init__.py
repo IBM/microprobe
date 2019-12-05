@@ -1902,7 +1902,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         accum = 100
 
         shift = 0
-        for sid, size, ratio, stride, dummy_streams in self._model:
+        for sid, size, ratio, stride, streams in self._model:
 
             items.append((sid, ratio))
             all_ratio += ratio
@@ -1915,6 +1915,12 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
             sets_dict[sid] = values
             shift += shift_streams
+
+            if streams <= 0:
+                raise MicroprobeCodeGenerationError(
+                    "Number of streams should be 1 "
+                    "or higher on stream id: %s" % sid
+                )
 
         self._sets = sets_dict
         self._func = regular_seq(dict(items))
@@ -2107,17 +2113,49 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             calc_instrs.append(new_instr)
                             prev_instr = instr
 
+                        # dynamically determine if the range of cal
+                        # instructions
+
+                        imm_op = None
+                        if len(calc_instrs) > 0:
+                            imm_op = [operand for operand in
+                                      calc_instrs[0].operands() if
+                                      operand.type.immediate]
+
+                        maxdisp = 0
+                        mindisp = 0
+
+                        if imm_op:
+                            imm_op = imm_op[0]
+                            maxdisp = imm_op.type.max
+                            mindisp = imm_op.type.min
+
                         if (len(calc_instrs) > 0 and diff <
-                                32767 and diff > -32768):
+                                maxdisp and diff > mindisp):
 
                             calc_instr = calc_instrs[0]
-                            calc_instr.set_operands(
-                                [reg_idx, reg_idx, diff])
+
+                            # sometimes we don't have index operands,
+                            # so we should update the base value
+                            has_index = len([operand for operand in
+                                             instr.operands() if
+                                             operand.type.address_index]) > 0
+                            if has_index:
+                                update_reg = reg_idx
+                            else:
+                                update_reg = reg_base
+
+                            if calc_instr.operands()[0].type.immediate:
+                                calc_instr.set_operands(
+                                    [diff, update_reg, update_reg])
+                            else:
+                                calc_instr.set_operands(
+                                    [update_reg, update_reg, diff])
 
                             building_block.context.set_register_value(
-                                reg_idx,
+                                update_reg,
                                 building_block.context.get_register_value(
-                                    reg_idx) +
+                                    update_reg) +
                                 diff
                             )
 
@@ -2127,8 +2165,13 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
                             tinstrs = [calc_instr]
                             new_instrs = []
-                            reg_base_val_new = reg_base_val
-                            reg_idx_val_new = reg_idx_val + diff
+
+                            if has_index:
+                                reg_base_val_new = reg_base_val
+                                reg_idx_val_new = reg_idx_val + diff
+                            else:
+                                reg_base_val_new = reg_base_val + diff
+                                reg_idx_val_new = reg_idx_val
 
                             LOG.debug(
                                 "Unable to generate the address. Fixing "
@@ -2136,10 +2179,22 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             )
 
                         else:
+
                             # Need to set that value in the register file
                             # during initialization
+                            #
+                            # check if we need to set the actual value or
+                            # the difference
+                            #
 
-                            diff = address.displacement - reg_base_val
+                            has_index = len([operand for operand
+                                             in instr.operands() if
+                                             operand.type.address_index]) > 0
+                            if has_index:
+                                diff = address.displacement - reg_base_val
+                            else:
+                                diff = address
+
                             oldcontext = building_block.context.copy()
 
                             reg = target.get_register_for_address_arithmetic(
@@ -2156,11 +2211,18 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             building_block.context.add_reserved_registers(
                                 [reg])
 
-                            building_block.add_init(
-                                target.set_register(
-                                    reg, diff, oldcontext
+                            if has_index:
+                                building_block.add_init(
+                                    target.set_register(
+                                        reg, diff, oldcontext
+                                    )
                                 )
-                            )
+                            else:
+                                building_block.add_init(
+                                    target.set_register_to_address(
+                                        reg, diff, oldcontext
+                                    )
+                                )
 
                             tinstrs = []
                             new_instrs = []

@@ -22,7 +22,7 @@ from __future__ import absolute_import
 import os
 
 # Own modules
-from microprobe.code.address import Address
+from microprobe.code.address import Address, InstructionAddress
 from microprobe.code.var import Variable, VariableArray
 from microprobe.target.isa import GenericISA
 from microprobe.utils.logger import get_logger
@@ -445,7 +445,47 @@ class RISCVISA(GenericISA):
 
     def compare_and_branch(self, val1, val2, cond, target, context):
 
-        raise NotImplementedError
+        assert cond in ["<", ">", "!=", "=", ">=", "<="]
+        instrs = []
+
+        # put all values into registers
+        if isinstance(val1, int) and isinstance(val1, int):
+            raise NotImplementedError
+        elif isinstance(val1, int):
+            instrs += self.set_register(
+                self.scratch_registers[0], val1, context
+            )
+            val1 = self.scratch_registers[0]
+        elif isinstance(val2, int):
+            instrs += self.set_register(
+                self.scratch_registers[0], val2, context
+            )
+            val2 = self.scratch_registers[0]
+
+        if isinstance(target, str):
+            target = InstructionAddress(base_address=target)
+
+        if cond == ">":
+            cond = "<"
+            val1, val2 = val2, val1
+        if cond == "<=":
+            cond = ">="
+            val1, val2 = val2, val1
+
+        if cond == "=":
+            bc_ins = self.new_instruction("BEQ_V0")
+        elif cond == "!=":
+            bc_ins = self.new_instruction("BNE_V0")
+        elif cond == "<":
+            bc_ins = self.new_instruction("BLT_V0")
+        elif cond == ">=":
+            bc_ins = self.new_instruction("BGE_V0")
+        else:
+            raise NotImplementedError
+
+        bc_ins.set_operands([target, val2, val1, 0])
+        instrs.append(bc_ins)
+        return instrs
 
     def nop(self):
         instr = self.new_instruction("ADDI_V0")

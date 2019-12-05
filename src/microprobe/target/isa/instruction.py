@@ -522,6 +522,7 @@ def _merge_operands(name, filename, loperands, iformat, defined_operands):
 
         try:
             operand = defined_operands[operand_name]
+
         except KeyError:
 
             # Try for a constant
@@ -1640,6 +1641,8 @@ class GenericInstructionType(InstructionType):
             self._operand_descriptors[field.name] = OperandDescriptor(
                 operand, "I" in io_def, "O" in io_def
             )
+
+            print(field, fieldname, operand, io_def)
 
         if "opcode" in operands:
             self.operands["opcode"][0] = OperandConst(
