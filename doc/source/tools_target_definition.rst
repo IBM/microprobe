@@ -15,16 +15,26 @@ where:
  - **<env-name>**: is the name of the environment.
  
 Therefore, possible target definitions could be:
-
+ 
+ - **riscv_v22-riscv_generic-riscv64_linux_gcc** for generic RISCV C/asm code.
  - **z13-z13-z64_linuc_gcc** for z13 C/asm code.
  - **z14-z14-z64_linux_gcc** for z14 C/asm code.
  - **power_v206-power7-ppc64_linux_gcc** for POWER7 C/asm code.
  - **power_v207-power8-ppc64_linux_gcc** for POWER8 C/asm code.
+ - **power_v300-power9-ppc64_linux_gcc** for POWER9 C/asm code.
+
+.. note::
+
+   Some of the target definitions mentioned above might not be released on
+   the public version of Microprobe but are listed to provide a comprehensive
+   set of examples.
  
 .. note::
 
    It is up to the user to specify a valid target definition tuple. If an 
    invalid target definition tuple is specified, the results are unpredictable.
+   In the future, we might implement support to check valid target tuple
+   definitions.
  
 --------------------
 Generic tool options

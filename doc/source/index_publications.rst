@@ -62,7 +62,21 @@ we'll update the list accordingly.
 #. Bulla, C.; Moreto Planas, M., *A case for code-representative microbenchmarks*,
    BSC Severo Ochoa International Doctoral Symposium (4th: 2017: Barcelona). "Book of 
    abstracts". Barcelona: Barcelona Supercomputing Center, 2017, p. 76-78.
+#. Eldridge, Schuyler and Bertran, Ramon and Buyuktosunoglu, Alper and Bose, *MicroProbe:
+   An Open Source Microbenchmark Generator Ported to the RISC-V ISA,* 7th RISC-V Workshop,
+   2017. `Presentation video <https://www.youtube.com/watch?v=avXda-Zjro0>`_
 #. C. Vezyrtzis et al., *Droop mitigation using critical-path sensors and an on-chip 
    distributed power supply estimation engine in the z14™ enterprise processor,* 
    2018 IEEE International Solid - State Circuits Conference - (ISSCC), San Francisco, CA, 2018, pp. 300-302.
    `doi: 10.1109/ISSCC.2018.8310303 <http://dx.doi.org/10.1109/ISSCC.2018.8310303>`_
+#. Calvin Bulla et al., *ChopStiX: Systematic Extraction of Code-Representative Microbenchmarks,*
+   IEEE International Symposium on Workload Characterization, IISWC 2018, Raleigh, NC, USA, 
+   September 30 - October 2, 2018, p. 80-81.
+#. C. Berry et al., *IBM z14: Processor Characterization and Power Management for High-Reliability
+   Mainframe Systems,* in IEEE Journal of Solid-State Circuits, vol. 54, no. 1, pp. 121-132, Jan. 
+   2019. `doi: 10.1109/JSSC.2018.2873582 <http://dx.doi.org/10.1109/JSSC.2018.2873582>`_
+#. K. Swaminathan, R. Bertran, H. Jacobson, P. Kudva and P. Bose, *Generation of Stressmarks for
+   Early Stage Soft-Error Modeling,* 2019 49th Annual IEEE/IFIP International Conference on 
+   Dependable Systems and Networks – Supplemental Volume (DSN-S), Portland, OR, USA, 2019, pp. 42-48.
+   `doi: 10.1109/DSN-S.2019.00022 <http://dx.doi.org/10.1109/DSN-S.2019.00022>`_
+

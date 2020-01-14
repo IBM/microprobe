@@ -27,12 +27,6 @@ regard. Microprobe is developed to fulfill that need.
 
 Learn more in the rest of the documentation. 
 
-----
-News
-----
-
-   * 2018-09-05 - Public release of Microprobe. 
-
 ------------
 Publications
 ------------

@@ -35,7 +35,7 @@ Required commands
 -----------------
 
 * **git**
-* **python** (2.6 or 2.7, >=3 not supported)
+* **python** 2.7 or >=3.5
 * **virtualenv**: https://virtualenv.pypa.io/en/stable/
 
 -----------------
@@ -56,8 +56,8 @@ Execute the following commands the first time::
 Hopefully, the installation is complete. Otherwise, report the
 error to the development team (:doc:`support_contact`).
 
-With commands above we did the following:
-We have checked out the repository and all of its submodules.
+With commands above we did the following.
+First, we have checked out the repository and all of its submodules.
 Then, we set up a virtual python environment and install all 
 the Microprobe dependencies to avoid any system dependency issues 
 (``bootstrap_environment.sh``) and then we activated it.
@@ -73,5 +73,6 @@ Microprobe::
 
 You will see that you command prompt changes. You should be able
 to execute the Microprobe related commands. This should be the only
-command you need to execute before using Microprobe related commands.
+command you need to execute before using Microprobe related commands
+in the future.
 

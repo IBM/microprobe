@@ -6,8 +6,8 @@ Tool: mp_epi
 Overview
 --------
 
-The **mp_epi** tool provides an interface to generate instruction-wise
-stressmarks. Instruction-wise stressmarks are loops with a particular 
+The **mp_epi** tool provides an interface to generate instruction-based
+stressmarks. Instruction-based stressmarks are loops with a particular 
 instruction repeated several times. They are ideal to perform energy per
 instruction characterizations as well as performance profile of the ISA.  
 Users can control the level of instruction-level parallelism and the

@@ -6,7 +6,7 @@ Requirements
 `Python <http://www.python.org>`_ installation to run it. As a result,
 the basic requirements are the following:
 
-* **python** >= 2.7, 3.5, 3.6: Older/Newer Python versions may work but 
+* **python** >= 2.7, 3.6: Older/Newer Python versions may work but 
   we have not tested them. 
 * **virtualenv** : A Python environment virtualizer that provides all the
   necessary tools to manage Python packages and execution environment.
@@ -15,7 +15,7 @@ The code is targeted to be architecture agnostic and OS agnostic, so it
 should run on PPC, Z or x86 platforms as well as on Linux or AIX 
 systems. The code has been validated on the following platforms:
 
-- PPC64/Linux with Python 2.6, 2.7, 3.5
+- PPC64/Linux with Python 2.7, 3.5
 - PPC64/AIX with Python 2.7
 - Z/Linux with Python 2.7
 - x86_64/Linux with Python 2.7.10, 3.5, 3.6
@@ -70,7 +70,6 @@ The extra Python packages required are the following:
 * **rxjson** : Schema validation package. In case you do not have it, this 
   package can be found at `rxjson <https://github.com/spiral-project/rxjson>`_ or 
   installed using **pip** (e.g. ``pip install --pre rxjson``).
-* **pyevolve** : Complete genetic algorithm framework written in pure
-  python.  In case you do not have it, this package can be found at
-  `pyevolve <http://pyevolve.sourceforge.net/>`_ or installed using
-  **pip** (e.g. ``pip install --pre pyevolve``).
+* **six** : Python 2 and 3 compatibility package. In case you do not have it,
+  this package can be found at `pyevolve <http://pyevolve.sourceforge.net/>`_ 
+  or installed using **pip** (e.g. ``pip install --pre six``).
