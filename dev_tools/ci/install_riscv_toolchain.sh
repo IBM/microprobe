@@ -42,7 +42,17 @@ if [ ! -d "$basedir/toolchain_riscv/install/bin" ]; then
         git clone https://github.com/riscv/riscv-gnu-toolchain -j "$MAXJOBS" --depth 1
         cd "$basedir/toolchain_riscv/riscv-gnu-toolchain"
         for module in $(git submodule | sed "s/^ //" | cut -d ' ' -f 2 | grep -v qemu | grep -v gdb); do
+            echo "Module: '$module'"
+            set +e
             git submodule update --init --recursive --progress --depth 1 -j "$MAXJOBS" "$module"
+            error=$?
+            set -e
+            if [ "$error" -ne 0 ]; then
+                echo "Full module init"
+                git submodule deinit -f "$module"
+                rm -fr ".git/modules/$module"
+                git submodule update --init --recursive --progress -j "$MAXJOBS" "$module"
+            fi
         done;
     fi
 
