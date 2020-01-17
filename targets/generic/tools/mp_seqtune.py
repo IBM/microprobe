@@ -362,7 +362,7 @@ def main():
     cmdline.add_option(
         "benchmark-size",
         "B",
-        4096,
+        [4096],
         "Size in instructions of the microbenchmark main loop.",
         group=groupname,
         opt_type=int_range(1, 999999999999),
