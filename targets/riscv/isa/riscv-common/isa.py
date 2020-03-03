@@ -31,6 +31,7 @@ from microprobe.utils.misc import twocs_to_int
 # Constants
 LOG = get_logger(__name__)
 _MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
+_RISCV_PCREL_LABEL = 0
 
 # Functions
 
@@ -328,6 +329,10 @@ class RISCVISA(GenericISA):
             if not isinstance(address.base_address, str):
                 basename = address.base_address.name
 
+            global _RISCV_PCREL_LABEL
+            _RISCV_PCREL_LABEL += 1
+            lnum = _RISCV_PCREL_LABEL
+
             auipc_ins = self.new_instruction("AUIPC_V0")
             auipc_ins.operands()[1].set_value(register)
             auipc_ins.operands()[0].set_value(
@@ -335,7 +340,7 @@ class RISCVISA(GenericISA):
                 check=False
             )
             auipc_ins.set_label(
-                "%s_pcrel" % basename
+                "%s_pcrel_%d" % (basename, lnum)
             )
 
             instrs.append(auipc_ins)
@@ -344,7 +349,7 @@ class RISCVISA(GenericISA):
             addi_ins.operands()[1].set_value(register)
             addi_ins.operands()[2].set_value(register)
             addi_ins.operands()[0].set_value(
-                "%%pcrel_lo(%s_pcrel)" % basename,
+                "%%pcrel_lo(%s_pcrel_%d)" % (basename, lnum),
                 check=False
             )
             instrs.append(addi_ins)
