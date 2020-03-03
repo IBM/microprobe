@@ -367,7 +367,7 @@ class SetRandomInstructionTypePass(microprobe.passes.Pass):
         """
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-                instr.set_arch_type(self._func(self._instrs))
+                instr.set_arch_type(self._func(list(self._instrs)))
 
                 # reserve implicit operands (if they are not already
                 # reserved) and add them as allowed
