@@ -58,7 +58,7 @@ fi
 
 tmpdir=$(mktemp -d)
 rm -fr "$tmpdir"
-python "$(command -v virtualenv)" --no-site-packages --python="python$VERSION" "$tmpdir"
+python "$(command -v virtualenv)" --python="python$VERSION" "$tmpdir"
 
 # shellcheck source=/dev/null
 . "$tmpdir/bin/activate"
