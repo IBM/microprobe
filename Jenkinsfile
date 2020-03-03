@@ -6,7 +6,7 @@ def handleCheckout = {
     {
       sh 'echo Merging devel into master'
       checkout scm
-      git branch: 'master'
+      sh 'git checkout master'
       sh 'git merge origin/devel'
     }
     else
