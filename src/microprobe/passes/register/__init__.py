@@ -113,7 +113,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
 
             if reg in rregs:
                 # TODO:  rregs can be used but only as input, now we discard
-                #       them for input and output
+                #        them for input and output
                 continue
 
             if reg.type not in lastused:
@@ -259,6 +259,14 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                                 raise MicroprobeCodeGenerationError(
                                     "Unable to find proper operand"
                                     " values for register allocation."
+                                )
+
+                            if regs[0].type not in lastused:
+                                raise MicroprobeCodeGenerationError(
+                                    "Unable to find proper operand"
+                                    " values for register allocation."
+                                    " No registers of type '%s' "
+                                    "available." % regs[0].type
                                 )
 
                             reg = microprobe.utils.distrib.sort_by_usage(
