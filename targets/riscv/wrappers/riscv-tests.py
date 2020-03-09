@@ -14,10 +14,20 @@
 # Futures
 from __future__ import absolute_import
 
+
 # Own modules
 from microprobe.code import get_wrapper
+from microprobe.utils.logger import get_logger
 
 
+# Constants
+LOG = get_logger(__name__)
+__all__ = ["RiscvTestsP"]
+
+# Functions
+
+
+# Classes
 class RiscvTestsP(get_wrapper("Assembly")):
 
     def __init__(self, endless=False, reset=False):

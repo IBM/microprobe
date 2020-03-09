@@ -102,7 +102,7 @@ class RISCVISA(GenericISA):
                 LOG.debug("Zero value")
 
                 addi = self.new_instruction("ADDI_V0")
-                addi.set_operands([0, register, self.registers["X0"]])
+                addi.set_operands([0, self.registers["X0"], register])
                 instrs.append(addi)
 
             elif present_reg is not None:
@@ -110,14 +110,14 @@ class RISCVISA(GenericISA):
                 LOG.debug("Value already present")
 
                 addi = self.new_instruction("ADDI_V0")
-                addi.set_operands([register, present_reg, 0])
+                addi.set_operands([0, present_reg, register])
                 instrs.append(addi)
 
             elif (current_value is not None and
                   abs(value - current_value) < (2 ** 12)):
 
                 addi = self.new_instruction("ADDI_V0")
-                addi.set_operands([register, value - current_value])
+                addi.set_operands([value - current_value, register, register])
                 instrs.append(addi)
 
             elif register == self._scratch_registers[0]:
@@ -207,7 +207,7 @@ class RISCVISA(GenericISA):
 
                 and_inst = self.new_instruction("AND_V0")
                 and_inst.set_operands(
-                    [register, register, self._scratch_registers[0]])
+                    [register, self._scratch_registers[0], register])
                 instrs.append(and_inst)
 
             elif (value >= -2147483648 and value < 2147483647):
@@ -308,7 +308,7 @@ class RISCVISA(GenericISA):
 
                 if present_reg != register:
                     or_ins = self.new_instruction("OR_V0")
-                    or_ins.set_operands([register, present_reg, present_reg])
+                    or_ins.set_operands([present_reg, present_reg, register])
                     instrs.append(or_ins)
 
                 if displacement != 0:

@@ -2002,6 +2002,10 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     )
                 )
 
+                instr = target.set_register(
+                        reg_idxl[sind], 0, building_block.context
+                    )[0]
+
                 building_block.context.set_register_value(reg_idxl[sind], 0)
                 # building_block.context.add_reserved_registers([reg_idxl[sind]])
 
@@ -2017,6 +2021,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 is_load = False
                 is_store = False
                 is_agen = False
+                is_branch = False
 
                 for moperand in instr.memory_operands():
                     if moperand.is_load:
@@ -2025,8 +2030,13 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         is_store = True
                     if moperand.is_agen:
                         is_agen = True
+                    if moperand.is_branch_target:
+                        is_branch = True
 
                 if is_agen:
+                    continue
+
+                if is_branch:
                     continue
 
                 if instr.access_storage and not (
@@ -2085,151 +2095,73 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         diff = address.displacement - \
                             reg_base_val - reg_idx_val
 
-                        add_extra = False
-                        try:
-                            reg = target.get_register_for_address_arithmetic(
-                                building_block.context
-                            )
-                        except MicroprobeCodeGenerationError:
-                            if mcomp == 0:
-                                add_extra = True
+                        tinstrs = []
+                        new_instrs = []
 
-                        #
-                        # TODO: control when to add extra calc instructions
-                        #
-                        # TODO: This is not target generic, fix
-                        add_extra = False
+                        # sometimes we don't have index operands,
+                        # so we should update the base value
+                        has_index = len([operand for operand in
+                                         instr.operands() if
+                                         operand.type.address_index]) > 0
 
-                        if len(calc_instrs) == 0 and (
-                                mcomp > 0 or len(self._model) == 1
-                                or add_extra):
-                            new_instr = target.new_instruction("ADDI_V0")
-                            new_instr.add_comment(
-                                "Helper instruction to compute address"
-                            )
-                            bbl.insert_instr([new_instr], after=prev_instr)
-                            UpdateInstructionAddressesPass(
-                                force=True)(building_block, target)
-                            calc_instrs.append(new_instr)
-                            prev_instr = instr
-
-                        # dynamically determine if the range of cal
-                        # instructions
-
-                        imm_op = None
-                        if len(calc_instrs) > 0:
-                            imm_op = [operand for operand in
-                                      calc_instrs[0].operands() if
-                                      operand.type.immediate]
-
-                        maxdisp = 0
-                        mindisp = 0
-
-                        if imm_op:
-                            imm_op = imm_op[0]
-                            maxdisp = imm_op.type.max
-                            mindisp = imm_op.type.min
-
-                        if (len(calc_instrs) > 0 and diff <
-                                maxdisp and diff > mindisp):
-
-                            calc_instr = calc_instrs[0]
-
-                            # sometimes we don't have index operands,
-                            # so we should update the base value
-                            has_index = len([operand for operand in
-                                             instr.operands() if
-                                             operand.type.address_index]) > 0
-                            if has_index:
-                                update_reg = reg_idx
-                            else:
-                                update_reg = reg_base
-
-                            if calc_instr.operands()[0].type.immediate:
-                                calc_instr.set_operands(
-                                    [diff, update_reg, update_reg])
-                            else:
-                                calc_instr.set_operands(
-                                    [update_reg, update_reg, diff])
-
-                            building_block.context.set_register_value(
-                                update_reg,
-                                building_block.context.get_register_value(
-                                    update_reg) +
-                                diff
-                            )
-
-                            memoperand.set_address(
-                                address,
-                                building_block.context)
-
-                            tinstrs = [calc_instr]
-                            new_instrs = []
-
-                            if has_index:
-                                reg_base_val_new = reg_base_val
-                                reg_idx_val_new = reg_idx_val + diff
-                            else:
-                                reg_base_val_new = reg_base_val + diff
-                                reg_idx_val_new = reg_idx_val
-
-                            LOG.debug(
-                                "Unable to generate the address. Fixing "
-                                "Context to allow the generation"
-                            )
-
+                        if has_index:
+                            update_reg = reg_idx
                         else:
+                            update_reg = reg_base
 
-                            # Need to set that value in the register file
-                            # during initialization
-                            #
-                            # check if we need to set the actual value or
-                            # the difference
-                            #
+                        add_instructions = target.add_to_register(
+                            update_reg, diff
+                        )
 
-                            has_index = len([operand for operand
-                                             in instr.operands() if
-                                             operand.type.address_index]) > 0
-                            if has_index:
-                                diff = address.displacement - reg_base_val
-                            else:
-                                diff = address
+                        if len(add_instructions) > 0:
+                            for elem in calc_instrs:
+                                ains = add_instructions[0]
+                                if ains.name != elem.name:
+                                    continue
 
-                            oldcontext = building_block.context.copy()
+                                values = [
+                                    oper.value for oper in ains.operands()
+                                ]
+                                elem.set_operands(values)
+                                elem.add_comment(
+                                    "Reused to compute address: %s" % address
+                                )
 
-                            reg = target.get_register_for_address_arithmetic(
-                                building_block.context
+                                tinstrs.append(elem)
+                                prev_instr = elem
+
+                                add_instructions = add_instructions[1:]
+                                if len(add_instructions) == 0:
+                                    break
+
+                        if len(add_instructions) > 0:
+                            bbl.insert_instr(
+                                add_instructions, before=instr,
+                                after=prev_instr
                             )
-
-                            building_block.context.set_register_value(
-                                reg, diff)
-
-                            memoperand.set_address(
-                                address,
-                                building_block.context)
-
-                            building_block.context.add_reserved_registers(
-                                [reg])
-
-                            if has_index:
-                                building_block.add_init(
-                                    target.set_register(
-                                        reg, diff, oldcontext
-                                    )
-                                )
-                            else:
-                                building_block.add_init(
-                                    target.set_register_to_address(
-                                        reg, diff, oldcontext
-                                    )
+                            new_instrs = add_instructions
+                            for elem in add_instructions:
+                                elem.add_comment(
+                                    "Added to compute address: %s" % address
                                 )
 
-                            tinstrs = []
-                            new_instrs = []
+                        building_block.context.set_register_value(
+                            update_reg,
+                            building_block.context.get_register_value(
+                                update_reg) +
+                            diff
+                        )
+
+                        memoperand.set_address(
+                            address,
+                            building_block.context)
+
+                        if has_index:
                             reg_base_val_new = reg_base_val
+                            reg_idx_val_new = reg_idx_val + diff
+                        else:
+                            reg_base_val_new = reg_base_val + diff
                             reg_idx_val_new = reg_idx_val
-
-                        # prev_instr=instr
 
                     count = count + 1
 
@@ -2314,8 +2246,9 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             tinstr.add_allow_register(reg_idx)
 
                     if len(new_instrs) > 0:
-
-                        raise NotImplementedError
+                        for tinstr in new_instrs:
+                            tinstr.add_allow_register(reg_base)
+                            tinstr.add_allow_register(reg_idx)
 
                     if self._switch and memoperand.is_store:
                         dcount = descriptors2[mcomp][0]
