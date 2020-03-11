@@ -2417,7 +2417,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         blabel = None
         emptycontext = target.wrapper.context()
 
-        for sid, size, ratio, dummy_stride, streams in self._model:
+        for sid, size, ratio, stride, streams in self._model:
             var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall,\
                 calc_instrs, last_instr, count, module, reduced,\
                 max_value, sind = descriptors[sid]
@@ -2426,6 +2426,9 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 continue
 
             if max_value * 2 >= size:
+                # We go through the stream more than two
+                # times. Reseting to beginning
+
                 for sind in range(0, len(reg_base_vall)):
                     reg_base = reg_basel[sind]
                     reg_base_val = reg_base_vall[sind]
@@ -2449,6 +2452,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 continue
 
             # Always set the index register to zero
+            # which is the initial state
             for sind in range(0, len(reg_base_vall)):
                 reg_base = reg_basel[sind]
                 reg_base_val = reg_base_vall[sind]
@@ -2465,24 +2469,30 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 new_instrs[0].set_label(blabel)
                 blabel = None
 
+            # Get a register to count the number of iterations
             reg_constant = target.get_register_for_address_arithmetic(
                 building_block.context
             )
+            # Reserve it
             building_block.context.add_reserved_registers([reg_constant])
+
+            # Set it to zero during initialization
             new_instrs = target.set_register(
                 reg_constant,
                 0,
                 building_block.context)
             for new_instr in new_instrs:
                 new_instr.add_allow_register(reg_constant)
+
             building_block.add_init(new_instrs)
 
-            # add one to the counter
+            # Add one to the counter
             new_instrs = target.add_to_register(reg_constant, 1)
             for new_instr in new_instrs:
                 new_instr.add_allow_register(reg_constant)
             building_block.add_fini(new_instrs)
 
+            # Update base register
             for sind in range(0, len(reg_base_vall)):
                 reg_base = reg_basel[sind]
                 reg_base_val = reg_base_vall[sind]
@@ -2490,7 +2500,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 reg_idx_val = reg_idx_vall[sind]
 
                 new_instrs = target.add_to_register(
-                    reg_base, max_value
+                    reg_base, max_value-reg_base_val+stride
                 )
                 for new_instr in new_instrs:
                     new_instr.add_allow_register(reg_base)
@@ -2498,7 +2508,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 building_block.add_fini(new_instrs)
 
             # Add the conditional branch
-            guard = (size // max_value) - 1
+            guard = (size // (max_value + stride))
 
             # Set the label for in case the next component needs it
             blabel = "stream%sguard" % sid
