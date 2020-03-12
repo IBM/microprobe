@@ -2415,6 +2415,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     building_block.context.add_reserved_registers([register])
 
         blabel = None
+        blabelins = None
         emptycontext = target.wrapper.context()
 
         for sid, size, ratio, stride, streams in self._model:
@@ -2436,11 +2437,31 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     reg_idx_val = reg_idx_vall[sind]
 
                     # new_instrs = target.load_var_address(reg_base, var)
+
                     new_instrs = target.set_register_to_address(
                         reg_base,
                         Address(
                             base_address=var),
                         emptycontext)
+
+                    if blabel is not None:
+                        if new_instrs[0].label is not None:
+                            label = new_instrs[0].label
+                            new_operand = InstructionAddress(
+                                base_address=label
+                            )
+                            old_operand = InstructionAddress(
+                                base_address=blabel
+                            )
+                            for operand in blabelins.operands():
+                                if operand.value == old_operand:
+                                    operand.set_value(new_operand)
+                                    break
+                        else:
+                            new_instrs[0].set_label(blabel)
+
+                        blabel = None
+                        blabelins = None
 
                     assert len(new_instrs) > 0
                     new_instrs = new_instrs + \
@@ -2468,6 +2489,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             if blabel is not None:
                 new_instrs[0].set_label(blabel)
                 blabel = None
+                blabelins = None
 
             # Get a register to count the number of iterations
             reg_constant = target.get_register_for_address_arithmetic(
@@ -2516,6 +2538,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             new_instrs = target.compare_and_branch(
                 reg_constant, guard, "<", blabel, building_block.context
             )
+            blabelins = new_instrs[-1]
 
             building_block.add_fini(new_instrs)
 
@@ -2551,6 +2574,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             new_instr.set_label(blabel)
             building_block.add_fini([new_instr])
             blabel = None
+            blabelins = None
 
 
 class SetMemoryOperandByOpcodePass(microprobe.passes.Pass):
