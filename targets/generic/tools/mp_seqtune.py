@@ -28,6 +28,7 @@ import itertools
 import multiprocessing as mp
 import os
 import sys
+import warnings
 
 # Third party modules
 from six.moves import range, zip
@@ -128,6 +129,16 @@ def _generic_policy_wrapper(all_arguments):
             reset=kwargs['reset']
         )
 
+    elif target.name.endswith("riscv64_test_p"):
+
+        wrapper_name = "RiscvTestsP"
+        extension = "S"
+        wrapper_class = _get_wrapper(wrapper_name)
+        wrapper = wrapper_class(
+            reset=kwargs['reset'],
+            endless=True
+        )
+
     else:
         raise NotImplementedError(
             "Unsupported configuration '%s'" % target.name
@@ -142,6 +153,13 @@ def _generic_policy_wrapper(all_arguments):
         if os.path.exists(outputfile):
             print_info("%s already exists!" % outputfile)
             return
+
+    if len(memory_streams) == 0:
+        warnings.warn(
+            "No memory streams provided "
+            "using 1K stream stride 64 bytes"
+        )
+        memory_streams = [(1, 1024, 1, 64, 1)]
 
     streamid = 0
     new_memory_streams = []

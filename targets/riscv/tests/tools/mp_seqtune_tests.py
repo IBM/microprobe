@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2020 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -71,12 +71,27 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
 
         shutil.rmtree(self.tdirname, True)
 
-    @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_001(self):
         """
-        mp_seqtune_test001 generic
+        test_001 on riscv_v22-riscv_generic-riscv64_test_p
         """
-        self._wrapper("none", "-h")
+        self._wrapper(
+            "riscv_v22-riscv_generic-riscv64_test_p",
+            extra="-B 1024 -re ADD_V0:XOR_V0:1-2 -p " +
+            "-me 1-2:2048:1:144:1 " +
+            "-seq ADD_V0,ADDI_V0,FMUL.S_V0,MULW_V0,LD_V0,SD_V0"
+        )
+
+    def test_002(self):
+        """
+        test_001 on riscv_v22-riscv_generic-riscv64_linux_gcc
+        """
+        self._wrapper(
+            "riscv_v22-riscv_generic-riscv64_linux_gcc",
+            extra="-B 1024 -re ADD_V0:XOR_V0:1-2 -p " +
+            "-me 1-2:2048:1:144:1 " +
+            "-seq ADD_V0,ADDI_V0,FMUL.S_V0,MULW_V0,LD_V0,SD_V0"
+        )
 
     def _wrapper(self, target, extra=None):
         """

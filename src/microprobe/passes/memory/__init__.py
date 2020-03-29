@@ -32,7 +32,8 @@ import microprobe.code.var
 import microprobe.passes
 import microprobe.utils.distrib
 from microprobe.code.address import Address, InstructionAddress
-from microprobe.exceptions import MicroprobeCodeGenerationError
+from microprobe.exceptions import MicroprobeCodeGenerationError,\
+        MicroprobeValueError
 from microprobe.target.isa.operand import OperandConst, \
     OperandConstReg, OperandDescriptor, OperandReg
 from microprobe.passes.address import UpdateInstructionAddressesPass
@@ -1902,6 +1903,12 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         accum = 100
 
         shift = 0
+
+        if len(self._model) == 0:
+            raise MicroprobeCodeGenerationError(
+                "No streams specified for the memory model pass"
+            )
+
         for sid, size, ratio, stride, streams in self._model:
 
             items.append((sid, ratio))

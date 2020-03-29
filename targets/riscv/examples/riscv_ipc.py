@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # Copyright 2018 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,8 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 # Own modules
 from microprobe.code import Synthesizer, get_wrapper
 from microprobe.exceptions import MicroprobeException
-from microprobe.passes import initialization, instruction, register, structure
+from microprobe.passes import initialization, instruction, register,\
+    structure, memory
 from microprobe.target import import_definition
 
 
@@ -81,7 +82,8 @@ class RiscvIpcTest(object):
             nargs='+',
             default=['ADD_V0', 'DIV_V0', 'MUL_V0',
                      'FADD.S_V0', 'FDIV.S_V0', 'FMUL.S_V0',
-                     'FADD.D_V0', 'FDIV.D_V0', 'FMUL.D_V0'],
+                     'FADD.D_V0', 'FDIV.D_V0', 'FMUL.D_V0',
+                     'LD_V0', 'LW_V0', 'SD_V0', 'SW_V0'],
             help='An instruction to use'
         )
         parser.add_argument(
@@ -125,21 +127,25 @@ class RiscvIpcTest(object):
                 cwrapper = get_wrapper('RiscvTestsP')
                 synth = Synthesizer(
                     self.target,
-                    cwrapper(),
+                    # Remove the endless parameter to not generate
+                    # an endless loop
+                    cwrapper(endless=True),
                     value=0b01010101,
                 )
                 passes = [
                     structure.SimpleBuildingBlockPass(self.args.loop_size),
                     instruction.SetRandomInstructionTypePass([instr]),
                     initialization.ReserveRegistersPass(reserved_registers),
+                    memory.GenericMemoryStreamsPass([[0, 1024, 1, 32, 1]]),
                     register.DefaultRegisterAllocationPass(dd=d)
                 ]
 
                 for p in passes:
                     synth.add_pass(p)
 
-                bench = synth.synthesize()
                 microbenchmark = instr.name + '_' + str(d)
+                print("Generating %s ..." % microbenchmark)
+                bench = synth.synthesize()
                 synth.save(
                     str.format('{}/{}', self.args.output_dir, microbenchmark),
                     bench=bench

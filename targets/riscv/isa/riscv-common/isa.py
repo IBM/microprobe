@@ -365,19 +365,22 @@ class RISCVISA(GenericISA):
 
     def load(self, register, address, context):
 
-        raise NotImplementedError
+        ldi = self.new_instruction("LD_V0")
+        ldi.operands()[2].set_value(register)
+        ldi.memory_operands()[0].set_address(address, context)
+        return [ldi]
 
     def load_float(self, register, address, context):
 
         ldi = self.new_instruction("FLD_V0")
-        ldi.operands()[0].set_value(register)
+        ldi.operands()[2].set_value(register)
         ldi.memory_operands()[0].set_address(address, context)
         return [ldi]
 
     def store_float(self, register, address, context):
 
         std = self.new_instruction("FSD_V0")
-        std.operands()[0].set_value(register)
+        std.operands()[2].set_value(register)
         std.memory_operands()[0].set_address(address, context)
         return [std]
 
@@ -385,12 +388,12 @@ class RISCVISA(GenericISA):
 
         if length == 64:
             stg = self.new_instruction("SD_V0")
-            stg.operands()[0].set_value(register)
+            stg.operands()[2].set_value(register)
             stg.memory_operands()[0].set_address(address, context)
             return [stg]
         elif length == 32:
             stg = self.new_instruction("SW_V0")
-            stg.operands()[0].set_value(register)
+            stg.operands()[2].set_value(register)
             stg.memory_operands()[0].set_address(address, context)
             return [stg]
         else:

@@ -16,9 +16,12 @@ where:
  
 Therefore, possible target definitions could be:
  
- - **riscv_v22-riscv_generic-riscv64_linux_gcc** for generic RISCV C/asm code.
+ - **riscv_v22-riscv_generic-riscv64_linux_gcc** for RISCV C/asm code.
+ - **riscv_v22-riscv_generic-riscv64_test_p** for RISCV
+   [riscv-tests](https://github.com/riscv/riscv-tests) format.
  - **z13-z13-z64_linuc_gcc** for z13 C/asm code.
  - **z14-z14-z64_linux_gcc** for z14 C/asm code.
+ - **z15-z15-z64_linuc_gcc** for z15 C/asm code.
  - **power_v206-power7-ppc64_linux_gcc** for POWER7 C/asm code.
  - **power_v207-power8-ppc64_linux_gcc** for POWER8 C/asm code.
  - **power_v300-power9-ppc64_linux_gcc** for POWER9 C/asm code.

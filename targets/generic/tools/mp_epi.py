@@ -118,6 +118,15 @@ def _generic_policy_wrapper(all_arguments):
         )
         extension = "bin"
 
+    elif target.name.endswith("test_p"):
+
+        wrapper_name = "RiscvTestsP"
+        wrapper_class = _get_wrapper(wrapper_name)
+        wrapper = wrapper_class(
+            reset=kwargs['reset'],
+        )
+        extension = "S"
+
     else:
         raise NotImplementedError(
             "Unsupported configuration '%s'" % target.name

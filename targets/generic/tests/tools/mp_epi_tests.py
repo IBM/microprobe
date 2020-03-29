@@ -208,6 +208,7 @@ if MP_TESTING_ARCH is None:
 
     TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
                          "c"))
+    TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p", "S"))
 else:
     _PARAM1 = ['', '-dd 1', '-dd 5.5']
     _PARAM2 = ['', '-R']
@@ -216,6 +217,7 @@ else:
     if MP_TESTING_ARCH is "RISCV":
         TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
                              "c"))
+        TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p", "S"))
 
 TEST_FLAGS = []
 TEST_FLAGS.extend(

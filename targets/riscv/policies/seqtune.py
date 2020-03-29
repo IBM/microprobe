@@ -1,21 +1,11 @@
-# Copyright 2018 IBM Corporation
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 """
 docstring
 """
 # Futures
 from __future__ import absolute_import
+
+# Built-in
+import warnings
 
 # Own modules
 import microprobe.code
@@ -34,13 +24,21 @@ from microprobe.exceptions import MicroprobePolicyError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RNDINT
 
+__author__ = "Ramon Bertran"
+__copyright__ = "Copyright 2011-2018 IBM Corporation"
+__credits__ = []
+__license__ = "IBM (c) 2011-2018 All rights reserved"
+__version__ = "0.5"
+__maintainer__ = "Ramon Bertran"
+__email__ = "rbertra@us.ibm.com"
+__status__ = "Development"  # "Prototype", "Development", or "Production"
 
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
 
-NAME = "seq"
-DESCRIPTION = "Sequence generation policy"
+NAME = "seqtune"
+DESCRIPTION = "Sequence tune generation policy"
 SUPPORTED_TARGETS = [
     "riscv_v22-riscv_generic-riscv64_linux_gcc",
     "riscv_v22-riscv_generic-riscv64_test_p",
@@ -72,8 +70,6 @@ def policy(target, wrapper, **kwargs):
         )
 
     sequence = kwargs['instructions']
-
-    context = microprobe.code.context.Context()
 
     floating = False
     vector = False
@@ -128,34 +124,60 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence
+            sequence,
+            # prepend=[target.instructions["ADDI_V0"]] * 12
         )
     )
+
+    for repl in kwargs["replace_every"]:
+        synthesizer.add_pass(
+            microprobe.passes.instruction.ReplaceInstructionByTypePass(*repl)
+        )
+
+    for addl in kwargs["add_every"]:
+        synthesizer.add_pass(
+            microprobe.passes.instruction.InsertInstructionSequencePass(
+                addl[0], every=addl[1])
+        )
 
     synthesizer.add_pass(
         microprobe.passes.address.UpdateInstructionAddressesPass()
     )
 
-    synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
+    br_list = []
+    for elem in kwargs['branch_pattern']:
+        if elem == "0":
+            br_list.append(4)
+        else:
+            br_list.append(12)
 
-    # Find the memory operand length
-    mlength = 0
+    if len(br_list) != 0:
+        warnings.warn(
+            "Branch pattern control not supported. "
+            "Contact developers."
+        )
 
-    for minstr in sequence:
-        minstruction = microprobe.code.ins.Instruction()
-        minstruction.set_arch_type(minstr)
+    if kwargs["branch_switch"]:
+        warnings.warn(
+            "Branch pattern control not supported. "
+            "Contact developers."
+        )
 
-        if len(minstruction.memory_operands()) > 0:
-            mlength = max(
-                [mlength] +
-                minstruction.memory_operands()[0].possible_lengths(
-                    context)
-            )
+    synthesizer.add_pass(
+        microprobe.passes.address.UpdateInstructionAddressesPass()
+    )
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
-            [[0, 512, 1, 32, 1]]
+            kwargs['memory_streams'],
+            switch_stores=kwargs["mem_switch"],
+            shift_streams=16,
+            warmstores=True
         )
+    )
+
+    synthesizer.add_pass(
+        microprobe.passes.address.UpdateInstructionAddressesPass()
     )
 
     synthesizer.add_pass(
@@ -170,11 +192,12 @@ def policy(target, wrapper, **kwargs):
         )
     )
 
-    synthesizer.add_pass(
-        microprobe.passes.switch.SwitchingInstructions(
-          strict=kwargs['force_switch']
+    synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
+
+    if kwargs["data_switch"]:
+        synthesizer.add_pass(
+            microprobe.passes.switch.SwitchingInstructions()
         )
-    )
 
     if kwargs['dependency_distance'] < 1:
         synthesizer.add_pass(
@@ -197,7 +220,15 @@ def policy(target, wrapper, **kwargs):
                     instructions=[minstr])
             )
 
-    if not synthesizer.wrapper.context().symbolic:
+    warnings.warn("Loop alignment not implemented. Contact developers.")
+
+    if (not synthesizer.wrapper.context().symbolic):
+
+        synthesizer.add_pass(
+            microprobe.passes.address.UpdateInstructionAddressesPass(
+                force=True)
+        )
+
         synthesizer.add_pass(
             microprobe.passes.symbol.ResolveSymbolicReferencesPass(
             )

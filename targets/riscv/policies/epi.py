@@ -38,7 +38,8 @@ __all__ = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
 NAME = "epi"
 DESCRIPTION = "epi generation policy"
 SUPPORTED_TARGETS = [
-    "riscv_v22-riscv_generic-riscv64_linux_gcc"
+    "riscv_v22-riscv_generic-riscv64_linux_gcc",
+    "riscv_v22-riscv_generic-riscv64_test_p"
 ]
 
 
@@ -133,8 +134,8 @@ def policy(target, wrapper, **kwargs):
     synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
 
     synthesizer.add_pass(
-        microprobe.passes.memory.SingleMemoryStreamPass(
-            16, 256
+        microprobe.passes.memory.GenericMemoryStreamsPass(
+            [[0, 512, 1, 32, 1]]
         )
     )
 
