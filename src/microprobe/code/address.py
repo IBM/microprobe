@@ -334,7 +334,8 @@ class Address(object):
             return self.__class__(self.base_address, self.displacement - other)
 
         else:
-            LOG.critical(self, other)
+            LOG.critical("%s != %s", self, other)
+            LOG.critical("%s != %s", type(self), type(other))
             raise NotImplementedError
 
 

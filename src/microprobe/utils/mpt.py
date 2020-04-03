@@ -368,6 +368,11 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def update_register_definition(self, definition):
+        """Update a register definition."""
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def register_instruction_definitions(self, definitions):
         """Register new instruction definitions."""
         raise NotImplementedError
@@ -505,6 +510,12 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
     def register_variable_definition(self, definition):
         """Register a new variable definition."""
         self._variables.append(definition)
+
+    def update_register_definition(self, definition):
+        """Update a register definition."""
+        self._registers = [elem for elem in self._registers
+                           if elem.name != definition.name]
+        self._registers.append(definition)
 
     def register_register_definition(self, definition):
         """Register a new register definition."""
@@ -837,10 +848,13 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                                     "Register '%s' defined multiple times",
                                     name.upper()
                                 )
-
-                            test_definition.register_register_definition(
-                                register_definition
-                            )
+                                test_definition.update_register_definition(
+                                    register_definition
+                                )
+                            else:
+                                test_definition.register_register_definition(
+                                    register_definition
+                                )
 
                         elif prefix == "M":
                             if len(words) != 3:
@@ -974,10 +988,13 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                         "Register '%s' defined multiple times "
                         " in [REGISTERS] section", name.upper()
                     )
-
-                test_definition.register_register_definition(
-                    register_definition
-                )
+                    test_definition.update_register_definition(
+                        register_definition
+                    )
+                else:
+                    test_definition.register_register_definition(
+                        register_definition
+                    )
 
         if parser.has_section("RAW"):
 
@@ -1974,6 +1991,8 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
         with open_generic_fd(filename, 'r') as filename_fd:
             read_contents = filename_fd.read()
+            if not isinstance(read_contents, str):
+                read_contents = read_contents.decode()
             if read_contents == '':
                 raise MicroprobeMPTFormatError("'%s' empty!" % filename)
 

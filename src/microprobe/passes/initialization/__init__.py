@@ -197,8 +197,10 @@ class InitializeRegistersPass(microprobe.passes.Pass):
             self._reg_dict = dict([
                 (elem.name, elem.value) for elem in args[0]
             ])
+            self._priolist = [elem.name for elem in args[0]]
         else:
             self._reg_dict = {}
+            self._priolist = []
 
         self._value = value
         self._fp_value = fp_value
@@ -238,20 +240,26 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                         "Unknown register name: '%s'. Unable to set it" %
                         register_name)
 
-        for reg in target.registers.values():
+        regs = sorted(target.registers.values(),
+                      key=lambda x: self._priolist.index(x.name)
+                      if x.name in self._priolist else 314159)
+
+        for reg in regs:
 
             value = None
             elemsize = None
+            force_direct = False
 
             if reg.name in self._reg_dict:
                 value = self._reg_dict[reg.name]
                 self._reg_dict.pop(reg.name)
+                force_direct = True
 
             if (reg in building_block.context.reserved_registers and
                     not self._force_reserved):
                 LOG.debug("Skip reserved - %s", reg)
                 continue
-            elif reg in target.control_registers:
+            elif reg in target.control_registers and value is None:
                 LOG.debug("Skip control - %s", reg)
                 continue
 
@@ -298,16 +306,17 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                     else:
                         value = "%d_%d" % (value, elemsize)
 
-            LOG.debug("Set '%s' to '0x%x'", reg, value)
-
             if (target.wrapper.direct_initialization_support and
                     not self._force_code):
-
                 try:
-                    target.wrapper.register_direct_init(reg, value)
+                    target.wrapper.register_direct_init(
+                        reg, value, force=force_direct
+                    )
+                    LOG.debug("Direct set of '%s' to '0x%x'", reg, value)
                 except MicroprobeCodeGenerationError:
                     building_block.add_init(target.set_register(
                         reg, value, building_block.context))
+                    LOG.debug("Set '%s' to '0x%x'", reg, value)
                 except MicroprobeDuplicatedValueError:
                     LOG.debug("Skip already set - %s", reg)
             else:
