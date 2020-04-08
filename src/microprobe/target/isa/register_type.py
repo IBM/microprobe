@@ -183,6 +183,13 @@ class GenericRegisterType(RegisterType):
         self._used_for_address_arithmetic = u4aa
         self._used_for_float_arithmetic = u4fa
         self._used_for_vector_arithmetic = u4va
+        self._hash = hash(
+            (
+                self.name, self.description, self.size,
+                self.used_for_address_arithmetic,
+                self.used_for_float_arithmetic, self.used_for_vector_arithmetic
+            )
+        )
 
     @property
     def name(self):
@@ -216,13 +223,7 @@ class GenericRegisterType(RegisterType):
 
     def __hash__(self):
         """ """
-        return hash(
-            (
-                self.name, self.description, self.size,
-                self.used_for_address_arithmetic,
-                self.used_for_float_arithmetic, self.used_for_vector_arithmetic
-            )
-        )
+        return self._hash
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):

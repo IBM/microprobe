@@ -320,6 +320,11 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractproperty
+    def state(self):
+        """State contents file (::class:`~.str` )."""
+        raise NotImplementedError
+
+    @abc.abstractproperty
     def dat_mappings(self):
         raise NotImplementedError
 
@@ -417,6 +422,11 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
         """Set cycle count"""
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def set_state(self, state):
+        """Set state file"""
+        raise NotImplementedError
+
 
 class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
     """Class to represent a Microprobe Test configuration (default impl.)"""
@@ -438,6 +448,7 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
         self._roi_memory_access_trace = []
         self._instruction_count = None
         self._cycle_count = None
+        self._state = None
 
     @property
     def default_data_address(self):
@@ -466,6 +477,11 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
         """List of declared variables (:class:`~.list` of
            :class:`~.MicroprobeTestRegisterDefinition`)"""
         return self._registers
+
+    @property
+    def state(self):
+        """State contents file (::class:`~.str` )."""
+        return self._state
 
     @property
     def raw(self):
@@ -578,7 +594,6 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
                 "Empty cycle region of interest range specified "
                 "'%s'" % list(value)
             )
-
         self._roi_cyc = value
 
     def set_instruction_count(self, value):
@@ -588,6 +603,10 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
     def set_cycle_count(self, value):
         """Set cycle count"""
         self._cycle_count = value
+
+    def set_state(self, state):
+        """Set state file"""
+        self._state = state
 
 
 class MicroprobeTestDefinitionV0x5(MicroprobeTestDefinitionDefault):
@@ -793,6 +812,8 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                         "Unable to find state content file:"
                         " %s" % content_path
                     )
+
+                test_definition.set_state(content_path)
 
                 with open_generic_fd(content_path, "r") as content_file:
                     lineno = 0
@@ -1633,6 +1654,12 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
             )
         )
 
+        output_string.extend(
+            self._dump_state(
+                mpt_config.state
+            )
+        )
+
         with open_generic_fd(filename, 'w') as ofd:
             ofd.write("\n".join(output_string))
 
@@ -1906,6 +1933,19 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                 "roi_memory_access_trace = %s" %
                 os.path.basename(memtracefile))
             self._dump_memtrace(memtracefile, memory_trace)
+
+        return mstr
+
+    def _dump_state(self, state_file):
+
+        mstr = []
+        if state_file is None:
+            return mstr
+
+        mstr.append("")
+        mstr.append("[STATE]")
+        mstr.append("")
+        mstr.append("contents = %s" % state_file)
 
         return mstr
 

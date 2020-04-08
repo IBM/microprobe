@@ -404,7 +404,7 @@ class RejectingDict(dict):
 
         """
 
-        if key in list(self.keys()):
+        if key in self:
             raise MicroprobeDuplicatedValueError(
                 "Key '%s' is already present" % str(key)
             )
@@ -425,7 +425,7 @@ class RejectingOrderedDict(OrderedDict):
 
         """
 
-        if key in list(self.keys()):
+        if key in self:
             raise MicroprobeDuplicatedValueError(
                 "Key '%s' is already present" % str(key)
             )

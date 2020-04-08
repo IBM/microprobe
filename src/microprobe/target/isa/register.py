@@ -175,6 +175,11 @@ class GenericRegister(Register, Pickable):
         self._descr = descr
         self._rrepr = rrepr
         self._rcodi = rcodi
+        self._hash = hash(
+            (
+                self.name, self.description, self.representation, self.type
+            )
+        )
 
     @property
     def type(self):
@@ -203,11 +208,7 @@ class GenericRegister(Register, Pickable):
 
     def __hash__(self):
         """ """
-        return hash(
-            (
-                self.name, self.description, self.representation, self.type
-            )
-        )
+        return self._hash
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):

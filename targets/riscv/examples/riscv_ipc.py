@@ -32,7 +32,7 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from microprobe.code import Synthesizer, get_wrapper
 from microprobe.exceptions import MicroprobeException
 from microprobe.passes import initialization, instruction, register,\
-    structure, memory
+    structure, memory, branch
 from microprobe.target import import_definition
 
 
@@ -136,6 +136,7 @@ class RiscvIpcTest(object):
                     structure.SimpleBuildingBlockPass(self.args.loop_size),
                     instruction.SetRandomInstructionTypePass([instr]),
                     initialization.ReserveRegistersPass(reserved_registers),
+                    branch.BranchNextPass(),
                     memory.GenericMemoryStreamsPass([[0, 1024, 1, 32, 1]]),
                     register.DefaultRegisterAllocationPass(dd=d)
                 ]
