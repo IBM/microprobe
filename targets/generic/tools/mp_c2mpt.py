@@ -314,7 +314,8 @@ def dump_mpt(input_file, target, init_data, arguments):
                             arguments['default_data_address']
                     new_values.append(value)
                 values[4] = new_values
-            elif "*" in values[0] and isinstance(values[4], int):
+            elif "*" in values[0] and isinstance(values[4],
+                                                 six.integer_types):
                 if (values[4] <= maxdisplacement and
                         values[4] >= mindisplacement):
                     values[4] = values[4] - mindisplacement + \

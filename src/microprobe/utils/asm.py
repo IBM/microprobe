@@ -870,7 +870,7 @@ def _validate_operands(operand_values, instruction):
             LOG.debug("Value is not a string")
             if (
                 isinstance(operand.type, InstructionAddressRelativeOperand) and
-                not isinstance(operand_value, int)
+                not isinstance(operand_value, six.integer_types)
             ):
                 LOG.debug("Invalid: A not int in a relative operand")
                 return False
@@ -894,7 +894,7 @@ def _validate_operands(operand_values, instruction):
                         operand.type, (
                             OperandImmRange, OperandConst, OperandValueSet
                         )
-                    ) and not isinstance(operand_value, int)
+                    ) and not isinstance(operand_value, six.integer_types)
                 ):
 
                     LOG.debug("Checking not int value: %s", operand_value)
@@ -903,7 +903,7 @@ def _validate_operands(operand_values, instruction):
                 elif (
                     isinstance(
                         operand.type, (InstructionAddressRelativeOperand)
-                    ) and isinstance(operand_value, int)
+                    ) and isinstance(operand_value, six.integer_types)
                 ):
 
                     LOG.debug("Checking relative int value: %s", operand_value)
@@ -1082,7 +1082,7 @@ def _filter_operands_by_type(candidates, instruction):
                     "instruction '%s'. Check the assembly provided " %
                     instruction.name
                 )
-            elif isinstance(operand_option, int):
+            elif isinstance(operand_option, six.integer_types):
                 # and
                 # 'value' in [oper for oper in operand_types
                 #            if isinstance(oper, str)]):
@@ -1090,8 +1090,10 @@ def _filter_operands_by_type(candidates, instruction):
             elif operand_option.type in \
                     [list(oper.values())[0].type
                      for oper in operand_types if
-                     not isinstance(oper, (str, int)) and
-                     not isinstance(list(oper.values())[0], int)]:
+                     not isinstance(oper,
+                                    tuple([str] + list(six.integer_types))) and
+                     not isinstance(list(oper.values())[0],
+                                    six.integer_types)]:
                 operand_candidates.append(operand_option)
             else:
 
@@ -1100,8 +1102,11 @@ def _filter_operands_by_type(candidates, instruction):
                     [
                         list(oper.values())[0].type.name
                         for oper in operand_types
-                        if not isinstance(oper, (str, int)) and not isinstance(
-                            list(oper.values())[0], int
+                        if not isinstance(oper,
+                                          tuple([str] +
+                                                list(six.integer_types)))
+                        and not isinstance(
+                            list(oper.values())[0], six.integer_types
                         )
                     ]
                 )

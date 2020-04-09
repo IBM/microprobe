@@ -99,7 +99,7 @@ class Address(object):
                 self.base_address, self.displacement + other.displacement
             )
 
-        elif isinstance(other, int):
+        elif isinstance(other, six.integer_types):
 
             return self.__class__(self.base_address, self.displacement + other)
 
@@ -214,7 +214,7 @@ class Address(object):
                 self.base_address, self.displacement + other.displacement
             )
 
-        elif isinstance(other, int):
+        elif isinstance(other, six.integer_types):
 
             return self.__class__(self.base_address, self.displacement + other)
 
@@ -240,9 +240,9 @@ class Address(object):
                 self.base_address, self.displacement + other.displacement
             )
 
-        elif isinstance(other, int):
+        elif isinstance(other, six.integer_types):
 
-            if isinstance(self._base_address, int):
+            if isinstance(self._base_address, six.integer_types):
                 return (self._base_address + self.displacement) % other
 
             return self.displacement % other
@@ -269,7 +269,7 @@ class Address(object):
                 self.base_address, self.displacement + other.displacement
             )
 
-        elif isinstance(other, int):
+        elif isinstance(other, six.integer_types):
             return self.__class__(self.base_address, self.displacement + other)
 
         else:
@@ -299,7 +299,7 @@ class Address(object):
 
             return other.displacement - self.displacement
 
-        elif isinstance(other, int):
+        elif isinstance(other, six.integer_types):
             return self.__class__(self.base_address, self.displacement - other)
 
         else:
@@ -330,7 +330,7 @@ class Address(object):
 
             return self.displacement - other.displacement
 
-        elif isinstance(other, int):
+        elif isinstance(other, six.integer_types):
             return self.__class__(self.base_address, self.displacement - other)
 
         else:

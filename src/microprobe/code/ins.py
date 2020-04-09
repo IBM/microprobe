@@ -166,7 +166,7 @@ def instruction_set_def_properties(instr,
         for idx, operand in enumerate(operands):
             LOG.debug("Fixing operands: %s", operand)
 
-            if (isinstance(operand, int) and
+            if (isinstance(operand, six.integer_types) and
                     instr.operands()[idx].type.address_relative and
                     fix_relative):
                 LOG.debug("Hardcoded displacement")
@@ -555,7 +555,7 @@ class InstructionMemoryOperandValue(Pickable):
                 elif len(list(operand.type.values())) > 1:
                     return True
                 elif not isinstance(list(operand.type.values())[0],
-                                    (str, int)):
+                                    tuple([str] + list(six.integer_types))):
                     return True
 
         return False
@@ -565,7 +565,7 @@ class InstructionMemoryOperandValue(Pickable):
 
         length = 0
         for operand in self._length_values:
-            if isinstance(operand, int):
+            if isinstance(operand, six.integer_types):
                 length = length + operand
             elif operand == "Unknown":
                 LOG.warning("Unknown length (assume 0) for memory operand")
@@ -821,8 +821,8 @@ class InstructionMemoryOperandValue(Pickable):
 
             for length in lengths:
 
-                if isinstance(operand_constant, int):
-                    if isinstance(lengths[length], int):
+                if isinstance(operand_constant, six.integer_types):
+                    if isinstance(lengths[length], six.integer_types):
                         lengths[length] += operand_constant
                     else:
                         raise NotImplementedError
@@ -948,7 +948,7 @@ class InstructionMemoryOperandValue(Pickable):
         assert "reg_range" not in list(lengths.values()), lengths
         assert len(lengths) > 0
         for elem in lengths.values():
-            assert isinstance(elem, int), elem
+            assert isinstance(elem, six.integer_types), elem
 
         self._possible_lengths = lengths
 
@@ -1039,7 +1039,7 @@ class InstructionMemoryOperandValue(Pickable):
         """
 
         LOG.debug("Start set length: %s", length)
-        assert isinstance(length, int), length
+        assert isinstance(length, six.integer_types), length
 
         if self._unset_length_function is not None:
             self._unset_length_function()
@@ -1075,7 +1075,7 @@ class InstructionMemoryOperandValue(Pickable):
                     operands.append(operand[2])
                 else:
                     raise NotImplementedError
-            elif isinstance(operand, int):
+            elif isinstance(operand, six.integer_types):
                 continue
             elif operand.startswith("*") and operand[1:].isdigit():
                 continue

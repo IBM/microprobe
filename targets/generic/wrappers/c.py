@@ -241,7 +241,7 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
                                 var.size, cgdc,
                                 var.name, varant.name, cgdc)
 
-                    elif isinstance(value, int):
+                    elif isinstance(value, six.integer_types):
                         value = min(value, 2**31)
                         value = max(value, -2**31)
                         return "{memset(&%d, %d, %d);}\n" % (
@@ -254,7 +254,7 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
 
         else:
 
-            if isinstance(value, int):
+            if isinstance(value, six.integer_types):
                 return "%s = %d;\n" % (var.name, value)
             elif value == 'random':
                 return "%s = %d;\n" % (var.name, 0)

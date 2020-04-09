@@ -263,7 +263,7 @@ class MicroprobeTestMemoryAccessDefinition(object):
         self.access_type = rw
         self.address = address
         self.length = length
-        assert isinstance(length, int)
+        assert isinstance(length, six.integer_types)
 
     def to_str(self):
         return "%s %s 0X%016X %03d" % (self.data_type, self.access_type,

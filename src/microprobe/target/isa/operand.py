@@ -1458,8 +1458,8 @@ class InstructionAddressRelativeOperand(Operand):
         :param value:
 
         """
-        assert isinstance(value, (int, Address))
-        if isinstance(value, int):
+        assert isinstance(value, tuple(list(six.integer_types) + [Address]))
+        if isinstance(value, six.integer_types):
             # print(value, self._shift)
             # assert value % (self._shift + 1) == 0
             return _format_integer(self, value)
@@ -1503,7 +1503,7 @@ class InstructionAddressRelativeOperand(Operand):
 
         """
 
-        if isinstance(value, int):
+        if isinstance(value, six.integer_types):
             cvalue = value
         elif isinstance(value, Address):
             # Warning!
@@ -1536,7 +1536,7 @@ class InstructionAddressRelativeOperand(Operand):
 
         """
 
-        if isinstance(value, int):
+        if isinstance(value, six.integer_types):
             return str(value >> self._shift)
         elif isinstance(value, Address):
             raise MicroprobeCodeGenerationError(

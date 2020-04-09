@@ -312,7 +312,7 @@ def _translate_moperands(
 
         for field in sformula:
 
-            if isinstance(field, int):
+            if isinstance(field, six.integer_types):
                 field = str(field)
 
             if field.startswith('@'):
@@ -343,7 +343,7 @@ def _translate_moperands(
 
         for idx, field in enumerate(length):
             fname = "no_field_%s" % idx
-            if isinstance(field, int):
+            if isinstance(field, six.integer_types):
                 tlength.append((fname, field))
             elif (
                 field.startswith("#") or field.startswith("min") or

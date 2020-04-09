@@ -25,6 +25,7 @@ import re
 
 # Third party modules
 from six.moves import zip
+import six
 
 # Own modules
 import microprobe.passes
@@ -73,7 +74,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                 " reimplemented"
             )
 
-        if isinstance(dd, int):
+        if isinstance(dd, six.integer_types):
             self._dd = lambda: dd  # Dependency distance
         elif isinstance(dd, float):
             self._dd = microprobe.utils.distrib.discrete_average(dd)

@@ -27,6 +27,7 @@ import sys
 
 # Third party modules
 from six.moves import range
+import six
 
 # Own modules
 from microprobe.code.address import Address
@@ -128,7 +129,7 @@ def dump_objdump(target, arguments):
             if relative is not None:
                 assert absolute is None
 
-                if isinstance(relative, int):
+                if isinstance(relative, six.integer_types):
                     target_addr = counter + relative
                     rtarget = relative
                 elif isinstance(relative, Address):
@@ -140,7 +141,7 @@ def dump_objdump(target, arguments):
             if absolute is not None:
                 assert relative is None
 
-                if isinstance(absolute, int):
+                if isinstance(absolute, six.integer_types):
                     target_addr = absolute
                     atarget = absolute
                 elif isinstance(absolute, Address):

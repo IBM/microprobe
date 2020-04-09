@@ -22,6 +22,7 @@ from time import localtime, strftime
 
 # Third party modules
 from six.moves import range
+import six
 
 # Own modules
 import microprobe.code.var
@@ -176,7 +177,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
                         self._max_array_var = var
                         self._max_array_var_value = value
                         return string
-                    elif isinstance(value, int):
+                    elif isinstance(value, six.integer_types):
                         return "{memset(&%s, %d, %d);}\n" % (
                             var.name, value, var.size
                         )
@@ -196,7 +197,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
                             "memcpy(&%s[i], &%s" ", %d);}\n" % (
                                 var.size, varant.size,
                                 var.name, varant.name, size)
-                    elif isinstance(value, int):
+                    elif isinstance(value, six.integer_types):
                         return "{memset(&%d, %d, %d);}\n" % (
                             var.name, value, var.size
                         )
@@ -222,7 +223,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
                 raise NotImplementedError
 
         else:
-            if isinstance(value, int):
+            if isinstance(value, six.integer_types):
                 return "%s = %d;\n" % (var.name, value)
             else:
                 raise NotImplementedError
