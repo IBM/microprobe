@@ -365,6 +365,12 @@ class SetRandomInstructionTypePass(microprobe.passes.Pass):
         :param target:
 
         """
+
+        for idx, instr in enumerate(self._instrs):
+            if not isinstance(instr, str):
+                continue
+            self._instrs[idx] = target.isa.instructions[instr]
+
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
                 instr.set_arch_type(self._func(list(self._instrs)))

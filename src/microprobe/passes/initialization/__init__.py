@@ -80,7 +80,7 @@ class AddInitializationAssemblyPass(microprobe.passes.Pass):
 
         """
 
-        instructions_def = interpret_asm(self._asm, target,
+        instructions_def = interpret_asm(self._asm.split("\n"), target,
                                          building_block.labels)
 
         instructions = []
@@ -124,7 +124,7 @@ class AddFinalizationAssemblyPass(microprobe.passes.Pass):
         """
 
         instructions_def = interpret_asm(
-            self._asm, target, building_block.labels
+            self._asm.split("\n"), target, building_block.labels
         )
 
         instructions = []
