@@ -1339,8 +1339,9 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     LOG.debug("Max length: %d", max_length)
 
                     if max_value == 0 and max_length == 0:
-                        print(instr)
-                        exit(-1)
+                        raise MicroprobeCodeGenerationError(
+                            "Unable to fix memory reference"
+                        )
 
                     if key in fixlist:
                         LOG.debug("Key already in fix list")

@@ -694,9 +694,7 @@ class TraceSynthesizer(Synthesizer):
                     instr_address)
                 break
 
-            if count % 987 == 0:
-                progress(increment=987)
-
+            progress()
             wrap_ins = self.wrapper.wrap_ins(instr,
                                              next_instr=next_instr,
                                              show=self._show_trace)

@@ -383,8 +383,10 @@ def _interpret_decorators(str_decorators):
                 continue
 
             if os.path.isfile(value):
-                print(value)
-                raise NotImplementedError
+                raise NotImplementedError(
+                    "Decorator with references to files "
+                    "not yet implemented"
+                )
             else:
                 origvalue = value
                 value = value.upper()

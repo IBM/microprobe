@@ -146,6 +146,8 @@ create_tmp_package () {
     # $4: touch base __init__.py id does not exist 
 
     echo "Start creating temporary package in '$1' from '$2'"
+    echo "Create init: $3"
+    echo "Touch base init: $4"
 
     echo "Copying files"
     mkdir -p "$1"
@@ -165,7 +167,7 @@ create_tmp_package () {
 
     if [ "$3" -eq 1 ]; then
         # shellcheck disable=SC2044
-        for dir in $(find "$1" -type d); do
+        for dir in $(find "$1" -type d | grep -v autom4te.cache$); do
             if [ ! -f "$dir/__init__.py" ]; then
                 echo "Creating __init__.py fake package"
                 touch "$dir/__init__.py"

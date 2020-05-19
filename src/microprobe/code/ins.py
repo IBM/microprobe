@@ -1810,6 +1810,7 @@ class Instruction(Pickable):
             for operand, value in zip(self.operands(), values):
                 if value is not None:
                     operand.set_value(value)
+
         except MicroprobeValueError as exc:
             LOG.debug("Valid operands:")
             for operand in self.operands():

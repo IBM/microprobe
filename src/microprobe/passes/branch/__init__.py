@@ -531,11 +531,31 @@ class InitializeBranchDecorator(Pass):
                         target_addr = self._indirect
                 else:
                     if "BT" in instr.decorators:
-                        raise MicroprobeCodeGenerationError(
-                            "BT decorator specified for instruction '%s' but"
-                            "it already provides the target in its "
-                            "codification." % (instr.assembly())
-                        )
+                        bt_addr = instr.decorators["BT"]['value']
+                        if instr.branch_conditional:
+                            bt_addr = [
+                                elem for elem in bt_addr
+                                if int(elem, 16) !=
+                                instr.address.displacement +
+                                instr.architecture_type.format.length
+                            ]
+
+                        if len(set(bt_addr)) != 1:
+                            raise MicroprobeCodeGenerationError(
+                                "BT decorator with multiple targets "
+                                "defined but instruction '%s' already"
+                                " defines the target in its codification."
+                                % (instr.assembly())
+                            )
+                        bt_addr = int(bt_addr[0], 0)
+                        if bt_addr != target_addr.displacement:
+                            raise MicroprobeCodeGenerationError(
+                                "BT decorator specified for instruction '%s' "
+                                "but it already provides the target in its "
+                                "codification and they miss-match!"
+                                % (instr.assembly())
+                            )
+                        instr.decorators.pop("BT")
 
                 if not instr.branch_conditional and 'N' in pattern:
                     raise MicroprobeCodeGenerationError(

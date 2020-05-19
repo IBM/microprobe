@@ -224,7 +224,7 @@ def smart_copy_dict(olddict):
     return new_dict
 
 
-def findfiles(paths, regexp, full=False):
+def findfiles(paths, regexp, full=False, maxcount=10000):
     """
 
     :param paths:
@@ -241,6 +241,7 @@ def findfiles(paths, regexp, full=False):
     re_obj = re.compile(regexp)
 
     path_seen = []
+    count = 0
     for path in paths:
 
         if path in path_seen:
@@ -249,6 +250,14 @@ def findfiles(paths, regexp, full=False):
         all_files = os.walk(path)
         for base_path, dummy_dirnames, filenames in all_files:
             for filename in filenames:
+                count += 1
+                if count > maxcount:
+                    LOG.warning(
+                        "Maximum number of files checked."
+                        " Stopping the search."
+                    )
+                    break
+
                 fullname = os.path.join(base_path, filename)
 
                 if full:
@@ -260,6 +269,12 @@ def findfiles(paths, regexp, full=False):
                 if re_obj.search(filename):
                     results.append(fullname)
                     LOG.debug("File match: %s", results[-1])
+
+            if count > maxcount:
+                break
+
+        if count > maxcount:
+            break
 
         path_seen.append(path)
 

@@ -328,9 +328,11 @@ class SetAssociativeCache(Cache):
 
     def print_info(self):
         """ """
-        print(self._offset_bits)
-        print(self._set_bits)
-        print(self._tag_bits)
+
+        from microprobe.utils.cmdline import print_info
+        print_info(self._offset_bits)
+        print_info(self._set_bits)
+        print_info(self._tag_bits)
         bit_range = [0, self._address_size - 1]
         offset_range = [
             self._address_size - 1 - self.offset_bits, self._address_size - 1
@@ -341,7 +343,7 @@ class SetAssociativeCache(Cache):
             self._address_size - 1 - self.offset_bits - 1
         ]
 
-        print(bit_range, offset_range, ccrange)
+        print_info((bit_range, offset_range, ccrange))
 
 
 class CacheHierarchy(object):

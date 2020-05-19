@@ -24,10 +24,10 @@ import os
 # sys.path.insert(0, os.path.abspath('.'))
 # sys.path.insert(0, os.path.abspath('..'))
 
-directory = os.path.dirname(__file__)
-directory = os.path.join(directory, "..", "sphinxcontrib")
-directory = os.path.abspath(directory)
-sys.path.insert(0, directory)
+# directory = os.path.dirname(__file__)
+# directory = os.path.join(directory, "..", "sphinxcontrib")
+# directory = os.path.abspath(directory)
+# sys.path.insert(0, directory)
 
 directory = os.path.dirname(__file__)
 directory = os.path.join(directory, "..", "..", "src")

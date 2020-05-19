@@ -12,13 +12,13 @@ where:
                         
  - **<arch-name>**: is the name of the architecture.
  - **<uarch-name>**: is the name of the microarchitecture.
- - **<env-name>**: is the name of the environment.
+ - **<env-name>**: is the name of the environment and format.
  
 Therefore, possible target definitions could be:
  
  - **riscv_v22-riscv_generic-riscv64_linux_gcc** for RISCV C/asm code.
- - **riscv_v22-riscv_generic-riscv64_test_p** for RISCV
-   [riscv-tests](https://github.com/riscv/riscv-tests) format.
+ - **riscv_v22-riscv_generic-riscv64_test_p** for RISCV `riscv-tests
+   <https://github.com/riscv/riscv-tests>`_ format.
  - **z13-z13-z64_linuc_gcc** for z13 C/asm code.
  - **z14-z14-z64_linux_gcc** for z14 C/asm code.
  - **z15-z15-z64_linuc_gcc** for z15 C/asm code.

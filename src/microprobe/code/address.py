@@ -301,10 +301,11 @@ class Address(object):
 
         elif isinstance(other, six.integer_types):
             return self.__class__(self.base_address, self.displacement - other)
-
         else:
-            print(self.__class__, other.__class__)
-            raise NotImplementedError
+            raise NotImplementedError(
+                "Substraction not implemented for %s and %s "
+                "objects" % (self.__class__, other.__class__)
+            )
 
     def __str__(self):
         """ """

@@ -49,6 +49,7 @@ if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
     if [ "$TRAVIS_BRANCH" = "master" ]; then
         export BUILD_TYPE="stable"
     fi
+    MAXJOBS=1
     export NOSEOPTS=" -d -v -e load_tests --exe --processes=$MAXJOBS --detailed-errors --process-timeout=$TIMEOUT "
 
     MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-unknown-elf-gcc)
@@ -153,8 +154,8 @@ else
             mkdir -p ./get_pip
             (cd ./get_pip
             wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
-            python$PYTHON_VERSION get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check --no-cache-dir
-            PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv --no-cache-dir
+            python$PYTHON_VERSION get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check --no-cache-dir --no-warn-script-location
+            PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv --no-cache-dir --no-warn-script-location
             PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/virtualenv --clear --python=python$PYTHON_VERSION "../venv-python$PYTHON_VERSION" --app-data "../.app-data-python$PYTHON_VERSION"
             )
             rm -fr ./get_pip
@@ -167,7 +168,7 @@ else
             pip=$(command -v pip)
             vpython=$(head -n 1 "$pip" | sed "s/#\\!//g")
 
-            # "$vpython" "$pip" install -U -I pip
+            "$vpython" "$pip" install -U -I pip --no-cache-dir
             "$vpython" "$pip" install -U -I setuptools --no-cache-dir
             set +e
             "$vpython" "$pip" install -U -I -r requirements_devel.txt --no-cache-dir

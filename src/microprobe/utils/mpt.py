@@ -817,7 +817,19 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
                 with open_generic_fd(content_path, "r") as content_file:
                     lineno = 0
-                    for line in content_file:
+                    lines = content_file.readlines()
+                    progress = Progress(
+                        len(lines),
+                        msg="State lines parsed:"
+                    )
+
+                    for line in lines:
+
+                        progress()
+
+                        if not isinstance(line, str):
+                            line = line.decode()
+
                         words = line.split(";")[0].split()
                         lineno += 1
 
@@ -922,6 +934,8 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                                 "Unknown prefix '%s'" %
                                 (content_path, lineno, prefix)
                             )
+
+                    del progress
 
         # Populate the test definition object
         if parser.has_section("DATA"):
@@ -1226,7 +1240,14 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                 with open_generic_fd(memory_access_trace_path, "r") as \
                         content_file:
                     lineno = 0
-                    for line in content_file:
+                    lines = content_file.readlines()
+                    progress = Progress(
+                        len(lines),
+                        msg="Memory access trace lines parsed:"
+                    )
+                    for line in lines:
+                        progress()
+
                         if isinstance(line, six.binary_type):
                             line = line.decode()
 
@@ -1286,6 +1307,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                                 dtype, rw, address, length
                             )
                         )
+                    del progress
 
                 test_definition.set_roi_memory_access_trace(memtrace)
 
