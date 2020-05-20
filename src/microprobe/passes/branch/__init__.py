@@ -531,11 +531,21 @@ class InitializeBranchDecorator(Pass):
                         target_addr = self._indirect
                 else:
                     if "BT" in instr.decorators:
-                        bt_addr = instr.decorators["BT"]['value']
+                        bt_addr = [
+                            int(elem, 16) for elem
+                            in instr.decorators["BT"]['value']
+                        ]
+
+                        if building_block.context.code_segment is not None:
+                            bt_addr = [
+                                elem - building_block.context.code_segment
+                                for elem in bt_addr
+                            ]
+
                         if instr.branch_conditional:
                             bt_addr = [
                                 elem for elem in bt_addr
-                                if int(elem, 16) !=
+                                if elem !=
                                 instr.address.displacement +
                                 instr.architecture_type.format.length
                             ]
@@ -548,11 +558,7 @@ class InitializeBranchDecorator(Pass):
                                 % (instr.assembly())
                             )
 
-                        bt_addr = int(bt_addr[0], 0)
-                        if building_block.context.code_segment is not None:
-                            bt_addr = bt_addr - \
-                                building_block.context.code_segment
-
+                        bt_addr = bt_addr[0]
                         if bt_addr != target_addr.displacement:
 
                             raise MicroprobeCodeGenerationError(
