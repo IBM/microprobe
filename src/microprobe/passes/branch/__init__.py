@@ -547,8 +547,14 @@ class InitializeBranchDecorator(Pass):
                                 " defines the target in its codification."
                                 % (instr.assembly())
                             )
+
                         bt_addr = int(bt_addr[0], 0)
+                        if building_block.context.code_segment is not None:
+                            bt_addr = bt_addr - \
+                                building_block.context.code_segment
+
                         if bt_addr != target_addr.displacement:
+
                             raise MicroprobeCodeGenerationError(
                                 "BT decorator specified for instruction '%s' "
                                 "but it already provides the target in its "
