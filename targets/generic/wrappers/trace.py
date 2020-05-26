@@ -171,6 +171,12 @@ class QTrace(microprobe.code.wrapper.Wrapper):
         ins = []
         binary = instr.binary()
 
+        if len(binary) == 64:
+            prefix = binary[0:32]
+            binary = binary[32:]
+            ins.append(struct.pack(">I", int(prefix, 2)))
+            ins.append(struct.pack(">H", 0))
+
         flags = 0
         next_address = None
         cacheable = True

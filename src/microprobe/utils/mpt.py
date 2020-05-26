@@ -1204,7 +1204,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
             if max_ins is not None:
                 test_definition.set_instruction_count(max_ins)
                 if roi is not None:
-                    if roi[1] > max_ins:
+                    if (roi[1] - roi[0]) > max_ins:
                         raise MicroprobeMPTFormatError(
                             "Trace instruction_count does not cover "
                             "the region of interest."
@@ -1229,7 +1229,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
             if max_cyc is not None:
                 test_definition.set_cycle_count(max_cyc)
                 if roi_cyc is not None:
-                    if roi_cyc[1] > max_cyc:
+                    if (roi_cyc[1] - roi_cyc[0]) > max_cyc:
                         raise MicroprobeMPTFormatError(
                             "Trace cycle_count does not cover "
                             "the region of interest."

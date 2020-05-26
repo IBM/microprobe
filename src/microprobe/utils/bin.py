@@ -64,7 +64,7 @@ __all__ = ["interpret_bin",
 
 
 # Functions
-def interpret_bin(code, target, fmt="hex", safe=None):
+def interpret_bin(code, target, fmt="hex", safe=None, single=False):
     """
     Return the list of :class:`~.MicroprobeInstructionDefinition` objects
     that results from interpreting the *code* (a binary stream).
@@ -90,18 +90,18 @@ def interpret_bin(code, target, fmt="hex", safe=None):
     if key in _CODE_CACHE and _CODE_CACHE_ENABLED:
         code = [instrdef.copy() for instrdef in _CODE_CACHE[key]]
     elif safe:
-        code = _interpret_bin_code_safe(code, target, fmt=fmt)
+        code = _interpret_bin_code_safe(code, target, single, fmt=fmt)
         if _CODE_CACHE_ENABLED:
             _CODE_CACHE[key] = code[:]
     else:
-        code = _interpret_bin_code(code, target, fmt=fmt)
+        code = _interpret_bin_code(code, target, single, fmt=fmt)
         if _CODE_CACHE_ENABLED:
             _CODE_CACHE[key] = code[:]
 
     return code
 
 
-def _interpret_bin_code(code, target, fmt="hex"):
+def _interpret_bin_code(code, target, single, fmt="hex"):
 
     instructions_and_params = []
 
@@ -117,7 +117,7 @@ def _interpret_bin_code(code, target, fmt="hex"):
     return instructions_and_params
 
 
-def _interpret_bin_code_safe(code, target, fmt="hex"):
+def _interpret_bin_code_safe(code, target, single, fmt="hex"):
 
     instructions_and_params = []
 
@@ -136,8 +136,11 @@ def _interpret_bin_code_safe(code, target, fmt="hex"):
             )
             instructions_and_params.append(instr_def)
         except MicroprobeBinaryError:
+            if single:
+                skip = binstream.skip_all()
+            else:
+                skip = binstream.skip(characters=min_skip_length)
 
-            skip = binstream.skip(characters=min_skip_length)
             instr_type = instruction_type_from_bin(skip, target)
             instr_def = microprobe.code.ins.MicroprobeInstructionDefinition(
                 instr_type, (), None, None, skip, None, None
@@ -537,6 +540,13 @@ class MicroprobeBinInstructionStream(object):
         self._progress(increment=characters)
         assert self._index % 2 == 0
         return self._code[self._index - characters:self._index]
+
+    def skip_all(self):
+        pindex = self._index
+        self._index += len(self._code)
+        self._progress(increment=len(self._code)-pindex)
+        assert self._index % 2 == 0
+        return self._code[pindex:self._index]
 
     def decode_next(self):
         """

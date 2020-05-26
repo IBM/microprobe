@@ -249,7 +249,9 @@ def _interpret_instr_def(instr_def, target, labels):
 
     elif instr_def.assembly.upper().startswith("0X"):
 
-        binary_def = interpret_bin(instr_def.assembly[2:], target, fmt="hex")
+        binary_def = interpret_bin(
+            instr_def.assembly[2:], target, fmt="hex", single=True
+        )
         if len(binary_def) > 1:
             raise MicroprobeAsmError("More than one instruction parsed.")
         instruction_type = binary_def[0].instruction_type
