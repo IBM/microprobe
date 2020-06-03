@@ -904,7 +904,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                             # TODO uint32_t instead?
                             var_type = "uint8_t"
                             var_chars = 2
-                            var_align = 0
+                            var_align = None
                             var_len = len(data)
                             var_items = [
                                 int(data[i:i + var_chars], 16)

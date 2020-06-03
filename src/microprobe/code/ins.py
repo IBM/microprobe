@@ -265,7 +265,7 @@ def instruction_set_def_properties(instr,
 
     for decorator_key, decorator_value in decorators.items():
 
-        if decorator_key in ['MA', 'BT']:
+        if decorator_key in ['MA', 'BT', 'EA']:
             if not isinstance(decorator_value, list):
                 decorator_value = [decorator_value]
             decorator_value = ["0x%016X" % elem for elem in decorator_value]

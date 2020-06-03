@@ -417,6 +417,9 @@ def _interpret_bin_instr(instr_type, bin_instr):
             for value in operand.values():
 
                 LOG.debug("Testing value: %s", value)
+                if operand.codification(value) == "N/A":
+                    continue
+
                 int_val = int(operand.codification(value))
                 valid = int_val == field_value
 
@@ -427,7 +430,7 @@ def _interpret_bin_instr(instr_type, bin_instr):
                     valid = valid or ((int_val >> 1) & mask) == field_value
 
                 # Handle POWERPC specific codification
-                if (value.type.name) == "SPR":
+                if (value.type.name).startswith("SPR"):
                     valid = (
                         ((int_val >> 5) & 0b11111) | (
                             (int_val & 0b11111) << 5

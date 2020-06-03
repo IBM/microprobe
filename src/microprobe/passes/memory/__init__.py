@@ -2713,12 +2713,15 @@ class InitializeMemoryDecorator(microprobe.passes.Pass):
                 if is_agen:
                     continue
 
-                if not instr.access_storage:
+                if not instr.access_storage and instr.mnemonic != "raw":
                     continue
 
                 if "MA" in instr.decorators:
                     value = instr.decorators['MA']['value']
-                    value = self._normalize_value(instr, value, building_block)
+                    value = self._normalize_value(
+                        instr, value[:],
+                        building_block
+                    )
                     instr.decorators["MA"]["value"] = value
                 else:
                     if default is None:

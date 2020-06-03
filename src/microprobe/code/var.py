@@ -252,6 +252,10 @@ class VariableSingle(Variable):
         self._address = address
 
         if align is not None:
+            if align <= 0:
+                raise MicroprobeCodeGenerationError(
+                    "Alignment should be > 0 in definition of "
+                    "variable: '%s'" % name)
             val = math.log(align, 2)
             if val != int(val):
                 raise MicroprobeCodeGenerationError(

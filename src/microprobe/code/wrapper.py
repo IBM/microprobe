@@ -49,6 +49,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         self._target = None
         self._context = Context()
         self._reset_state = False
+        self._direct_init_dict = None
 
     @abc.abstractmethod
     def outputname(self, name):
@@ -214,6 +215,35 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         """ Initialize *key* with the value *value* """
         if self.direct_initialization_support:
             raise NotImplementedError
+        else:
+            raise MicroprobeCodeGenerationError(
+                "Direct intialization function called but not supported"
+            )
+
+    def get_direct_init(self, key, defaultvalue):
+        """ Get the *value* for *key* """
+        if self.direct_initialization_support:
+
+            if isinstance(key, str):
+                keys = self.target.registers.values()
+                keys = [lkey for lkey in keys if lkey.name == key]
+                if len(keys) != 1:
+                    raise MicroprobeCodeGenerationError(
+                        "Unable to find the direct initialization value"
+                        " name: %s" % key
+                    )
+                key = keys[0]
+
+            if key in self._direct_init_dict:
+                return self._direct_init_dict[key]
+
+            if defaultvalue is not None:
+                return defaultvalue
+
+            raise MicroprobeCodeGenerationError(
+                "Unable to find the direct initialization value"
+            )
+
         else:
             raise MicroprobeCodeGenerationError(
                 "Direct intialization function called but not supported"

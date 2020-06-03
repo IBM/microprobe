@@ -543,6 +543,7 @@ class InitializeBranchDecorator(Pass):
                             ]
 
                         if instr.branch_conditional:
+                            # Remove not taken branch addresses
                             bt_addr = [
                                 elem for elem in bt_addr
                                 if elem !=
@@ -550,23 +551,39 @@ class InitializeBranchDecorator(Pass):
                                 instr.architecture_type.format.length
                             ]
 
-                        if len(set(bt_addr)) != 1:
+                        # TODO: This code assumes branch there are
+                        # no conditional branch indirect branches
+                        if len(set(bt_addr)) > 1:
                             raise MicroprobeCodeGenerationError(
                                 "BT decorator with multiple targets "
                                 "defined but instruction '%s' already"
                                 " defines the target in its codification."
                                 % (instr.assembly())
                             )
+                        elif len(set(bt_addr)) == 1:
+                            bt_addr = bt_addr[0]
 
-                        bt_addr = bt_addr[0]
-                        if bt_addr != target_addr.displacement:
-
-                            raise MicroprobeCodeGenerationError(
-                                "BT decorator specified for instruction '%s' "
-                                "but it already provides the target in its "
-                                "codification and they miss-match!"
-                                % (instr.assembly())
-                            )
+                            if "EA" in instr.decorators:
+                                # if each in decorator, we are dealing
+                                # with real addresses. No check for
+                                # mismatch.
+                                #
+                                # TODO: Check that 'translated' addresses
+                                # mismatch or enaure we always deal with
+                                # logic addresses
+                                #
+                                LOG.warning(
+                                    "Not checking for address missmatches"
+                                )
+                            elif bt_addr != target_addr.displacement:
+                                raise MicroprobeCodeGenerationError(
+                                    "BT decorator specified for "
+                                    "instruction '%s' "
+                                    "but it already provides "
+                                    "the target in its "
+                                    "codification and they miss-match!"
+                                    % (instr.assembly())
+                                )
                         instr.decorators.pop("BT")
 
                 if not instr.branch_conditional and 'N' in pattern:
