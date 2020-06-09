@@ -110,7 +110,7 @@ class RiscvIpcTest(object):
         # X7 will be used to store current branch
         # X8 will be used to store constant 1 (we already have
         #    X0 with constant 0)
-        reserved_registers = ["X5", "X6", "X7"]
+        reserved_registers = ["X5", "X6", "X7", "X8"]
 
         if not os.path.exists(self.args.output_dir):
             os.makedirs(self.args.output_dir)
