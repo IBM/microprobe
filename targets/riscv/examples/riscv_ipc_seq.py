@@ -214,7 +214,6 @@ class RiscvIpcTest(object):
 
                 print("Generating %s ..." % microbenchmark)
                 bench = synth.synthesize()
-
                 synth.save(
                     str.format(
                         '{}/{}',
@@ -222,6 +221,10 @@ class RiscvIpcTest(object):
                         microbenchmark
                     ),
                     bench=bench
+                )
+                print(cwrapper().outputname(
+                    str.format('{}/{}', self.args.output_dir, microbenchmark)
+                    ) + " saved!"
                 )
                 microbenchmarks += [microbenchmark]
 

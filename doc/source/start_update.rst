@@ -33,7 +33,8 @@ option for developers), then execute these commands::
 
    > cd INSTALLDIRECTORY/microprobe
    > git pull --update --recurse-submodules
+   > find . -name \.*.yaml*cache -delete
 
 Basically, we are pulling the latest copy of the repository and the 
-submodules from the origin repository.
+submodules from the origin repository and cleaning up any cached files.
 

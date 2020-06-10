@@ -75,10 +75,13 @@ Updating Microprobe
 Since we are in development mode, you just need to go to
 **INSTALLDIRECTORY/microprobe** and execute the following command:
 
-`$ git pull --update --recurse-submodules`
+```bash
+git pull --update --recurse-submodules
+find . -name \.*.yaml*cache -delete
+```
 
 Basically, we are pulling the latest copy of the repository and the 
-submodules.
+submodules, and cleaning up any cached files. 
 
 Contributing to Microprobe
 --------------------------

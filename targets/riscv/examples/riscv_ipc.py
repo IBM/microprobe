@@ -151,6 +151,10 @@ class RiscvIpcTest(object):
                     str.format('{}/{}', self.args.output_dir, microbenchmark),
                     bench=bench
                 )
+                print(cwrapper().outputname(
+                    str.format('{}/{}', self.args.output_dir, microbenchmark)
+                    ) + " saved!"
+                )
                 microbenchmarks += [microbenchmark]
 
         # Emit a Makefile fragment (tests.d) that identifies all tests

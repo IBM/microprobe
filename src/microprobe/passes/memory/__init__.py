@@ -632,7 +632,8 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
 
                     for k, dummy in descriptors.items():
                         if k == mcomp:
-                            # TODO: Do it more smart: no we constrain the usage
+                            # TODO: Do it more smart: now we constrain the
+                            # usage
                             # of previous instructions as calc_instructions,
                             # only if the base register and the idx register
                             # are not touched (implying that the memory
@@ -1910,7 +1911,11 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 "No streams specified for the memory model pass"
             )
 
-        for sid, size, ratio, stride, streams in self._model:
+        for elem in self._model:
+            if len(elem) == 5:
+                elem.append(0)
+
+        for sid, size, ratio, stride, streams, shuffle in self._model:
 
             items.append((sid, ratio))
             all_ratio += ratio
@@ -1920,6 +1925,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 values = [0]
             else:
                 values = [(value + shift) for value in range(0, size, stride)]
+                values = microprobe.utils.distrib.shuffle(values, shuffle)
 
             sets_dict[sid] = values
             shift += shift_streams
@@ -1946,7 +1952,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         descriptors = {}
         descriptors2 = {}
 
-        for sid, size, ratio, dummy_stride, streams in self._model:
+        for sid, size, ratio, dummy_stride, streams, shuffle in self._model:
 
             var = microprobe.code.var.VariableArray(
                 "stream%d" % sid, "char", size, align=4 * 1024
@@ -2426,7 +2432,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         blabelins = None
         emptycontext = target.wrapper.context()
 
-        for sid, size, ratio, stride, streams in self._model:
+        for sid, size, ratio, stride, streams, shuffle in self._model:
             var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall,\
                 calc_instrs, last_instr, count, module, reduced,\
                 max_value, sind = descriptors[sid]
