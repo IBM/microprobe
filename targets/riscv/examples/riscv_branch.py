@@ -231,7 +231,8 @@ class RiscvIpcTest(object):
         # At the end of each iteration, update the current
         # branch register based on loop count
         p = initialization.AddFinalizationAssemblyPass(
-            "srl x7, x5, x6"
+            "srl x7, x5, x6 \n" +
+            "andi x7, x7, 1"
         )
         synth.add_pass(p)
 
