@@ -154,7 +154,7 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
-            [[0, 512, 1, 32, 1]]
+            [[0, 512, 1, 32, 1, 0, (1, 0)]]
         )
     )
 

@@ -90,7 +90,11 @@ def _generic_policy_wrapper(all_arguments):
         )
 
     for mems in memory_streams:
-        extrapath.append("ME_%d_%d_%d_%d_%d" % mems)
+        extrapath.append(
+            "ME_%d_%d_%d_%d_%d_%d_%d_%d" %
+            (mems[0], mems[1], mems[2], mems[3],
+             mems[4], mems[5], mems[6][0], mems[6][1])
+        )
 
     outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
     outputfile = outputfile.replace(
@@ -354,23 +358,37 @@ def main():
         "me",
         None,
         "Memory stream definition. String with the format "
-        "NUM:SIZE:WEIGHT:STRIDE:REGS where NUM is the number of streams of "
+        "NUM:SIZE:WEIGHT:STRIDE:REGS:RND:LOC1:LOC2 where NUM is the number "
+        "of streams of "
         "this type, SIZE is the working set size of the stream in bytes, "
         "WEIGHT is the probability of the stream. E.g. streams with the same"
         "weight will have same probability to be generated. "
         "STRIDE is the stride access patern between the elements of the "
         "stream and REGS is the number of register sets (address base + "
-        "address index) to be used for each stream. All the elements of "
+        "address index) to be used for each stream. "
+        "RND controls the randomess of the generated memory access "
+        "stream. -1 is full randomness, 0 is not randomness, and any "
+        "value above 0 control the randomness range. E.g. a value of "
+        "1024 randomizes the accesses within 1024 bytes memory ranges."
+        "LOC1 and LOC2 control the temporal locality of the memory access "
+        "stream in the following way: the last LOC1 accesses are going "
+        "to be accessed again LOC2 times before moving forward to the "
+        "next addresses. If LOC2 is 0 not temporal locality is generated "
+        "besides the implicit one from the memory access stream definition. "
+        "All the elements of "
         "this format stream can be just a number or a range specfication "
         "(start-end) or (start-end-step). This flag can be specified "
         "multiple times",
         group=groupname,
-        opt_type=string_with_fields(":", 5, 5,
+        opt_type=string_with_fields(":", 8, 8,
                                     [int_range(1, 100),
                                      int_range(1, 2**32),
                                      int_range(1, 10000),
                                      int_range(1, 2**32),
-                                     int_range(1, 10)
+                                     int_range(1, 10),
+                                     int_range(-1, 2**32),
+                                     int_range(0, 2**32),
+                                     int_range(0, 2**32),
                                      ]
                                     ),
         required=False,
@@ -518,7 +536,14 @@ def _generate_mem_streams(rconfig, arguments):
     rcomb = []
 
     for elem in arguments['memory_stream']:
-        rcomb.append(list(itertools.product(*elem)))
+        rcomb.append(
+            [
+                [val[0], val[1], val[2], val[3],
+                 val[4], val[5], (val[6], val[7])]
+                for val in
+                itertools.product(*elem)
+            ]
+        )
 
     for relem in itertools.product(*rcomb):
 

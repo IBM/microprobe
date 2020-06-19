@@ -78,7 +78,7 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
         self._wrapper(
             "riscv_v22-riscv_generic-riscv64_test_p",
             extra="-B 1024 -re ADD_V0:XOR_V0:1-2 -p " +
-            "-me 1-2:2048:1:144:1 " +
+            "-me 1-2:2048:1:144:1:0:1:0 " +
             "-seq ADD_V0,ADDI_V0,FMUL.S_V0,MULW_V0,LD_V0,SD_V0"
         )
 
@@ -89,7 +89,7 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
         self._wrapper(
             "riscv_v22-riscv_generic-riscv64_linux_gcc",
             extra="-B 1024 -re ADD_V0:XOR_V0:1-2 -p " +
-            "-me 1-2:2048:1:144:1 " +
+            "-me 1-2:2048:1:144:1:0:1:0 " +
             "-seq ADD_V0,ADDI_V0,FMUL.S_V0,MULW_V0,LD_V0,SD_V0"
         )
 

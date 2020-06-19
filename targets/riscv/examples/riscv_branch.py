@@ -32,8 +32,9 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from microprobe.code import Synthesizer, get_wrapper
 from microprobe.exceptions import MicroprobeException
 from microprobe.passes import initialization, instruction, register,\
-    structure, memory, branch
+    structure, memory, branch, address, symbol
 from microprobe.target import import_definition
+from microprobe.utils.misc import RNDINT
 
 
 class RiscvIpcTest(object):
@@ -85,6 +86,17 @@ class RiscvIpcTest(object):
             help='Global branch pattern (String with 0 and 1s)'
         )
         parser.add_argument(
+            '--random-branch',
+            default=4,
+            type=int,
+            help='Integer specifying ratio of random branches'
+                 '(not controlled). Every N branches will be '
+                 'random. E.g. if 1 is specified all branches '
+                 'will be random. If 2 is specified, 1 every 2 '
+                 'branches will be random.'
+        )
+
+        parser.add_argument(
             '--switch-pattern',
             default=False,
             action="store_true",
@@ -105,12 +117,13 @@ class RiscvIpcTest(object):
         # Reserve a couple of register to control
         # the branch behavior
         #
+        # X0 reserved to avoid using constant 0
         # X5 will be used to store the local branch pattern
         # X6 will be used to store the loop count
         # X7 will be used to store current branch
         # X8 will be used to store constant 1 (we already have
         #    X0 with constant 0)
-        reserved_registers = ["X5", "X6", "X7", "X8"]
+        reserved_registers = ["X0", "X5", "X6", "X7", "X8"]
 
         if not os.path.exists(self.args.output_dir):
             os.makedirs(self.args.output_dir)
@@ -121,9 +134,16 @@ class RiscvIpcTest(object):
             if i.name in ['ADD_V0', 'MUL_V0']]
 
         # Add conditional branches
-        branch_instrs = [
+        branch_instrs_names = [
             i.name for i in self.target.isa.instructions.values()
             if i.branch_conditional]
+
+        branch_instrs = [
+            i for i in self.target.isa.instructions.values()
+            if i.branch_conditional]
+
+        branch_instrs = branch_instrs[0:1]
+        branch_instrs_names = branch_instrs_names[0:1]
 
         microbenchmarks = []
         cwrapper = get_wrapper('RiscvTestsP')
@@ -143,7 +163,13 @@ class RiscvIpcTest(object):
 
         # Set instruction type
         p = instruction.SetRandomInstructionTypePass(
-            valid_instrs + branch_instrs
+            [self.target.isa.instructions[elem]
+             for elem in valid_instrs + branch_instrs_names]
+        )
+        synth.add_pass(p)
+
+        p = initialization.InitializeRegistersPass(
+            value=RNDINT()
         )
         synth.add_pass(p)
 
@@ -175,13 +201,12 @@ class RiscvIpcTest(object):
         # Operand 1 of all branches will be X7, which contains the
         # current branch value (which changes every iteration)
         p = instruction.SetInstructionOperandsByOpcodePass(
-               branch_instrs, 1, self.target.isa.registers["X7"],
+               branch_instrs_names, 1, self.target.isa.registers["X7"],
         )
         synth.add_pass(p)
 
         # Operand 2 of all branches will be X0 (0) / X8 (1)
         # based on the global pattern provided
-
         global_pattern_regs = []
         for char in self.args.global_branch_pattern:
             if char == "0":
@@ -190,13 +215,20 @@ class RiscvIpcTest(object):
                 global_pattern_regs.append(self.target.isa.registers["X8"])
 
         p = instruction.SetInstructionOperandsByOpcodePass(
-               branch_instrs, 2, global_pattern_regs
+               branch_instrs_names, 2, global_pattern_regs
         )
         synth.add_pass(p)
 
-        # Set target of branches (regarless of taken not taken,
-        # branch to next instruction)
-        p = branch.BranchNextPass()
+        # Randomize branches for BGT 0 every N branches
+        p = branch.RandomizeByTypePass(
+            branch_instrs,  # instructions to replace
+            self.target.isa.instructions['BGE_V0'],  # new instruction
+            self.args.random_branch,  # every N instructions
+            None,  # randomization code to add (Not supported for now)
+            distance=3,  # distance between randomization code and branch
+            musage=32,  # max. time @@REG@@ can be used before reset
+            reset=('add', (-0xFF, 0xFF))  # add to branch reg every iteration
+            )
         synth.add_pass(p)
 
         # At the end of each iteration, update the loop count
@@ -237,10 +269,17 @@ class RiscvIpcTest(object):
         synth.add_pass(p)
 
         # Model memory operations to ensure correctness
-        p = memory.GenericMemoryStreamsPass([[0, 1024, 1, 32, 1]])
+        p = memory.GenericMemoryStreamsPass([[0, 1024, 1, 32, 1, 0, (1, 0)]])
         synth.add_pass(p)
         # Model dependency distance (no dependencies)
         p = register.DefaultRegisterAllocationPass(dd=0)
+        synth.add_pass(p)
+
+        # Set target of branches (regarless of taken not taken,
+        # branch to next instruction)
+        p = address.UpdateInstructionAddressesPass()
+        synth.add_pass(p)
+        p = branch.BranchBraidNextPass()
         synth.add_pass(p)
 
         microbenchmark = "branch_%s_%s_%d" % (

@@ -20,15 +20,17 @@ from __future__ import absolute_import
 # Built-in modules
 import collections
 import itertools
+import copy
 
 # Third party modules
 
 # Own modules
 from microprobe.code.address import InstructionAddress
-from microprobe.exceptions import MicroprobeCodeGenerationError
+from microprobe.exceptions import MicroprobeCodeGenerationError, \
+    MicroprobeUncheckableEnvironmentWarning
 from microprobe.passes import Pass
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import RejectingDict
+from microprobe.utils.misc import RejectingDict, RNDINT
 
 
 # Local modules
@@ -37,6 +39,7 @@ from microprobe.utils.misc import RejectingDict
 # Constants
 LOG = get_logger(__name__)
 __all__ = ['BranchNextPass',
+           'BranchBraidNextPass',
            'FixIndirectBranchPass',
            'InitializeBranchDecorator',
            "LinkBbls"]
@@ -281,6 +284,413 @@ class BranchNextPass(Pass):
                     memoperand.set_address(
                         taddress, building_block.context
                     )
+
+    def check(self, building_block, dummy_target):
+        """
+
+        :param building_block:
+        :param dummy_target:
+
+        """
+
+        pass_ok = True
+        for bbl in building_block.cfg.bbls:
+            instr_ant = None
+
+            for instr in bbl.instrs:
+
+                if instr_ant is None:
+                    instr_ant = instr
+                    continue
+
+                if not instr_ant.branch:
+                    instr_ant = instr
+                    continue
+
+                pass_ok = pass_ok and instr.label != ""
+
+                for memoperand in instr_ant.memory_operands():
+
+                    if not memoperand.descriptor.is_branch_target:
+                        continue
+
+                    taddress = InstructionAddress(base_address=instr.label)
+                    pass_ok = pass_ok and memoperand.address == taddress
+
+                instr_ant = instr
+
+        return pass_ok
+
+
+class BranchBraidNextPass(Pass):
+    """BranchBraidNextPass pass.
+
+    """
+
+    def __init__(self, branch=None, force=False, bbl=20):
+        """
+
+        """
+        super(BranchBraidNextPass, self).__init__()
+        self._description = "Set the branch target of each branch to the " \
+                            "next instruction but replicating the code " \
+                            "creating a braid in execution."
+        self._branch = branch
+        self._force = force
+        self._bbl = bbl
+        if branch is not None:
+            self._description += "Only model '%s'" % branch
+
+    def __call__(self, building_block, target):
+        """
+
+        :param building_block:
+        :param target:
+
+        """
+
+        if not building_block.context.register_has_value(0):
+            reg = target.get_register_for_address_arithmetic(
+                building_block.context
+            )
+            building_block.add_init(
+                target.set_register(
+                    reg, 0, building_block.context
+                )
+            )
+            building_block.context.set_register_value(reg, 0)
+            building_block.context.add_reserved_registers([reg])
+
+        counter = 0
+        all_counter = 0
+        rregs = 0
+        labels = []
+
+        label_instruction_map = {}
+
+        instr_ant = None
+        first_branch_hit = False
+
+        new_instructions = []
+        current_bbl = []
+        last_braid = None
+        last_bbl_head = None
+
+        for bbl in building_block.cfg.bbls:
+
+            for instr in bbl.instrs:
+
+                if instr_ant is None:
+                    instr_ant = instr
+
+                    if instr.label is None:
+                        first_label = "first"
+                        instr.set_label("first")
+                        label_instruction_map[first_label] = instr
+                    else:
+                        first_label = instr.label
+                        label_instruction_map[first_label] = instr
+
+                    continue
+
+                if not instr_ant.branch:
+                    if first_branch_hit:
+                        current_bbl.append(instr_ant)
+                    instr_ant = instr
+                    continue
+
+                if self._branch is not None and \
+                        instr_ant.name != self._branch:
+                    if first_branch_hit:
+                        current_bbl.append(instr_ant)
+                    instr_ant = instr
+                    continue
+
+                LOG.debug("Setting target for branch: '%s'", instr_ant)
+                target_set = False
+
+                for memoperand in instr_ant.memory_operands():
+
+                    if not memoperand.descriptor.is_branch_target:
+                        continue
+
+                    if memoperand.address is not None and not self._force:
+                        continue
+
+                    if target_set:
+                        continue
+
+                    LOG.debug("Computing label")
+
+                    if instr_ant.branch_relative:
+
+                        if instr.label is None:
+                            label = "rel_branch_%d" % all_counter
+                            instr.set_label(label)
+                            LOG.debug(
+                                "Branch relative, new label: '%s'", label
+                            )
+                        else:
+                            label = instr.label
+                            LOG.debug(
+                                "Branch relative, existing label: '%s'", label
+                            )
+
+                    elif rregs < 5:
+
+                        if instr.label is None:
+                            label = "abs_branch_%d" % counter
+                            labels.append(label)
+                            instr.set_label(label)
+                            LOG.debug(
+                                "Branch absolute, new label: '%s'", label
+                            )
+                        else:
+                            label = instr.label
+                            LOG.debug(
+                                "Branch absolute, exiting label: '%s'", label
+                            )
+
+                        label_instruction_map[label] = instr
+                    else:
+                        label = labels[counter % 5]
+
+                    assert label is not None
+
+                    taddress = InstructionAddress(base_address=label)
+
+                    if instr_ant.branch_relative:
+                        taddress.set_target_instruction(instr)
+                    else:
+                        taddress.set_target_instruction(
+                            label_instruction_map[label]
+                        )
+
+                    try:
+                        memoperand.set_address(
+                            taddress, building_block.context
+                        )
+                        target_set = True
+                        instr_ant.add_comment("Branch fixed to: %s" % taddress)
+
+                    except MicroprobeCodeGenerationError:
+
+                        reg = \
+                            target.get_register_for_address_arithmetic(
+                                building_block.context)
+                        building_block.add_init(
+                            target.set_register_to_address(
+                                reg, taddress, building_block.context
+                            )
+                        )
+                        building_block.context.set_register_value(
+                            reg, taddress
+                        )
+
+                        building_block.context.add_reserved_registers([reg])
+
+                        memoperand.set_address(
+                            taddress, building_block.context
+                        )
+
+                        rregs += 1
+                        target_set = True
+                        instr_ant.add_comment("Branch fixed to: %s" % taddress)
+
+                if not instr_ant.branch_relative:
+                    counter += 1
+                else:
+                    all_counter += 1
+
+                if first_branch_hit:
+                    current_bbl.append(instr_ant)
+
+                if not first_branch_hit:
+                    first_braid = instr_ant
+
+                new_instructions.append(current_bbl)
+                last_braid = instr_ant
+                last_bbl_head = instr
+                current_bbl = []
+
+                first_branch_hit = True
+
+                instr_ant = instr
+
+        bbl = building_block.cfg.bbls[-1]
+        if bbl.instrs[-1].branch:
+            LOG.debug("Last instruction is a BRANCH: %s", bbl.instrs[-1])
+            for memoperand in bbl.instrs[-1].memory_operands():
+
+                if not memoperand.descriptor.is_branch_target:
+                    continue
+
+                if memoperand.address is not None and not self._force:
+                    continue
+
+                target_set = False
+                for operand in memoperand.operands:
+                    if operand.value is not None and not self._force:
+                        target_set = True
+                        break
+
+                if target_set:
+                    continue
+
+                if (len(building_block.fini) >
+                        0 and bbl.instrs[-1].branch_relative):
+
+                    if building_block.fini[0].label is None:
+                        label = "rel_branch_%d" % all_counter
+                        building_block.fini[0].set_label(label)
+                    else:
+                        label = building_block.fini[0].label
+
+                    taddress = InstructionAddress(base_address=label)
+                    taddress.set_target_instruction(
+                        label_instruction_map[first_label]
+                    )
+                else:
+                    assert first_label is not None
+
+                    taddress = InstructionAddress(base_address=first_label)
+                    taddress.set_target_instruction(
+                        label_instruction_map[first_label]
+                    )
+
+                try:
+                    memoperand.set_address(
+                        taddress, building_block.context
+                    )
+                except MicroprobeCodeGenerationError:
+
+                    reg = \
+                        target.get_register_for_address_arithmetic(
+                            building_block.context)
+                    building_block.add_init(
+                        target.set_register_to_address(
+                            reg, taddress, building_block.context
+                        )
+                    )
+                    building_block.context.set_register_value(
+                        reg, taddress
+                    )
+
+                    building_block.context.add_reserved_registers([reg])
+
+                    memoperand.set_address(
+                        taddress, building_block.context
+                    )
+
+        base_instructions = []
+        for elem in new_instructions:
+            if len(elem) == 0:
+                continue
+            base_instructions.append(elem[:])
+
+        new_instructions = [
+            elem for elem in new_instructions if len(elem) > 0
+        ]
+
+        for idx, elem in enumerate(new_instructions):
+            if len(elem) == 0:
+                continue
+            new_instructions[idx] = [instr.copy() for instr in elem]
+
+        assert len(base_instructions) == len(new_instructions)
+
+        for elem in new_instructions:
+            for elem2 in elem:
+                elem2.add_comment("Braid instruction")
+
+        def flatten(lst):
+            return [item for sublist in lst for item in sublist]
+
+        basel = [first_braid] + flatten(base_instructions) + [last_bbl_head]
+        newl = [first_braid] + flatten(new_instructions) + [last_bbl_head]
+
+        for idx, (base, new) in enumerate(zip(basel, newl)):
+            if base.label is None:
+                continue
+
+            if not base.label.startswith("rel_branch"):
+                continue
+
+            jbase = basel[idx-1]
+            jnew = newl[idx-1]
+
+            new.set_label("%s_2" % new.label)
+
+            for memoperand in jbase.memory_operands():
+                if not memoperand.descriptor.is_branch_target:
+                    continue
+                if not jbase.branch_relative:
+                    continue
+                taddress = InstructionAddress(base_address=new.label)
+                taddress.set_target_instruction(new)
+                memoperand.set_address(
+                    taddress, building_block.context
+                )
+
+            if jbase is not jnew:
+
+                if base is not new:
+                    base.set_label("%s_1" % base.label)
+
+                for memoperand in jnew.memory_operands():
+                    if not memoperand.descriptor.is_branch_target:
+                        continue
+                    if not jnew.branch_relative:
+                        continue
+                    taddress = InstructionAddress(base_address=base.label)
+                    taddress.set_target_instruction(base)
+                    memoperand.set_address(
+                        taddress, building_block.context
+                    )
+
+        chunks = list(enumerate(zip(base_instructions, new_instructions)))
+
+        for chunk in [chunks[i:i + self._bbl]
+                      for i in range(0, len(chunks), self._bbl)]:
+            bins = flatten([chk[1][0] for chk in chunk])
+            nins = flatten([chk[1][1] for chk in chunk])
+
+            assert len(bins) == len(nins)
+
+            after_instr = bins[-1]
+            lidx = chunk[-1][0]
+
+            if lidx+1 >= len(chunks):
+                before_instr = last_bbl_head
+            else:
+                before_instr = chunks[lidx+1][1][0][0]
+
+            taddress = InstructionAddress(base_address=before_instr.label)
+            taddress.set_target_instruction(before_instr)
+            new_branch = target.branch_unconditional_relative(
+                after_instr.architecture_type.format.length +
+                after_instr.address, taddress
+            )
+            new_branch.add_comment("Jump to synch braid")
+
+            building_block.add_instructions(
+                [new_branch] + nins,
+                after=after_instr,
+                before=before_instr
+            )
+
+        # taddress = InstructionAddress(base_address=last_bbl_head.label)
+        # taddress.set_target_instruction(last_bbl_head)
+        # new_branch = target.branch_unconditional_relative(
+        #    last_braid.architecture_type.format.length +
+        #     last_braid.address, taddress
+        # )
+        # new_branch.add_comment("Branch to latest braid BBL")
+
+        # new_instructions = [new_branch] # + new_instructions
+        # building_block.add_instructions(new_instructions,
+        #                                 after=last_braid,
+        #                                before=last_bbl_head)
 
     def check(self, building_block, dummy_target):
         """
@@ -788,3 +1198,162 @@ class NormalizeBranchTargetsPass(Pass):
                 raise NotImplementedError
 
             moperand.update_address(target_address)
+
+
+class RandomizeByTypePass(Pass):
+    """RandomizeByTypePass pass.
+
+    """
+
+    def __init__(self, instr1, instr2,
+                 every, code, distance=1,
+                 musage=None, reset=None):
+        """
+        :param instr1:
+        :param instr2:
+        :param every:
+
+        """
+        super(RandomizeByTypePass, self).__init__()
+
+        if not isinstance(instr1, list):
+            instr1 = [instr1]
+
+        self._instr1 = instr1
+        self._instr2 = instr2
+        self._every = every
+        self._distance = distance
+        self._code = code
+        if musage is None:
+            musage = -1
+        self._musage = musage
+        self._reset = reset
+        self._description = "Randomize '%s' by '%s' every '%d' "\
+            "by adding '%s' code at distance '%d', with max reg "\
+            "usage of '%s' and reset mode: '%s'" \
+            % (
+                [instr.name for instr in instr1],
+                instr2.name, every, code, distance,
+                musage, reset
+            )
+
+    def __call__(self, building_block, target):
+        """
+
+        :param building_block:
+        :param target:
+
+        """
+
+        if self._every == 0:
+            return
+
+        creg = None
+        ccode = None
+        usereg = []
+        cusage = 0
+
+        count = 0
+        for bbl in building_block.cfg.bbls:
+            for instr in bbl.instrs:
+
+                if instr.architecture_type in self._instr1:
+                    count = count + 1
+
+                    if (count % self._every) != 0:
+                        continue
+
+                    instr.set_arch_type(self._instr2)
+
+                    # take on operand input
+                    soperand = None
+                    for operand in instr.operands():
+                        if not operand.is_input:
+                            continue
+                        if operand.type.constant:
+                            continue
+                        if operand.type.immediate:
+                            continue
+                        if operand.type.float:
+                            continue
+                        if operand.type.address_relative:
+                            continue
+                        if operand.type.address_absolute:
+                            continue
+                        if operand.type.address_immediate:
+                            continue
+                        if operand.type.address_base:
+                            continue
+                        if operand.type.address_index:
+                            continue
+                        soperand = operand
+                        break
+
+                    if soperand is None:
+                        LOG.debug(
+                            "Unable to randomize branch "
+                            "without input register operands"
+                        )
+                        continue
+
+                    values = soperand.type.values()
+                    values = [val for val in values if val not in
+                              building_block.context.reserved_registers
+                              and val not in target.control_registers]
+
+                    if (creg in values and creg not in usereg and
+                            (cusage < self._musage or self._musage == -1)):
+
+                        # Current register is in valid values and has not
+                        # been used much, just need to set operand value and
+                        # random code
+                        register = creg
+                    else:
+                        # New register, need to reset according to settings
+                        register = [val for val in values
+                                    if val not in usereg][0]
+                        creg = register
+                        if self._reset is not None and self._reset[0] == "add":
+                            vrange = sorted(list(self._reset[1]))
+                            diff = 0
+                            if vrange[0] < 0:
+                                diff = vrange[0]
+                            value = RNDINT(maxmin=(vrange[0], vrange[1]))
+                            value = value - diff
+                            nins = target.add_to_register(register, value)
+                            building_block.add_fini(nins)
+                        else:
+                            raise NotImplementedError
+
+                    # Set operand
+                    operand.set_value(register)
+                    cusage = cusage + 1
+
+                    # Add code
+                    if cusage >= self._musage:
+                        usereg.append(register)
+                        creg = None
+                        ccode = None
+                        cusage = 0
+
+                    # reserve implicit operands (if they are not already
+                    # reserved) and add them as allowed
+                    for operand_descriptor in instr.implicit_operands:
+                        register = list(operand_descriptor.type.values())[0]
+                        instr.add_allow_register(register)
+
+                        if operand_descriptor.is_output and register not \
+                                in building_block.context.reserved_registers \
+                                and register not in target.control_registers:
+                            building_block.context.add_reserved_registers(
+                                [register]
+                            )
+
+                    context_fix_functions = instr.check_context(
+                        building_block.context
+                    )
+                    for context_fix_function in context_fix_functions:
+                        try:
+                            context_fix_function(target, building_block)
+                        except MicroprobeUncheckableEnvironmentWarning as wue:
+                            building_block.add_warning(str(wue))

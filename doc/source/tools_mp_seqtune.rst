@@ -62,13 +62,15 @@ generate different memory access patterns that do the following:
 * Four memory access patterns that access, each of them, a memory range from 
   2K to 32K in steps of 1K.
 * Each memory access pattern access its own memory range in a round-robin
-  fashion using a stride of 144 bytes.
+  fashion using a minimum stride of 144 bytes.
 * Each memory access pattern has the same probability to be used.
 * Each memory access pattern use a single set for base/index registers.
+* No added randomness in the memory access pattern.  
+* No added temporal locality in the memory access pattern.
 
 To do so, we need to issue the following command::
 
-  > mp_seqtune -T power_v300-power9-ppc64_linux_gcc -D . -seq SUBFIC_V0,LVXL_V0,LWA_V0,SUBFIC_V0,LXVW4X_V0,VMHADDSHS_V0 -me 4:2048-32768-1024:1:144:1 
+  > mp_seqtune -T power_v300-power9-ppc64_linux_gcc -D . -seq SUBFIC_V0,LVXL_V0,LWA_V0,SUBFIC_V0,LXVW4X_V0,VMHADDSHS_V0 -me 4:2048-32768-1024:1:144:1:0:1:0 
 
 This will generate 31 microbenchmarks in the current directory. One with 
 4 streams accessing each 2K memory region, one with 4 streams accessing each a
@@ -76,7 +78,7 @@ This will generate 31 microbenchmarks in the current directory. One with
 
 In the command above, we used the ``-me`` parameter to specify the 
 variations to be generated around the memory behavior. The parameter value
-is split in 5 fields using ``:`` symbol. The meaning of the fields is the 
+is split in 8 fields using ``:`` symbol. The meaning of the fields is the 
 following:
 
 * 4 : number of memory streams
@@ -96,7 +98,12 @@ following:
   reservation of base/index registers for address computations. If there are
   enough registers available, one might want to increase this number to
   increase the ILP between address computation and usage.      
-
+* 0 : No randomness. Memory accesses will be performance sequentially using
+  stride specified. If the value is set to -1, the memory access stream is
+  completelly random. If set to a value > 0, the memory access stream is
+  random within the specified range. 
+* 1:0 : No added temporaral locality since last 1 memory access will be repeated
+  0 time before moving to next memory address.
 
 .. note:: 
 

@@ -37,6 +37,7 @@ from microprobe.utils.misc import getnextf
 LOG = get_logger(__name__)
 __all__ = [
     "Choice", "weighted_choice", "discrete_average", "shuffle",
+    "locality",
     "sort_by_distance", "sort_by_usage", "generate_plain_profile",
     "generate_weighted_profile", "compute_weighted_profile_average",
     "regular_seq", "average", "pstdev"
@@ -426,3 +427,21 @@ def compute_weighted_profile_average(profile, attribute):
     return sum([getattr(entry, attribute) * weight for
                 entry, weight in profile]) / \
         sum([weight for entry, weight in profile])
+
+
+def locality(values, locdef):
+    """
+
+    """
+    length = locdef[0]
+    repeat = locdef[1]
+
+    if repeat <= 0:
+        return values
+
+    values = [
+        values[i:i + length] * repeat
+        for i in range(0, len(values), length)
+    ]
+    values = [item for sublist in values for item in sublist]
+    return values

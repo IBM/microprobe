@@ -204,11 +204,16 @@ class ReplaceInstructionByTypePass(microprobe.passes.Pass):
 
         """
         super(ReplaceInstructionByTypePass, self).__init__()
+
+        if not isinstance(instr1, list):
+            instr1 = [instr1]
+
         self._instr1 = instr1
         self._instr2 = instr2
         self._every = every
         self._description = "Replace '%s' by '%s' every '%d'" % (
-            instr1.name, instr2.name, every
+            [instr.name for instr in instr1],
+            instr2.name, every
         )
 
     def __call__(self, building_block, target):
@@ -228,7 +233,7 @@ class ReplaceInstructionByTypePass(microprobe.passes.Pass):
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
 
-                if instr.architecture_type == self._instr1:
+                if instr.architecture_type in self._instr1:
                     count = count + 1
 
                     if (count % self._every) != 0:
@@ -259,10 +264,11 @@ class ReplaceInstructionByTypePass(microprobe.passes.Pass):
                         except MicroprobeUncheckableEnvironmentWarning as wue:
                             building_block.add_warning(str(wue))
 
-        if not replaced:
-            raise MicroprobeCodeGenerationError(
-                "Unable to replace %s by %s every %d times" %
-                (self._instr1.name, self._instr2.name, self._every))
+        # if not replaced:
+        #    raise MicroprobeCodeGenerationError(
+        #        "Unable to replace %s by %s every %d times" %
+        #        ([instr.name for instr in self._instr1],
+        #        self._instr2.name, self._every))
 
 
 class SetInstructionTypeByElementPass(microprobe.passes.Pass):
@@ -476,7 +482,6 @@ class SetInstructionTypeBySequencePass(microprobe.passes.Pass):
         :param target:
 
         """
-
         count = 0
 
         for bbl in building_block.cfg.bbls:

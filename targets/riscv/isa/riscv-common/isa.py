@@ -26,6 +26,7 @@ import six
 
 # Own modules
 from microprobe.code.address import Address, InstructionAddress
+from microprobe.code.ins import Instruction
 from microprobe.code.var import Variable, VariableArray
 from microprobe.target.isa import GenericISA
 from microprobe.utils.logger import get_logger
@@ -58,7 +59,14 @@ class RISCVISA(GenericISA):
         instrs = []
 
         current_value = context.get_register_value(register)
-        if context.register_has_value(value):
+
+        if value == 0:
+            present_reg = self.registers["X0"]
+
+            if present_reg.type.name != register.type.name:
+                present_reg = None
+
+        elif context.register_has_value(value):
             present_reg = context.registers_get_value(value)[0]
 
             if present_reg.type.name != register.type.name:
@@ -200,15 +208,15 @@ class RISCVISA(GenericISA):
                                                 (value >> 32),
                                                 context))
 
-                instrs.extend(self.set_register(self._scratch_registers[0],
-                                                (value & 0x00000000FFFFFFFF),
-                                                context))
-
                 slli = self.new_instruction("SLLI_V0")
                 slli.set_operands([32, register, register])
                 instrs.append(slli)
 
-                and_inst = self.new_instruction("AND_V0")
+                instrs.extend(self.set_register(self._scratch_registers[0],
+                                                (value & 0x00000000FFFFFFFF),
+                                                context))
+
+                and_inst = self.new_instruction("OR_V0")
                 and_inst.set_operands(
                     [register, self._scratch_registers[0], register])
                 instrs.append(and_inst)
@@ -425,7 +433,50 @@ class RISCVISA(GenericISA):
         LOG.debug("Source: %s", source)
         LOG.debug("Target: %s", target)
 
-        raise NotImplementedError
+        if isinstance(target, InstructionAddress):
+            target_address = target
+        elif isinstance(target, Instruction):
+            target_address = target.address
+        else:
+            print(("Target:", target))
+            raise NotImplementedError
+
+        if target.base_address != source.base_address:
+            # Assume symbolic generation
+            instruction = self.new_instruction("JAL_V0")
+            source_address = source
+            instruction.set_address(source_address)
+            instruction.operands()[1].set_value(self.target.registers['X0'])
+            instruction.memory_operands()[0].set_address(target_address, None)
+            return instruction
+
+        elif isinstance(source, InstructionAddress):
+            source_address = source
+
+            relative_offset = target_address - source_address
+
+            instruction = self.new_instruction("B_V0")
+            instruction.set_address(source_address)
+
+            LOG.debug("Source address: %s", source_address)
+            LOG.debug("Target address: %s", target_address)
+            LOG.debug("Relative offset: %s", relative_offset)
+
+        elif isinstance(source, Instruction):
+            source_address = source.address
+            relative_offset = target_address - source_address
+            instruction = source
+        else:
+            print(("Source:", source))
+            raise NotImplementedError
+
+        for operand in instruction.operands():
+            if not operand.type.address_relative:
+                continue
+
+            operand.set_value(relative_offset)
+
+        return instruction
 
     def add_to_register(self, register, value):
 

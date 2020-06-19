@@ -132,6 +132,15 @@ def import_definition(filenames, registers):
                     key.append(floating_point)
                     key.append(vector)
 
+                    # Filter out Register without
+                    # representation (N/A)
+                    #
+                    # These are pseudo registers used in
+                    # simulation/emulation environment.
+                    # They are not architected registers.
+
+                    regs = [reg for reg in regs if reg.representation != 'N/A']
+
                     operand = OperandReg(
                         name, descr, regs, address_base, address_index,
                         floating_point, vector

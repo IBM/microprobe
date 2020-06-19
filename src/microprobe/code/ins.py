@@ -1736,6 +1736,7 @@ class Instruction(Pickable):
             new_instruction.register_context_callback(*callback)
 
         new_instruction.set_operands([op.value for op in self.operands()])
+
         for reg in self.allowed_regs:
             new_instruction.add_allow_register(reg)
 
@@ -1746,7 +1747,10 @@ class Instruction(Pickable):
             new_instruction.add_decorator(dec_key, dec_val)
 
         new_instruction.set_label(self.label)
-        new_instruction.set_address(self.address.copy())
+        if self.address is not None:
+            new_instruction.set_address(self.address.copy())
+
+        return new_instruction
 
     def operand_by_field(self, fieldname):
         """

@@ -55,7 +55,7 @@ __all__ = [
 
 # Classes
 class UpdateInstructionAddressesPass(microprobe.passes.Pass):
-    """INS_ComputerAddresses pass.
+    """UpdateInstructionAddressesPass pass.
 
     """
 

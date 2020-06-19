@@ -1912,10 +1912,12 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             )
 
         for elem in self._model:
-            if len(elem) == 5:
-                elem.append(0)
+            if len(elem) != 7:
+                raise MicroprobeCodeGenerationError(
+                    "Unsupported stream definition"
+                )
 
-        for sid, size, ratio, stride, streams, shuffle in self._model:
+        for sid, size, ratio, stride, streams, shuffle, loc in self._model:
 
             items.append((sid, ratio))
             all_ratio += ratio
@@ -1926,6 +1928,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             else:
                 values = [(value + shift) for value in range(0, size, stride)]
                 values = microprobe.utils.distrib.shuffle(values, shuffle)
+                values = microprobe.utils.distrib.locality(values, loc)
 
             sets_dict[sid] = values
             shift += shift_streams
@@ -1952,7 +1955,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         descriptors = {}
         descriptors2 = {}
 
-        for sid, size, ratio, dummy_stride, streams, shuffle in self._model:
+        for (sid, size, ratio, dummy_stride,
+             streams, shuffle, loc) in self._model:
 
             var = microprobe.code.var.VariableArray(
                 "stream%d" % sid, "char", size, align=4 * 1024
@@ -2103,7 +2107,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         tinstrs = []
                         new_instrs = []
                         if mcomp > 0:
-                            prev_instr = instr
+                            last_instr = instr
                     except MicroprobeCodeGenerationError:
 
                         diff = address.displacement - \
@@ -2127,6 +2131,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             update_reg, diff
                         )
 
+                        prev_instr = last_instr
                         if len(add_instructions) > 0:
                             for elem in calc_instrs:
                                 ains = add_instructions[0]
@@ -2176,6 +2181,9 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         else:
                             reg_base_val_new = reg_base_val + diff
                             reg_idx_val_new = reg_idx_val
+
+                        if mcomp > 0:
+                            last_instr = instr
 
                     count = count + 1
 
@@ -2432,7 +2440,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         blabelins = None
         emptycontext = target.wrapper.context()
 
-        for sid, size, ratio, stride, streams, shuffle in self._model:
+        for sid, size, ratio, stride, streams, shuffle, loc in self._model:
             var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall,\
                 calc_instrs, last_instr, count, module, reduced,\
                 max_value, sind = descriptors[sid]

@@ -137,7 +137,9 @@ class RiscvIpcTest(object):
                     instruction.SetRandomInstructionTypePass([instr]),
                     initialization.ReserveRegistersPass(reserved_registers),
                     branch.BranchNextPass(),
-                    memory.GenericMemoryStreamsPass([[0, 1024, 1, 32, 1]]),
+                    memory.GenericMemoryStreamsPass(
+                        [[1, 4*1024*1024, 1, 128, 1, 0, (1, 0)]]
+                    ),
                     register.DefaultRegisterAllocationPass(dd=d)
                 ]
 

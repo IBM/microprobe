@@ -282,9 +282,12 @@ def findfiles(paths, regexp, full=False, maxcount=10000):
     return results
 
 
-def RNDINT():  # pylint: disable-msg=invalid-name
+def RNDINT(maxmin=None):  # pylint: disable-msg=invalid-name
     """Returns a random integer between 0 and 2^32. """
-    return _RNDINT.randint(0, (2**64))
+    if maxmin is None:
+        return _RNDINT.randint(0, (2**64))
+    else:
+        return _RNDINT.randint(*maxmin)
 
 
 def RNDFP():  # pylint: disable-msg=invalid-name
