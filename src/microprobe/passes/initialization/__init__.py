@@ -294,7 +294,6 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                     value = ieee_float_to_int64(float(value))
 
                 elif reg.used_for_vector_arithmetic:
-
                     if isinstance(value, float):
                         if elemsize != 64:
                             raise MicroprobeCodeGenerationError(
@@ -322,7 +321,6 @@ class InitializeRegistersPass(microprobe.passes.Pass):
             else:
                 building_block.add_init(target.set_register(
                     reg, value, building_block.context))
-
             building_block.context.set_register_value(reg, value)
 
     def check(self, building_block, target):

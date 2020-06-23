@@ -1735,7 +1735,9 @@ class Instruction(Pickable):
         for callback in self.context_callbacks:
             new_instruction.register_context_callback(*callback)
 
-        new_instruction.set_operands([op.value for op in self.operands()])
+        new_instruction.set_operands(
+            [op.value for op in self.operands()], check=False
+        )
 
         for reg in self.allowed_regs:
             new_instruction.add_allow_register(reg)
@@ -1797,7 +1799,7 @@ class Instruction(Pickable):
 
         return str(self._arch_type)
 
-    def set_operands(self, values, context=None):
+    def set_operands(self, values, context=None, check=True):
         """
 
         :param values:
@@ -1813,7 +1815,7 @@ class Instruction(Pickable):
         try:
             for operand, value in zip(self.operands(), values):
                 if value is not None:
-                    operand.set_value(value)
+                    operand.set_value(value, check=check)
 
         except MicroprobeValueError as exc:
             LOG.debug("Valid operands:")

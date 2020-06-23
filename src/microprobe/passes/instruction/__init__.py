@@ -40,6 +40,7 @@ from microprobe.code.var import Variable
 from microprobe.exceptions import MicroprobeCodeGenerationError, \
     MicroprobeUncheckableEnvironmentWarning
 from microprobe.target.isa.instruction import InstructionType
+from microprobe.target.isa.register import Register
 from microprobe.utils.asm import interpret_asm
 from microprobe.utils.cmdline import print_info
 from microprobe.utils.distrib import generate_weighted_profile, \
@@ -1168,6 +1169,15 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
                     if instr.operands()[
                             self._pos].value is None or self._force:
                         instr.operands()[self._pos].set_value(self._value())
+
+                        if (instr.operands()[self._pos].is_output and
+                                isinstance(
+                                    instr.operands()[self._pos].value,
+                                    Register
+                                )):
+                            instr.add_allow_register(
+                                instr.operands()[self._pos].value
+                            )
 
     def check(self, building_block, dummy_target):
         """

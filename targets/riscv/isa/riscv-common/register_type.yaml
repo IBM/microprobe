@@ -18,6 +18,7 @@
 - Name: freg
   Size: 64
   Description: Floating Point Register 64 bits
+  FloatArithmetic: True
 - Name: rm
   Size: 3
   Description: Rounding model encoding

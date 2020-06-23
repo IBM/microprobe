@@ -103,7 +103,7 @@ following:
   completelly random. If set to a value > 0, the memory access stream is
   random within the specified range. 
 * 1:0 : No added temporaral locality since last 1 memory access will be repeated
-  0 time before moving to next memory address.
+  0 times before moving to next memory address.
 
 .. note:: 
 

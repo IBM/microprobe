@@ -21,14 +21,18 @@ from __future__ import absolute_import
 import collections
 import itertools
 import copy
+import re
 
 # Third party modules
 
 # Own modules
 from microprobe.code.address import InstructionAddress
+from microprobe.code.ins import Instruction, \
+    instruction_set_def_properties
 from microprobe.exceptions import MicroprobeCodeGenerationError, \
     MicroprobeUncheckableEnvironmentWarning
 from microprobe.passes import Pass
+from microprobe.utils.asm import interpret_asm
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, RNDINT
 
@@ -375,6 +379,7 @@ class BranchBraidNextPass(Pass):
         current_bbl = []
         last_braid = None
         last_bbl_head = None
+        first_braid = None
 
         for bbl in building_block.cfg.bbls:
 
@@ -606,16 +611,33 @@ class BranchBraidNextPass(Pass):
         def flatten(lst):
             return [item for sublist in lst for item in sublist]
 
-        basel = [first_braid] + flatten(base_instructions) + [last_bbl_head]
-        newl = [first_braid] + flatten(new_instructions) + [last_bbl_head]
+        basel = []
+        newl = []
 
+        if first_braid is not None:
+            basel.append(first_braid)
+            newl.append(first_braid)
+
+        basel.extend(flatten(base_instructions))
+        newl.extend(flatten(new_instructions))
+
+        if last_bbl_head is not None:
+            basel.append(last_bbl_head)
+            newl.append(last_bbl_head)
+
+        # Fix labels and braid the branches
+        translated_labels = {}
         for idx, (base, new) in enumerate(zip(basel, newl)):
             if base.label is None:
                 continue
 
             if not base.label.startswith("rel_branch"):
+                # This has a label, need to be fixed on new
+                new.set_label("%s_braid" % base.label)
+                translated_labels[base.label] = "%s_braid" % base.label
                 continue
 
+            # Braid the branches
             jbase = basel[idx-1]
             jnew = newl[idx-1]
 
@@ -647,6 +669,29 @@ class BranchBraidNextPass(Pass):
                     memoperand.set_address(
                         taddress, building_block.context
                     )
+
+        for nins in newl:
+            # Some operands of new instructions might refer to
+            # translated labels. Update them.
+            values = [oper.value for oper in nins.operands()]
+            for idx, val in enumerate(values):
+                if not isinstance(val, str):
+                    continue
+                translated = False
+                for label in translated_labels:
+                    for pattern in ["\\(%s\\)$", "^%s$"]:
+                        bpattern = pattern % label
+                        npattern = pattern % translated_labels[label]
+                        npattern = npattern.replace("\\", "")
+                        npattern = npattern.replace("^", "")
+                        npattern = npattern.replace("$", "")
+                        if re.search(bpattern, val):
+                            val = re.sub(bpattern, npattern, val)
+                            nins.operands()[idx].set_value(val, check=False)
+                            translated = True
+                            break
+                    if translated:
+                        break
 
         chunks = list(enumerate(zip(base_instructions, new_instructions)))
 
@@ -1249,9 +1294,12 @@ class RandomizeByTypePass(Pass):
             return
 
         creg = None
-        ccode = None
         usereg = []
         cusage = 0
+        last_branch = None
+        register = None
+        zero_register = None
+        tregister = None
 
         count = 0
         for bbl in building_block.cfg.bbls:
@@ -1310,9 +1358,30 @@ class RandomizeByTypePass(Pass):
                         register = creg
                     else:
                         # New register, need to reset according to settings
-                        register = [val for val in values
-                                    if val not in usereg][0]
+                        registers = [
+                            val for val in values
+                            if val not in usereg
+                        ]
+                        if len(registers) == 0:
+                            raise MicroprobeCodeGenerationError(
+                                "No free registers available. Change the "
+                                "generation policy settings."
+                            )
+                        register = registers[0]
                         creg = register
+
+                        if len(registers) < 2 and tregister is None:
+                            raise MicroprobeCodeGenerationError(
+                                "No free registers available. Change the "
+                                "generation policy settings."
+                            )
+
+                        if tregister is None:
+                            tregister = registers[1]
+                            building_block.context.add_reserved_registers(
+                                [tregister]
+                            )
+
                         if self._reset is not None and self._reset[0] == "add":
                             vrange = sorted(list(self._reset[1]))
                             diff = 0
@@ -1321,19 +1390,168 @@ class RandomizeByTypePass(Pass):
                             value = RNDINT(maxmin=(vrange[0], vrange[1]))
                             value = value - diff
                             nins = target.add_to_register(register, value)
+                            for ins in nins:
+                                ins.add_comment(
+                                    "Instrunction added by "
+                                    "braid pass to avoid "
+                                    "convergence to zero."
+                                )
+                            building_block.add_fini(nins)
+                        elif (self._reset is not None and
+                              self._reset[0] == "rnd"):
+
+                            vrange = sorted(list(self._reset[1]))
+                            diff = 0
+                            if vrange[0] < 0:
+                                diff = vrange[0]
+                            value = RNDINT(maxmin=(vrange[0], vrange[1]))
+                            value = value - diff
+
+                            if len(usereg) == 0:
+                                # First time
+                                regs = [
+                                    val for val in values
+                                    if val not in usereg and val not in
+                                    building_block.context.reserved_registers
+                                ]
+
+                                if len(regs) < 2:
+                                    raise MicroprobeCodeGenerationError(
+                                        "No free registers available. "
+                                        "Change the "
+                                        "generation policy settings."
+                                    )
+
+                                reg = regs[1]
+
+                                nins = target.set_register(
+                                    reg, RNDINT(), building_block.context
+                                )
+                                for ins in nins:
+                                    ins.add_comment(
+                                        "Instrunction added by "
+                                        "randomize pass to avoid "
+                                        "convergence to zero."
+                                    )
+                                building_block.add_init(nins)
+                                nins = target.add_to_register(reg, value)
+                                for ins in nins:
+                                    ins.add_comment(
+                                        "Instrunction added by "
+                                        "randomize pass to avoid "
+                                        "convergence to zero."
+                                    )
+                                building_block.add_fini(nins)
+                                building_block.context.add_reserved_registers(
+                                    [reg]
+                                )
+                                random_reg = reg
+
+                            nins = target.randomize_register(
+                                register, seed=random_reg
+                            )
+
+                            for ins in nins:
+                                ins.add_comment(
+                                    "Instrunction added by "
+                                    "randomize pass to avoid "
+                                    "convergence to zero."
+                                )
                             building_block.add_fini(nins)
                         else:
                             raise NotImplementedError
 
                     # Set operand
-                    operand.set_value(register)
+                    operand.set_value(tregister)
                     cusage = cusage + 1
 
-                    # Add code
+                    if self._code is not None:
+                        code = self._code.replace('@@REG@@', register.name)
+                        code = code.replace('@@COUNT@@', str(cusage))
+                        code = code.replace('@@BRREG@@', tregister.name)
+                        instructions_def = interpret_asm(
+                            code, target, building_block.labels
+                        )
+                        instructions = []
+                        for definition in instructions_def:
+                            instruction = Instruction()
+                            instruction_set_def_properties(
+                                instruction,
+                                definition,
+                                building_block=building_block,
+                                target=target,
+                                allowed_registers=[
+                                    register.name, tregister.name
+                                ]
+                            )
+                            instructions.append(instruction)
+
+                        building_block.add_instructions(
+                            instructions,
+                            after=last_branch,
+                            before=instr
+                            )
+
+                    for operand in instr.operands():
+                        if not operand.is_input:
+                            continue
+                        if operand.type.constant:
+                            continue
+                        if operand.type.immediate:
+                            continue
+                        if operand.type.float:
+                            continue
+                        if operand.type.address_relative:
+                            continue
+                        if operand.type.address_absolute:
+                            continue
+                        if operand.type.address_immediate:
+                            continue
+                        if operand.type.address_base:
+                            continue
+                        if operand.type.address_index:
+                            continue
+                        if operand.value is not None:
+                            continue
+
+                        if zero_register is None:
+                            # Set the remaining operands to zero
+                            values = operand.type.values()
+                            values = [
+                                val for val in values if val not in
+                                building_block.context.reserved_registers
+                                and val not in target.control_registers
+                                and val not in usereg
+                                and val not in [register, random_reg]
+                            ]
+                            if len(values) == 0:
+                                raise MicroprobeCodeGenerationError(
+                                    "No free registers available. Change the "
+                                    "generation policy settings."
+                                )
+
+                            zero_register = values[0]
+                            building_block.context.add_reserved_registers(
+                                [zero_register]
+                            )
+                            nins = target.set_register(
+                                zero_register, 0, building_block.context
+                            )
+                            for ins in nins:
+                                ins.add_comment(
+                                    "Instrunction added by "
+                                    "randomize pass to avoid "
+                                    "convergence to zero."
+                                )
+                            building_block.add_init(nins)
+
+                        operand.set_value(zero_register)
+
+                    # Use new register once one is exhausted (we can reset
+                    # its value too)
                     if cusage >= self._musage:
                         usereg.append(register)
                         creg = None
-                        ccode = None
                         cusage = 0
 
                     # reserve implicit operands (if they are not already
@@ -1357,3 +1575,21 @@ class RandomizeByTypePass(Pass):
                             context_fix_function(target, building_block)
                         except MicroprobeUncheckableEnvironmentWarning as wue:
                             building_block.add_warning(str(wue))
+
+                if instr.branch:
+                    last_branch = instr
+
+        if register is not None and register not in usereg:
+            usereg.append(register)
+
+        for register in usereg:
+            building_block.context.add_reserved_registers([register])
+            nins = target.set_register(
+                register, RNDINT(), building_block.context
+            )
+            for ins in nins:
+                ins.add_comment(
+                    "Instrunction added by randomize pass to avoid "
+                    "convergence to zero."
+                )
+            building_block.add_init(nins)

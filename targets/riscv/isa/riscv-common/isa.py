@@ -147,6 +147,7 @@ class RISCVISA(GenericISA):
                     if value_high >= (2**11-1):
                         addiw.set_operands([2**11-1, register, register])
                         instrs.append(addiw)
+                        addiw = self.new_instruction("ADDIW_V0")
                         value_high = value_high - (2**11-1)
 
                     addiw.set_operands([value_high, register, register])
@@ -265,6 +266,9 @@ class RISCVISA(GenericISA):
 
         LOG.debug("Begin setting '%s' to address '%s'", register, address)
 
+        option_displacement = None
+        option_label = None
+
         if isinstance(address.base_address, Variable):
 
             LOG.debug("Base address is a Variable: %s", address.base_address)
@@ -315,21 +319,25 @@ class RISCVISA(GenericISA):
 
                     LOG.debug("Computing directly from context (short)")
 
-                    return instrs
+                    option_displacement = instrs
+                    instrs = []
 
-                if present_reg != register:
+                if present_reg != register and option_displacement is None:
                     or_ins = self.new_instruction("OR_V0")
                     or_ins.set_operands([present_reg, present_reg, register])
                     instrs.append(or_ins)
 
-                if displacement != 0:
+                if displacement != 0 and option_displacement is None:
                     instrs += self.add_to_register(register, displacement)
 
                 LOG.debug("Computing directly from context (long)")
-
-                return instrs
+                if option_displacement is None:
+                    option_displacement = instrs
+                    instrs = []
 
         if context.symbolic and not force_absolute and not force_relative:
+
+            instrs = []
 
             # TODO: This should be a call to the environment object because
             # the implementation depends on the environment
@@ -337,8 +345,13 @@ class RISCVISA(GenericISA):
             # Base address can be an instruction label (str) or
             # a Variable instance
             basename = address.base_address
+            basedisp = ""
             if not isinstance(address.base_address, str):
                 basename = address.base_address.name
+                if address.displacement >= 0:
+                    basedisp = "+0x%016X" % address.displacement
+                else:
+                    basedisp = "-0x%016X" % abs(address.displacement)
 
             global _RISCV_PCREL_LABEL
             _RISCV_PCREL_LABEL += 1
@@ -347,7 +360,7 @@ class RISCVISA(GenericISA):
             auipc_ins = self.new_instruction("AUIPC_V0")
             auipc_ins.operands()[1].set_value(register)
             auipc_ins.operands()[0].set_value(
-                "%%pcrel_hi(%s)" % basename,
+                "%%pcrel_hi(%s)" % basename + basedisp,
                 check=False
             )
             auipc_ins.set_label(
@@ -365,14 +378,24 @@ class RISCVISA(GenericISA):
             )
             instrs.append(addi_ins)
 
-            if address.displacement != 0:
-                instrs += self.add_to_register(register, address.displacement)
+            # if address.displacement != 0:
+            #     instrs += self.add_to_register(register,
+            #     address.displacement)
 
             LOG.debug("End Loading symbolic reference")
 
-            return instrs
+            option_label = instrs
 
-        raise NotImplementedError
+        if option_label is None and option_displacement is None:
+            raise NotImplementedError
+        elif option_label is None:
+            return option_displacement
+        elif option_displacement is None:
+            return option_label
+        if len(option_label) <= len(option_displacement):
+            return option_label
+        else:
+            return option_displacement
 
     def load(self, register, address, context):
 
@@ -610,3 +633,30 @@ class RISCVISA(GenericISA):
             return mnemonic, new_operands
 
         return mnemonic, operands
+
+    def randomize_register(self, register, seed=None):
+
+        instrs = []
+
+        ins = self.new_instruction("MUL_V0")
+        ins.set_operands([register, register, register])
+        instrs.append(ins)
+
+        if seed is not None:
+            ins = self.new_instruction("ADD_V0")
+            ins.set_operands([seed, register, register])
+            instrs.append(ins)
+
+        ins = self.new_instruction("SRLI_V0")
+        ins.set_operands([32, register, self._scratch_registers[0]])
+        instrs.append(ins)
+
+        ins = self.new_instruction("SLLI_V0")
+        ins.set_operands([32, register, register])
+        instrs.append(ins)
+
+        ins = self.new_instruction("OR_V0")
+        ins.set_operands([self._scratch_registers[0], register, register])
+        instrs.append(ins)
+
+        return instrs

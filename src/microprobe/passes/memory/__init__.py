@@ -1928,7 +1928,9 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             else:
                 values = [(value + shift) for value in range(0, size, stride)]
                 values = microprobe.utils.distrib.shuffle(values, shuffle)
-                values = microprobe.utils.distrib.locality(values, loc)
+                values = microprobe.utils.distrib.locality(
+                    values, (loc[0], loc[1]+1)
+                )
 
             sets_dict[sid] = values
             shift += shift_streams
@@ -2132,43 +2134,68 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         )
 
                         prev_instr = last_instr
+                        to_modify = []
                         if len(add_instructions) > 0:
                             for elem in calc_instrs:
                                 ains = add_instructions[0]
                                 if ains.name != elem.name:
                                     continue
-
                                 values = [
                                     oper.value for oper in ains.operands()
                                 ]
-                                elem.set_operands(values)
-                                elem.add_comment(
-                                    "Reused to compute address: %s" % address
-                                )
-
-                                tinstrs.append(elem)
-                                prev_instr = elem
-
+                                to_modify.append((elem, values))
                                 add_instructions = add_instructions[1:]
                                 if len(add_instructions) == 0:
                                     break
 
-                        if len(add_instructions) > 0:
+                        reset_instructions = target.set_register_to_address(
+                            update_reg,
+                            address,
+                            building_block.context
+                        )
+
+                        # print(len(reset_instructions),len(add_instructions))
+                        # print([i.assembly() for i in reset_instructions])
+                        # print([i.assembly() for i in add_instructions])
+
+                        if len(reset_instructions) <= len(add_instructions):
+
+                            for elem in reset_instructions:
+                                elem.add_comment(
+                                    "Added to compute address: %s" % address
+                                )
+
+                            bbl.insert_instr(
+                                reset_instructions, before=instr,
+                                after=prev_instr
+                            )
+
+                            new_instrs = reset_instructions
+
+                        elif len(add_instructions) > 0:
+
+                            for elem, vals in to_modify:
+                                elem.set_values(vals)
+                                elem.add_comment(
+                                    "Reused to compute address: %s" % address
+                                )
+                                tinstrs.append(elem)
+                                prev_instr = elem
+
                             bbl.insert_instr(
                                 add_instructions, before=instr,
                                 after=prev_instr
                             )
-                            new_instrs = add_instructions
                             for elem in add_instructions:
                                 elem.add_comment(
                                     "Added to compute address: %s" % address
                                 )
 
+                            new_instrs = add_instructions
+
                         building_block.context.set_register_value(
                             update_reg,
-                            building_block.context.get_register_value(
-                                update_reg) +
-                            diff
+                            address
                         )
 
                         memoperand.set_address(

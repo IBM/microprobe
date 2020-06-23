@@ -661,6 +661,10 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         """ """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def randomize_register(self, register, seed=None):
+        raise NotImplementedError
+
 
 class GenericISA(ISA):
     """Class to represent a generic Instruction Set Architecture (ISA)."""
@@ -948,4 +952,7 @@ class GenericISA(ISA):
 
     def register_value_comparator(self, comp):
         """ """
+        raise NotImplementedError
+
+    def randomize_register(self, register, seed=None):
         raise NotImplementedError

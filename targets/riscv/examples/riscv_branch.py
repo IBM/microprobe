@@ -130,8 +130,12 @@ class RiscvIpcTest(object):
 
         # Pick some instructions to add between branches
         valid_instrs = [
+            i for i in self.target.isa.instructions.values()
+            if i.name in ['ADD_V0', 'MUL_V0', 'LW_V0']]
+
+        valid_instrs_names = [
             i.name for i in self.target.isa.instructions.values()
-            if i.name in ['ADD_V0', 'MUL_V0']]
+            if i.name in ['ADD_V0', 'MUL_V0', 'LW_V0']]
 
         # Add conditional branches
         branch_instrs_names = [
@@ -142,8 +146,8 @@ class RiscvIpcTest(object):
             i for i in self.target.isa.instructions.values()
             if i.branch_conditional]
 
-        branch_instrs = branch_instrs[0:1]
-        branch_instrs_names = branch_instrs_names[0:1]
+        branch_instrs = branch_instrs
+        branch_instrs_names = branch_instrs_names
 
         microbenchmarks = []
         cwrapper = get_wrapper('RiscvTestsP')
@@ -162,14 +166,26 @@ class RiscvIpcTest(object):
         synth.add_pass(p)
 
         # Set instruction type
-        p = instruction.SetRandomInstructionTypePass(
-            [self.target.isa.instructions[elem]
-             for elem in valid_instrs + branch_instrs_names]
-        )
+        random = True
+        if not random:
+            sequence = []
+            for elem in branch_instrs:
+                sequence.extend(valid_instrs)
+                sequence.append(elem)
+            p = instruction.SetInstructionTypeBySequencePass(
+                sequence
+            )
+        else:
+            p = instruction.SetRandomInstructionTypePass(
+                   [self.target.isa.instructions[elem]
+                    for elem in valid_instrs_names + branch_instrs_names]
+            )
+
         synth.add_pass(p)
 
         p = initialization.InitializeRegistersPass(
-            value=RNDINT()
+            value=RNDINT,
+            fp_value=RNDINT
         )
         synth.add_pass(p)
 
@@ -224,10 +240,11 @@ class RiscvIpcTest(object):
             branch_instrs,  # instructions to replace
             self.target.isa.instructions['BGE_V0'],  # new instruction
             self.args.random_branch,  # every N instructions
-            None,  # randomization code to add (Not supported for now)
+            "slli @@BRREG@@, @@REG@@, @@COUNT@@",  # randomization code
+                                                   # to add before branch
             distance=3,  # distance between randomization code and branch
-            musage=32,  # max. time @@REG@@ can be used before reset
-            reset=('add', (-0xFF, 0xFF))  # add to branch reg every iteration
+            musage=62,  # max. time @@REG@@ can be used before reset
+            reset=('rnd', (-0x7ff, 0x7ff))  # add to branch reg every iteration
             )
         synth.add_pass(p)
 

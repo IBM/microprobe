@@ -211,6 +211,9 @@ def shuffle(slist, threshold):
         random.shuffle(slist)
         return slist
 
+    if threshold == 0:
+        return slist
+
     if len(slist) == 0:
         return []
 
