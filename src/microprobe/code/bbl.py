@@ -336,3 +336,23 @@ class Bbl(object):
 
         self._copy_id += 1
         return new_bbl
+
+    def distance(self, instr1, instr2):
+        i1 = self.get_instruction_index(instr1)
+        i2 = self.get_instruction_index(instr2)
+        idxs = list(sorted([i1, i2]))
+        distance = [
+            elem for elem in sorted(self._instdic.values())
+            if elem > idxs[0] and elem <= idxs[1]
+        ]
+        return len(distance)
+
+    def get_instruction_by_distance(self, instr, distance):
+        i1 = self.get_instruction_index(instr)
+        idx = sorted(self._instdic.values()).index(i1)
+        if idx - distance >= 0:
+            idx = idx + distance
+        else:
+            idx = 0
+        idx = sorted(self._instdic.values())[idx]
+        return self._instrs[idx]

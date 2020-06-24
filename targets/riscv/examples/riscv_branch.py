@@ -88,12 +88,16 @@ class RiscvIpcTest(object):
         parser.add_argument(
             '--random-branch',
             default=4,
-            type=int,
-            help='Integer specifying ratio of random branches'
-                 '(not controlled). Every N branches will be '
+            type=float,
+            help='Number specifying ratio of random branches'
+                 '(not controlled). If > 1, every N branches will be '
                  'random. E.g. if 1 is specified all branches '
                  'will be random. If 2 is specified, 1 every 2 '
-                 'branches will be random.'
+                 'branches will be random. If value < 1, it '
+                 'specified the probability of a branch to be '
+                 'randomized. Note, you need enough branches in the '
+                 'to be able to generate a distribution matching the '
+                 'probability specified.'
         )
 
         parser.add_argument(
@@ -101,6 +105,22 @@ class RiscvIpcTest(object):
             default=False,
             action="store_true",
             help='Switch local branch pattern'
+        )
+
+        parser.add_argument(
+            '--random-ins',
+            default=False,
+            action="store_true",
+            help='Randomize instruction sequence (default: False)'
+        )
+
+        parser.add_argument(
+            '--braid',
+            default=False,
+            action="store_true",
+            help='Generate a braid of branches to maximize miss'
+            'prediction penalty. Otherwise all branches branch to '
+            'the next instruction. Default: False.'
         )
 
         return parser.parse_args()
@@ -146,9 +166,6 @@ class RiscvIpcTest(object):
             i for i in self.target.isa.instructions.values()
             if i.branch_conditional]
 
-        branch_instrs = branch_instrs
-        branch_instrs_names = branch_instrs_names
-
         microbenchmarks = []
         cwrapper = get_wrapper('RiscvTestsP')
         synth = Synthesizer(
@@ -166,7 +183,7 @@ class RiscvIpcTest(object):
         synth.add_pass(p)
 
         # Set instruction type
-        random = True
+        random = self.args.random_ins
         if not random:
             sequence = []
             for elem in branch_instrs:
@@ -239,12 +256,15 @@ class RiscvIpcTest(object):
         p = branch.RandomizeByTypePass(
             branch_instrs,  # instructions to replace
             self.target.isa.instructions['BGE_V0'],  # new instruction
-            self.args.random_branch,  # every N instructions
+            self.args.random_branch,  # every N instructions or if a value
+                                      # between [0,1] the probability of a
+                                      # branch to be random
             "slli @@BRREG@@, @@REG@@, @@COUNT@@",  # randomization code
                                                    # to add before branch
-            distance=3,  # distance between randomization code and branch
-            musage=62,  # max. time @@REG@@ can be used before reset
-            reset=('rnd', (-0x7ff, 0x7ff))  # add to branch reg every iteration
+            distance=30,  # distance between randomization code and branch
+            musage=62,  # max. time @@REG@@ can be used before reset. Do not
+                        # set above 63
+            reset=('rnd', (-0x7ff, 0x7ff))  # method to randomize register
             )
         synth.add_pass(p)
 
@@ -296,8 +316,14 @@ class RiscvIpcTest(object):
         # branch to next instruction)
         p = address.UpdateInstructionAddressesPass()
         synth.add_pass(p)
-        p = branch.BranchBraidNextPass()
-        synth.add_pass(p)
+
+        braid = self.args.braid
+        if braid:
+            p = branch.BranchBraidNextPass()
+            synth.add_pass(p)
+        else:
+            p = branch.BranchNextPass()
+            synth.add_pass(p)
 
         microbenchmark = "branch_%s_%s_%d" % (
             self.args.global_branch_pattern,

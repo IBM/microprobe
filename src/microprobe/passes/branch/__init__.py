@@ -35,6 +35,7 @@ from microprobe.passes import Pass
 from microprobe.utils.asm import interpret_asm
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, RNDINT
+from microprobe.utils.distrib import probability, regular_probability
 
 
 # Local modules
@@ -46,6 +47,7 @@ __all__ = ['BranchNextPass',
            'BranchBraidNextPass',
            'FixIndirectBranchPass',
            'InitializeBranchDecorator',
+           'RandomizeByTypePass',
            "LinkBbls"]
 
 # Functions
@@ -712,6 +714,7 @@ class BranchBraidNextPass(Pass):
 
             taddress = InstructionAddress(base_address=before_instr.label)
             taddress.set_target_instruction(before_instr)
+
             new_branch = target.branch_unconditional_relative(
                 after_instr.architecture_type.format.length +
                 after_instr.address, taddress
@@ -1266,8 +1269,22 @@ class RandomizeByTypePass(Pass):
 
         self._instr1 = instr1
         self._instr2 = instr2
-        self._every = every
-        self._distance = distance
+
+        if every <= 0:
+            fevery = None
+        elif every >= 1:
+            fevery = regular_probability(int(every))
+        else:
+            fevery = probability(every)
+
+        self._every = fevery
+
+        if distance < 1:
+            raise MicroprobeCodeGenerationError(
+                "Dependency distance should be 1 or larger"
+            )
+
+        self._distance = int(distance)
         self._code = code
         if musage is None:
             musage = -1
@@ -1290,7 +1307,7 @@ class RandomizeByTypePass(Pass):
 
         """
 
-        if self._every == 0:
+        if self._every is None:
             return
 
         creg = None
@@ -1301,17 +1318,22 @@ class RandomizeByTypePass(Pass):
         zero_register = None
         tregister = None
 
-        count = 0
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
 
-                if instr.architecture_type in self._instr1:
-                    count = count + 1
+                if not instr.branch:
+                    continue
 
-                    if (count % self._every) != 0:
+                if instr.architecture_type in self._instr1:
+
+                    mrandom = self._every()
+                    if not mrandom:
+                        if instr.branch:
+                            last_branch = instr
                         continue
 
                     instr.set_arch_type(self._instr2)
+                    instr.add_comment("Randomized branch")
 
                     # take on operand input
                     soperand = None
@@ -1342,6 +1364,8 @@ class RandomizeByTypePass(Pass):
                             "Unable to randomize branch "
                             "without input register operands"
                         )
+                        if instr.branch:
+                            last_branch = instr
                         continue
 
                     values = soperand.type.values()
@@ -1486,9 +1510,18 @@ class RandomizeByTypePass(Pass):
                             )
                             instructions.append(instruction)
 
+                        bdistance = bbl.distance(last_branch, instr)
+
+                        if bdistance + 1 <= self._distance:
+                            after_ins = last_branch
+                        else:
+                            after_ins = bbl.get_instruction_by_distance(
+                                instr, self._distance * (-1)
+                            )
+
                         building_block.add_instructions(
                             instructions,
-                            after=last_branch,
+                            after=after_ins,
                             before=instr
                             )
 

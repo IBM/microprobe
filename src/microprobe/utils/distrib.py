@@ -448,3 +448,37 @@ def locality(values, locdef):
     ]
     values = [item for sublist in values for item in sublist]
     return values
+
+
+def probability(value):
+    """
+
+    """
+    assert value >= 0 and value <= 1, "Invalid probability"
+
+    crandom = Random()
+    crandom.seed(10)
+
+    def func():
+        return crandom.uniform(0, 1) <= value
+
+    return func
+
+
+def regular_probability(value):
+    """
+    Returns callable that returns True every value calls
+    """
+    def func():
+        count = 0
+        while True:
+            count = count + 1
+            ret = (count % value) == 0
+            yield ret
+
+    generator = func()
+
+    def func2():
+        return next(generator)
+
+    return func2
