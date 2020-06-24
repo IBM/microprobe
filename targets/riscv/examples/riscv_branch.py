@@ -308,6 +308,7 @@ class RiscvIpcTest(object):
         # Model memory operations to ensure correctness
         p = memory.GenericMemoryStreamsPass([[0, 1024, 1, 32, 1, 0, (1, 0)]])
         synth.add_pass(p)
+
         # Model dependency distance (no dependencies)
         p = register.DefaultRegisterAllocationPass(dd=0)
         synth.add_pass(p)
@@ -319,10 +320,10 @@ class RiscvIpcTest(object):
 
         braid = self.args.braid
         if braid:
-            p = branch.BranchBraidNextPass()
+            p = branch.BranchBraidNextPass(force=True)
             synth.add_pass(p)
         else:
-            p = branch.BranchNextPass()
+            p = branch.BranchNextPass(force=True)
             synth.add_pass(p)
 
         microbenchmark = "branch_%s_%s_%d" % (
