@@ -478,8 +478,9 @@ class RISCVISA(GenericISA):
 
             relative_offset = target_address - source_address
 
-            instruction = self.new_instruction("B_V0")
+            instruction = self.new_instruction("JAL_V0")
             instruction.set_address(source_address)
+            instruction.operands()[1].set_value(self.target.registers['X0'])
 
             LOG.debug("Source address: %s", source_address)
             LOG.debug("Target address: %s", target_address)

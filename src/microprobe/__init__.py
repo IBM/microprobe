@@ -187,7 +187,7 @@ if "MICROPROBEDATA" in os.environ:
     MICROPROBE_RC["default_paths"] += [
         os.path.abspath(path)
         for path in os.environ["MICROPROBEDATA"].split(":")
-        if path is not ''
+        if path != ''
     ]
     MICROPROBE_RC["architecture_paths"] += MICROPROBE_RC["default_paths"][:]
     MICROPROBE_RC["microarchitecture_paths"] += \
@@ -198,14 +198,14 @@ if "MICROPROBETEMPLATES" in os.environ:
     MICROPROBE_RC['template_paths'] += [
         os.path.abspath(elem)
         for elem in os.environ["MICROPROBETEMPLATES"].split(":")
-        if elem is not ''
+        if elem != ''
     ]
 
 if "MICROPROBEWRAPPERS" in os.environ:
     MICROPROBE_RC["wrapper_paths"] += [
         os.path.abspath(elem)
         for elem in os.environ["MICROPROBEWRAPPERS"].split(":")
-        if elem is not ''
+        if elem != ''
     ]
 
 if "MICROPROBEDEBUG" in os.environ:

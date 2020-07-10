@@ -818,9 +818,9 @@ class FixIndirectBranchPass(Pass):
                     continue
 
                 if branch_operand:
-                    raise NotImplementedError
-                else:
                     self._fix_branch(instr_ant, instr, target)
+                else:
+                    raise NotImplementedError
 
                 instr_ant = instr
 
@@ -856,7 +856,10 @@ class FixIndirectBranchPass(Pass):
             if not memoperand.descriptor.is_branch_target:
                 continue
 
-            branch_operand = True
+            operands = [operand for operand in memoperand.operands
+                        if operand.type.address_base or
+                        operand.type.address_index]
+            branch_operand = len(operands) > 0
 
             if memoperand.address is not None:
                 target_set = True

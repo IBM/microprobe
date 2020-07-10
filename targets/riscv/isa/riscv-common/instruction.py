@@ -18,6 +18,8 @@ Docstring
 # Futures
 from __future__ import absolute_import, print_function
 
+# Built-in modules
+
 # Third party modules
 from six.moves import zip
 
@@ -31,6 +33,21 @@ from microprobe.utils.misc import getnextf, int_to_twocs, twocs_to_int
 
 # Constants
 LOG = get_logger(__name__)
+
+_20BITS_OPERAND_DESCRIPTOR = OperandDescriptor(
+    OperandImmRange("dummy",  # Name
+                    "dummy",  # Description
+                    0,  # Min value
+                    (2 ** 20),  # Max value
+                    1,  # StepUImm1v0
+                    False,  # Address immediate
+                    0,  # Shift
+                    [],  # No values
+                    0  # Add
+                    ),
+    False,  # Input
+    False  # Output
+)
 
 _7BITS_OPERAND_DESCRIPTOR = OperandDescriptor(
     OperandImmRange("dummy",  # Name
@@ -95,7 +112,9 @@ class RISCVInstruction(GenericInstructionType):
         )
 
         # sb_imm5 and s_imm5 should be always zero (by definition)
-        # s_imm7 and sb_imm7 contain the true 12-bit long value
+        # sb_imm7 and s_imm7 contain the true 12-bit long value
+        #
+        # sb_* values has a different encoding
 
         def _get_value(cfield, base):
             try:
@@ -153,7 +172,7 @@ class RISCVInstruction(GenericInstructionType):
         fix_fields = ['sb_imm5', 's_imm5']
         base_fields = ['sb_imm7', 's_imm7']
 
-        for fix_field in fix_fields:
+        for fix_field in fix_fields + ["uj_imm20"]:
             if fix_field in [field.name for field in self.format.fields]:
                 fix_needed = True
                 break
@@ -184,7 +203,8 @@ class RISCVInstruction(GenericInstructionType):
             LOG.debug("Operand: %s", operand)
 
             if (operand.constant and
-                    (field.name not in fix_fields + base_fields)):
+                    (field.name not in fix_fields + base_fields +
+                        ["uj_imm20"])):
 
                 if field.default_show:
                     arg = next_operand_value()
@@ -192,7 +212,7 @@ class RISCVInstruction(GenericInstructionType):
 
                 continue
 
-            if field.name not in fix_fields + base_fields:
+            if field.name not in fix_fields + base_fields + ["uj_imm20"]:
                 LOG.debug("Not fixing field: %s", field.name)
                 arg = next_operand_value()
                 newargs.append(arg)
@@ -202,17 +222,28 @@ class RISCVInstruction(GenericInstructionType):
 
                 arg = next_operand_value()
                 value = int(arg.type.codification(arg.value))
-                value_coded = int_to_twocs(value, 12)
-
-                assert twocs_to_int(value_coded, 12) == value
-
                 newarg = InstructionOperandValue(_7BITS_OPERAND_DESCRIPTOR)
-                newarg.set_value((value_coded & 0xFE0) >> 5)
 
                 if field.name == "sb_imm7":
-                    sb_imm5_value = (value_coded & 0x1F)
+
+                    value_coded = int_to_twocs(value, 13)
+                    assert twocs_to_int(value_coded, 13) == value
+
+                    bit11 = (value_coded >> 10) & 0b1
+                    bit4_1 = (value_coded & 0b1111) << 0b1
+                    sb_imm5_value = bit11 | bit4_1
+
+                    bit12 = ((value_coded >> 11) & 0b1) << 6
+                    bit10_5 = (value_coded >> 4) & 0b111111
+                    newarg.set_value((bit12 | bit10_5))
+
                 elif field.name == "s_imm7":
+
+                    value_coded = int_to_twocs(value, 12)
+                    assert twocs_to_int(value_coded, 12) == value
                     s_imm5_value = (value_coded & 0x1F)
+                    newarg.set_value((value_coded & 0xFE0) >> 5)
+
                 else:
                     raise NotImplementedError
 
@@ -236,6 +267,23 @@ class RISCVInstruction(GenericInstructionType):
                           value_fixed)
 
                 newarg.set_value(value_fixed)
+                newargs.append(newarg)
+
+            if field.name == "uj_imm20":
+
+                arg = next_operand_value()
+                newarg = InstructionOperandValue(_20BITS_OPERAND_DESCRIPTOR)
+
+                value = int(arg.type.codification(arg.value))
+                value = int_to_twocs(value, 20)
+
+                bit20 = (value >> 19) << 19
+                bit11 = ((value >> 10) & 0x1) << 8
+                bits10_1 = (value & 0b1111111111) << 9
+                bits19_12 = ((value >> 11) & 0b11111111)
+
+                newvalue = (bit20 | bits10_1 | bit11 | bits19_12)
+                newarg.set_value(newvalue)
                 newargs.append(newarg)
 
         LOG.debug("Args: %s, %s", args, newargs)

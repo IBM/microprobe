@@ -78,8 +78,8 @@ instructions =
     0x40465f9b
     0xd23e7e53
     0xffa401e3
-    beq     x8,x26,0xffffffffffffffe2
-    beq x8, x26, -0x1d
+    beq     x8,x26,0xffffffffffffffe1
+    beq x8, x26, -0x1c
 
 ddd =
 

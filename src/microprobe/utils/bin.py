@@ -289,6 +289,8 @@ def _interpret_bin_instr(instr_type, bin_instr):
 
             #
             # Handle special codifications
+            # TODO: This should be moved to the architecture
+            # back-ends
             #
             # MB field on POWERPC
             special_condition = False
@@ -346,8 +348,8 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 pair = (0, field.size, operand.shift)
                 oper_size_pairs.append(pair)
 
-            if field.name in ["s_imm7", "sb_imm7"]:
-                LOG.debug("Special condition field 6")
+            if field.name in ["s_imm7"]:
+                LOG.debug("Special condition field 7 (regular)")
                 special_condition = True
 
                 field_value = ((field_value << 5) |
@@ -355,6 +357,38 @@ def _interpret_bin_instr(instr_type, bin_instr):
 
                 pair = (twocs_to_int(field_value, field.size + 5),
                         field.size + 5, operand.shift)
+                oper_size_pairs.append(pair)
+
+            if field.name in ["sb_imm7"]:
+                LOG.debug("Special condition field 7 (branch)")
+                special_condition = True
+
+                bits4_1 = (bin_instr >> 0x8) & 0b1111
+                bits10_5 = (field_value & 0b111111) << 4
+                bit11 = ((bin_instr >> 0x7) & 0b1) << 10
+                bit12 = ((field_value >> 0x6) & 0b1) << 11
+
+                field_value = (bit12 | bit11 | bits10_5 | bits4_1) << 1
+
+                pair = (twocs_to_int(field_value, field.size + 6),
+                        field.size + 5, operand.shift)
+
+                oper_size_pairs.append(pair)
+
+            if field.name in ["uj_imm20"]:
+                LOG.debug("Special condition sb_imm20 field")
+                special_condition = True
+
+                bit20 = (field_value >> 19) << 19
+                bit11 = ((field_value >> 8) & 0x1) << 10
+                bits10_1 = ((field_value >> 9) & 0b1111111111)
+                bits19_12 = (field_value & 0b11111111) << 11
+
+                field_value = (bit20 | bits19_12 | bit11 | bits10_1) << 1
+
+                pair = (twocs_to_int(field_value, field.size + 1),
+                        field.size, operand.shift)
+
                 oper_size_pairs.append(pair)
 
             oper_size_pairs = list(set(oper_size_pairs))

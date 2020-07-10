@@ -44,5 +44,5 @@ pep8-naming
 # flake8_strict
 # flake8_tuple
 yapf
-isort
+isort<5,>=4.2.5
 # twine

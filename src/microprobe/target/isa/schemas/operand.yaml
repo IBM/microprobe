@@ -154,6 +154,8 @@ contents:
           type: //int
         Override:
           type: //bool
+        Step:
+          type: //int
         ExceptRange:
           type: //arr
           contents:

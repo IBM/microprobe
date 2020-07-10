@@ -361,6 +361,7 @@ def self_codification_function(self):
                         values.append(operand.type.random_value())
                     operand.set_value(values[idx])
 
+                print("Operands to set: %s" % values)
                 codification = int(instruction.binary(), 2)
                 print("Codification: 0x%x" % codification)
                 print("Assembly: %s" % instruction.assembly())
@@ -548,13 +549,7 @@ if MP_TESTING_ARCH in ["RISCV", None]:
                              "riscv",
                              "env",
                              "riscv_linux_gcc.py"),
-                ["BEQ_V0",
-                 "BGEU_V0",
-                 "BGE_V0",
-                 "BLTU_V0",
-                 "BLT_V0",
-                 "BNE_V0",
-                 "JAL_V0"],
+                [],
                 [])
                ]
 
@@ -714,6 +709,7 @@ for name, gen_function, isa_path, env_path, \
         if not SKIPCODIFICATION:
             #
             # Codification function
+            #
             #
             f3name = "test_%s_instruction_%s_003_codification" % (
                 name, instr_name.replace(".", "_")

@@ -51,7 +51,7 @@
   - funct3
   - rd
   - opcode
-  Assembly: OPC rd, rs1, i_imm12
+  Assembly: OPC rd, i_imm12(rs1)
 - Name: "i-sh5"
   Fields:
   - i_imm7

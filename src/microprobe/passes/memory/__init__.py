@@ -1188,7 +1188,7 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
             for instr in bbl.instrs:
 
                 LOG.debug("Fixing %s", instr)
-                LOG.debug("Asm: %s", instr.assembly())
+                # LOG.debug("Asm: %s", instr.assembly())
                 set_regs += [
                     elem
                     for elem in instr.sets()
@@ -1209,6 +1209,9 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     LOG.debug("Memory operand: %s", memoperand)
 
                     if memoperand.is_agen:
+                        continue
+
+                    if memoperand.is_branch_target:
                         continue
 
                     max_value = 0
@@ -1310,7 +1313,7 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                         key[0] not in [elem[0] for elem in fixlist.keys()]
                     ):
                         LOG.debug(
-                            "Swtich: index used as base, "
+                            "Switch: index used as base, "
                             "and base not used as base")
                         key = (key[1], key[0])
                         base_operand_value, index_operand_value = \

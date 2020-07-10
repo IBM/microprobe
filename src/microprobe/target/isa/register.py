@@ -177,7 +177,8 @@ class GenericRegister(Register, Pickable):
         self._rcodi = rcodi
         self._hash = hash(
             (
-                self.name, self.description, self.representation, self.type
+                self.name, self.description,
+                self.representation, str(self.type)
             )
         )
 

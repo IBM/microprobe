@@ -232,7 +232,7 @@
   Operand: "Zero"
 - Name: "sb_imm7"
   Size: 7
-  Description: "sb_imm7 (extended to 12)"
+  Description: "sb_imm7 (extended to 13)"
   Show: True
   IO: "I"
   Operand: "@I_12"

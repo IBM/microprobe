@@ -208,16 +208,18 @@ def import_definition(filenames, registers):
                     maxdispl = elem["MaxDisplacement"]
                     relative = elem["Relative"]
                     shift = elem.get("Shift", 0)
+                    step = elem.get("Step", 1)
                     except_ranges = elem.get("ExceptRange", [])
 
                     key.append(mindispl)
                     key.append(maxdispl)
                     key.append(shift)
+                    key.append(step)
                     key.append(tuple([tuple(elem) for elem in except_ranges]))
 
                     operand = InstructionAddressRelativeOperand(
                         name, descr, maxdispl, mindispl,
-                        shift, except_ranges, relative)
+                        shift, except_ranges, relative, step)
 
                 else:
                     raise MicroprobeArchitectureDefinitionError(
@@ -1403,7 +1405,8 @@ class InstructionAddressRelativeOperand(Operand):
             mindispl,
             shift,
             except_range,
-            relative):
+            relative,
+            step):
         """Create a InstructionAddressRelativeOperand object.
 
         :param name: Operand name
@@ -1430,12 +1433,13 @@ class InstructionAddressRelativeOperand(Operand):
         self._rela = not relative
         self._shift = shift
         self._except = except_range
+        self._step = step
 
     def copy(self):
         """ """
         return InstructionAddressRelativeOperand(
             self.name, self.description, self._maxdispl, self._mindispl,
-            self._shift, self._except, self._rel
+            self._shift, self._except, self._rel, self._step
         )
 
     def values(self):
@@ -1454,7 +1458,8 @@ class InstructionAddressRelativeOperand(Operand):
 
         if value <= (self._maxdispl << self._shift) and \
            value >= (self._mindispl << self._shift) and \
-           not self._in_except_ranges(value):
+           not self._in_except_ranges(value) and \
+           value % self._step == 0:
             return value
         else:
             return self.random_value()
@@ -1528,7 +1533,8 @@ class InstructionAddressRelativeOperand(Operand):
 
         if cvalue > (self._maxdispl << self._shift) or \
            cvalue < (self._mindispl << self._shift) or \
-           self._in_except_ranges(cvalue):
+           self._in_except_ranges(cvalue) or \
+           cvalue % self._step != 0:
             raise MicroprobeValueError(
                 "Invalid operand value '%d' "
                 "not within the"

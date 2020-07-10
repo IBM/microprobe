@@ -61,25 +61,25 @@ default_address = 0x000000001002fff0
 
 instructions =
   <ELF_ABI_START>:
-    JAL x1, c2mpt_function                            
-    JAL x1, ELF_ABI_EXIT                              
+    JAL x1, c2mpt_function
+    JAL x1, ELF_ABI_EXIT
   0x0000000010030000 <C2MPT_FUNCTION>:
-    LUI x12, 65600                                    
-    ADDI x12, x12, 0                                  
-    LD x15, 8(x12)                                    
-    LD x14, 80(x12)                                   
-    BEQ x15, x0, C2MPT_FUNCTION+0X24                  
-    LD x13, 0(x15)                                    
-    LD x15, 8(x15)                                    
-    ADD x14, x14, x13                                 
-    BNE x15, x0, C2MPT_FUNCTION+0X14                  
-    SLLI x14, x14, 1                                  
-    SD x14, 80(x12)                                   
-    JALR x0, x1, 0                                    
+    LUI x12, 65600
+    ADDI x12, x12, 0
+    LD x15, 8(x12)
+    LD x14, 80(x12)
+    BEQ x15, x0, C2MPT_FUNCTION+0X24
+    LD x13, 0(x15)
+    LD x15, 8(x15)
+    ADD x14, x14, x13
+    BNE x15, x0, C2MPT_FUNCTION+0X14
+    SLLI x14, x14, 1
+    SD x14, 80(x12)
+    JALR x0, 0(x1)
   0x0000000010030030 <MY_SUBROUTINE>:
-    SLLI x10, x10, 1                                  
-    LUI x15, 65600                                    
-    SD x10, 80(x15)                                   
-    JALR x0, x1, 0                                    
+    SLLI x10, x10, 1
+    LUI x15, 65600
+    SD x10, 80(x15)
+    JALR x0, 0(x1)
   <ELF_ABI_EXIT>:
-    ADDI x0, x0, 0                                    
+    ADDI x0, x0, 0

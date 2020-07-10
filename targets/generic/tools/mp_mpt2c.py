@@ -128,6 +128,19 @@ def generate(test_definition, outputfile, target, **kwargs):
         microprobe.passes.instruction.ReproduceSequencePass(sequence)
     )
 
+    if kwargs.get("fix_indirect_branches", False):
+        print_info("Fix indirect branches: On")
+        synth.add_pass(
+            microprobe.passes.address.UpdateInstructionAddressesPass())
+        synth.add_pass(microprobe.passes.branch.FixIndirectBranchPass())
+
+    if kwargs.get("fix_branch_next", False):
+        print_info("Force branch to next: On")
+        synth.add_pass(
+            microprobe.passes.address.UpdateInstructionAddressesPass())
+        synth.add_pass(microprobe.passes.branch.BranchNextPass(
+            force=True))
+
     if kwargs.get("fix_memory_registers", False):
         kwargs["fix_memory_references"] = True
 
@@ -141,19 +154,6 @@ def generate(test_definition, outputfile, target, **kwargs):
     if kwargs.get("fix_memory_registers", False):
         print_info("Fix memory registers: On")
         synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
-
-    if kwargs.get("fix_branch_next", False):
-        print_info("Force branch to next: On")
-        synth.add_pass(
-            microprobe.passes.address.UpdateInstructionAddressesPass())
-        synth.add_pass(microprobe.passes.branch.BranchNextPass(
-            force=True))
-
-    if kwargs.get("fix_indirect_branches", False):
-        print_info("Fix indirect branches: On")
-        synth.add_pass(
-            microprobe.passes.address.UpdateInstructionAddressesPass())
-        synth.add_pass(microprobe.passes.branch.FixIndirectBranchPass())
 
     print_info("Synthesizing...")
     bench = synth.synthesize()

@@ -880,7 +880,6 @@ def _validate_operands(operand_values, instruction):
                 return False
 
             try:
-
                 if (
                     isinstance(
                         operand.type, (
@@ -914,6 +913,7 @@ def _validate_operands(operand_values, instruction):
                     operand.type.check(operand_value)
 
                 else:
+                    LOG.debug("Combination of value and types not supported")
                     return False
 
             except MicroprobeValueError as exc:

@@ -17,18 +17,21 @@
   MinDisplacement: -2048
   MaxDisplacement: 2047
   Shift: 1
+  Step: 2
 - Name: "@sb_imm7"
   Description: "Relative displacement (bit size 7)"
   Relative: True
-  MinDisplacement: -64
-  MaxDisplacement: 63
-  Shift: 0
+  MinDisplacement: -2048
+  MaxDisplacement: 2047
+  Shift: 1
+  Step: 2
 - Name: "@uj_imm20"
   Description: "Relative displacement (bit size 20)"
   Relative: True
   MinDisplacement: -524288
   MaxDisplacement: 524287
-  Shift: 0
+  Shift: 1
+  Step: 2
 - Name: Zero
   Description: Zero operand (special, not shown)
   Value: 0

@@ -136,6 +136,12 @@ class RegisterType(six.with_metaclass(abc.ABCMeta, object)):
             self.name, self.description, self.size
         )
 
+    def __repr__(self):
+        """x.__repr__() <==> str(x)"""
+        return "%8s: %s (bit size: %d)" % (
+            self.name, self.description, self.size
+        )
+
     @abc.abstractmethod
     def __hash__(self):
         """ """
@@ -185,9 +191,10 @@ class GenericRegisterType(RegisterType):
         self._used_for_vector_arithmetic = u4va
         self._hash = hash(
             (
-                self.name, self.description, self.size,
-                self.used_for_address_arithmetic,
-                self.used_for_float_arithmetic, self.used_for_vector_arithmetic
+                str(self.name), str(self.description), str(self.size),
+                str(self.used_for_address_arithmetic),
+                str(self.used_for_float_arithmetic),
+                str(self.used_for_vector_arithmetic)
             )
         )
 
