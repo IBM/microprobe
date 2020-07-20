@@ -19,7 +19,7 @@ from __future__ import absolute_import, division
 
 # Built-in modules
 import itertools
-from fractions import gcd
+from math import gcd
 from time import localtime, strftime
 
 # Third party modules
