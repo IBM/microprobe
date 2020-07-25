@@ -19,7 +19,6 @@ from __future__ import absolute_import, division
 
 # Built-in modules
 import itertools
-from fractions import gcd
 from time import localtime, strftime
 
 # Third party modules
@@ -33,6 +32,14 @@ import microprobe.utils.info as mp_info
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import getnextf
 
+if six.PY2:
+    # pylint: disable=no-name-in-module
+    from fractions import gcd
+    # pylint: enable=no-name-in-module
+else:
+    # pylint: disable=no-name-in-module
+    from math import gcd
+    # pylint: enable=no-name-in-module
 
 # Constants
 LOG = get_logger(__name__)

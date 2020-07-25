@@ -41,11 +41,12 @@ unset MICROPROBEWRAPPERS
 start_script "$0"
 
 if [ "x$1" = "x" ]; then
-    echo "I need the python version: 2.6 or 2.7"
+    echo "I need a the python version"
 	exit_error "$0"
 fi
 
 VERSION=$1
+VERSION=$(echo "${VERSION}" | sed "s/-dev$//")
 set +e
 command -v "python$VERSION"
 error=$?

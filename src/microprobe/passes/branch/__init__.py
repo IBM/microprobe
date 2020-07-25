@@ -963,7 +963,7 @@ class InitializeBranchDecorator(Pass):
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
 
-                if not (instr.branch or instr.trap):
+                if not (instr.branch or instr.trap or instr.syscall):
                     continue
 
                 if "BP" not in instr.decorators and instr.branch_conditional:
@@ -1048,10 +1048,16 @@ class InitializeBranchDecorator(Pass):
                         instr.decorators.pop("BT")
 
                 if not instr.branch_conditional and 'N' in pattern:
-                    raise MicroprobeCodeGenerationError(
-                        "Not take branch pattern provided for an "
-                        "unconditional branch '%s'" % instr.assembly()
-                    )
+                    if (target_addr - instr.address ==
+                            instr.architecture_type.format.length and
+                            "T" not in pattern):
+                        # This is taken branch to next instruction
+                        pass
+                    else:
+                        raise MicroprobeCodeGenerationError(
+                            "Not taken branch pattern provided for an "
+                            "unconditional branch '%s'" % instr.assembly()
+                        )
 
                 if pattern is None:
 

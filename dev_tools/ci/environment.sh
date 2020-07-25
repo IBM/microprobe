@@ -73,7 +73,9 @@ fi
 
 # Python option. Make sure we are in a controlled environment
 if [ "x$PYTHON_VERSION" = "x" ]; then
-    export PYTHON_VERSION=2.7
+    PYTHON_VERSION="$(python -V 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)"
+    echo "PYTHON_VERSION=$PYTHON_VERSION"
+    export PYTHON_VERSION
 fi
 
 if [ "x$BUILD_TYPE" != "xstable" ]; then
@@ -154,9 +156,9 @@ else
             mkdir -p ./get_pip
             (cd ./get_pip
             wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
-            python$PYTHON_VERSION get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check --no-cache-dir --no-warn-script-location
+            "python$PYTHON_VERSION" get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check --no-cache-dir --no-warn-script-location
             PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv --no-cache-dir --no-warn-script-location
-            PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/virtualenv --clear --python=python$PYTHON_VERSION "../venv-python$PYTHON_VERSION" --app-data "../.app-data-python$PYTHON_VERSION"
+            PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/virtualenv --clear --python="python$PYTHON_VERSION" "../venv-python$PYTHON_VERSION" --app-data "../.app-data-python$PYTHON_VERSION"
             )
             rm -fr ./get_pip
         fi

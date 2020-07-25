@@ -2,10 +2,14 @@ language: python
 python:
     - 2.7
     - 3.6
+    - 3.7
+    - 3.8
+    - 3.9-dev
 os:
     - linux
 cache:
     apt: true
+    pip: false
     directories:
         - toolchain_riscv/install
         - toolchain_riscv/riscv-gnu-toolchain
@@ -16,22 +20,22 @@ git:
 addons:
     apt:
         packages:
-            - autoconf 
-            - automake 
-            - autotools-dev 
-            - curl 
-            - libmpc-dev 
-            - libmpfr-dev 
-            - libgmp-dev 
-            - gawk 
-            - build-essential 
-            - bison 
-            - flex 
-            - texinfo 
-            - gperf 
-            - libtool 
-            - patchutils 
-            - bc 
+            - autoconf
+            - automake
+            - autotools-dev
+            - curl
+            - libmpc-dev
+            - libmpfr-dev
+            - libgmp-dev
+            - gawk
+            - build-essential
+            - bison
+            - flex
+            - texinfo
+            - gperf
+            - libtool
+            - patchutils
+            - bc
             - zlib1g-dev
             - graphviz
             - shellcheck
@@ -42,14 +46,51 @@ stages:
     - compile
     - tests
 jobs:
+    fast_finish: true
     include:
         - stage: cache
           name: prepare cache
           python: 2.7
           script: true
+        - stage: cache
+          name: prepare cache
+          python: 3.6
+          script: true
+        - stage: cache
+          name: prepare cache
+          python: 3.7
+          script: true
+        - stage: cache
+          name: prepare cache
+          python: 3.8
+          script: true
+        - stage: cache
+          name: prepare cache
+          python: 3.9-dev
+          script: true
         - stage: checkout
           name: checkout gcc riscv 2.7
           python: 2.7
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 0
+        - stage: checkout
+          name: checkout gcc riscv 3.6
+          python: 3.6
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 0
+        - stage: checkout
+          name: checkout gcc riscv 3.7
+          python: 3.7
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 0
+        - stage: checkout
+          name: checkout gcc riscv 3.8
+          python: 3.8
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 0
+        - stage: checkout
+          name: checkout gcc riscv 3.9-dev
+          python: 3.9-dev
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 0
         - stage: compile
@@ -57,28 +98,62 @@ jobs:
           python: 2.7
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 1
-        - stage: checkout
-          name: checkout gcc riscv 3.6
-          python: 3.6
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 0
         - stage: compile
           name: compile gcc riscv 3.6
           python: 3.6
           script:
               - ./dev_tools/ci/install_riscv_toolchain.sh 1
+        - stage: compile
+          name: compile gcc riscv 3.7
+          python: 3.7
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 1
+        - stage: compile
+          name: compile gcc riscv 3.8
+          python: 3.8
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 1
+        - stage: compile
+          name: compile gcc riscv 3.9-dev
+          python: 3.9-dev
+          script:
+              - ./dev_tools/ci/install_riscv_toolchain.sh 1
         - stage: shell_conventions
           name: shell conventions 2.7
           python: 2.7
-          script: 
+          script:
               - set -e
-              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh) 
+              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
+        - stage: shell_conventions
+          name: shell conventions 3.6
+          python: 3.6
+          script:
+              - set -e
+              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
+        - stage: shell_conventions
+          name: shell conventions 3.7
+          python: 3.7
+          script:
+              - set -e
+              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
+        - stage: shell_conventions
+          name: shell conventions 3.8
+          python: 3.8
+          script:
+              - set -e
+              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
+        - stage: shell_conventions
+          name: shell conventions 3.9-dev
+          python: 3.9-dev
+          script:
+              - set -e
+              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
 script:
     - set -e
     - pip install -U -r requirements_devel.txt
     - export NEEDINSTALL=False
     - export PATH=$PATH:$(pwd)/toolchain_riscv/install/bin
-    - for file in ./targets/*/dev_tools/ci/travis.sh ; do if [ -f $file ]; then . $file; fi; done; 
+    - for file in ./targets/*/dev_tools/ci/travis.sh ; do if [ -f $file ]; then . $file; fi; done;
     # Code Conventions (always run)
     - ./dev_tools/ci/code_conventions_001_pycodestyle.sh
     - ./dev_tools/ci/code_conventions_002_pylint.sh
@@ -92,4 +167,4 @@ script:
     # Test Release Deploy (always run)
     - ./dev_tools/ci/test_deploy_001_install.sh ${TRAVIS_PYTHON_VERSION}
 before_cache:
-    - rm -fr $HOME/.cache/pip/log
+    - rm -fr $HOME/.cache/pip

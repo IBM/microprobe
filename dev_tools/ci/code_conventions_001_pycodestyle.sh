@@ -32,14 +32,14 @@ python "$(command -v pycodestyle)" --version
 
 set +e
 # shellcheck disable=SC2046
-$NICE python "$(command -v pycodestyle)" --count --statistics $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -name "*.py") > pycodestyle$PYTHON_VERSION.out 2> pycodestyle.err
+$NICE python "$(command -v pycodestyle)" --count --statistics $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -name "*.py") > "pycodestyle$PYTHON_VERSION.out" 2> "pycodestyle$PYTHON_VERSION.err"
 error=$?
 set -e
 
 echo "Return code: $error"
 
-nerror=$(cat pycodestyle.err)
-rm -fr pycodestyle.err
+nerror=$(cat "pycodestyle$PYTHON_VERSION.err")
+rm -f "pycodestyle$PYTHON_VERSION.err"
 
 echo "Num errors: $nerror"
 

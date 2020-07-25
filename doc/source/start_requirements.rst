@@ -18,7 +18,7 @@ systems. The code has been validated on the following platforms:
 - PPC64/Linux with Python 2.7, 3.5
 - PPC64/AIX with Python 2.7
 - Z/Linux with Python 2.7
-- x86_64/Linux with Python 2.7.10, 3.5, 3.6
+- x86_64/Linux with Python 2.7.10, 3.6, 3.7, 3.8, 3.9
 
 If you have another environment that you would like to be tested, let us
 know (:doc:`support_contact`). 

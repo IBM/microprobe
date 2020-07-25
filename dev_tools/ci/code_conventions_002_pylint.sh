@@ -32,7 +32,7 @@ python "$(command -v pylint)" --version
 
 set +e
 # shellcheck disable=SC2046
-$NICE python "$(command -v pylint)" $(find "$WORKSPACE/src/" "$WORKSPACE/targets/"  -name \*.py) -f parseable -j "$MAXJOBS" -d E0012 > pylint$PYTHON_VERSION.out
+$NICE python "$(command -v pylint)" $(find "$WORKSPACE/src/" "$WORKSPACE/targets/"  -name \*.py) -f parseable -j "$MAXJOBS" -d E0012,E0611 > "pylint$PYTHON_VERSION.out"
 error=$?
 set -e
 

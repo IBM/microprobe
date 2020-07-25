@@ -618,6 +618,7 @@ class TraceSynthesizer(Synthesizer):
 
         self._show_trace = kwargs.get("show_trace", False)
         self._maxins = kwargs.get("maxins", 10000)
+        self._start_addr = kwargs.get("start_addr", None)
 
     def _wrap(self, bench):
         """Wrap a benchmark.
@@ -662,6 +663,20 @@ class TraceSynthesizer(Synthesizer):
                     instr.address + instr.architecture_type.format.length
 
         instr = instructions[0]
+        if self._start_addr is not None:
+            if "EA" in instr.decorators:
+                instr = [
+                    ins for ins in instructions
+                    if int(ins.decorators["EA"]['value'][0], 16) ==
+                    self._start_addr
+                ][0]
+            else:
+                instr = instructions_dict[
+                    InstructionAddress(
+                        base_address="code", displacement=self._start_addr
+                    )
+                ]
+
         count = 0
 
         cmd.cmdline.print_info(
