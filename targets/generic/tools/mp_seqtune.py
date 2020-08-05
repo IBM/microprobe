@@ -25,6 +25,7 @@ from __future__ import absolute_import, division, print_function
 
 # Built-in modules
 import itertools
+import errno
 import multiprocessing as mp
 import os
 import sys
@@ -226,7 +227,31 @@ def _generic_policy_wrapper(all_arguments):
             print_error("Generating next configurations.")
             return
 
-    synth.save(outputfile, bench=bench)
+    try:
+        synth.save(outputfile, bench=bench)
+    except OSError as oserr:
+        if oserr.errno != errno.ENAMETOOLONG:
+            raise
+        else:
+            idx = 0
+            outputfile = os.path.join(
+                os.path.dirname(outputfile),
+                wrapper.outputname("mp_seqtune_%05d" % idx)
+            )
+            while os.path.exists(outputfile):
+                print(idx)
+                idx = idx + 1
+                outputfile = os.path.join(
+                    os.path.dirname(outputfile),
+                    wrapper.outputname("mp_seqtune_%05d" % idx)
+                )
+
+            print_info(
+                "Filename too long, using shorter name: %s" %
+                os.path.basename(outputfile)
+            )
+            synth.save(outputfile, bench=bench)
+
     print_info("%s generated!" % outputfile)
 
     return
