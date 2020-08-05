@@ -26,6 +26,7 @@ from __future__ import absolute_import, division, print_function
 # Built-in modules
 import itertools
 import errno
+import hashlib
 import multiprocessing as mp
 import os
 import sys
@@ -101,9 +102,19 @@ def _generic_policy_wrapper(all_arguments):
     outputfile = outputfile.replace(
         "%DIRTREE%", os.path.join(
             *([instr.name for instr in instructions] + extrapath)))
-    outputfile = outputfile.replace(
-        "%BASENAME%", "_".join(
-            instr.name for instr in instructions) + "#" + "#".join(extrapath))
+
+    if kwargs['shortnames']:
+        outputfile = outputfile.replace(
+            "%BASENAME%", "mp_seqtune_%s" % hashlib.sha1(
+                "_".join(instr.name for instr in instructions).encode()
+                ).hexdigest()[0:10] + "#" + "#".join(extrapath)
+        )
+    else:
+        outputfile = outputfile.replace(
+            "%BASENAME%", "_".join(
+                instr.name for instr in instructions
+            ) + "#" + "#".join(extrapath)
+        )
 
     extension = ""
     if target.name.endswith("linux_gcc"):
@@ -227,31 +238,7 @@ def _generic_policy_wrapper(all_arguments):
             print_error("Generating next configurations.")
             return
 
-    try:
-        synth.save(outputfile, bench=bench)
-    except OSError as oserr:
-        if oserr.errno != errno.ENAMETOOLONG:
-            raise
-        else:
-            idx = 0
-            outputfile = os.path.join(
-                os.path.dirname(outputfile),
-                wrapper.outputname("mp_seqtune_%05d" % idx)
-            )
-            while os.path.exists(outputfile):
-                print(idx)
-                idx = idx + 1
-                outputfile = os.path.join(
-                    os.path.dirname(outputfile),
-                    wrapper.outputname("mp_seqtune_%05d" % idx)
-                )
-
-            print_info(
-                "Filename too long, using shorter name: %s" %
-                os.path.basename(outputfile)
-            )
-            synth.save(outputfile, bench=bench)
-
+    synth.save(outputfile, bench=bench)
     print_info("%s generated!" % outputfile)
 
     return
@@ -458,6 +445,13 @@ def main():
         "skip",
         "s",
         "Skip benchmarks already generated",
+        group=groupname,
+    )
+
+    cmdline.add_flag(
+        "shortnames",
+        "sn",
+        "Use short output names",
         group=groupname,
     )
 
@@ -723,6 +717,9 @@ def _main(arguments):
 
     if 'skip' not in arguments:
         arguments['skip'] = False
+
+    if 'shortnames' not in arguments:
+        arguments['shortnames'] = False
 
     if 'parallel' not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")
