@@ -404,7 +404,7 @@ def _interpret_bin_instr(instr_type, bin_instr):
 
                 # C2 no shift
                 valid = valid or (
-                    int_to_twocs(operand_value, size) == field_value
+                    int_to_twocs(operand_value, size + shift) == field_value
                 )
 
                 # Regular shifted
@@ -416,7 +416,7 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 # C2 shifted
                 valid = valid or (
                     (
-                        int_to_twocs(operand_value, size) >> shift
+                        int_to_twocs(operand_value, size + shift) >> shift
                     ) == field_value
                 )
 
