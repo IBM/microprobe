@@ -74,7 +74,6 @@ def _generic_policy_wrapper(all_arguments):
         "%DIRTREE%", os.path.join(
             *[instr.name for instr in instructions]))
 
-    print(kwargs)
     if kwargs['shortnames']:
         outputfile = outputfile.replace(
             "%INSTR%", "mp_seq_%s" % hashlib.sha1(
@@ -112,6 +111,7 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             os.path.basename(outputfile.replace("%EXT%", extension)),
+            endless=kwargs['endless'],
             reset=kwargs['reset']
         )
 
