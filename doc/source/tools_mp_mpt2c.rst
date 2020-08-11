@@ -23,6 +23,15 @@ further details.
    issues. If the ``--endless`` flag is provided, the tool  wraps the code
    provided within an endless loop. 
 
+.. note::
+
+   When compitling the C code with assembly statements generated, one should
+   force the compiler/linker to avoid any optimization that modified the 
+   generated code. In GCC, for instance, embedded assembly statements are not
+   modified but the linker can perform modifications. To avoid that, one needs
+   to use the ``-mno-relax`` flags at compile/link-time to avoid link time
+   optimizations.
+
 -----------
 Basic usage
 -----------
