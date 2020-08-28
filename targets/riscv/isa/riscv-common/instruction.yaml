@@ -9,7 +9,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
+# See the License for the specific language governing pemmissions and
 # limitations under the License.
 - Name: "ADD_V0"
   Mnemonic: "ADD"
@@ -430,7 +430,15 @@
   Operands:
     funct5: ['0', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FADD.D_V1"
+  Mnemonic: "FADD.D"
+  Opcode: "53"
+  Description: "FP Add (DP): Add the double-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
 - Name: "FADD.S_V0"
   Mnemonic: "FADD.S"
   Opcode: "53"
@@ -439,7 +447,15 @@
   Operands:
     funct5: ['0', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FADD.S_V1"
+  Mnemonic: "FADD.S"
+  Opcode: "53"
+  Description: "FP Add (SP): Add the single-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['0', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
 - Name: "FCLASS.D_V0"
   Mnemonic: "FCLASS.D"
   Opcode: "53"
@@ -469,7 +485,16 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['2', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.D.L_V1"
+  Mnemonic: "FCVT.D.L"
+  Opcode: "53"
+  Description: "FP Convert Double Word to Float (DP): Convert the 64-bit signed integer in rs1 to a double-precision value, then write the result to frd"
+  Format: "r-m+fr2rm"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
 - Name: "FCVT.D.LU_V0"
   Mnemonic: "FCVT.D.LU"
   Opcode: "53"
@@ -479,7 +504,16 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['3', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.D.LU_V1"
+  Mnemonic: "FCVT.D.LU"
+  Opcode: "53"
+  Description: "FP Convert Double Word Unsigned Float (DP): Convert the 64-bit unsigned integer in rs1 to a double-precision value, then write the result to frd"
+  Format: "r-m+fr2rm"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
 - Name: "FCVT.D.S_V0"
   Mnemonic: "FCVT.D.S"
   Opcode: "53"
@@ -489,7 +523,7 @@
     funct5: ['8', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['0', 'rs2c', '?']
-    rm: ['0', 'rm', '?']
+    rmns: ['0', 'rmns', '?']
 - Name: "FCVT.D.W_V0"
   Mnemonic: "FCVT.D.W"
   Opcode: "53"
@@ -499,7 +533,7 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['0', 'rs2c', '?']
-    rm: ['0', 'rm', '?']
+    rmns: ['0', 'rmns', '?']
 - Name: "FCVT.D.WU_V0"
   Mnemonic: "FCVT.D.WU"
   Opcode: "53"
@@ -509,7 +543,7 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['1', 'rs2c', '?']
-    rm: ['0', 'rm', '?']
+    rmns: ['0', 'rmns', '?']
 - Name: "FCVT.L.D_V0"
   Mnemonic: "FCVT.L.D"
   Opcode: "53"
@@ -519,7 +553,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['2', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.L.D_V1"
+  Mnemonic: "FCVT.L.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word (DP): Convert the double-precision value in frs1 to a 64-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
 - Name: "FCVT.L.S_V0"
   Mnemonic: "FCVT.L.S"
   Opcode: "53"
@@ -529,7 +572,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['2', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.L.S_V1"
+  Mnemonic: "FCVT.L.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word (SP): Convert the single-precision value in frs1 to a 64-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
 - Name: "FCVT.LU.D_V0"
   Mnemonic: "FCVT.LU.D"
   Opcode: "53"
@@ -539,7 +591,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['3', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.LU.D_V1"
+  Mnemonic: "FCVT.LU.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word Unsigned (DP): Convert the double-precision value in frs1 to a 64-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
 - Name: "FCVT.LU.S_V0"
   Mnemonic: "FCVT.LU.S"
   Opcode: "53"
@@ -549,7 +610,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['3', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.LU.S_V1"
+  Mnemonic: "FCVT.LU.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Double Word Unsigned (SP): Convert the single-precision value in frs1 to a 64-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
 - Name: "FCVT.S.D_V0"
   Mnemonic: "FCVT.S.D"
   Opcode: "53"
@@ -559,7 +629,16 @@
     funct5: ['8', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['1', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.S.D_V1"
+  Mnemonic: "FCVT.S.D"
+  Opcode: "53"
+  Description: "FP Convert DP to SP: Convert the double-precision value in frs1 to single-precision, then write the result to frd"
+  Format: "r-m+ff2rm"
+  Operands:
+    funct5: ['8', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
 - Name: "FCVT.S.L_V0"
   Mnemonic: "FCVT.S.L"
   Opcode: "53"
@@ -569,7 +648,16 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['2', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.S.L_V1"
+  Mnemonic: "FCVT.S.L"
+  Opcode: "53"
+  Description: "FP Convert Double Word to Float (SP): Convert the 64-bit signed integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2rm"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['2', 'rs2c', '?']
 - Name: "FCVT.S.LU_V0"
   Mnemonic: "FCVT.S.LU"
   Opcode: "53"
@@ -579,7 +667,16 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['3', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.S.LU_V1"
+  Mnemonic: "FCVT.S.LU"
+  Opcode: "53"
+  Description: "FP Convert Double Word Unsigned to Float (SP): Convert the 64-bit unsigned integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2rm"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['3', 'rs2c', '?']
 - Name: "FCVT.S.W_V0"
   Mnemonic: "FCVT.S.W"
   Opcode: "53"
@@ -589,7 +686,16 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['0', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.S.W_V1"
+  Mnemonic: "FCVT.S.W"
+  Opcode: "53"
+  Description: "FP Convert Word to Float (SP): Convert the 32-bit signed integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2rm"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
 - Name: "FCVT.S.WU_V0"
   Mnemonic: "FCVT.S.WU"
   Opcode: "53"
@@ -599,7 +705,16 @@
     funct5: ['26', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['1', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.S.WU_V1"
+  Mnemonic: "FCVT.S.WU"
+  Opcode: "53"
+  Description: "FP Convert Word Unsigned to Float (SP): Convert the 32-bit unsigned integer in rs1 to a single-precision value, then write the result to frd"
+  Format: "r-m+fr2rm"
+  Operands:
+    funct5: ['26', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
 - Name: "FCVT.W.D_V0"
   Mnemonic: "FCVT.W.D"
   Opcode: "53"
@@ -609,7 +724,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['0', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.W.D_V1"
+  Mnemonic: "FCVT.W.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Word (DP): Convert the double-precision value in frs1 to a 32-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
 - Name: "FCVT.W.S_V0"
   Mnemonic: "FCVT.W.S"
   Opcode: "53"
@@ -619,7 +743,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['0', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.W.S_V1"
+  Mnemonic: "FCVT.W.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Word (SP): Convert the single-precision value in frs1 to a 32-bit signed integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
 - Name: "FCVT.WU.D_V0"
   Mnemonic: "FCVT.WU.D"
   Opcode: "53"
@@ -629,7 +762,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['1', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.WU.D_V1"
+  Mnemonic: "FCVT.WU.D"
+  Opcode: "53"
+  Description: "FP Convert Float to Word Unsigned (DP): Convert the double-precision value in frs1 to a 32-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
 - Name: "FCVT.WU.S_V0"
   Mnemonic: "FCVT.WU.S"
   Opcode: "53"
@@ -639,7 +781,16 @@
     funct5: ['24', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['1', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FCVT.WU.S_V1"
+  Mnemonic: "FCVT.WU.S"
+  Opcode: "53"
+  Description: "FP Convert Float to Word Unsigned (SP): Convert the single-precision value in frs1 to a 32-bit unsigned integer, then write the result to rd"
+  Format: "r-m+rf2rm"
+  Operands:
+    funct5: ['24', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['1', 'rs2c', '?']
 - Name: "FDIV.D_V0"
   Mnemonic: "FDIV.D"
   Opcode: "53"
@@ -648,7 +799,15 @@
   Operands:
     funct5: ['3', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FDIV.D_V1"
+  Mnemonic: "FDIV.D"
+  Opcode: "53"
+  Description: "FP Divide (DP): Divide the double-precision value in frs1 into frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['3', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
 - Name: "FDIV.S_V0"
   Mnemonic: "FDIV.S"
   Opcode: "53"
@@ -657,7 +816,15 @@
   Operands:
     funct5: ['3', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FDIV.S_V1"
+  Mnemonic: "FDIV.S"
+  Opcode: "53"
+  Description: "FP Divide (SP): Divide the single-precision value in frs1 into frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['3', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
 - Name: "FENCE_V0"
   Mnemonic: "FENCE"
   Opcode: "f"
@@ -759,7 +926,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FMADD.D_V1"
+  Mnemonic: "FMADD.D"
+  Opcode: "43"
+  Description: "FP Fused Multiply Add (DP): Multiply the double-precision values in frs1 and frs2, then add rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['1', 'funct2', '?']
 - Name: "FMADD.S_V0"
   Mnemonic: "FMADD.S"
   Opcode: "43"
@@ -767,7 +941,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FMADD.S_V1"
+  Mnemonic: "FMADD.S"
+  Opcode: "43"
+  Description: "FP Fused Multiply Add (SP): Multiply the single-precision values in frs1 and frs2, then add rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['0', 'funct2', '?']
 - Name: "FMAX.D_V0"
   Mnemonic: "FMAX.D"
   Opcode: "53"
@@ -811,7 +992,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FMSUB.D_V1"
+  Mnemonic: "FMSUB.D"
+  Opcode: "47"
+  Description: "FP Fused Multiply Subtract (DP): Multiply the double-precision values in frs1 and frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['1', 'funct2', '?']
 - Name: "FMSUB.S_V0"
   Mnemonic: "FMSUB.S"
   Opcode: "47"
@@ -819,7 +1007,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FMSUB.S_V1"
+  Mnemonic: "FMSUB.S"
+  Opcode: "47"
+  Description: "FP Fused Multiply Subtract (SP): Multiply the single-precision values in frs1 and frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['0', 'funct2', '?']
 - Name: "FMUL.D_V0"
   Mnemonic: "FMUL.D"
   Opcode: "53"
@@ -828,7 +1023,15 @@
   Operands:
     funct5: ['2', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FMUL.D_V1"
+  Mnemonic: "FMUL.D"
+  Opcode: "53"
+  Description: "FP Multiply (DP): Multiply the double-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['2', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
 - Name: "FMUL.S_V0"
   Mnemonic: "FMUL.S"
   Opcode: "53"
@@ -837,7 +1040,15 @@
   Operands:
     funct5: ['2', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FMUL.S_V1"
+  Mnemonic: "FMUL.S"
+  Opcode: "53"
+  Description: "FP Multiply (SP): Multiply the single-precision values in frs1 and frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['2', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
 - Name: "FMV.D.X_V0"
   Mnemonic: "FMV.D.X"
   Opcode: "53"
@@ -885,7 +1096,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FNMADD.D_V1"
+  Mnemonic: "FNMADD.D"
+  Opcode: "4f"
+  Description: "FP Negate fused Multiply Add (DP): Multiply the double-precision value in frs1 with the negated value in frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['1', 'funct2', '?']
 - Name: "FNMADD.S_V0"
   Mnemonic: "FNMADD.S"
   Opcode: "4f"
@@ -893,7 +1111,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FNMADD.S_V1"
+  Mnemonic: "FNMADD.S"
+  Opcode: "4f"
+  Description: "FP Negate fused Multiply Add (SP): Multiply the single-precision value in frs1 with the negated value in frs2, then subtract rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['0', 'funct2', '?']
 - Name: "FNMSUB.D_V0"
   Mnemonic: "FNMSUB.D"
   Opcode: "4b"
@@ -901,7 +1126,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FNMSUB.D_V1"
+  Mnemonic: "FNMSUB.D"
+  Opcode: "4b"
+  Description: "FP Negate fused Multiply Subtract (DP): Multiply the double-precision value in frs1 with the negated value in frs2, then add rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['1', 'funct2', '?']
 - Name: "FNMSUB.S_V0"
   Mnemonic: "FNMSUB.S"
   Opcode: "4b"
@@ -909,7 +1141,14 @@
   Format: "r4-m"
   Operands:
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FNMSUB.S_V1"
+  Mnemonic: "FNMSUB.S"
+  Opcode: "4b"
+  Description: "FP Negate fused Multiply Subtract (SP): Multiply the single-precision value in frs1 with the negated value in frs2, then add rs3 and write the result to frd"
+  Format: "r4-mrm"
+  Operands:
+    funct2: ['0', 'funct2', '?']
 - Name: "FSD_V0"
   Mnemonic: "FSD"
   Opcode: "27"
@@ -983,7 +1222,16 @@
     funct5: ['11', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
     rs2c: ['0', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FSQRT.D_V1"
+  Mnemonic: "FSQRT.D"
+  Opcode: "53"
+  Description: "Floating Square Root (DP): Calculate the square root of the double-precision value in frs1, then write the result to frd"
+  Format: "r-m+ff2rm"
+  Operands:
+    funct5: ['11', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
 - Name: "FSQRT.S_V0"
   Mnemonic: "FSQRT.S"
   Opcode: "53"
@@ -993,7 +1241,16 @@
     funct5: ['11', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
     rs2c: ['0', 'rs2c', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FSQRT.S_V1"
+  Mnemonic: "FSQRT.S"
+  Opcode: "53"
+  Description: "FP Square Root (SP): Calculate the square root of the single-precision value in frs1, then write the result to frd"
+  Format: "r-m+ff2rm"
+  Operands:
+    funct5: ['11', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
+    rs2c: ['0', 'rs2c', '?']
 - Name: "FSUB.D_V0"
   Mnemonic: "FSUB.D"
   Opcode: "53"
@@ -1002,7 +1259,15 @@
   Operands:
     funct5: ['1', 'funct5', '?']
     funct2: ['1', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FSUB.D_V1"
+  Mnemonic: "FSUB.D"
+  Opcode: "53"
+  Description: "FP Subtract (DP): Subtract the double-precision values in frs1 from frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['1', 'funct5', '?']
+    funct2: ['1', 'funct2', '?']
 - Name: "FSUB.S_V0"
   Mnemonic: "FSUB.S"
   Opcode: "53"
@@ -1011,7 +1276,15 @@
   Operands:
     funct5: ['1', 'funct5', '?']
     funct2: ['0', 'funct2', '?']
-    rm: ['7', 'rm', '?']
+    rmns: ['7', 'rmns', '?']
+- Name: "FSUB.S_V1"
+  Mnemonic: "FSUB.S"
+  Opcode: "53"
+  Description: "FP Subtract (SP): Subtract the single-precision values in frs1 from frs2, then write the result to frd"
+  Format: "r-m+3frm"
+  Operands:
+    funct5: ['1', 'funct5', '?']
+    funct2: ['0', 'funct2', '?']
 - Name: "FSW_V0"
   Mnemonic: "FSW"
   Opcode: "27"

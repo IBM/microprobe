@@ -2046,6 +2046,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 is_agen = False
                 is_branch = False
 
+                LOG.debug("Modeling memory for: %s", instr)
+
                 for moperand in instr.memory_operands():
                     if moperand.is_load:
                         is_load = True

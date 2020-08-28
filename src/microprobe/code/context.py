@@ -526,7 +526,10 @@ class Context(object):  # pylint: disable=too-many-public-methods
             mstr.append("Idx:\t%s\tRaw Value:\t%s" % (key, value))
 
         mstr.append("Registers values inverted:")
-        for key, value in sorted(self._register_values[1].items()):
+        for key, value in sorted([
+                    (str(k), str(v)) for k, v
+                    in self._register_values[1].items()
+                ]):
             mstr.append("Idx:\t%s\tValue:\t%s" % (key, value))
 
         mstr.append("Memory values:")

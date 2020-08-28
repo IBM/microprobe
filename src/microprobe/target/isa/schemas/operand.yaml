@@ -97,6 +97,11 @@ contents:
           length: { min: 1 }
         Override:
           type: //bool
+        Representation:
+          type: //arr
+          contents:
+            type: //str
+          length: { min: 1 }
     #OperandConst
     - type: //rec
       required:

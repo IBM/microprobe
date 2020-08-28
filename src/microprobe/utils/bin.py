@@ -413,10 +413,18 @@ def _interpret_bin_instr(instr_type, bin_instr):
                         int(operand.codification(operand_value)) >> shift
                     ) == field_value
                 )
+
                 # C2 shifted
                 valid = valid or (
                     (
                         int_to_twocs(operand_value, size + shift) >> shift
+                    ) == field_value
+                )
+
+                # C2 shifted 2
+                valid = valid or (
+                    (
+                        int_to_twocs(operand_value >> shift, size - shift)
                     ) == field_value
                 )
 

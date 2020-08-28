@@ -172,9 +172,9 @@ def import_definition(filenames, registers):
                 elif "Values" in elem:
 
                     values = tuple(elem["Values"])
+                    rep = elem.get("Representation", None)
                     key.append(tuple(values))
-
-                    operand = OperandValueSet(name, descr, values)
+                    operand = OperandValueSet(name, descr, values, rep)
 
                 elif "Value" in elem:
 
@@ -1102,7 +1102,7 @@ class OperandValueSet(Operand):
 
     """
 
-    def __init__(self, name, descr, values):
+    def __init__(self, name, descr, values, rep):
         """
 
         :param name:
@@ -1114,10 +1114,23 @@ class OperandValueSet(Operand):
         # TODO: add input value checking
         self._values = values
         self._imm = True
+        self._rep = None
+        if rep is not None and len(rep) != len(values):
+            raise MicroprobeArchitectureDefinitionError(
+                "Values and representation of operand definition "
+                "'%s' do not have the same length." % name
+            )
+        if rep is not None:
+            self._rep = dict(zip(values, rep))
 
     def copy(self):
         """ """
-        return OperandValueSet(self.name, self.description, self._values)
+        return OperandValueSet(
+            self.name,
+            self.description,
+            self._values,
+            self._rep
+        )
 
     def values(self):
         """Return the possible value of the operand.
@@ -1132,7 +1145,9 @@ class OperandValueSet(Operand):
         :param value:
 
         """
-        return _format_integer(self, value)
+        if self._rep is None:
+            return _format_integer(self, value)
+        return self._rep[value]
 
     def codification(self, value):
         """

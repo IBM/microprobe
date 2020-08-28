@@ -1366,6 +1366,7 @@ class InstructionMemoryOperandValue(Pickable):
                     not index_operand_imm.descriptor.is_output)
 
             try:
+                LOG.debug("Setting immediate displacement")
                 index_operand_imm.set_value(index)
                 set_index = True
                 generated_address += index
@@ -1453,7 +1454,7 @@ class InstructionMemoryOperandValue(Pickable):
             LOG.warning("Base address register is an output. The memory model"
                         " pass should take that into account")
 
-        LOG.debug("End")
+        LOG.debug("End setting address")
 
     def update_address_from_operands(self, context=None):
         """

@@ -242,3 +242,17 @@
   Description: 7-bit immediate
   Min: 0
   Max: 127
+- Name: rm
+  Description: 3-bit immediate for rounding mode
+  Values:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  Representation:
+  - 'rne'
+  - 'rtz'
+  - 'rdn'
+  - 'rup'
+  - 'rmm'

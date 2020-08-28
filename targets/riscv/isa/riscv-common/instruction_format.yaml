@@ -197,41 +197,91 @@
   - funct2
   - frs2
   - frs1
-  - rm
+  - rmns
   - frd
   - opcode
   Assembly: OPC frd, frs1, frs2
+- Name: "r-m+3frm"
+  Fields:
+  - funct5
+  - funct2
+  - frs2
+  - frs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1, frs2, rm
 - Name: "r-m+ff"
   Fields:
   - funct5
   - funct2
   - rs2
   - frs1
-  - rm
+  - rmns
   - frd
   - opcode
   Assembly: OPC frd, frs1
+- Name: "r-m+ffrm"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - frs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1, rm
 - Name: "r-m+ff2"
   Fields:
   - funct5
   - funct2
   - rs2c
   - frs1
-  - rm
+  - rmns
   - frd
   - opcode
   Assembly: OPC frd, frs1
+- Name: "r-m+ff2rm"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - frs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1, rm
 - Name: "r-m+fr"
   Fields:
   - funct5
   - funct2
   - rs2
   - rs1
-  - rm
+  - rmns
   - frd
   - opcode
   Assembly: OPC frd, rs1
+- Name: "r-m+frrm"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - rs1
+  - rm
+  - frd
+  - opcode
+  Assembly: OPC frd, rs1, rm
 - Name: "r-m+fr2"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - rs1
+  - rmns
+  - frd
+  - opcode
+  Assembly: OPC frd, rs1
+- Name: "r-m+fr2rm"
   Fields:
   - funct5
   - funct2
@@ -240,8 +290,18 @@
   - rm
   - frd
   - opcode
-  Assembly: OPC frd, rs1
+  Assembly: OPC frd, rs1, rm
 - Name: "r-m+rf"
+  Fields:
+  - funct5
+  - funct2
+  - rs2
+  - frs1
+  - rmns
+  - rd
+  - opcode
+  Assembly: OPC rd, frs1
+- Name: "r-m+rfrm"
   Fields:
   - funct5
   - funct2
@@ -250,8 +310,18 @@
   - rm
   - rd
   - opcode
-  Assembly: OPC rd, frs1
+  Assembly: OPC rd, frs1, rm
 - Name: "r-m+rf2"
+  Fields:
+  - funct5
+  - funct2
+  - rs2c
+  - frs1
+  - rmns
+  - rd
+  - opcode
+  Assembly: OPC rd, frs1
+- Name: "r-m+rf2rm"
   Fields:
   - funct5
   - funct2
@@ -260,8 +330,18 @@
   - rm
   - rd
   - opcode
-  Assembly: OPC rd, frs1
+  Assembly: OPC rd, frs1, rm
 - Name: "r4-m"
+  Fields:
+  - frs3
+  - funct2
+  - frs2
+  - frs1
+  - rmns
+  - frd
+  - opcode
+  Assembly: OPC frd, frs1, frs2, frs3
+- Name: "r4-mrm"
   Fields:
   - frs3
   - funct2
@@ -270,7 +350,7 @@
   - rm
   - frd
   - opcode
-  Assembly: OPC frd, frs1, frs2, frs3
+  Assembly: OPC frd, frs1, frs2, frs3, rm
 - Name: "s"
   Fields:
   - s_imm7

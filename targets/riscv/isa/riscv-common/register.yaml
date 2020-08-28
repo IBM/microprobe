@@ -27,28 +27,3 @@
   Repeat:
     From: 0
     To: 31
-- Name: rm_rne
-  Type: rm
-  Representation: 'rne'
-  Codification: '0'
-  Description: Round to Nearest, ties to Even
-- Name: rm_rtz
-  Type: rm
-  Representation: 'rtz'
-  Codification: '0'
-  Description: Round towards Zero
-- Name: rm_rdn
-  Type: rm
-  Representation: 'rdn'
-  Codification: '0'
-  Description: Round Down (towards minus infinite)
-- Name: rm_rup
-  Type: rm
-  Representation: 'rup'
-  Codification: '0'
-  Description: Round Up (towards plus infinite)
-- Name: rm_rmm
-  Type: rm
-  Representation: 'rmm'
-  Codification: '0'
-  Description: Round to Nearest, ties to Max Magnitude

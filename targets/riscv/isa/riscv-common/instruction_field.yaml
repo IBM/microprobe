@@ -187,9 +187,15 @@
 - Name: "rm"
   Size: 3
   Description: "rm"
+  Show: True
+  IO: "?"
+  Operand: "rm"
+- Name: "rmns"
+  Size: 3
+  Description: "rmns"
   Show: False
   IO: "?"
-  Operand: "u.imm3"
+  Operand: "rm"
 - Name: "rs1"
   Size: 5
   Description: "rs1"

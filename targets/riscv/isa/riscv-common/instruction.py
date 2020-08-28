@@ -289,6 +289,6 @@ class RISCVInstruction(GenericInstructionType):
         LOG.debug("Args: %s, %s", args, newargs)
 
         long_str = super(RISCVInstruction, self).binary(newargs, asm_args=args)
-        assert len(long_str) in [16, 32, 48], len(long_str)
+        assert len(long_str) in [16, 32], len(long_str)
         LOG.debug("End specific RISC-V codification")
         return long_str

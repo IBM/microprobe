@@ -939,8 +939,10 @@ def _generate_operand_candidates(operands, target, instruction, labels):
     LOG.debug("Start: operands=%s", operands)
     candidates = []
 
-    for operand in operands:
+    for idx, operand in enumerate(operands):
         options = []
+
+        operdef = instruction.operands()[idx].descriptor.type
 
         LOG.debug("Processing operand: %s", operand)
 
@@ -958,7 +960,10 @@ def _generate_operand_candidates(operands, target, instruction, labels):
 
         else:
 
-            LOG.debug("Operand looks like a label or register value.")
+            LOG.debug(
+                "Operand looks like a label, "
+                "register value, or a rounding mode"
+            )
 
             islabel = False
             for label in labels:
@@ -970,6 +975,7 @@ def _generate_operand_candidates(operands, target, instruction, labels):
                 options.append(operand)
             else:
                 options += _generate_possible_registers(operand, target)
+                options += _generate_possible_other_reps(operand, operdef)
 
         if len(options) == 0:
             raise MicroprobeAsmError(
@@ -1009,6 +1015,27 @@ def _generate_immediate_variations(immediate, instr):
                 variations.append(variation)
 
     return variations
+
+
+def _generate_possible_other_reps(operand, oper_def):
+    """
+
+    :param operand:
+    :type operand:
+    :param target:
+    :type target:
+    """
+
+    LOG.debug("Looking possible values for operand: '%s'", operand)
+
+    if not isinstance(oper_def, OperandValueSet):
+        return []
+
+    values = [
+        val for val in oper_def.values()
+        if oper_def.representation(val).upper() == operand
+    ]
+    return values
 
 
 def _generate_possible_registers(operand, target):

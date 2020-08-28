@@ -366,7 +366,11 @@ def self_codification_function(self):
                 print("Codification: 0x%x" % codification)
                 print("Assembly: %s" % instruction.assembly())
 
-                instr_def = interpret_bin(hex(codification)[2:], target)[0]
+                instr_def = interpret_bin(
+                    hex(codification)[2:],
+                    target,
+                    single=True
+                )[0]
                 print("%s == %s ?" % (instr, instr_def.instruction_type))
 
                 self.assertEqual(instr.mnemonic,
