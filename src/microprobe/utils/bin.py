@@ -33,6 +33,7 @@ from __future__ import absolute_import, division, print_function
 import itertools
 import math
 import string
+import re
 
 # Third party modules
 import six
@@ -498,6 +499,11 @@ def _interpret_bin_instr(instr_type, bin_instr):
     LOG.debug("Operand values: %s", operand_values)
     return operand_values
 
+def _swap_bytes(original):
+    result = "";
+    while(len(original) > 0):
+        original, result = original[:-2], result + original[-2:]
+    return result
 
 def _normalize_code(code, fmt="hex"):
     """
@@ -509,6 +515,7 @@ def _normalize_code(code, fmt="hex"):
     """
 
     skip_character = " \n"
+    skip_regex = '|'.join([c for c in skip_character])
 
     if fmt == "hex":
         digit_list = string.hexdigits + skip_character
@@ -534,7 +541,7 @@ def _normalize_code(code, fmt="hex"):
                 "Invalid input provided. Not hexadecimal number provided"
             )
 
-    code = "".join([char for char in code if char not in skip_character])
+    code = "".join(map(_swap_bytes, re.split(skip_regex, code)))
 
     if fmt == "hex":
         return code
@@ -567,7 +574,7 @@ class MicroprobeBinInstructionStream(object):
         self._target = target
         self._index = 0
         self._data_cache = _data_cache
-        self._lenghts = list(reversed(sorted(_compute_target_lengths(target))))
+        self._lenghts = list(sorted(_compute_target_lengths(target)))
         self._progress = Progress(len(self._code), msg="Bytes parsed:")
 
     def empty(self):
@@ -621,6 +628,8 @@ class MicroprobeBinInstructionStream(object):
                 continue
 
             bin_str = self._code[self._index:self._index + length * 2]
+
+            bin_str = _swap_bytes(bin_str)
             bin_int = int(bin_str, 16)
 
             fmt = "0x%%0%dx" % (length * 2)
