@@ -342,53 +342,55 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 oper_size_pairs.append(pair)
 
             # RISC-V fixes
-            if field.name in ["s_imm5", "sb_imm5"]:
-                LOG.debug("Special condition field 5")
+
+            # List of immediate fixes which need to be performed
+            riscv_fixes = {
+                'sb_imm7': ('sb_imm5', 13, True, '12|10:5;#13;4:1|11'),
+                's_imm7': ('s_imm5', 12, True, '11:5;#13;4:0'),
+                'uj_imm20': (None, 21, True, '20|10:1|11|19:12'),
+            }
+
+            def _parse_fixed_field(fix):
+                value = 0
+                src_pos = 31
+
+                segments = fix[3].split(';')
+                for segment in segments:
+                    if segment.startswith('#'):
+                        src_pos -= int(segment[1:])
+                    else:
+                        tokens = segment.split('|')
+                        for token in tokens:
+                            if ':' in token:
+                                start, end = token.split(':')
+                                for dst_pos in range(int(start),int(end)-1,-1):
+                                    bit = (bin_instr >> src_pos) & 1
+                                    value |= (bit << dst_pos)
+                                    src_pos -= 1
+                            else:
+                                bit = (bin_instr >> src_pos) & 1
+                                dst_pos = int(token)
+                                value |= (bit << dst_pos)
+                                src_pos -= 1
+
+                if fix[2]:
+                    value = twocs_to_int(value, fix[1])
+
+                return value
+
+            # Fields which will contain the actual value
+            if field.name in riscv_fixes:
+                LOG.debug("Fixing %s" % field.name)
+                special_condition = True
+                fix = riscv_fixes[field.name]
+                value = _parse_fixed_field(fix)
+                pair = (value, fix[1], operand.shift)
+                oper_size_pairs.append(pair)
+
+            # Fields which will contain a 0
+            if field.name in [fix[0] for _, (_, fix) in enumerate(riscv_fixes.items())]:
                 special_condition = True
                 pair = (0, field.size, operand.shift)
-                oper_size_pairs.append(pair)
-
-            if field.name in ["s_imm7"]:
-                LOG.debug("Special condition field 7 (regular)")
-                special_condition = True
-
-                field_value = ((field_value << 5) |
-                               ((bin_instr >> 0x7) & ((0b1 << 5) - 1)))
-
-                pair = (twocs_to_int(field_value, field.size + 5),
-                        field.size + 5, operand.shift)
-                oper_size_pairs.append(pair)
-
-            if field.name in ["sb_imm7"]:
-                LOG.debug("Special condition field 7 (branch)")
-                special_condition = True
-
-                bits4_1 = (bin_instr >> 0x8) & 0b1111
-                bits10_5 = (field_value & 0b111111) << 4
-                bit11 = ((bin_instr >> 0x7) & 0b1) << 10
-                bit12 = ((field_value >> 0x6) & 0b1) << 11
-
-                field_value = (bit12 | bit11 | bits10_5 | bits4_1) << 1
-
-                pair = (twocs_to_int(field_value, field.size + 6),
-                        field.size + 5, operand.shift)
-
-                oper_size_pairs.append(pair)
-
-            if field.name in ["uj_imm20"]:
-                LOG.debug("Special condition sb_imm20 field")
-                special_condition = True
-
-                bit20 = (field_value >> 19) << 19
-                bit11 = ((field_value >> 8) & 0x1) << 10
-                bits10_1 = ((field_value >> 9) & 0b1111111111)
-                bits19_12 = (field_value & 0b11111111) << 11
-
-                field_value = (bit20 | bits19_12 | bit11 | bits10_1) << 1
-
-                pair = (twocs_to_int(field_value, field.size + 1),
-                        field.size, operand.shift)
-
                 oper_size_pairs.append(pair)
 
             oper_size_pairs = list(set(oper_size_pairs))
