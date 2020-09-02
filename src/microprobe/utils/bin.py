@@ -502,8 +502,14 @@ def _interpret_bin_instr(instr_type, bin_instr):
 
 def _swap_bytes(original):
     result = ""
+
+    # Pad with 0s on the left until having an even number of digits
+    if(len(original) % 2 != 0):
+        original = "0" + original
+
     while(len(original) > 0):
         original, result = original[:-2], result + original[-2:]
+
     return result
 
 
