@@ -1650,8 +1650,8 @@ class GenericInstructionType(InstructionType):
             )
         else:
             raise MicroprobeArchitectureDefinitionError(
-                "Instruction contains an inappropriate amount of opcode fields "
-                "(%d)" % opcode_operands.length)
+                    "Instruction contains an inappropriate amount of "
+                    "opcode fields (%d)" % opcode_operands.length)
 
     def _compute_mask(self):
 
