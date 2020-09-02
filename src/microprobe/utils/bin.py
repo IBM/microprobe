@@ -349,8 +349,10 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 's_imm7': ('s_imm5', 12, True, '11:5;#13;4:0'),
                 'uj_imm20': (None, 21, True, '20|10:1|11|19:12'),
             }
+            zero_fields = [fix[0] for _, (_, fix) in
+                           enumerate(riscv_fixes.items())]
 
-            def _parse_fixed_field(fix):
+            def _parse_riscv_fix_field(fix):
                 value = 0
                 src_pos = 31
 
@@ -362,8 +364,8 @@ def _interpret_bin_instr(instr_type, bin_instr):
                         tokens = segment.split('|')
                         for token in tokens:
                             if ':' in token:
-                                start, end = token.split(':')
-                                for dst_pos in range(int(start),int(end)-1,-1):
+                                start, end = map(int, token.split(':'))
+                                for dst_pos in range(start, end - 1, -1):
                                     bit = (bin_instr >> src_pos) & 1
                                     value |= (bit << dst_pos)
                                     src_pos -= 1
@@ -383,12 +385,12 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 LOG.debug("Fixing %s" % field.name)
                 special_condition = True
                 fix = riscv_fixes[field.name]
-                value = _parse_fixed_field(fix)
+                value = _parse_riscv_fix_field(fix)
                 pair = (value, fix[1], operand.shift)
                 oper_size_pairs.append(pair)
 
             # Fields which will contain a 0
-            if field.name in [fix[0] for _, (_, fix) in enumerate(riscv_fixes.items())]:
+            if field.name in zero_fields:
                 special_condition = True
                 pair = (0, field.size, operand.shift)
                 oper_size_pairs.append(pair)

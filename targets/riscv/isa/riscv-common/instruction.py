@@ -186,7 +186,8 @@ class RISCVInstruction(GenericInstructionType):
             ('sb_imm5', 'sb_imm7', 13, _7BITS_OPERAND_DESCRIPTOR, '4:1|11'),
             ('s_imm7', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR, '11:5'),
             ('s_imm5', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR, '4:0'),
-            ('uj_imm2', 'uj_imm20', 20, _20BITS_OPERAND_DESCRIPTOR, '20|10:1|11|19:12'),
+            ('uj_imm2', 'uj_imm20', 20, _20BITS_OPERAND_DESCRIPTOR,
+                '20|10:1|11|19:12'),
         ]
 
         # Check if fixing is needed
@@ -228,7 +229,8 @@ class RISCVInstruction(GenericInstructionType):
 
             return coded_value
 
-        fields = dict(zip([field.name for field in self.format.fields], zip(self.format.fields, list(self.operands.items()))))
+        fields = dict(zip([field.name for field in self.format.fields],
+                      zip(self.format.fields, list(self.operands.items()))))
         argdict = dict(zip([field.name for field in self.format.fields], args))
         fixed_args = dict()
 
@@ -242,13 +244,15 @@ class RISCVInstruction(GenericInstructionType):
                 value_coded = int_to_twocs(value, fix[2])
                 assert twocs_to_int(value_coded, fix[2]) == value
 
-                newarg.set_value(_code_fixed_field(value_coded << arg.type.shift, fix[4]))
+                newarg.set_value(
+                    _code_fixed_field(value_coded << arg.type.shift, fix[4])
+                )
                 fixed_args[fix[0]] = newarg
 
         newargs = []
 
         for op_descriptor, field in zip(list(self.operands.items()),
-                                self.format.fields):
+                                        self.format.fields):
 
             _, op_descriptor = op_descriptor
             operand, _ = op_descriptor
@@ -259,7 +263,8 @@ class RISCVInstruction(GenericInstructionType):
             if field.name in fixed_args:
                 newargs.append(fixed_args[field.name])
             else:
-                if (operand.constant and field.default_show) or (not operand.constant):
+                if ((operand.constant and field.default_show) or
+                        (not operand.constant)):
                     LOG.debug("Not fixing field: %s", field.name)
                     newargs.append(argdict[field.name])
 
