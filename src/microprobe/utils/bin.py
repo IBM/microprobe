@@ -499,11 +499,13 @@ def _interpret_bin_instr(instr_type, bin_instr):
     LOG.debug("Operand values: %s", operand_values)
     return operand_values
 
+
 def _swap_bytes(original):
-    result = "";
+    result = ""
     while(len(original) > 0):
         original, result = original[:-2], result + original[-2:]
     return result
+
 
 def _normalize_code(code, fmt="hex"):
     """
