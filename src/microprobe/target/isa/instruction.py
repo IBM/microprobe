@@ -1642,10 +1642,16 @@ class GenericInstructionType(InstructionType):
                 operand, "I" in io_def, "O" in io_def
             )
 
-        if "opcode" in operands:
-            self.operands["opcode"][0] = OperandConst(
+        opcode_operands = [op for op in operands if op.startswith('opcode')]
+
+        if len(opcode_operands) == 1:
+            self.operands[opcode_operands[0]][0] = OperandConst(
                 "Opcode", "Instruction opcode", int(self.opcode, 16)
             )
+        else:
+            raise MicroprobeArchitectureDefinitionError(
+                    "Instruction contains an inappropriate amount of "
+                    "opcode fields (%d)" % opcode_operands.length)
 
     def _compute_mask(self):
 
