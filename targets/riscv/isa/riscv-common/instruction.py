@@ -128,15 +128,24 @@ class RISCVInstruction(GenericInstructionType):
                     "Unable to find sub-field '%s' for the '%s' field" %
                     (cfield, base))
 
-        if assembly_str.find("sb_imm12") > 0:
-            assert _get_value("sb_imm5", "sb_imm12") == "0"
-            value = _get_value("sb_imm7", "sb_imm12")
-            assembly_str = assembly_str.replace("sb_imm12", str(value))
+        def _fix_field(string, base, dummy, field):
+            if string.find(base) > 0:
+                assert _get_value(dummy, base) == "0"
+                value = _get_value(field, base)
+                return string.replace(base, str(value))
+            else:
+                return string
 
-        if assembly_str.find("s_imm12") > 0:
-            assert _get_value("s_imm5", "s_imm12") == "0"
-            value = _get_value("s_imm7", "s_imm12")
-            assembly_str = assembly_str.replace("s_imm12", str(value))
+        # Base field   (the assembly language field)
+        # Dummy field  (will be 0)
+        # Actual field (contains the actual value)
+        fix_fields = [
+            ("sb_imm12", "sb_imm5", "sb_imm7"),
+            ("s_imm12", "s_imm5", "s_imm7"),
+        ]
+
+        for fix in fix_fields:
+            assembly_str = _fix_field(assembly_str, fix[0], fix[1], fix[2])
 
         for field in ['pred', 'succ']:
 
@@ -167,13 +176,24 @@ class RISCVInstruction(GenericInstructionType):
 
         LOG.debug("Start specific RISC-V codification")
 
+        # Destination Field
+        # Source Field
+        # codification bits
+        # Operand Descriptor
+        # Codification
+        fixes = [
+            ('sb_imm7', 'sb_imm7', 13, _7BITS_OPERAND_DESCRIPTOR, '12|10:5'),
+            ('sb_imm5', 'sb_imm7', 13, _7BITS_OPERAND_DESCRIPTOR, '4:1|11'),
+            ('s_imm7', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR, '11:5'),
+            ('s_imm5', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR, '4:0'),
+            ('uj_imm2', 'uj_imm20', 20, _20BITS_OPERAND_DESCRIPTOR,
+                '20|10:1|11|19:12'),
+        ]
+
         # Check if fixing is needed
         fix_needed = False
-        fix_fields = ['sb_imm5', 's_imm5']
-        base_fields = ['sb_imm7', 's_imm7']
-
-        for fix_field in fix_fields + ["uj_imm20"]:
-            if fix_field in [field.name for field in self.format.fields]:
+        for (name, _, _, _, _) in fixes:
+            if name in [field.name for field in self.format.fields]:
                 fix_needed = True
                 break
 
@@ -185,106 +205,68 @@ class RISCVInstruction(GenericInstructionType):
                 args,
                 asm_args=asm_args)
 
-            assert len(long_str) in [32], len(long_str)
+            assert len(long_str) in [32, 16], len(long_str)
             LOG.debug("End specific RISC-V codification")
 
             return long_str
 
-        next_operand_value = getnextf(iter(args))
+        def _code_fixed_field(value, codification):
+            coded_value = 0
+
+            segments = codification.split(';')
+            for segment in segments:
+                tokens = segment.split('|')
+                for token in tokens:
+                    if ':' in token:
+                        start, end = token.split(':')
+                        for pos in range(int(start), int(end)-1, -1):
+                            bit = (value >> (pos)) & 1
+                            coded_value = (coded_value << 1) | bit
+                    else:
+                        pos = int(token)
+                        bit = (value >> (pos)) & 1
+                        coded_value = (coded_value << 1) | bit
+
+            return coded_value
+
+        fields = dict(zip([field.name for field in self.format.fields],
+                      zip(self.format.fields, list(self.operands.items()))))
+        argdict = dict(zip([field.name for field in self.format.fields], args))
+        fixed_args = dict()
+
+        for fix in fixes:
+            if fix[0] in fields:
+                field, op_descriptor = fields[fix[0]]
+                arg = argdict[fix[1]]
+                value = int(arg.type.codification(arg.value))
+                newarg = InstructionOperandValue(fix[3])
+
+                value_coded = int_to_twocs(value, fix[2])
+                assert twocs_to_int(value_coded, fix[2]) == value
+
+                newarg.set_value(
+                    _code_fixed_field(value_coded << arg.type.shift, fix[4])
+                )
+                fixed_args[fix[0]] = newarg
+
         newargs = []
 
         for op_descriptor, field in zip(list(self.operands.items()),
                                         self.format.fields):
 
-            dummy_fieldname, op_descriptor = op_descriptor
-            operand, dummy = op_descriptor
+            _, op_descriptor = op_descriptor
+            operand, _ = op_descriptor
 
             LOG.debug("Field: %s", field)
             LOG.debug("Operand: %s", operand)
 
-            if (operand.constant and
-                    (field.name not in fix_fields + base_fields +
-                        ["uj_imm20"])):
-
-                if field.default_show:
-                    arg = next_operand_value()
-                    newargs.append(arg)
-
-                continue
-
-            if field.name not in fix_fields + base_fields + ["uj_imm20"]:
-                LOG.debug("Not fixing field: %s", field.name)
-                arg = next_operand_value()
-                newargs.append(arg)
-                continue
-
-            if field.name in base_fields:
-
-                arg = next_operand_value()
-                value = int(arg.type.codification(arg.value))
-                newarg = InstructionOperandValue(_7BITS_OPERAND_DESCRIPTOR)
-
-                if field.name == "sb_imm7":
-
-                    value_coded = int_to_twocs(value, 13)
-                    assert twocs_to_int(value_coded, 13) == value
-
-                    bit11 = (value_coded >> 10) & 0b1
-                    bit4_1 = (value_coded & 0b1111) << 0b1
-                    sb_imm5_value = bit11 | bit4_1
-
-                    bit12 = ((value_coded >> 11) & 0b1) << 6
-                    bit10_5 = (value_coded >> 4) & 0b111111
-                    newarg.set_value((bit12 | bit10_5))
-
-                elif field.name == "s_imm7":
-
-                    value_coded = int_to_twocs(value, 12)
-                    assert twocs_to_int(value_coded, 12) == value
-                    s_imm5_value = (value_coded & 0x1F)
-                    newarg.set_value((value_coded & 0xFE0) >> 5)
-
-                else:
-                    raise NotImplementedError
-
-                LOG.debug("Set field '%s' value: %s --> %s", field.name, value,
-                          (value_coded & 0xFE0) >> 5)
-                newargs.append(newarg)
-
-            # Assume variable are previously set
-            if field.name in fix_fields:
-
-                newarg = InstructionOperandValue(_5BITS_OPERAND_DESCRIPTOR)
-
-                if field.name == "sb_imm5":
-                    value_fixed = sb_imm5_value
-                elif field.name == "s_imm5":
-                    value_fixed = s_imm5_value
-                else:
-                    raise NotImplementedError(field.name)
-
-                LOG.debug("Set field '%s' value: %s --> %s", field.name, value,
-                          value_fixed)
-
-                newarg.set_value(value_fixed)
-                newargs.append(newarg)
-
-            if field.name == "uj_imm20":
-
-                arg = next_operand_value()
-                newarg = InstructionOperandValue(_20BITS_OPERAND_DESCRIPTOR)
-
-                value = int(arg.type.codification(arg.value))
-                value = int_to_twocs(value, 20)
-
-                bit20 = (value >> 19) << 19
-                bit11 = ((value >> 10) & 0x1) << 8
-                bits10_1 = (value & 0b1111111111) << 9
-                bits19_12 = ((value >> 11) & 0b11111111)
-
-                newvalue = (bit20 | bits10_1 | bit11 | bits19_12)
-                newarg.set_value(newvalue)
-                newargs.append(newarg)
+            if field.name in fixed_args:
+                newargs.append(fixed_args[field.name])
+            else:
+                if ((operand.constant and field.default_show) or
+                        (not operand.constant)):
+                    LOG.debug("Not fixing field: %s", field.name)
+                    newargs.append(argdict[field.name])
 
         LOG.debug("Args: %s, %s", args, newargs)
 
