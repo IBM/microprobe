@@ -503,24 +503,25 @@ def _find_instr_with_mnemonic(mnemonic, asm_operands, target):
                 )
 
             # RISC-V hacks
-            if ("s_imm5" in fnames and "s_imm7" in fnames and
-                    "s_imm12" in insfmt):
-                asm_operands.insert(0, "0x0")
-                asm_operands[0], asm_operands[2] = \
-                    asm_operands[2], asm_operands[0]
-                return _find_instr_with_mnemonic(
-                    mnemonic, asm_operands, target
-                )
+            # One fix per array member.
+            # The first parameter of each tuple is an array containing all the
+            # fields which together represent the full codification of the
+            # field in the second parameter.
+            # Therefore, each element of the array in the first value of the
+            # tuple is present in the instruction format definition, while
+            # the second value is in the assembly format string.
+            riscv_fixes = [
+                (["s_imm5", "s_imm7"], "s_imm12"),
+                (["sb_imm5", "sb_imm7"], "sb_imm12"),
+            ]
 
-            if ("sb_imm5" in fnames and "sb_imm7" in fnames and
-                    "sb_imm12" in insfmt):
-
-                asm_operands.insert(0, "0x0")
-                asm_operands[0], asm_operands[3] = \
-                    asm_operands[3], asm_operands[0]
-                return _find_instr_with_mnemonic(
-                    mnemonic, asm_operands, target
-                )
+            for fix in riscv_fixes:
+                if (all(field in fnames for field in fix[0])
+                        and fix[1] in insfmt):
+                    asm_operands.append("0x0")
+                    return _find_instr_with_mnemonic(
+                            mnemonic, asm_operands, target
+                    )
 
     # TODO: Remove from here, it should be in the target backend
     # TODO: Remove from here, it should be in the target backend
@@ -684,24 +685,38 @@ def _sort_asm_operands_by_intr_type(asm_operands, instruction):
         asm_fmt += " DH2 "
 
     # RISC-V hacks
-    if ("s_imm5" in fnames and "s_imm7" in fnames and
-            "s_imm12" in asm_fmt):
-        asm_fmt = asm_fmt.replace(" s_imm12 ", " s_imm5 ")
-        asm_fmt = asm_fmt.replace("OPC ", "OPC s_imm7 ")
-
-    if ("sb_imm5" in fnames and "sb_imm7" in fnames and
-            "sb_imm12" in asm_fmt):
-        asm_fmt = asm_fmt.replace(" sb_imm12 ", " sb_imm5 ")
-        asm_fmt = asm_fmt.replace("OPC ", "OPC sb_imm7 ")
-
-    # TODO: removed from here, it should be in the target backend
-    # TODO: removed from here, it should be in the target backend
-
-    fields = [
-        [field.name, asm_fmt.find(" %s " % field.name)]
-        for field in instruction.architecture_type.format.fields
-        if " %s " % field.name in asm_fmt
+    # The first element of the tuple is the field containing the actual value.
+    # The second element is an array containing dummy fields (i.e. fields with
+    # a zero value).
+    # The last element is the field which contains the value in the assembly
+    # format string.
+    riscv_fixes = [
+        ("s_imm7", ["s_imm5"], "s_imm12"),
+        ("sb_imm7", ["sb_imm5"], "sb_imm12"),
     ]
+
+    fix_found = False
+
+    for current_fix in riscv_fixes:
+        if (current_fix[0] in fnames
+                and all(item in fnames for item in current_fix[1])
+                and current_fix[2] in asm_fmt):
+            fix = current_fix
+            fix_found = True
+            break
+
+    # TODO: removed from here, it should be in the target backend
+    # TODO: removed from here, it should be in the target backend
+
+    fields = []
+    for field in instruction.architecture_type.format.fields:
+        if " %s " % field.name in asm_fmt:
+            fields.append([field.name, asm_fmt.find(" %s " % field.name)])
+        elif fix_found:
+            if field.name == fix[0]:
+                fields.append([field.name, asm_fmt.find(" %s " % fix[2])])
+            elif field.name in fix[1]:
+                fields.append([field.name, len(asm_fmt)])
 
     sorted_fields = sorted(fields, key=lambda x: x[1])
 
