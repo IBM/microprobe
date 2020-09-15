@@ -1273,7 +1273,8 @@ def _check_memops_overlap(instruction, overlap_type, condition):
         )
 
     elif overlap_type == "destructive_any" or \
-            overlap_type == "destructive_any_or_exact":
+            overlap_type == "destructive_any_or_exact" or \
+            overlap_type == "destructive_any_not_exact":
 
         def function_set_operand1(context):
             """
@@ -1614,6 +1615,8 @@ class GenericInstructionType(InstructionType):
             LOG.error("Operands: %s", list(self.operands.keys()))
             LOG.error("Fields: %s", [field.name for field in iformat.fields])
             LOG.error("Instruction format: %s", iformat.name)
+            # print(self.operands.keys())
+            # print([field.name for field in iformat.fields])
             raise MicroprobeArchitectureDefinitionError(
                 "Operands and fields "
                 "are not aligned in "
@@ -1649,9 +1652,8 @@ class GenericInstructionType(InstructionType):
                 "Opcode", "Instruction opcode", int(self.opcode, 16)
             )
         else:
-            raise MicroprobeArchitectureDefinitionError(
-                    "Instruction contains an inappropriate amount of "
-                    "opcode fields (%d)" % opcode_operands.length)
+            # Assume the back-end will take care of multiple operands
+            pass
 
     def _compute_mask(self):
 

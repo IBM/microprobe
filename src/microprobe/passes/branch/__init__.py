@@ -833,12 +833,13 @@ class FixIndirectBranchPass(Pass):
 
         if target_set:
             return
-
-        if branch_operand:
-            raise NotImplementedError
         else:
+            # Last instruction is a branch without a target set.
+            # Change to nop
             first_ins = building_block.cfg.bbls[0].instrs[0]
             self._fix_branch(last_ins, first_ins, target)
+            last_ins.set_arch_type(target.nop().architecture_type)
+            last_ins.set_operands([op.value for op in target.nop().operands()])
 
     @staticmethod
     def check_branch(local_instr):

@@ -42,7 +42,9 @@ class riscv64_linux_gcc(GenericEnvironment):
             "riscv64_linux_gcc",
             "RISC-V architecture (64bit addressing mode), "
             "Linux operating system, GCC compiler",
-            isa)
+            isa,
+            little_endian=True
+            )
 
         self._default_wrapper = "CInfGen"
 

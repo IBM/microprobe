@@ -504,8 +504,11 @@ def _interpret_bin_instr(instr_type, bin_instr):
     return operand_values
 
 
-def _swap_bytes(original):
+def _swap_bytes(original, little_endian=False):
     result = ""
+
+    if not little_endian:
+        return original
 
     # Pad with 0s on the left until having an even number of digits
     if(len(original) % 2 != 0):
@@ -517,7 +520,7 @@ def _swap_bytes(original):
     return result
 
 
-def _normalize_code(code, fmt="hex"):
+def _normalize_code(code, fmt="hex", little_endian=False):
     """
 
     :param code:
@@ -553,7 +556,11 @@ def _normalize_code(code, fmt="hex"):
                 "Invalid input provided. Not hexadecimal number provided"
             )
 
-    code = "".join(map(_swap_bytes, re.split(skip_regex, code)))
+    code = "".join(
+        map(lambda x: _swap_bytes(x, little_endian),
+            re.split(skip_regex, code)
+            )
+        )
 
     if fmt == "hex":
         return code
@@ -581,9 +588,16 @@ class MicroprobeBinInstructionStream(object):
         :param target:
         :type target:
         """
-        self._code = _normalize_code(code, fmt=fmt)
+
+        self._little_endian = target.little_endian
+        self._code = _normalize_code(
+            code,
+            fmt=fmt,
+            little_endian=self._little_endian
+        )
         self._fmt = fmt
         self._target = target
+
         self._index = 0
         self._data_cache = _data_cache
         self._lenghts = list(sorted(_compute_target_lengths(target)))
@@ -641,7 +655,7 @@ class MicroprobeBinInstructionStream(object):
 
             bin_str = self._code[self._index:self._index + length * 2]
 
-            bin_str = _swap_bytes(bin_str)
+            bin_str = _swap_bytes(bin_str, self._little_endian)
             bin_int = int(bin_str, 16)
 
             fmt = "0x%%0%dx" % (length * 2)

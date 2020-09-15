@@ -41,7 +41,9 @@ class riscv64_test_p(GenericEnvironment):
             "riscv64_test_p",
             "RISC-V architecture (64bit addressing mode), "
             "Assembly using RISC-V test environment P",
-            isa)
+            isa,
+            little_endian=True
+            )
 
         self._default_wrapper = "RiscvTestsP"
 

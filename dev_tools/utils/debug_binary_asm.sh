@@ -16,6 +16,7 @@
 set -e
 
 file=$1
+echo "file: $file"
 
 count=0
 mod=$((count % 2))

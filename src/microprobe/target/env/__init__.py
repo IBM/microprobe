@@ -245,6 +245,11 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         """ """
         raise NotImplementedError
 
+    @abc.abstractproperty
+    def little_endian(self):
+        """ """
+        raise NotImplementedError
+
     @abc.abstractmethod
     def set_target(self, target):
         """
@@ -265,7 +270,7 @@ class GenericEnvironment(Environment):
 
     _cmp_attributes = ["name", "descr"]
 
-    def __init__(self, name, descr, isa):
+    def __init__(self, name, descr, isa, little_endian=False):
         """
 
         :param name:
@@ -281,6 +286,7 @@ class GenericEnvironment(Environment):
         self._threads = 1
         self._target = None
         self._default_wrapper = None
+        self._little_endian = little_endian
         self.register_property(
             Property(
                 "problem_state", "Boolean indicating if the program"
@@ -414,6 +420,11 @@ class GenericEnvironment(Environment):
     def stack_direction(self):
         """ """
         raise NotImplementedError
+
+    @property
+    def little_endian(self):
+        """ """
+        return self._little_endian
 
     def _check_cmp(self, other):
 

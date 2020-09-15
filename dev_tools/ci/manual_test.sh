@@ -31,6 +31,7 @@ command -v nosetests
 python "$(command -v nosetests)" --version
 
 set +e
+echo "$NICE python $(command -v nosetests) $1 $NOSEOPTS"
 # shellcheck disable=SC2086
 $NICE python "$(command -v nosetests)" "$1" $NOSEOPTS
 error=$?
