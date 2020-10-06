@@ -684,13 +684,6 @@ class MicroprobeBinInstructionStream(object):
                 "Unable to interpret the binary provided: %s" % bin_str
             )
 
-        if len(set([match[0].mnemonic for match in matches])) > 1:
-
-            raise MicroprobeBinaryError(
-                "Multiple possible instructions found. Candidates: %s" %
-                set([match[0].mnemonic for match in matches])
-            )
-
         if len(set([match[0].format.length for match in matches])) > 1:
             raise MicroprobeBinaryError(
                 "Multiple instructions with multiple lengths found"
