@@ -355,7 +355,7 @@ def _interpret_bin_instr(instr_type, bin_instr):
 
             def _parse_riscv_fix_field(fix):
                 value = 0
-                src_pos = 31
+                src_pos = (instr_type.format.length * 8) - 1
 
                 segments = fix[3].split(';')
                 for segment in segments:
