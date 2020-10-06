@@ -22,3 +22,5 @@
     BLTU_V0: True
     BLT_V0: True
     BNE_V0: True
+    C.BEQZ_V0: True
+    C.BNEZ_V0: True

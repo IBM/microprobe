@@ -396,3 +396,194 @@
   - rd
   - opcode
   Assembly: OPC rd, uj_imm20
+- Name: "cr"
+  Fields:
+  - funct4
+  - rd
+  - rs2
+  - opcode_compressed
+  Assembly: OPC rd, rs2
+- Name: "cr_jr"
+  Fields:
+  - funct4
+  - rd
+  - rs2_jr
+  - opcode_compressed
+  Assembly: OPC rd
+- Name: "ci_w"
+  Fields:
+  - funct3
+  - c_imm1
+  - rd
+  - cw_imm5
+  - opcode_compressed
+  Assembly: OPC rd, c_imm6(sp)
+- Name: "ci_i"
+  Fields:
+  - funct3
+  - c_imm1
+  - rd
+  - ci_imm5
+  - opcode_compressed
+  Assembly: OPC rd, c_imm6
+- Name: "ci_ls"
+  Fields:
+  - funct3
+  - c_imm1
+  - rd
+  - cls_imm5
+  - opcode_compressed
+  Assembly: OPC rd, c_imm6
+- Name: "ci_d"
+  Fields:
+  - funct3
+  - c_imm1
+  - rd
+  - cd_imm5
+  - opcode_compressed
+  Assembly: OPC rd, c_imm6(sp)
+- Name: "ci_d+f"
+  Fields:
+  - funct3
+  - c_imm1
+  - frd
+  - cd_imm5
+  - opcode_compressed
+  Assembly: OPC frd, c_imm6(sp)
+- Name: "ci_u"
+  Fields:
+  - funct3
+  - c_imm1
+  - rd
+  - cu_imm5
+  - opcode_compressed
+  Assembly: OPC rd, c_imm6
+- Name: "ci_s"
+  Fields:
+  - funct3
+  - c_imm1
+  - rd
+  - cs_imm5
+  - opcode_compressed
+  Assembly: OPC rd, c_imm6
+- Name: "css_w"
+  Fields:
+  - funct3
+  - cw_imm6
+  - rs2
+  - opcode_compressed
+  Assembly: OPC rs2, cw_imm6(sp)
+- Name: "css_d"
+  Fields:
+  - funct3
+  - cd_imm6
+  - rs2
+  - opcode_compressed
+  Assembly: OPC rs2, cd_imm6(sp)
+- Name: "css_d+f"
+  Fields:
+  - funct3
+  - cd_imm6
+  - frs2
+  - opcode_compressed
+  Assembly: OPC frs2, cd_imm6(sp)
+- Name: "ciw"
+  Fields:
+  - funct3
+  - cs_imm8
+  - crd
+  - opcode_compressed
+  Assembly: OPC crd, sp, cs_imm8
+- Name: "cl_w"
+  Fields:
+  - funct3
+  - cw_imm3
+  - crs1
+  - c_imm2
+  - crd
+  - opcode_compressed
+  Assembly: OPC crd, c_imm5(crs1)
+- Name: "cl_d"
+  Fields:
+  - funct3
+  - cd_imm3
+  - crs1
+  - c_imm2
+  - crd
+  - opcode_compressed
+  Assembly: OPC crd, c_imm5(crs1)
+- Name: "cl_d+f"
+  Fields:
+  - funct3
+  - cd_imm3
+  - crs1
+  - c_imm2
+  - fcrd
+  - opcode_compressed
+  Assembly: OPC fcrd, c_imm5(crs1)
+- Name: "cs_w"
+  Fields:
+  - funct3
+  - cw_imm3
+  - crs1
+  - c_imm2
+  - crs2
+  - opcode_compressed
+  Assembly: OPC crs2, c_imm5(crs1)
+- Name: "cs_d"
+  Fields:
+  - funct3
+  - cd_imm3
+  - crs1
+  - c_imm2
+  - crs2
+  - opcode_compressed
+  Assembly: OPC crs2, c_imm5(crs1)
+- Name: "ca"
+  Fields:
+  - funct6
+  - crd
+  - funct2
+  - crs2
+  - opcode_compressed
+  Assembly: OPC crd, crs2
+- Name: "cb_b"
+  Fields:
+  - funct3
+  - c_imm3
+  - crs1
+  - cb_imm5
+  - opcode_compressed
+  Assembly: OPC crs1, c_imm8
+- Name: "cb_i"
+  Fields:
+  - funct3
+  - c_imm3
+  - crs1
+  - ci_imm5
+  - opcode_compressed
+  Assembly: OPC crs1, c_imm8(crs1)
+- Name: "cb_s"
+  Fields:
+  - funct3
+  - c_imm1
+  - funct2
+  - crd
+  - ci_imm5
+  - opcode_compressed
+  Assembly: OPC crd, c_imm6
+- Name: "cb_ls"
+  Fields:
+  - funct3
+  - c_imm1
+  - funct2
+  - crd
+  - cls_imm5
+  - opcode_compressed
+  Assembly: OPC crd, c_imm6
+- Name: "cj"
+  Fields:
+  - funct3
+  - c_imm11
+  - opcode_compressed
+  Assembly: OPC c_imm11

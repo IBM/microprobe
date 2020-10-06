@@ -513,12 +513,22 @@ def _find_instr_with_mnemonic(mnemonic, asm_operands, target):
             riscv_fixes = [
                 (["s_imm5", "s_imm7"], "s_imm12"),
                 (["sb_imm5", "sb_imm7"], "sb_imm12"),
+                (["cd_imm3", "c_imm2"], "c_imm5"),
+                (["cw_imm3", "c_imm2"], "c_imm5"),
+                (['cb_imm5', 'c_imm3'], "c_imm8"),
+                (['cw_imm5', 'c_imm1'], "c_imm6"),
+                (['cd_imm5', 'c_imm1'], "c_imm6"),
+                (['ci_imm5', 'c_imm1'], "c_imm6"),
+                (['cu_imm5', 'c_imm1'], "c_imm6"),
+                (['cs_imm5', 'c_imm1'], "c_imm6"),
+                (['cls_imm5', 'c_imm1'], "c_imm6"),
             ]
 
             for fix in riscv_fixes:
                 if (all(field in fnames for field in fix[0])
                         and fix[1] in insfmt):
                     asm_operands.append("0x0")
+                    LOG.debug("Fixing in ASM")
                     return _find_instr_with_mnemonic(
                             mnemonic, asm_operands, target
                     )
@@ -693,6 +703,15 @@ def _sort_asm_operands_by_intr_type(asm_operands, instruction):
     riscv_fixes = [
         ("s_imm7", ["s_imm5"], "s_imm12"),
         ("sb_imm7", ["sb_imm5"], "sb_imm12"),
+        ("cd_imm3", ["c_imm2"], "c_imm5"),
+        ("cw_imm3", ["c_imm2"], "c_imm5"),
+        ('cb_imm5', ['c_imm3'], "c_imm8"),
+        ('cw_imm5', ['c_imm1'], "c_imm6"),
+        ('cd_imm5', ['c_imm1'], "c_imm6"),
+        ('ci_imm5', ['c_imm1'], "c_imm6"),
+        ('cu_imm5', ['c_imm1'], "c_imm6"),
+        ('cs_imm5', ['c_imm1'], "c_imm6"),
+        ('cls_imm5', ['c_imm1'], "c_imm6"),
     ]
 
     fix_found = False

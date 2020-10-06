@@ -94,10 +94,71 @@
   Description: 5-bit immediate
   Min: 0
   Max: 31
+- Name: simm5
+  Description: 5-bit immediate (signed)
+  Min: -16
+  Max: 15
+- Name: simm6
+  Description: 6-bit immediate (signed)
+  Min: -32
+  Max: 31
+- Name: imm6
+  Description: 6-bit immediate
+  Min: 0
+  Max: 63
 - Name: imm7
   Description: 7-bit immediate
   Min: 0
   Max: 127
+- Name: imm7_w
+  Description: 7-bit immediate (Word Stepping)
+  Min: 0
+  Max: 127
+  Step: 4
+- Name: imm8
+  Description: 8-bit immediate
+  Min: 0
+  Max: 1023
+  Step: 4
+- Name: imm8_d
+  Description: 8-bit immediate (Double Stepping)
+  Min: 0
+  Max: 255
+  Step: 8
+  AddressIndex: True
+- Name: imm8_w
+  Description: 8-bit immediate (Word Stepping)
+  Min: 0
+  Max: 255
+  Step: 4
+- Name: imm9_d
+  Description: 9-bit immediate (Double Stepping)
+  Min: 0
+  Max: 511
+  Step: 8
+  AddressIndex: True
+- Name: imm11
+  Description: 11-bit immediate
+  MinDisplacement: -2048
+  MaxDisplacement: 2047
+  Relative: True
+  Step: 2
+- Name: imm18
+  Description: 11-bit immediate
+  Min: -32
+  Max: 31
+  Shift: 12
+- Name: imm10
+  Description: 10-bit immediate
+  Min: -512
+  Max: 511
+  Step: 16
+- Name: sbimm9
+  Description: 9-bit signed immediate
+  MinDisplacement: -256
+  MaxDisplacement: 255
+  Step: 2
+  Relative: True
 - Name: jimm20
   Description: 20-bit immediate
   Min: 0
@@ -256,3 +317,181 @@
   - 'rdn'
   - 'rup'
   - 'rmm'
+- Name: nzreg
+  Description: Non-zero Integer Registers
+  Registers:
+    X1 : ['X1']
+    X2 : ['X2']
+    X3 : ['X3']
+    X4 : ['X4']
+    X5 : ['X5']
+    X6 : ['X6']
+    X7 : ['X7']
+    X8 : ['X8']
+    X9 : ['X9']
+    X10 : ['X10']
+    X11 : ['X11']
+    X12 : ['X12']
+    X13 : ['X13']
+    X14 : ['X14']
+    X15 : ['X15']
+    X16 : ['X16']
+    X17 : ['X17']
+    X18 : ['X18']
+    X19 : ['X19']
+    X20 : ['X20']
+    X21 : ['X21']
+    X22 : ['X22']
+    X23 : ['X23']
+    X24 : ['X24']
+    X25 : ['X25']
+    X26 : ['X26']
+    X27 : ['X27']
+    X28 : ['X28']
+    X29 : ['X29']
+    X30 : ['X30']
+    X31 : ['X31']
+- Name: nzspreg
+  Description: Non-zero Non-stack-pointer Integer Registers
+  Registers:
+    X1 : ['X1']
+    X3 : ['X3']
+    X4 : ['X4']
+    X5 : ['X5']
+    X6 : ['X6']
+    X7 : ['X7']
+    X8 : ['X8']
+    X9 : ['X9']
+    X10 : ['X10']
+    X11 : ['X11']
+    X12 : ['X12']
+    X13 : ['X13']
+    X14 : ['X14']
+    X15 : ['X15']
+    X16 : ['X16']
+    X17 : ['X17']
+    X18 : ['X18']
+    X19 : ['X19']
+    X20 : ['X20']
+    X21 : ['X21']
+    X22 : ['X22']
+    X23 : ['X23']
+    X24 : ['X24']
+    X25 : ['X25']
+    X26 : ['X26']
+    X27 : ['X27']
+    X28 : ['X28']
+    X29 : ['X29']
+    X30 : ['X30']
+    X31 : ['X31']
+- Name: X0
+  Description: The X0 Integer Register (Stack Pointer)
+  Registers:
+    X0 : ['X0']
+- Name: spreg
+  Registers:
+    X2 : ['X2']
+  AddressBase: True
+- Name: X2
+  Description: The X2 Integer Register (Stack Pointer)
+  Register: 'X2'
+  AddressBase: True
+- Name: creg
+  Description: Compressed Instruction Integer Registers
+  Registers:
+    X8 : ['X8']
+    X9 : ['X9']
+    X10 : ['X10']
+    X11 : ['X11']
+    X12 : ['X12']
+    X13 : ['X13']
+    X14 : ['X14']
+    X15 : ['X15']
+- Name: crega
+  Description: Compressed Instruction Integer Registers
+  Registers:
+    X8 : ['X8']
+    X9 : ['X9']
+    X10 : ['X10']
+    X11 : ['X11']
+    X12 : ['X12']
+    X13 : ['X13']
+    X14 : ['X14']
+    X15 : ['X15']
+  AddressBase: True
+- Name: fcreg
+  Description: Compressed Instruction Floating Point Registers
+  Registers:
+    F8 : ['F8']
+    F9 : ['F9']
+    F10 : ['F10']
+    F11 : ['F11']
+    F12 : ['F12']
+    F13 : ['F13']
+    F14 : ['F14']
+    F15 : ['F15']
+- Name: 'imm20_clui'
+  Values:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+    - 25
+    - 26
+    - 27
+    - 28
+    - 29
+    - 30
+    - 31
+    - 0xfffe0
+    - 0xfffe1
+    - 0xfffe2
+    - 0xfffe3
+    - 0xfffe4
+    - 0xfffe5
+    - 0xfffe6
+    - 0xfffe7
+    - 0xfffe8
+    - 0xfffe9
+    - 0xfffea
+    - 0xfffeb
+    - 0xfffec
+    - 0xfffed
+    - 0xfffee
+    - 0xfffef
+    - 0xffff0
+    - 0xffff1
+    - 0xffff2
+    - 0xffff3
+    - 0xffff4
+    - 0xffff5
+    - 0xffff6
+    - 0xffff7
+    - 0xffff8
+    - 0xffff9
+    - 0xffffa
+    - 0xffffb
+    - 0xffffc
+    - 0xffffd
+    - 0xffffe
+    - 0xfffff

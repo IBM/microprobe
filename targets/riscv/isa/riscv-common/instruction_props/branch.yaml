@@ -24,3 +24,9 @@
     BNE_V0: True
     JALR_V0: True
     JAL_V0: True
+    C.J_V0: True
+    C.JAL_V0: True
+    C.JR_V0: True
+    C.JALR_V0: True
+    C.BEQZ_V0: True
+    C.BNEZ_V0: True

@@ -632,8 +632,14 @@ class RISCVISA(GenericISA):
                     value += 1
                 new_operands.append(str(value))
             return mnemonic, new_operands
+        elif mnemonic == "C.JR":
+            operands.append('X0')
+            return mnemonic, operands
+        else:
+            # Remove the implicit stack pointer operand from all instructions
+            new_operands = [op for op in operands if op != "SP"]
 
-        return mnemonic, operands
+            return mnemonic, new_operands
 
     def randomize_register(self, register, seed=None):
 
