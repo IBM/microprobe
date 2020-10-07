@@ -1796,6 +1796,8 @@
   Format: "cl_w"
   Operands:
     funct3: ['6', 'funct3', '?']
+  MemoryOperands:
+    MEM1 : [['cw_imm3', 'crs1'], [8], 8, 'O']
 - Name: "C.SD_V0"
   Mnemonic: "C.SD"
   Opcode: "0"
@@ -1946,12 +1948,20 @@
   Format: "ci_d+f"
   Operands:
     funct3: ['1', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cd_imm5'], [8], 8, 'I']
 - Name: "C.LWSP_V0"
   Mnemonic: "C.LWSP"
   Opcode: "2"
   Format: "ci_w"
   Operands:
     funct3: ['2', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cw_imm5'], [4], 4, 'I']
 - Name: "C.LDSP_V0"
   Mnemonic: "C.LDSP"
   Opcode: "2"
@@ -2012,15 +2022,27 @@
   Format: "css_d+f"
   Operands:
     funct3: ['5', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cd_imm6'], [8], 8, 'O']
 - Name: "C.SWSP_V0"
   Mnemonic: "C.SWSP"
   Opcode: "2"
   Format: "css_w"
   Operands:
     funct3: ['6', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cw_imm6'], [4], 4, 'O']
 - Name: "C.SDSP_V0"
   Mnemonic: "C.SDSP"
   Opcode: "2"
   Format: "css_d"
   Operands:
     funct3: ['7', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cd_imm6'], [8], 8, 'O']

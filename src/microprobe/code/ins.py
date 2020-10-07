@@ -1614,6 +1614,8 @@ class Instruction(Pickable):
                             0], True, False, False, False))
                     operand_value.descriptor.set_type(operand_value.type)
 
+                    operand_value.set_value(operand_value.type.values()[0])
+
                     operand_values.append(operand_value)
 
             length_values = []
