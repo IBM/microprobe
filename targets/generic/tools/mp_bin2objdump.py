@@ -62,7 +62,10 @@ def dump_objdump(target, arguments):
             continue
         bintext.append("".join(line.split(' ')[1:]))
 
-    instrs = interpret_bin("".join(bintext), target)
+    instrs = interpret_bin(
+        "".join(bintext), target,
+        safe=not arguments['strict']
+    )
 
     print("")
     print(
@@ -237,7 +240,7 @@ def main():
     cmdline.add_flag(
         "strict",
         "S",
-        "Check relative branches correctness",
+        "Check relative branches correctness and all instructions valid.",
         group=groupname
     )
 

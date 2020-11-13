@@ -56,7 +56,7 @@ def _get_wrapper(name):
 
 def _generic_policy_wrapper(all_arguments):
 
-    instruction, outputdir, outputname, target, kwargs = all_arguments
+    instruction, outputdir, outputname, target, kwargs, check = all_arguments
 
     bname = instruction.name
     bname = bname + "#DD_%d" % kwargs['dependency_distance']
@@ -102,10 +102,11 @@ def _generic_policy_wrapper(all_arguments):
 
     elif target.name.endswith("poe"):
 
-        wrapper_name = "Poe"
+        wrapper_name = "PoeSimple"
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             reset=kwargs['reset'],
+            endless=True
         )
         extension = "bin"
 
@@ -152,36 +153,42 @@ def _generic_policy_wrapper(all_arguments):
         )
         exit(-1)
 
-    if instruction.unsupported:
-        print_info("%s not supported!" % instruction.name)
-        return
+    for prop in ["unsupported", "hypervisor", "privileged_optional",
+                 "privileged", "syscall", "trap"]:
+        if (hasattr(instruction, prop) and getattr(instruction, prop)
+                and not kwargs['all']):
+            print_info("%s not skip (reason: %s)!" % (instruction.name, prop))
+            return False
 
     if kwargs['skip'] and os.path.isfile(outputfile):
         print_info("%s already generated!" % outputfile)
-        return
+        return False
 
     outputfile = new_file(wrapper.outputname(outputfile), internal=True)
     synth = policy.apply(target, wrapper, **extra_arguments)
-    print_info("Generating %s..." % outputfile)
 
     if not kwargs["ignore_errors"]:
+        print_info("Generating %s..." % outputfile)
         bench = synth.synthesize()
     else:
 
         if os.path.exists("%s.fail" % outputfile):
             print_error("%s failed before. Skip." % outputfile)
-            return
+            return False
+        elif check:
+            return True
 
         try:
+            print_info("Generating %s..." % outputfile)
             bench = synth.synthesize()
-        except (MicroprobeException, AssertionError) as exc:
+        except (MicroprobeException, AssertionError, AttributeError) as exc:
 
             with open("%s.fail" % outputfile, 'a'):
                 os.utime("%s.fail" % outputfile, None)
 
             print_error("%s" % exc)
             print_error("Generation failed and ignore error flag set")
-            return
+            return False
 
     synth.save(outputfile, bench=bench)
     print_info("%s generated!" % outputfile)
@@ -277,6 +284,14 @@ def main():
     )
 
     cmdline.add_flag(
+        "all",
+        "F",
+        "Generate all instructions. By default only user "
+        "level instructions are generated.",
+        group=groupname,
+    )
+
+    cmdline.add_flag(
         "parallel",
         "p",
         "Generate benchmarks in parallel",
@@ -341,6 +356,9 @@ def _main(arguments):
 
     policy = find_policy(target.name, 'epi')
 
+    if 'all' not in arguments:
+        arguments['all'] = False
+
     if policy is None:
         print_error("Target does not implement the default EPI policy")
         exit(-1)
@@ -349,11 +367,14 @@ def _main(arguments):
         arguments['instructions'] = list(target.isa.instructions.values())
         outputdir = arguments['epi_output_dir']
         outputname = "%INSTR%.%EXT%"
+
     else:
 
         arguments['instructions'] = parse_instruction_list(
             target, arguments['instructions']
         )
+
+        arguments['all'] = True
 
         if ("epi_output_file" in arguments and
                 len(arguments['instructions']) != 1):
@@ -386,16 +407,23 @@ def _main(arguments):
                  outputdir,
                  outputname,
                  target,
-                 arguments))
+                 arguments,
+                 False))
 
     else:
         print_info("Start parallel generation. Threads: %s" % mp.cpu_count())
         pool = mp.Pool(processes=mp.cpu_count())
-        pool.map(_generic_policy_wrapper,
-                 [(instruction, outputdir, outputname, target,
-                   arguments)
-                  for instruction in arguments['instructions']]
-                 )
+        args = [
+            (instruction, outputdir, outputname, target, arguments, True)
+            for instruction in arguments['instructions']
+        ]
+        regen = pool.map(_generic_policy_wrapper, args)
+        args = [
+            (instruction, outputdir, outputname, target, arguments, False)
+            for instruction in arguments['instructions']
+        ]
+        args = [elem[0] for elem in zip(args, regen) if elem[1] is True]
+        pool.map(_generic_policy_wrapper, args)
 
 
 if __name__ == '__main__':  # run main if executed from the command line

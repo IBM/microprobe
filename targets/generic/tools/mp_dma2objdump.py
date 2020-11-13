@@ -84,6 +84,7 @@ def dump_objdump(target, arguments):
     current_key = None
     progress = Progress(len(list(lines_dict.keys())),
                         msg="Detecting segments:")
+
     for key in sorted(lines_dict):
 
         progress()
@@ -173,11 +174,16 @@ def dump_objdump(target, arguments):
                     if operand.type.address_absolute:
                         absolute = operand.value
 
-        masm = instr_def.asm[2:]
+        masm = instr_def.asm
+        if instr_def.asm.startswith("0x"):
+            masm = instr_def.asm[2:]
+
         if len(masm) % 2 != 0:
             masm = "0" + masm
 
         binary = " ".join([str(masm)[i:i + 2] for i in range(0, len(masm), 2)])
+
+        assert len(binary.split(" ")) % 2 == 0
 
         label = None
         if instr_def.address is not None:
@@ -227,6 +233,14 @@ def dump_objdump(target, arguments):
 
         instr_dict[counter] = [binary, asm, label, rtarget, atarget]
         counter = counter + (len(masm) // 2)
+
+    for target_addr in label_dict:
+        if target_addr not in instr_dict:
+            continue
+
+        if instr_dict[target_addr][2] != label_dict[target_addr]:
+            assert instr_dict[target_addr][2] is None
+            instr_dict[target_addr][2] = label_dict[target_addr]
 
     print("")
     print(

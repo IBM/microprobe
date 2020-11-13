@@ -978,9 +978,13 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
             building_block.context.set_register_value(reg, 0)
             building_block.context.add_reserved_registers([reg])
 
+            LOG.debug("Set register '%s' to zero", reg)
+
         idx = 0
         not_initialized = True
         warmed = []
+
+        needs_reset = False
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
@@ -1138,6 +1142,8 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
                     idx = (idx + 1) % len(self._addresses)
 
                 if instr.access_storage_with_update:
+                    needs_reset = True
+                    reset_reg = None
                     for memoperand in instr.memory_operands():
                         for operand in memoperand.operands:
                             if operand.descriptor.type.address_base:
@@ -1145,6 +1151,15 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
                                     operand.value, memoperand.address
                                 )
                                 instr.add_allow_register(operand.value)
+                                reset_reg = operand.value
+
+        if needs_reset:
+            building_block.add_fini(
+                target.set_register_to_address(
+                    reset_reg, self._addresses[0],
+                    building_block.context
+                )
+            )
 
     def check(self, building_block, target):
         """

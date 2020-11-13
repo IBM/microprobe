@@ -140,6 +140,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
 
                     if operand.value is not None:
                         # operand already set
+                        LOG.debug("Operand already set")
                         pass
                     elif operand.type.immediate:
                         if self._immediate != "random":
@@ -337,7 +338,8 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                 for reg in instr.sets():
                     if reg not in defined and reg not in rregs:
                         LOG.debug("Updating definition of %s", reg)
-                        del lastdefined[reg.type][reg]
+                        if reg in lastdefined[reg.type]:
+                            del lastdefined[reg.type][reg]
                         lastdefined[reg.type][reg] = idx
 
                 LOG.debug("Instruction: %s", instr)
@@ -633,13 +635,15 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
         inputs = set()
         inputoutputs = set()
         outputs = set()
+        usedrregs = set()
 
         LOG.debug("-" * 80)
-        LOG.debug("BEGIN")
+        LOG.debug("BEGIN: Initial State")
         LOG.debug("Inputs: %s", inputs)
         LOG.debug("InputsOutputs: %s", inputoutputs)
         LOG.debug("Outputs: %s", outputs)
         LOG.debug("Reserved %s", rregs)
+        LOG.debug("Used Reserved %s", usedrregs)
         LOG.debug("-" * 80)
 
         for bbl in building_block.cfg.bbls:
@@ -665,11 +669,13 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                     for reg in operand.uses():
                         if operand.value in rregs:
                             skip = True
+                            usedrregs.add(reg)
                             break
 
                     for reg in operand.sets():
                         if operand.value in rregs:
                             skip = True
+                            usedrregs.add(reg)
                             break
 
                     if skip:
@@ -688,12 +694,23 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                             outputs.add(reg)
 
         LOG.debug("-" * 80)
-        LOG.debug("OPERANDS SETS PROCESSED")
+        LOG.debug("REGUSTER USAGE Before allocating")
         LOG.debug("Inputs: %s", inputs)
         LOG.debug("InputsOutputs: %s", inputoutputs)
         LOG.debug("Outputs: %s", outputs)
         LOG.debug("Reserved %s", rregs)
+        LOG.debug("Used Reserved %s", usedrregs)
         LOG.debug("-" * 80)
+
+        #
+        # All reserved registers not used in the main loop
+        # can be unreserved
+        #
+        rregs = rregs.intersection(usedrregs)
+        LOG.debug("New Reserved %s", rregs)
+        for reg in building_block.context.reserved_registers:
+            if reg not in rregs:
+                building_block.context.remove_reserved_registers([reg])
 
         # Minimum allocation, make everybody happy with enough operand
         # values
@@ -746,9 +763,7 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                                         valid_val = False
 
                                 if valid_val:
-
                                     inputoutputs.update(set(to_add))
-                                    break
 
                     elif operand.is_output:
 

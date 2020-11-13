@@ -313,6 +313,43 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 pair = (field_value + 32, 6, operand.shift)
                 oper_size_pairs.append(pair)
 
+            if field.name in ["Dd0", "Dd2"]:
+                special_condition = True
+                pair = (0, field.size, operand.shift)
+                oper_size_pairs.append(pair)
+
+            if field.name in ['Dd1']:
+                special_condition = True
+
+                dd2_value = bin_instr & 0b1
+                dd0_value = (bin_instr >> 6) & (0b1111111111)
+
+                value = (field_value << 1)
+                value = value | dd2_value
+                value = value | (dd0_value << 6)
+                value = twocs_to_int(value, 16)
+                pair = (value, 16, operand.shift)
+                oper_size_pairs.append(pair)
+
+            if field.name in ["dc", "dm"]:
+                special_condition = True
+                pair = (0, field.size, operand.shift)
+                oper_size_pairs.append(pair)
+
+            if field.name in ['dx']:
+                special_condition = True
+
+                dc_value = (bin_instr >> 6) & 0b1
+                dm_value = (bin_instr >> 2) & 0b1
+
+                value = field_value
+                value = value | (dm_value << 5)
+                value = value | (dc_value << 6)
+                # value = twocs_to_int(value, 16)
+                pair = (value, 7, operand.shift)
+                oper_size_pairs.append(pair)
+
+            # Z Fixes
             if field.name in ["DH1", "DH2"]:
                 LOG.debug("Special condition field 3")
                 special_condition = True
@@ -483,6 +520,13 @@ def _interpret_bin_instr(instr_type, bin_instr):
                             (int_val & 0b11111) << 5
                         )
                     ) == field_value
+
+                if field.name in ['TP']:
+                    tmp_value = field_value << 0b1
+                    tx_value = ((bin_instr >> 21) & 0b1) * 32
+                    tmp_value = tx_value + tmp_value
+                    if operand.codification(value) == str(tmp_value):
+                        valid = True
 
                 if valid:
                     try:

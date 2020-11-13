@@ -1247,8 +1247,17 @@ class InstructionMemoryOperandValue(Pickable):
             raise MicroprobeCodeGenerationError(
                 "I do not know how to generate this address: %s" % address)
 
-        assert base_operand is not None
-        assert base_operand.descriptor.is_input
+        if base_operand is None:
+            raise MicroprobeCodeGenerationError(
+                "I do not know how to generate "
+                "this address: %s (no base operand)" % address
+            )
+
+        if not base_operand.descriptor.is_input:
+            raise MicroprobeCodeGenerationError(
+                "I do not know how to generate "
+                "this address: %s (no base operand input)" % address
+            )
 
         fast_path = False
         if context.register_has_value(address):

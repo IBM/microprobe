@@ -42,7 +42,7 @@ from microprobe.target import import_definition
 from microprobe.utils.cmdline import CLI, existing_dir, float_type, \
     int_type, new_file, parse_instruction_list, print_error, print_info
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import findfiles, iter_flatten
+from microprobe.utils.misc import findfiles, iter_flatten, move_file
 from microprobe.utils.policy import find_policy
 
 
@@ -129,7 +129,10 @@ def _generic_policy_wrapper(all_arguments):
 
         wrapper_name = target.environment.default_wrapper
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class()
+        wrapper = wrapper_class(
+            endless=kwargs['endless'],
+            reset=kwargs['reset']
+        )
 
         outputfile = outputfile.replace(".%EXT%", "")
         outputfile = wrapper.outputname(outputfile)
@@ -148,7 +151,17 @@ def _generic_policy_wrapper(all_arguments):
         print_info("%s already exists!" % outputfile)
         return
 
+    if (kwargs['skip'] and "%s.gz" % outputfile in _DIRCONTENTS
+            and kwargs["compress"]):
+        print_info("%s.gz already exists!" % outputfile)
+        return
+
     if kwargs['skip'] and os.path.isfile(outputfile):
+        print_info("%s already exists!" % outputfile)
+        return
+
+    if (kwargs['skip'] and os.path.isfile("%s.gz" % outputfile)
+            and kwargs["compress"]):
         print_info("%s already exists!" % outputfile)
         return
 
@@ -183,7 +196,12 @@ def _generic_policy_wrapper(all_arguments):
     bench = synth.synthesize()
 
     synth.save(outputfile, bench=bench)
+
     print_info("%s generated!" % outputfile)
+
+    if kwargs['compress']:
+        move_file(outputfile, "%s.gz" % outputfile)
+        print_info("%s compressed to %s.gz" % (outputfile, outputfile))
 
     return
 
@@ -350,6 +368,28 @@ def main():
         group=groupname,
     )
 
+    cmdline.add_option(
+        "batch-number",
+        "bn",
+        1,
+        "Batch number to generate. Check --num-batches option for more "
+        "details",
+        group=groupname,
+        opt_type=int_type(1, 10000)
+    )
+
+    cmdline.add_option(
+        "num-batches",
+        "nb",
+        1,
+        "Number of batches. The number of microbenchmark to generate "
+        "is divided by this number, and the number the batch number "
+        "specified using -bn option is generated. This is useful to "
+        "split the generation of many test cases in various batches.",
+        group=groupname,
+        opt_type=int_type(1, 10000)
+    )
+
     cmdline.add_flag(
         "skip",
         "s",
@@ -365,6 +405,13 @@ def main():
     )
 
     cmdline.add_flag(
+        "compress",
+        "CC",
+        "Compress output files",
+        group=groupname,
+    )
+
+    cmdline.add_flag(
         "count",
         "N",
         "Only count the number of sequence to generate. Do not generate "
@@ -373,6 +420,7 @@ def main():
     )
 
     print_info("Processing input arguments...")
+
     cmdline.main(args, _main)
 
 
@@ -457,6 +505,13 @@ def _main(arguments):
     print_info("Arguments processed!")
 
     print_info("Checking input arguments for consistency...")
+
+    if arguments["num_batches"] < arguments["batch_number"]:
+        print_error(
+            "Batch number should be within the number"
+            " of batches specified"
+        )
+        exit(-1)
 
     slots = arguments['instruction_slots']
 
@@ -615,6 +670,22 @@ def _main(arguments):
 
     if 'shortnames' not in arguments:
         arguments['shortnames'] = False
+
+    if 'compress' not in arguments:
+        arguments['compress'] = False
+
+    # process batches
+    print_info("Num sequences difined: %d" % len(sequences))
+    print_info("Number of batches: %d " % arguments["num_batches"])
+    print_info("Batch number: %d " % arguments["batch_number"])
+
+    size = len(sequences) // arguments["num_batches"]
+    size = size + 1
+
+    sequences = sequences[
+        (arguments["batch_number"] - 1) * size:
+        arguments["batch_number"] * size
+    ]
 
     if 'parallel' not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")

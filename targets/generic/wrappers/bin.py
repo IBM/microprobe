@@ -54,6 +54,7 @@ class Binary(microprobe.code.wrapper.Wrapper):
         init_data_address=0x01600000,
         reset=False,
         dithering=0,
+        endless=False,
         delay=0
     ):
         """Initialization abstract method.
@@ -70,6 +71,7 @@ class Binary(microprobe.code.wrapper.Wrapper):
         self._reset_state = reset
         self._dithering = dithering
         self._delay = delay
+        self._endless = endless
         self._init_loop_pad = None
 
     def outputname(self, name):
@@ -198,12 +200,16 @@ class Binary(microprobe.code.wrapper.Wrapper):
             instr.architecture_type.format.length
         )
 
-        branch = self.target.branch_unconditional_relative(
-            source, self._start_address
-        )
-        instrs.append(branch)
+        if self._endless:
+            branch = self.target.branch_unconditional_relative(
+                source, self._start_address
+            )
+            instrs.append(branch)
 
         end = [self.wrap_ins(elem) for elem in instrs]
+
+        if len(end) == 0:
+            return []
 
         endall = end[0]
         for elem in end[1:]:

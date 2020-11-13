@@ -54,7 +54,7 @@ __all__ = [
 
 
 # Functions
-def import_definition(filenames, registers):
+def import_definition(filenames, inherits, registers):
     """
 
     :param filenames:
@@ -139,7 +139,15 @@ def import_definition(filenames, registers):
                     # simulation/emulation environment.
                     # They are not architected registers.
 
-                    regs = [reg for reg in regs if reg.representation != 'N/A']
+                    if isinstance(regs, list):
+                        regs = [reg for reg in regs
+                                if reg.representation != 'N/A']
+                    elif isinstance(regs, dict):
+                        for elem in regs:
+                            regs[elem] = [
+                                reg2 for reg2 in regs[elem]
+                                if reg2.representation != 'N/A'
+                            ]
 
                     operand = OperandReg(
                         name, descr, regs, address_base, address_index,
@@ -250,11 +258,14 @@ def import_definition(filenames, registers):
                     )
                 )
 
-            if name in operands and not override:
+            if name in operands and not override and filename not in inherits:
                 raise MicroprobeArchitectureDefinitionError(
                     "Duplicated definition of operand '%s' found in '%s'" %
                     (name, filename)
                 )
+
+            if name in operands:
+                LOG.debug("Redefined operand: %s", operand)
 
             LOG.debug(operand)
             operands[name] = operand
@@ -955,7 +966,7 @@ class OperandImmRange(Operand):
         """
         if self._computed_values is None:
             self._computed_values = [
-                elem << self._shift
+                elem
                 for elem in range(
                     self._min, self._max + 1, self._step
                 ) if elem not in self._novalues
@@ -997,7 +1008,7 @@ class OperandImmRange(Operand):
 
         value = random.randrange(
             self._min, self._max + 1, self._step
-        ) << self._shift
+        )
 
         if value not in self._novalues:
             return value
@@ -1016,7 +1027,8 @@ class OperandImmRange(Operand):
             # print value
             return value
 
-        return _format_integer(self, (value >> self._shift) + self._add)
+        # return _format_integer(self, (value >> self._shift) + self._add)
+        return _format_integer(self, value + self._add)
 
     def codification(self, value):
         """
@@ -1064,7 +1076,7 @@ class OperandImmRange(Operand):
                 " required and '%s' provided" % (value, type(value))
             )
 
-        value = value >> self._shift
+        # value = value >> self._shift
         if value <= self._max and value >= self._min \
                 and (value - self._min) % self._step == 0 \
                 and value not in self._novalues:

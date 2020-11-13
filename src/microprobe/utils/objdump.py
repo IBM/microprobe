@@ -35,6 +35,7 @@ import re
 from six.moves import zip
 
 # Own modules
+from microprobe import MICROPROBE_RC
 from microprobe.code.address import Address
 from microprobe.code.ins import MicroprobeInstructionDefinition
 from microprobe.exceptions import MicroprobeAsmError, \
@@ -83,6 +84,9 @@ def interpret_objdump(
     :raise microprobe.exceptions.MicroprobeObjdumpError: if something is wrong
         during the interpretation of the objdump
     """
+
+    if not strict:
+        MICROPROBE_RC['safe_bin'] = True
 
     if isinstance(objdump_output, str):
         objdump_output = objdump_output.replace('\r', '\n')
@@ -224,6 +228,9 @@ def _find_var_labels(input_text, code_labels):
 
 def _fix_instr_definition(instr_def, asm, target):
 
+    if instr_def.instruction_type.name == 'raw':
+        return instr_def
+
     labelmatch = re.search("^.*<(.*.)>.*$", asm)
     label = None
     if labelmatch is not None:
@@ -324,6 +331,9 @@ def _objdump_cleanup(
 
         if line.startswith("Disassembly of section"):
             current_section = line.split(" ")[3][:-1]
+            continue
+
+        if "file format " in line:
             continue
 
         if (current_section in sections) or all_sections:
