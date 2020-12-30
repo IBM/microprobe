@@ -242,6 +242,10 @@
   Description: 7-bit immediate
   Min: 0
   Max: 127
+- Name: imm25
+  Description: 25-bit immediate
+  Min: 0
+  Max: 33554431
 - Name: rm
   Description: 3-bit immediate for rounding mode
   Values:

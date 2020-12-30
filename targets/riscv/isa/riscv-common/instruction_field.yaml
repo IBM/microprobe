@@ -65,6 +65,12 @@
   Show: True
   IO: "I"
   Operand: "imm7"
+- Name: "funct25"
+  Size: 25
+  Description: "funct25"
+  Show: False
+  IO: "?"
+  Operand: "imm25"
 - Name: "i_imm12"
   Size: 12
   Description: "i_imm12"

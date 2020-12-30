@@ -1748,3 +1748,15 @@
   Format: "i"
   Operands:
     funct3: ['4', 'funct3', '?']
+- Name: "ECALL_V0"
+  Mnemonic: "ECALL"
+  Opcode: "73"
+  Format: "sys"
+  Operands:
+    funct25: ['0', 'funct25', '?']
+- Name: "EBREAK_V0"
+  Mnemonic: "EBREAK"
+  Opcode: "73"
+  Format: "sys"
+  Operands:
+    funct25: ['8192', 'funct25', '?']

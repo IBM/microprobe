@@ -396,3 +396,8 @@
   - rd
   - opcode
   Assembly: OPC rd, uj_imm20
+- Name: "sys"
+  Fields:
+  - funct25
+  - opcode
+  Assembly: OPC
