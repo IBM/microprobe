@@ -50,7 +50,7 @@ __all__ = [
     "smart_copy_dict", "findfiles", "RNDINT", "RNDFP", "twocs_to_int",
     "int_to_twocs", "iter_flatten", "which", "Progress",
     "range_to_sequence", "longest_common_substr", "open_generic_fd",
-    "getnextf"
+    "getnextf", "move_file"
 ]
 
 _RND_SEED = 13  # My favorite number ;)
@@ -564,3 +564,12 @@ def open_generic_fd(filename, mode):
         fd = open(filename, mode)
 
     return fd
+
+
+def move_file(source, target):
+    sfd = open_generic_fd(source, 'r')
+    tfd = open_generic_fd(target, 'w')
+    tfd.write("".join(sfd.readlines()).encode())
+    sfd.close()
+    tfd.close()
+    os.remove(source)

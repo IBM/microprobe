@@ -158,7 +158,7 @@ class Benchmark(BuildingBlock):
         """
         return self._init
 
-    def add_init(self, inits):
+    def add_init(self, inits, prepend=False):
         """Appends the specified list of instructions to initialization list
 
         :param inits: List of instructions to be added
@@ -167,8 +167,15 @@ class Benchmark(BuildingBlock):
         """
         LOG.debug("Add Init")
         for init in inits:
-            LOG.debug("INIT: %s", init)
-        self._init = self._init + inits
+            LOG.debug(
+                "NEW INIT INSTRUCTION: %s (prepend: %s)",
+                init.assembly(), prepend
+            )
+
+        if not prepend:
+            self._init = self._init + inits
+        else:
+            self._init = inits + self._init
 
     def rm_init(self, inits):
         """Removes from the initialization list the specified instructions.

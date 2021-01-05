@@ -303,6 +303,8 @@ def import_operand_definition(
     result = update_cache_needed(filenames, cachefile=cache_filename)
     result = result or force
 
+    entry["YAML_inherits"] = entry.get("YAML_inherits", [])
+
     if not result:
         LOG.debug("Reading cache contents for Operand")
         try:
@@ -312,7 +314,9 @@ def import_operand_definition(
         except MicroprobeCacheError:
             LOG.debug("Cache error when reading cache contents for Operand")
     try:
-        data = base_module.import_definition(entry["YAML"], regs)
+        data = base_module.import_definition(
+            entry["YAML"], entry["YAML_inherits"], regs
+        )
     except KeyError:
         raise MicroprobeArchitectureDefinitionError(
             "'%s' key in %s "

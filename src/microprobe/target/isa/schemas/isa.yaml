@@ -32,6 +32,8 @@ optional:
         length: { min: 1 }
       Override:
         type: //bool
+      Inherit:
+        type: //bool
   Comparator:
     type: //rec
     optional:
@@ -58,6 +60,8 @@ optional:
         length: { min: 1 }
       Override:
         type: //bool
+      Inherit:
+        type: //bool
   Instruction_format:
     type: //rec
     optional:
@@ -71,6 +75,8 @@ optional:
         type: //str
         length: { min: 1 }
       Override:
+        type: //bool
+      Inherit:
         type: //bool
   Instruction:
     type: //rec
@@ -86,6 +92,8 @@ optional:
         length: { min: 1 }
       Override:
         type: //bool
+      Inherit:
+        type: //bool
   Operand:
     type: //rec
     optional:
@@ -93,6 +101,8 @@ optional:
         type: //str
         length: { min: 1 }
       Override:
+        type: //bool
+      Inherit:
         type: //bool
   Register:
     type: //rec
@@ -108,6 +118,8 @@ optional:
         length: { min: 1 }
       Override:
         type: //bool
+      Inherit:
+        type: //bool
   Register_type:
     type: //rec
     optional:
@@ -121,6 +133,8 @@ optional:
         type: //str
         length: { min: 1 }
       Override:
+        type: //bool
+      Inherit:
         type: //bool
   Extends:
     type: //str

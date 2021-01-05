@@ -254,6 +254,7 @@ def _interpret_instr_def(instr_def, target, labels):
         )
         if len(binary_def) > 1:
             raise MicroprobeAsmError("More than one instruction parsed.")
+
         instruction_type = binary_def[0].instruction_type
         operands = binary_def[0].operands
         _ASM_CACHE[instr_def.assembly] = (instruction_type, operands)
@@ -385,13 +386,13 @@ def _interpret_decorators(str_decorators):
                 continue
 
             if os.path.isfile(value):
-                raise NotImplementedError(
+                LOG.warning(
                     "Decorator with references to files "
                     "not yet implemented"
                 )
-            else:
-                origvalue = value
-                value = value.upper()
+
+            origvalue = value
+            value = value.upper()
 
             if value == '':
                 value = None
@@ -1037,7 +1038,9 @@ def _generate_immediate_variations(immediate, instr):
     variations = []
     for operand in [oper for oper in instr.operands() if oper.type.immediate]:
         new_val = _numeric_format(operand.type.representation(immediate))
+
         if new_val != immediate:
+            # Relative represenation
             diff = new_val - immediate
             variation = immediate - diff
 
@@ -1047,6 +1050,11 @@ def _generate_immediate_variations(immediate, instr):
                 ) == immediate and variation not in variations
             ):
                 variations.append(variation)
+
+        if operand.type.shift > 0:
+            new_val = immediate << operand.type.shift
+            if new_val not in variations:
+                variations.append(new_val)
 
     return variations
 

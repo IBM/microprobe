@@ -501,6 +501,7 @@ def _merge_operands(name, filename, loperands, iformat, defined_operands):
             ]
 
             if len(field_names) == 0:
+                LOG.debug("Fields: %s", roperands.keys())
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown instruction field '%s' in instruction definition"
                     " '%s' found in '%s'" % (field_name, name, filename)
@@ -1999,6 +2000,8 @@ class GenericInstructionType(InstructionType):
                 LOG.debug("Operand is constant")
                 opvalue = operand.codification(list(operand.values())[0])
 
+                LOG.debug("Operand value: %s", list(operand.values())[0])
+
                 # if field.default_show:
                 #    LOG.debug("Operand is shown")
                 #    dummy_operand = next_operand_value()
@@ -2008,8 +2011,9 @@ class GenericInstructionType(InstructionType):
                 LOG.debug("Operand is not constant or is shown")
                 operand = next_operand_value()
                 opvalue = operand.descriptor.type.codification(operand.value)
+                LOG.debug("Operand value: %s", operand.value)
 
-            LOG.debug("Operand value: %s", opvalue)
+            LOG.debug("Operand value to codify: %s", opvalue)
             opvalue = int(opvalue)
             LOG.debug("Operand int value: %d", opvalue)
 

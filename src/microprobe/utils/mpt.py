@@ -2026,10 +2026,16 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
                     if os.path.isfile(dvaluepath):
 
-                        decorator_contents = self._read_file_contents(dvalue)
-                        decorator_contents = decorator_contents.replace('\n',
-                                                                        ',')
-                        line = line.replace(dvalue, decorator_contents)
+                        try:
+                            decorator_contents = self._read_file_contents(
+                                dvalue
+                            )
+                            decorator_contents = decorator_contents.replace(
+                                '\n', ','
+                            )
+                            line = line.replace(dvalue, decorator_contents)
+                        except UnicodeDecodeError:
+                            continue
 
                 new_contents.append(line)
             else:

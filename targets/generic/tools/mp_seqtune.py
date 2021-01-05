@@ -44,7 +44,7 @@ from microprobe.utils.cmdline import CLI, existing_dir, float_type, \
     int_range, int_type, new_file, parse_instruction_list, \
     print_error, print_info, string_with_fields
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import iter_flatten
+from microprobe.utils.misc import iter_flatten, move_file
 from microprobe.utils.policy import find_policy
 
 
@@ -155,6 +155,18 @@ def _generic_policy_wrapper(all_arguments):
             endless=True
         )
 
+    elif target.environment.default_wrapper:
+
+        wrapper_name = target.environment.default_wrapper
+        wrapper_class = _get_wrapper(wrapper_name)
+        wrapper = wrapper_class(
+            endless=kwargs['endless'],
+            reset=kwargs['reset']
+        )
+
+        outputfile = outputfile.replace(".%EXT%", "")
+        outputfile = wrapper.outputname(outputfile)
+
     else:
         raise NotImplementedError(
             "Unsupported configuration '%s'" % target.name
@@ -168,6 +180,10 @@ def _generic_policy_wrapper(all_arguments):
     if kwargs['skip']:
         if os.path.exists(outputfile):
             print_info("%s already exists!" % outputfile)
+            return
+
+        if kwargs["compress"] and os.path.exists("%s.gz" % outputfile):
+            print_info("%s.gz already exists!" % outputfile)
             return
 
     if len(memory_streams) == 0:
@@ -241,6 +257,10 @@ def _generic_policy_wrapper(all_arguments):
     synth.save(outputfile, bench=bench)
     print_info("%s generated!" % outputfile)
 
+    if kwargs['compress']:
+        move_file(outputfile, "%s.gz" % outputfile)
+        print_info("%s compressed to %s.gz" % (outputfile, outputfile))
+
     return
 
 
@@ -276,10 +296,23 @@ def main():
         "seq",
         None,
         "Base instruction sequence to modify (command separated list of "
-        "instructions).",
+        "instructions). If multiple sequences are provided (separated by"
+        " a space) they are combined (product).",
         group=groupname,
         opt_type=str,
-        required=True
+        required=True,
+        nargs="+"
+    )
+
+    cmdline.add_option(
+        "repeat",
+        "r",
+        1,
+        "If multiple sequences are provided in --sequence, this parameter"
+        " specifies how many of them are concated to generate the final "
+        "sequence.",
+        group=groupname,
+        opt_type=int_type(1, 999999999999),
     )
 
     cmdline.add_option(
@@ -399,7 +432,7 @@ def main():
                                      int_range(1, 2**32),
                                      int_range(1, 10),
                                      int_range(-1, 2**32),
-                                     int_range(0, 2**32),
+                                     int_range(1, 2**32),
                                      int_range(0, 2**32),
                                      ]
                                     ),
@@ -435,10 +468,42 @@ def main():
     )
 
     cmdline.add_flag(
+        "endless",
+        "e",
+        "Some backends allow the control to wrap the sequence generated in an"
+        " endless loop. Depending on the target specified, this flag will "
+        "force to generate sequences in an endless loop (some targets "
+        " might ignore it)",
+        group=groupname,
+    )
+
+    cmdline.add_flag(
         "parallel",
         "p",
         "Generate benchmarks in parallel",
         group=groupname,
+    )
+
+    cmdline.add_option(
+        "batch-number",
+        "bn",
+        1,
+        "Batch number to generate. Check --num-batches option for more "
+        "details",
+        group=groupname,
+        opt_type=int_type(1, 10000)
+    )
+
+    cmdline.add_option(
+        "num-batches",
+        "nb",
+        1,
+        "Number of batches. The number of microbenchmark to generate "
+        "is divided by this number, and the number the batch number "
+        "specified using -bn option is generated. This is useful to "
+        "split the generation of many test cases in various batches.",
+        group=groupname,
+        opt_type=int_type(1, 10000)
     )
 
     cmdline.add_flag(
@@ -452,6 +517,13 @@ def main():
         "shortnames",
         "sn",
         "Use short output names",
+        group=groupname,
+    )
+
+    cmdline.add_flag(
+        "compress",
+        "CC",
+        "Compress output files",
         group=groupname,
     )
 
@@ -504,31 +576,37 @@ def main():
 
 def _generate_configurations(arguments):
 
-    bconfig = []
-    bconfig.append(arguments["sequence"])
-    bconfig.append(arguments["memory_switch"])
-    bconfig.append(arguments["data_switch"])
-    bconfig.append(arguments["switch_branch"])
+    for relem in itertools.product(
+            arguments["sequences"],
+            repeat=arguments["repeat"]
+            ):
 
-    for pattern in arguments['branch_pattern']:
-        cconfig = bconfig[:]
-        cconfig.append(pattern)
+        relem = list(itertools.chain.from_iterable(relem))
+        bconfig = []
+        bconfig.append(relem)
+        bconfig.append(arguments["memory_switch"])
+        bconfig.append(arguments["data_switch"])
+        bconfig.append(arguments["switch_branch"])
 
-        rmap = []
-        rcomb = []
-        for elem in arguments['replace_every']:
-            rmap.append((elem[0][0], elem[1][0]))
-            rcomb.append(elem[2])
+        for pattern in arguments['branch_pattern']:
+            cconfig = bconfig[:]
+            cconfig.append(pattern)
 
-        for relem in itertools.product(*rcomb):
-            rconfig = cconfig[:]
-            rconfig.append(list(zip((elem[0] for elem in rmap),
-                                    (elem[1] for elem in rmap),
-                                    relem)))
+            rmap = []
+            rcomb = []
+            for elem in arguments['replace_every']:
+                rmap.append((elem[0][0], elem[1][0]))
+                rcomb.append(elem[2])
 
-            for value in _generate_add_every(rconfig, arguments):
-                for size in arguments['benchmark_size']:
-                    yield value + [size]
+            for relem in itertools.product(*rcomb):
+                rconfig = cconfig[:]
+                rconfig.append(list(zip((elem[0] for elem in rmap),
+                                        (elem[1] for elem in rmap),
+                                        relem)))
+
+                for value in _generate_add_every(rconfig, arguments):
+                    for size in arguments['benchmark_size']:
+                        yield value + [size]
 
 
 def _generate_add_every(rconfig, arguments):
@@ -623,6 +701,8 @@ def _filter_configurations(configurations, arguments):
     maxregs = arguments["max_regsets"]
     minmem = arguments["min_memory"]
 
+    fconfigs = []
+
     for config in configurations:
 
         memory = sum([elem[0] * elem[1] for elem in config[7]])
@@ -638,7 +718,9 @@ def _filter_configurations(configurations, arguments):
         if regs > maxregs:
             continue
 
-        yield config
+        fconfigs.append(config)
+
+    return fconfigs
 
 
 def _main(arguments):
@@ -681,6 +763,12 @@ def _main(arguments):
     else:
         arguments['branch_pattern'] = ['0']
 
+    if arguments["num_batches"] < arguments["batch_number"]:
+        print_error(
+            "Batch number should be within the number of batches specified"
+        )
+        exit(-1)
+
     print_info("Importing target definition...")
     target = import_definition(arguments.pop('target'))
 
@@ -690,9 +778,9 @@ def _main(arguments):
         print_error("Target does not implement the default SEQTUNE policy")
         exit(-1)
 
-    arguments['sequence'] = parse_instruction_list(
-        target,
-        arguments['sequence'])
+    arguments['sequences'] = [
+        parse_instruction_list(target, elem) for elem in arguments['sequence']
+    ]
 
     for elem in arguments["replace_every"]:
         elem[0] = parse_instruction_list(target, elem[0])
@@ -718,8 +806,27 @@ def _main(arguments):
     if 'skip' not in arguments:
         arguments['skip'] = False
 
+    if 'compress' not in arguments:
+        arguments['compress'] = False
+
+    if 'endless' not in arguments:
+        arguments['endless'] = False
+
     if 'shortnames' not in arguments:
         arguments['shortnames'] = False
+
+    # process batches
+    print_info("Num configurations difined: %d" % len(configurations))
+    print_info("Number of batches: %d " % arguments["num_batches"])
+    print_info("Batch number: %d " % arguments["batch_number"])
+
+    size = len(configurations) // arguments["num_batches"]
+    size = size + 1
+
+    configurations = configurations[
+        (arguments["batch_number"] - 1) * size:
+        arguments["batch_number"] * size
+    ]
 
     if 'parallel' not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")

@@ -47,6 +47,7 @@ __all__ = [
     'InitializeRegistersPass',
     'InitializeRegisterPass',
     'ReserveRegistersPass',
+    'UnReserveRegistersPass',
 ]
 
 # Functions
@@ -171,6 +172,35 @@ class ReserveRegistersPass(microprobe.passes.Pass):
             building_block.context.add_reserved_registers([register])
 
 
+class UnReserveRegistersPass(microprobe.passes.Pass):
+    """UnReserveRegistersPass pass.
+
+    """
+
+    def __init__(self, register_names):
+        """
+
+        :param register_names:
+        :type register_names:
+        """
+
+        super(UnReserveRegistersPass, self).__init__()
+        self._register_names = register_names
+        self._description = "Reserve registers '%s'" \
+                            % (self._register_names)
+
+    def __call__(self, building_block, target):
+
+        for register_name in self._register_names:
+            try:
+                register = target.registers[register_name]
+            except KeyError:
+                raise MicroprobeCodeGenerationError(
+                    "Unknown register '%s'. Known registers: %s" %
+                    (register_name, list(target.registers.keys())))
+            building_block.context.remove_reserved_registers([register])
+
+
 class InitializeRegistersPass(microprobe.passes.Pass):
     """InitializeRegistersPass pass.
 
@@ -263,6 +293,8 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                 LOG.debug("Skip control - %s", reg)
                 continue
 
+            LOG.debug("Setting reg - %s", reg)
+
             if value is None:
                 if reg.used_for_vector_arithmetic:
                     if self._vect_value is not None:
@@ -305,13 +337,18 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                     else:
                         value = "%d_%d" % (value, elemsize)
 
+            LOG.debug("Setting reg %s to val %s", reg, value)
+
             if (target.wrapper.direct_initialization_support and
                     not self._force_code):
                 try:
                     target.wrapper.register_direct_init(
                         reg, value, force=force_direct
                     )
-                    LOG.debug("Direct set of '%s' to '0x%x'", reg, value)
+                    if isinstance(value, str):
+                        LOG.debug("Direct set of '%s' to '%s'", reg, value)
+                    else:
+                        LOG.debug("Direct set of '%s' to '0x%x'", reg, value)
                 except MicroprobeCodeGenerationError:
                     building_block.add_init(target.set_register(
                         reg, value, building_block.context))
@@ -342,6 +379,7 @@ class InitializeRegisterPass(microprobe.passes.Pass):
                  register_name,
                  value,
                  reserve=None,
+                 force=False,
                  force_code=False,
                  force_control=False):
         """
@@ -355,6 +393,7 @@ class InitializeRegisterPass(microprobe.passes.Pass):
         self._value = value
         self._register_name = register_name
         self._reserve = reserve
+        self._force = force
         self._force_code = force_code
         self._force_control = force_control
 
@@ -395,7 +434,7 @@ class InitializeRegisterPass(microprobe.passes.Pass):
 
         if (target.wrapper.direct_initialization_support and
                 not self._force_code):
-            target.wrapper.register_direct_init(reg, value)
+            target.wrapper.register_direct_init(reg, value, force=self._force)
         else:
             building_block.add_init(target.set_register(
                 reg, value, building_block.context))

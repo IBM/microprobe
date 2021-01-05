@@ -164,6 +164,7 @@ class DebugBinaryDouble(DebugBinary):
         if not instr.disable_asm:
             ins.append(instr.assembly())
 
+        ins2 = []
         binary = instr.binary()
 
         while len(binary) != 0:
@@ -173,13 +174,18 @@ class DebugBinaryDouble(DebugBinary):
                 mbinary = binary[0:8]
                 binary = binary[8:]
 
-                ins.append(
+                ins2.append(
                     ".byte 0x%02x" % int(mbinary, 2)
                 )
 
             else:
 
                 raise NotImplementedError
+
+        if self.target.environment.little_endian:
+            ins2 = list(reversed(ins2))
+
+        ins.extend(ins2)
 
         if instr.disable_asm:
             ins = ins + ins

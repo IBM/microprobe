@@ -107,7 +107,7 @@ def _read_yaml_definition(isadefs, path):
     baseisa["Path"] = DEFAULT_ISA
     isadefs.append(baseisa)
 
-    complete_isadef = {}
+    complete_isadef = dict2OrderedDict({})
     isadefs.reverse()
 
     for isadef in isadefs:
@@ -117,6 +117,7 @@ def _read_yaml_definition(isadefs, path):
             else:
 
                 override = val.get("Override", False)
+                inherit = val.get("Inherit", False)
 
                 if key not in complete_isadef:
                     complete_isadef[key] = {}
@@ -145,6 +146,15 @@ def _read_yaml_definition(isadefs, path):
                                         isadef["Path"], val[key2]
                                     )
                                 )
+
+                        if inherit:
+                            key3 = "%s_inherits" % key2
+                            if key3 not in complete_isadef[key]:
+                                complete_isadef[key][key3] = []
+                            complete_isadef[key][key3].append(
+                                complete_isadef[key][key2][-1]
+                            )
+
                     elif key2 == "Module":
                         if val[key2].startswith("microprobe"):
                             val[key2] = os.path.join(
