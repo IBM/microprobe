@@ -84,9 +84,9 @@ else
     export BUILD_TYPE='stable'
 fi
 
-export MP_TESTING_CFLAGS_RISCV_V22="-march=rv64g"
+export MP_TESTING_CFLAGS_RISCV_V22="-march=rv64gc"
 export MP_TESTING_DFLAGS_RISCV_V22="-M numeric,no-aliases"
-export MP_TESTING_AFLAGS_RISCV_V22="-march=rv64g"
+export MP_TESTING_AFLAGS_RISCV_V22="-march=rv64gc"
 
 export PYTHONNOUSERSITE=True
 export PYTHONPATH=""
