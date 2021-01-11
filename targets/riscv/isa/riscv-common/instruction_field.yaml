@@ -77,6 +77,12 @@
   Show: True
   IO: "I"
   Operand: "imm7"
+- Name: "funct10"
+  Size: 10
+  Description: "funct10"
+  Show: False
+  IO: "I"
+  Operand: "imm10"
 - Name: "i_imm12"
   Size: 12
   Description: "i_imm12"
@@ -404,7 +410,7 @@
   Description: "c_imm5 (dummy)"
   Show: True
   IO: "I"
-  Operand: "u.imm6"
+  Operand: "nz_u.imm6"
 - Name: "cu_imm5"
   Size: 5
   Description: "c_imm5 (dummy)"
@@ -416,7 +422,7 @@
   Description: "c_imm5 (dummy)"
   Show: True
   IO: "I"
-  Operand: "imm10"
+  Operand: "nz_imm10"
 - Name: "cb_imm5"
   Size: 5
   Description: "c_imm5 (dummy)"
@@ -446,7 +452,7 @@
   Description: "cs_imm8"
   Show: True
   IO: "I"
-  Operand: "imm8"
+  Operand: "nz_imm8"
 - Name: "c_imm11"
   Size: 11
   Description: "c_imm11"

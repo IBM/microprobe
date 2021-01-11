@@ -632,7 +632,7 @@ class RISCVISA(GenericISA):
                     value += 1
                 new_operands.append(str(value))
             return mnemonic, new_operands
-        elif mnemonic == "C.JR":
+        elif mnemonic == "C.JR" or mnemonic == "C.JALR":
             operands.append('X0')
             return mnemonic, operands
         else:

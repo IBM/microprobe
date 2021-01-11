@@ -410,6 +410,12 @@
   - rs2_jr
   - opcode_compressed
   Assembly: OPC rd
+- Name: "c_funct14"
+  Fields:
+  - funct4
+  - funct10
+  - opcode_compressed
+  Assembly: OPC
 - Name: "ci_w"
   Fields:
   - funct3

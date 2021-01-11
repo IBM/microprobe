@@ -115,11 +115,12 @@
   Min: 0
   Max: 127
   Step: 4
-- Name: imm8
-  Description: 8-bit immediate
+- Name: nz_imm8
+  Description: Non-zero 8-bit immediate
   Min: 0
   Max: 1023
   Step: 4
+  Except: [0]
 - Name: imm8_d
   Description: 8-bit immediate (Double Stepping)
   Min: 0
@@ -153,6 +154,12 @@
   Min: -512
   Max: 511
   Step: 16
+- Name: nz_imm10
+  Description: Non-zero 10-bit immediate
+  Min: -512
+  Max: 511
+  Step: 16
+  Except: [0]
 - Name: sbimm9
   Description: 9-bit signed immediate
   MinDisplacement: -256
@@ -299,6 +306,10 @@
   Description: 6-bit immediate
   Min: 0
   Max: 63
+- Name: nz_u.imm6
+  Description: Non-zero 6-bit immediate
+  Min: 1
+  Max: 63
 - Name: u.imm7
   Description: 7-bit immediate
   Min: 0
@@ -396,6 +407,9 @@
   Description: The X2 Integer Register (Stack Pointer)
   Register: 'X2'
   AddressBase: True
+- Name: X1
+  Description: The X1 Integer Register (Return Address)
+  Register: 'X1'
 - Name: creg
   Description: Compressed Instruction Integer Registers
   Registers:

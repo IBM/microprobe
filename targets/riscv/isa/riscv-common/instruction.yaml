@@ -1807,12 +1807,10 @@
 - Name: "C.NOP_V0"
   Mnemonic: "C.NOP"
   Opcode: "1"
-  Format: "ci_u"
+  Format: "c_funct14"
   Operands:
-    funct3: ['0', 'funct3', '?']
-    c_imm1: ['0', 'c_imm1', '?']
-    rd: ['0', 'rd', 'IO']
-    cu_imm5: ['0', 'cu_imm5', '?']
+    funct4: ['0', 'funct4', '?']
+    funct10: ['0', 'funct10', '?']
 - Name: "C.ADDI_V0"
   Mnemonic: "C.ADDI"
   Opcode: "1"
@@ -1993,19 +1991,19 @@
 - Name: "C.EBREAK_V0"
   Mnemonic: "C.EBREAK"
   Opcode: "2"
-  Format: "cr"
+  Format: "c_funct14"
   Operands:
     funct4: ['9', 'funct4', '?']
-    rd: ['X0', 'rd', 'IO']
-    rs2: ['X0', 'rs2', 'IO']
+    funct10: ['0', 'funct10', '?']
 - Name: "C.JALR_V0"
   Mnemonic: "C.JALR"
   Opcode: "2"
-  Format: "cr"
+  Format: "cr_jr"
   Operands:
     funct4: ['9', 'funct4', '?']
     rd: ['nzreg', 'rd', 'IO']
-    rs2: ['X0', 'rs2', 'IO']
+  ImplicitOperands:
+    X1: ['X1', 'O']
   MemoryOperands:
     MEM1 : [['rd'], [0], 0, 'B']
 - Name: "C.ADD_V0"
