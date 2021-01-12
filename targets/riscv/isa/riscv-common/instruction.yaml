@@ -1956,6 +1956,7 @@
   Format: "ci_w"
   Operands:
     funct3: ['2', 'funct3', '?']
+    rd: ['nzreg', 'rd', 'O']
   ImplicitOperands:
     X2: ['X2', 'I']
   MemoryOperands:
