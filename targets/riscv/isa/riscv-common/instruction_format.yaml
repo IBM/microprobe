@@ -593,3 +593,8 @@
   - c_imm11
   - opcode_compressed
   Assembly: OPC c_imm11
+- Name: "sys"
+  Fields:
+  - funct25
+  - opcode
+  Assembly: OPC

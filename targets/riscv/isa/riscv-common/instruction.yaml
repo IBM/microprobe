@@ -2045,3 +2045,15 @@
     X2: ['X2', 'I']
   MemoryOperands:
     MEM1 : [['X2', 'cd_imm6'], [8], 8, 'O']
+- Name: "ECALL_V0"
+  Mnemonic: "ECALL"
+  Opcode: "73"
+  Format: "sys"
+  Operands:
+    funct25: ['0', 'funct25', '?']
+- Name: "EBREAK_V0"
+  Mnemonic: "EBREAK"
+  Opcode: "73"
+  Format: "sys"
+  Operands:
+    funct25: ['8192', 'funct25', '?']
