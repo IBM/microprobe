@@ -151,7 +151,7 @@ class RISCVInstruction(GenericInstructionType):
                     (cfield, base))
 
         def _fix_field(string, base, dummy, field):
-            field_names = [field.name for field in self.format.fields]
+            field_names = [fld.name for fld in self.format.fields]
             if (string.find(base) > 0 and dummy in field_names
                     and field in field_names):
                 assert _get_value(dummy, base) == "0"
