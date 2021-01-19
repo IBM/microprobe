@@ -78,7 +78,7 @@ def generate(test_definition, outputfile, target, **kwargs):
     region_count = len(test_definition.code_regions)
     if region_count > 0:
         for i in range(region_count):
-            print_info("[%d/%d]" % (i + 1, region_count + 1))
+            print_info("[%d/%d]" % (i + 1, region_count))
             bin_data = test_definition.code_regions[i].data()
             sequence.extend(interpret_bin(bin_data, target))
 

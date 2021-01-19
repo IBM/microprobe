@@ -1454,8 +1454,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                                 current_address
                             )
 
-                            if code_region is not None:
-                                code_regions.append(code_region)
+                            code_regions.append(code_region)
                         else:
                             code_region = code_regions[-1]
 
@@ -1646,9 +1645,6 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         instruction_definitions = self._sort_by_instructions(
             instruction_definitions)
 
-        if code_region is not None:
-            code_regions.append(code_region)
-
         code_regions = self._merge_code_regions(code_regions)
 
         return (instruction_definitions, code_regions)
@@ -1657,15 +1653,13 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         if len(code_regions) < 2:
             return code_regions
 
-        new_list = []
-        current_region = code_regions[0]
+        new_list = [code_regions[0]]
 
         for region in code_regions[1:]:
-            merged = current_region.merge(region)
+            merged = new_list[-1].merge(region)
 
             if not merged:
-                new_list.append(current_region)
-                current_region = region
+                new_list.append(region)
 
         return new_list
 
@@ -2204,7 +2198,7 @@ class MicroprobeTestBinaryCodeRegion:
         if (self.base_address() > other.base_address()):
             return other.merge(self)
 
-        end_address = self.base_address() + self.length
+        end_address = self.base_address() + self.length()
 
         if end_address == other.base_address():
             self.add_data(other.data())
