@@ -61,3 +61,20 @@
     SD_V0: True
     SH_V0: True
     SW_V0: True
+    C.LW_V0: True
+    C.SW_V0: True
+    C.LD_V0: True
+    C.SD_V0: True
+    C.FLD_V0: True
+    C.FSD_V0: True
+    C.LWSP_V0: True
+    C.SWSP_V0: True
+    C.LDSP_V0: True
+    C.FSDSP_V0: True
+    C.SDSP_V0: True
+    C.J_V0: True
+    C.JAL_V0: True
+    C.JR_V0: True
+    C.JALR_V0: True
+    C.BEQZ_V0: True
+    C.BNEZ_V0: True

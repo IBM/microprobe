@@ -386,13 +386,26 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 'sb_imm7': ('sb_imm5', 13, True, '12|10:5;#13;4:1|11'),
                 's_imm7': ('s_imm5', 12, True, '11:5;#13;4:0'),
                 'uj_imm20': (None, 21, True, '20|10:1|11|19:12'),
+                'cw_imm3': ('c_imm2', 7, False, '#3;5:3;#3;2|6'),
+                'cd_imm3': ('c_imm2', 8, False, '#3;5:3;#3;7|6'),
+                'cb_imm5': ('c_imm3', 9, True, '#3;8|4:3;#3;7:6|2:1|5'),
+                'cw_imm5': ('c_imm1', 8, False, '#3;5;#5;4:2|7:6'),
+                'cd_imm5': ('c_imm1', 9, False, '#3;5;#5;4:3|8:6'),
+                'ci_imm5': ('c_imm1', 6, True, '#3;5;#5;4:0'),
+                'cu_imm5': ('c_imm1', 20, False, '#3;5;#5;4:0', 5),
+                'cs_imm5': ('c_imm1', 10, True, '#3;9;#5;4|6|8:7|5'),
+                'cls_imm5': ('c_imm1', 6, False, '#3;5;#5;4:0'),
+                'cw_imm6': (None, 8, False, '#3;5:2|7:6'),
+                'cd_imm6': (None, 9, False, '#3;5:3|8:6'),
+                'c_imm11': (None, 12, True, '#3;11|4|9:8|10|6|7|3:1|5'),
+                'cs_imm8': (None, 10, False, '#3;5:4|9:6|2|3')
             }
             zero_fields = [fix[0] for _, (_, fix) in
                            enumerate(riscv_fixes.items())]
 
             def _parse_riscv_fix_field(fix):
                 value = 0
-                src_pos = 31
+                src_pos = (instr_type.format.length * 8) - 1
 
                 segments = fix[3].split(';')
                 for segment in segments:
@@ -416,11 +429,13 @@ def _interpret_bin_instr(instr_type, bin_instr):
                 if fix[2]:
                     value = twocs_to_int(value, fix[1])
 
+                if len(fix) == 5 and (value >> fix[4]) > 0:
+                    value = (1 << fix[1]) + twocs_to_int(value, fix[4]+1)
+
                 return value
 
             # Fields which will contain the actual value
             if field.name in riscv_fixes:
-                LOG.debug("Fixing %s" % field.name)
                 special_condition = True
                 fix = riscv_fixes[field.name]
                 value = _parse_riscv_fix_field(fix)
@@ -527,6 +542,12 @@ def _interpret_bin_instr(instr_type, bin_instr):
                     tmp_value = tx_value + tmp_value
                     if operand.codification(value) == str(tmp_value):
                         valid = True
+
+                # Handle RISCV specific codification
+                if field.name in ['crs1', 'crs2', 'crd',
+                                  'fcrs1', 'fcrs2', 'fcrd']:
+                    valid = (int_val & 0b1000
+                             and (int_val & 0b111) == field_value)
 
                 if valid:
                     try:
@@ -726,13 +747,6 @@ class MicroprobeBinInstructionStream(object):
         if len(matches) == 0:
             raise MicroprobeBinaryError(
                 "Unable to interpret the binary provided: %s" % bin_str
-            )
-
-        if len(set([match[0].mnemonic for match in matches])) > 1:
-
-            raise MicroprobeBinaryError(
-                "Multiple possible instructions found. Candidates: %s" %
-                set([match[0].mnemonic for match in matches])
             )
 
         if len(set([match[0].format.length for match in matches])) > 1:

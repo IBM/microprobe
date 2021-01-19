@@ -82,6 +82,23 @@ _5BITS_OPERAND_DESCRIPTOR = OperandDescriptor(
 # Functions
 
 
+def _n_bits_operand_descriptor(bits):
+    return OperandDescriptor(
+        OperandImmRange("dummy",  # Name
+                        "dummy",  # Description
+                        0,  # Min value
+                        (2 ** bits),  # Max value
+                        1,  # StepUImm1v0
+                        True,  # Address immediate
+                        0,  # Shift
+                        [],  # No values
+                        0  # Add
+                        ),
+        False,  # Input
+        False  # Output
+    )
+
+
 # Classes
 class RISCVInstruction(GenericInstructionType):
 
@@ -108,6 +125,11 @@ class RISCVInstruction(GenericInstructionType):
             args,
             dissabled_fields=['sb_imm7', 'sb_imm5',
                               's_imm7', 's_imm5',
+                              'c_imm1', 'c_imm2', 'c_imm3',
+                              'cw_imm3', 'cd_imm3',
+                              'cw_imm5', 'cd_imm5', 'cb_imm5', 'ci_imm5',
+                              'cu_imm5', 'cs_imm5', 'cls_imm5',
+                              'rs2_jr',
                               'pred', 'succ']
         )
 
@@ -129,9 +151,15 @@ class RISCVInstruction(GenericInstructionType):
                     (cfield, base))
 
         def _fix_field(string, base, dummy, field):
-            if string.find(base) > 0:
+            field_names = [fld.name for fld in self.format.fields]
+            if (string.find(base) > 0 and dummy in field_names
+                    and field in field_names):
                 assert _get_value(dummy, base) == "0"
                 value = _get_value(field, base)
+
+                if field == 'cu_imm5':
+                    value = str(int_to_twocs(int(value), 20))
+
                 return string.replace(base, str(value))
             else:
                 return string
@@ -142,6 +170,16 @@ class RISCVInstruction(GenericInstructionType):
         fix_fields = [
             ("sb_imm12", "sb_imm5", "sb_imm7"),
             ("s_imm12", "s_imm5", "s_imm7"),
+            ("c_imm6", "c_imm1", "c_imm5"),
+            ("c_imm5", "c_imm2", "cw_imm3"),
+            ("c_imm5", "c_imm2", "cd_imm3"),
+            ("c_imm8", "c_imm3", "cb_imm5"),
+            ("c_imm6", "c_imm1", "cw_imm5"),
+            ("c_imm6", "c_imm1", "cd_imm5"),
+            ("c_imm6", "c_imm1", "ci_imm5"),
+            ("c_imm6", "c_imm1", "cu_imm5"),
+            ("c_imm6", "c_imm1", "cs_imm5"),
+            ("c_imm6", "c_imm1", "cls_imm5")
         ]
 
         for fix in fix_fields:
@@ -181,18 +219,73 @@ class RISCVInstruction(GenericInstructionType):
         # codification bits
         # Operand Descriptor
         # Codification
+        # Signed?
         fixes = [
-            ('sb_imm7', 'sb_imm7', 13, _7BITS_OPERAND_DESCRIPTOR, '12|10:5'),
-            ('sb_imm5', 'sb_imm7', 13, _7BITS_OPERAND_DESCRIPTOR, '4:1|11'),
-            ('s_imm7', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR, '11:5'),
-            ('s_imm5', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR, '4:0'),
+            ('sb_imm7', 'sb_imm7', 13, _7BITS_OPERAND_DESCRIPTOR,
+                '12|10:5', True),
+            ('sb_imm5', 'sb_imm7', 13, _7BITS_OPERAND_DESCRIPTOR,
+                '4:1|11', True),
+            ('s_imm7', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR,
+                '11:5', True),
+            ('s_imm5', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR,
+                '4:0', True),
             ('uj_imm2', 'uj_imm20', 20, _20BITS_OPERAND_DESCRIPTOR,
-                '20|10:1|11|19:12'),
+                '20|10:1|11|19:12', True),
+            ('cw_imm3', 'cw_imm3', 7, _7BITS_OPERAND_DESCRIPTOR,
+                '5:3', False),
+            ('c_imm2', 'cw_imm3', 7, _7BITS_OPERAND_DESCRIPTOR,
+                '2|6', False),
+            ('cd_imm3', 'cd_imm3', 8, _n_bits_operand_descriptor(8),
+                '5:3', False),
+            ('c_imm2', 'cd_imm3', 8, _n_bits_operand_descriptor(8),
+                '7|6', False),
+            ('cb_imm5', 'cb_imm5', 9, _n_bits_operand_descriptor(9),
+                '7:6|2:1|5', True),
+            ('c_imm3', 'cb_imm5', 9, _n_bits_operand_descriptor(9),
+                '8|4:3', False),
+            ('cw_imm5', 'cw_imm5', 8, _n_bits_operand_descriptor(8),
+                '4:2|7:6', False),
+            ('c_imm1', 'cw_imm5', 8, _n_bits_operand_descriptor(8),
+                '5', False),
+            ('cd_imm5', 'cd_imm5', 9, _n_bits_operand_descriptor(9),
+                '4:3|8:6', False),
+            ('c_imm1', 'cd_imm5', 9, _n_bits_operand_descriptor(9),
+                '5', False),
+            ('ci_imm5', 'ci_imm5', 6, _n_bits_operand_descriptor(6),
+                '4:0', True),
+            ('c_imm1', 'ci_imm5', 6, _n_bits_operand_descriptor(6),
+                '5', True),
+            ('cu_imm5', 'cu_imm5', 20, _n_bits_operand_descriptor(20),
+                '4:0', False),
+            ('c_imm1', 'cu_imm5', 20, _n_bits_operand_descriptor(20),
+                '5', False),
+            ('cs_imm5', 'cs_imm5', 10, _n_bits_operand_descriptor(10),
+                '4|6|8:7|5', True),
+            ('c_imm1', 'cs_imm5', 10, _n_bits_operand_descriptor(10),
+                '9', False),
+            ('cls_imm5', 'cls_imm5', 6, _n_bits_operand_descriptor(6),
+                '4:0', False),
+            ('c_imm1', 'cls_imm5', 6, _n_bits_operand_descriptor(6),
+                '5', False),
+            ('cw_imm6', 'cw_imm6', 8, _n_bits_operand_descriptor(8),
+                '5:2|7:6', False),
+            ('cd_imm6', 'cd_imm6', 9, _n_bits_operand_descriptor(9),
+                '5:3|8:6', False),
+            ('c_imm11', 'c_imm11', 12, _n_bits_operand_descriptor(12),
+                '11|4|9:8|10|6|7|3:1|5', True),
+            ('cs_imm8', 'cs_imm8', 10, _n_bits_operand_descriptor(10),
+                '5:4|9:6|2|3', False),
+            ('crs1', 'crs1', 5, _n_bits_operand_descriptor(3), '2:0', False),
+            ('crs2', 'crs2', 5, _n_bits_operand_descriptor(3), '2:0', False),
+            ('crd', 'crd', 5, _n_bits_operand_descriptor(3), '2:0', False),
+            ('fcrs1', 'fcrs1', 5, _n_bits_operand_descriptor(3), '2:0', False),
+            ('fcrs2', 'fcrs2', 5, _n_bits_operand_descriptor(3), '2:0', False),
+            ('fcrd', 'fcrd', 5, _n_bits_operand_descriptor(3), '2:0', False),
         ]
 
         # Check if fixing is needed
         fix_needed = False
-        for (name, _, _, _, _) in fixes:
+        for (name, _, _, _, _, _) in fixes:
             if name in [field.name for field in self.format.fields]:
                 fix_needed = True
                 break
@@ -231,22 +324,28 @@ class RISCVInstruction(GenericInstructionType):
 
         fields = dict(zip([field.name for field in self.format.fields],
                       zip(self.format.fields, list(self.operands.items()))))
-        argdict = dict(zip([field.name for field in self.format.fields], args))
+        argdict = dict(zip([field.name for field in self.format.fields
+                            if field.default_show], args))
         fixed_args = dict()
 
         for fix in fixes:
-            if fix[0] in fields:
+            if fix[0] in fields and fix[1] in argdict:
                 field, op_descriptor = fields[fix[0]]
                 arg = argdict[fix[1]]
                 value = int(arg.type.codification(arg.value))
                 newarg = InstructionOperandValue(fix[3])
 
-                value_coded = int_to_twocs(value, fix[2])
-                assert twocs_to_int(value_coded, fix[2]) == value
+                if fix[5]:
+                    value_coded = int_to_twocs(value, fix[2])
+                    assert twocs_to_int(value_coded, fix[2]) == value
+                    value = value_coded
 
-                newarg.set_value(
-                    _code_fixed_field(value_coded << arg.type.shift, fix[4])
-                )
+                try:
+                    value <<= arg.type.shift
+                except AttributeError:  # Shifting not always will be available
+                    pass
+
+                newarg.set_value(_code_fixed_field(value, fix[4]))
                 fixed_args[fix[0]] = newarg
 
         newargs = []

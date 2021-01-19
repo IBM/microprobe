@@ -1748,6 +1748,303 @@
   Format: "i"
   Operands:
     funct3: ['4', 'funct3', '?']
+- Name: "C.ADDI4SPN_V0"
+  Mnemonic: "C.ADDI4SPN"
+  Opcode: "0"
+  Description: "Add azero-extended non-zero immediate, scaled by 4, to the stack pointer, x2, and write the result to rd'"
+  Format: "ciw"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+- Name: "C.FLD_V0"
+  Mnemonic: "C.FLD"
+  Opcode: "0"
+  Format: "cl_d+f"
+  Operands:
+    funct3: ['1', 'funct3', '?']
+    crs1: ['crega', 'crs1', 'I']
+    cd_imm3: ['imm8_d', 'cd_imm3', 'I']
+  MemoryOperands:
+    MEM1 : [['cd_imm3', 'crs1'], [8], 8, 'I']
+- Name: "C.LW_V0"
+  Mnemonic: "C.LW"
+  Opcode: "0"
+  Format: "cl_w"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+- Name: "C.LD_V0"
+  Mnemonic: "C.LD"
+  Opcode: "0"
+  Format: "cl_d"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    crs1: ['crega', 'crs1', 'I']
+    cd_imm3: ['imm8_d', 'cd_imm3', 'I']
+  MemoryOperands:
+    MEM1 : [['cd_imm3', 'crs1'], [8], 8, 'I']
+- Name: "C.FSD_V0"
+  Mnemonic: "C.FSD"
+  Opcode: "0"
+  Format: "cl_d+f"
+  Operands:
+    funct3: ['5', 'funct3', '?']
+    crs1: ['crega', 'crs1', 'I']
+  MemoryOperands:
+    MEM1 : [['cd_imm3', 'crs1'], [8], 8, 'O']
+- Name: "C.SW_V0"
+  Mnemonic: "C.SW"
+  Opcode: "0"
+  Format: "cl_w"
+  Operands:
+    funct3: ['6', 'funct3', '?']
+  MemoryOperands:
+    MEM1 : [['cw_imm3', 'crs1'], [8], 8, 'O']
+- Name: "C.SD_V0"
+  Mnemonic: "C.SD"
+  Opcode: "0"
+  Format: "cl_d"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+- Name: "C.NOP_V0"
+  Mnemonic: "C.NOP"
+  Opcode: "1"
+  Format: "c_funct14"
+  Operands:
+    funct4: ['0', 'funct4', '?']
+    funct10: ['0', 'funct10', '?']
+- Name: "C.ADDI_V0"
+  Mnemonic: "C.ADDI"
+  Opcode: "1"
+  Format: "ci_i"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+    rd: ['nzreg', 'rd', 'IO']
+- Name: "C.ADDIW_V0"
+  Mnemonic: "C.ADDIW"
+  Opcode: "1"
+  Format: "ci_i"
+  Operands:
+    funct3: ['1', 'funct3', '?']
+    rd: ['nzreg', 'rd', 'IO']
+- Name: "C.LI_V0"
+  Mnemonic: "C.LI"
+  Opcode: "1"
+  Format: "ci_i"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+    rd: ['nzreg', 'rd', 'IO']
+- Name: "C.ADDI16SP_V0"
+  Mnemonic: "C.ADDI16SP"
+  Opcode: "1"
+  Format: "ci_s"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    rd: ['spreg', 'rd', 'IO']
+- Name: "C.LUI_V0"
+  Mnemonic: "C.LUI"
+  Opcode: "1"
+  Format: "ci_u"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    rd: ['nzspreg', 'rd', 'IO']
+- Name: "C.SRLI_V0"
+  Mnemonic: "C.SRLI"
+  Opcode: "1"
+  Format: "cb_ls"
+  Operands:
+    funct3: ['4', 'funct3', '?']
+    funct2: ['0', 'funct2', '?']
+- Name: "C.SRAI_V0"
+  Mnemonic: "C.SRAI"
+  Opcode: "1"
+  Format: "cb_ls"
+  Operands:
+    funct3: ['4', 'funct3', '?']
+    funct2: ['1', 'funct2', '?']
+- Name: "C.ANDI_V0"
+  Mnemonic: "C.ANDI"
+  Opcode: "1"
+  Format: "cb_s"
+  Operands:
+    funct3: ['4', 'funct3', '?']
+    funct2: ['2', 'funct2', '?']
+- Name: "C.SUB_V0"
+  Mnemonic: "C.SUB"
+  Opcode: "1"
+  Format: "ca"
+  Operands:
+    funct6: ['35', 'funct6', '?']
+    funct2: ['0', 'funct2', '?']
+- Name: "C.XOR_V0"
+  Mnemonic: "C.XOR"
+  Opcode: "1"
+  Format: "ca"
+  Operands:
+    funct6: ['35', 'funct6', '?']
+    funct2: ['1', 'funct2', '?']
+- Name: "C.OR_V0"
+  Mnemonic: "C.OR"
+  Opcode: "1"
+  Format: "ca"
+  Operands:
+    funct6: ['35', 'funct6', '?']
+    funct2: ['2', 'funct2', '?']
+- Name: "C.AND_V0"
+  Mnemonic: "C.AND"
+  Opcode: "1"
+  Format: "ca"
+  Operands:
+    funct6: ['35', 'funct6', '?']
+    funct2: ['3', 'funct2', '?']
+- Name: "C.SUBW_V0"
+  Mnemonic: "C.SUBW"
+  Opcode: "1"
+  Format: "ca"
+  Operands:
+    funct6: ['39', 'funct6', '?']
+    funct2: ['0', 'funct2', '?']
+- Name: "C.ADDW_V0"
+  Mnemonic: "C.ADDW"
+  Opcode: "1"
+  Format: "ca"
+  Operands:
+    funct6: ['39', 'funct6', '?']
+    funct2: ['1', 'funct2', '?']
+- Name: "C.J_V0"
+  Mnemonic: "C.J"
+  Opcode: "1"
+  Format: "cj"
+  Operands:
+    funct3: ['5', 'funct3', '?']
+    #c_imm11: ['imm11', 'c_imm11', 'I']
+  MemoryOperands:
+    MEM1 : [['c_imm11'], [0], 0, 'B']
+- Name: "C.BEQZ_V0"
+  Mnemonic: "C.BEQZ"
+  Opcode: "1"
+  Format: "cb_b"
+  Operands:
+    funct3: ['6', 'funct3', '?']
+  MemoryOperands:
+    MEM1 : [['cb_imm5'], [0], 0, 'B']
+- Name: "C.BNEZ_V0"
+  Mnemonic: "C.BNEZ"
+  Opcode: "1"
+  Format: "cb_b"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+  MemoryOperands:
+    MEM1 : [['cb_imm5'], [0], 0, 'B']
+- Name: "C.SLLI_V0"
+  Mnemonic: "C.SLLI"
+  Opcode: "2"
+  Format: "ci_ls"
+  Operands:
+    funct3: ['0', 'funct3', '?']
+- Name: "C.FLDSP_V0"
+  Mnemonic: "C.FLDSP"
+  Opcode: "2"
+  Format: "ci_d+f"
+  Operands:
+    funct3: ['1', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cd_imm5'], [8], 8, 'I']
+- Name: "C.LWSP_V0"
+  Mnemonic: "C.LWSP"
+  Opcode: "2"
+  Format: "ci_w"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+    rd: ['nzreg', 'rd', 'O']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cw_imm5'], [4], 4, 'I']
+- Name: "C.LDSP_V0"
+  Mnemonic: "C.LDSP"
+  Opcode: "2"
+  Format: "ci_d"
+  Operands:
+    funct3: ['3', 'funct3', '?']
+    rd: ['nzreg', 'rd', 'O']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cd_imm5'], [8], 8, 'I']
+- Name: "C.JR_V0"
+  Mnemonic: "C.JR"
+  Opcode: "2"
+  Format: "cr_jr"
+  Operands:
+    funct4: ['8', 'funct4', '?']
+    rd: ['nzreg', 'rd', 'I']
+  MemoryOperands:
+    MEM1 : [['rd'], [0], 0, 'B']
+- Name: "C.MV_V0"
+  Mnemonic: "C.MV"
+  Opcode: "2"
+  Format: "cr"
+  Operands:
+    funct4: ['8', 'funct4', '?']
+    rd: ['nzreg', 'rd', 'IO']
+    rs2: ['nzreg', 'rs2', 'IO']
+- Name: "C.EBREAK_V0"
+  Mnemonic: "C.EBREAK"
+  Opcode: "2"
+  Format: "c_funct14"
+  Operands:
+    funct4: ['9', 'funct4', '?']
+    funct10: ['0', 'funct10', '?']
+- Name: "C.JALR_V0"
+  Mnemonic: "C.JALR"
+  Opcode: "2"
+  Format: "cr_jr"
+  Operands:
+    funct4: ['9', 'funct4', '?']
+    rd: ['nzreg', 'rd', 'IO']
+  ImplicitOperands:
+    X1: ['X1', 'O']
+  MemoryOperands:
+    MEM1 : [['rd'], [0], 0, 'B']
+- Name: "C.ADD_V0"
+  Mnemonic: "C.ADD"
+  Opcode: "2"
+  Format: "cr"
+  Operands:
+    funct4: ['9', 'funct4', '?']
+    rd: ['nzreg', 'rd', 'IO']
+    rs2: ['nzreg', 'rs2', 'IO']
+- Name: "C.FSDSP_V0"
+  Mnemonic: "C.FSDSP"
+  Opcode: "2"
+  Format: "css_d+f"
+  Operands:
+    funct3: ['5', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cd_imm6'], [8], 8, 'O']
+- Name: "C.SWSP_V0"
+  Mnemonic: "C.SWSP"
+  Opcode: "2"
+  Format: "css_w"
+  Operands:
+    funct3: ['6', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cw_imm6'], [4], 4, 'O']
+- Name: "C.SDSP_V0"
+  Mnemonic: "C.SDSP"
+  Opcode: "2"
+  Format: "css_d"
+  Operands:
+    funct3: ['7', 'funct3', '?']
+  ImplicitOperands:
+    X2: ['X2', 'I']
+  MemoryOperands:
+    MEM1 : [['X2', 'cd_imm6'], [8], 8, 'O']
 - Name: "ECALL_V0"
   Mnemonic: "ECALL"
   Opcode: "73"

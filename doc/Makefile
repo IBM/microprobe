@@ -102,7 +102,7 @@ test5: ./source/examples_outputs/example_mp_c2mpt.mpt
 ./source/examples_outputs/example_mp_c2mpt.mpt: ../targets/riscv/tests/tools/c2mpt_test003.c ../targets/generic/tools/mp_c2mpt.py
 	rm -f ./source/examples_outputs/example_mp_c2mpt.mpt
 	mkdir -p ./source/examples_outputs/
-	mp_c2mpt.py -T riscv_v22-riscv_generic-riscv64_linux_gcc -P ../targets -i ../targets/riscv/tests/tools/c2mpt_test003.c -O ./source/examples_outputs/example_mp_c2mpt.mpt --target-c-compiler riscv64-unknown-elf-gcc --target-objdump riscv64-unknown-elf-objdump --target-c-compiler-flags="-O3 -march=rv64g"
+	mp_c2mpt.py -T riscv_v22-riscv_generic-riscv64_linux_gcc -P ../targets -i ../targets/riscv/tests/tools/c2mpt_test003.c -O ./source/examples_outputs/example_mp_c2mpt.mpt --target-c-compiler riscv64-unknown-elf-gcc --target-objdump riscv64-unknown-elf-objdump --target-c-compiler-flags="-O3 -march=rv64gc"
 
 subtests:
 	sh -c 'set -x; if [ $$(ls ../targets/*/doc/Makefile 2> /dev/null | wc -l) -gt 0 ] ; then for fmake in $$(ls ../targets/*/doc/Makefile | xargs -n1 dirname | sort | uniq) ; do $(MAKE) -j ${MAXJOBS} -C $$fmake tests; done; fi;'

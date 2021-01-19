@@ -53,18 +53,36 @@
   Show: False
   IO: "?"
   Operand: "imm3"
+- Name: "funct4"
+  Size: 4
+  Description: "funct4"
+  Show: False
+  IO: "?"
+  Operand: "imm4"
 - Name: "funct5"
   Size: 5
   Description: "funct5"
   Show: False
   IO: "?"
   Operand: "imm5"
+- Name: "funct6"
+  Size: 6
+  Description: "funct6"
+  Show: False
+  IO: "?"
+  Operand: "imm6"
 - Name: "funct7"
   Size: 7
   Description: "funct7"
   Show: True
   IO: "I"
   Operand: "imm7"
+- Name: "funct10"
+  Size: 10
+  Description: "funct10"
+  Show: False
+  IO: "I"
+  Operand: "imm10"
 - Name: "funct25"
   Size: 25
   Description: "funct25"
@@ -219,6 +237,12 @@
   Show: True
   IO: "I"
   Operand: "reg"
+- Name: "rs2_jr"
+  Size: 5
+  Description: "rs2 (disabled)"
+  Show: True
+  IO: "I"
+  Operand: "X0"
 - Name: "rs2c"
   Size: 5
   Description: "rs2"
@@ -290,3 +314,166 @@
   Show: True
   IO: "I"
   Operand: "s.imm20"
+- Name: "opcode_compressed"
+  Size: 2
+  Description: "opcode (compressed)"
+  Show: False
+  IO: "?"
+  Operand: "imm2"
+- Name: "crd"
+  Size: 3
+  Description: "rd (compressed)"
+  Show: True
+  IO: "O"
+  Operand: "creg"
+- Name: "crs1"
+  Size: 3
+  Description: "rs1 (compressed)"
+  Show: True
+  IO: "I"
+  Operand: "creg"
+- Name: "crs2"
+  Size: 3
+  Description: "rs2 (compressed)"
+  Show: True
+  IO: "I"
+  Operand: "creg"
+- Name: "fcrd"
+  Size: 3
+  Description: "rd (compressed)"
+  Show: True
+  IO: "O"
+  Operand: "fcreg"
+- Name: "fcrs1"
+  Size: 3
+  Description: "rs1 (compressed)"
+  Show: True
+  IO: "I"
+  Operand: "fcreg"
+- Name: "fcrs2"
+  Size: 3
+  Description: "rs2 (compressed)"
+  Show: True
+  IO: "I"
+  Operand: "fcreg"
+- Name: "c_imm1"
+  Size: 1
+  Description: "c_imm1 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "Zero"
+- Name: "c_imm2"
+  Size: 2
+  Description: "c_imm2 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "Zero"
+- Name: "c_imm3"
+  Size: 3
+  Description: "c_imm3 (dummy)"
+  Show: True
+  IO: "I"
+  #Operand: "imm3"
+  Operand: "Zero"
+- Name: "cw_imm3"
+  Size: 3
+  Description: "c_imm3 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "imm7_w"
+- Name: "cd_imm3"
+  Size: 3
+  Description: "c_imm3 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "imm8_d"
+- Name: "c_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: False
+  IO: "I"
+  Operand: "imm5"
+- Name: "cw_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "imm8_w"
+- Name: "cd_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "imm9_d"
+- Name: "ci_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "simm6"
+- Name: "cls_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "nz_u.imm6"
+- Name: "cu_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "imm20_clui"
+- Name: "cs_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "nz_imm10"
+- Name: "cb_imm5"
+  Size: 5
+  Description: "c_imm5 (dummy)"
+  Show: True
+  IO: "I"
+  Operand: "sbimm9"
+- Name: "c_imm6"
+  Size: 6
+  Description: "c_imm6"
+  Show: True
+  IO: "I"
+  Operand: "imm6"
+- Name: "cw_imm6"
+  Size: 6
+  Description: "c_imm6"
+  Show: True
+  IO: "I"
+  Operand: "imm8_w"
+- Name: "cd_imm6"
+  Size: 6
+  Description: "cd_imm6"
+  Show: True
+  IO: "I"
+  Operand: "imm9_d"
+- Name: "cs_imm8"
+  Size: 8
+  Description: "cs_imm8"
+  Show: True
+  IO: "I"
+  Operand: "nz_imm8"
+- Name: "c_imm11"
+  Size: 11
+  Description: "c_imm11"
+  Show: True
+  IO: "I"
+  Operand: "imm11"
+- Name: "nzspreg"
+  Size: 5
+  Description: "Non-Zero and Non-Stack-Pointer register"
+  Show: True
+  IO: "I"
+  Operand: "nzspreg"
+- Name: "spreg"
+  Size: 5
+  Description: "Stack Pointer Register"
+  Show: True
+  IO: "I"
+  Operand: "spreg"
