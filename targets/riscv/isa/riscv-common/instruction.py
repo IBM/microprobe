@@ -229,7 +229,7 @@ class RISCVInstruction(GenericInstructionType):
                 '11:5', True),
             ('s_imm5', 's_imm7', 12, _7BITS_OPERAND_DESCRIPTOR,
                 '4:0', True),
-            ('uj_imm2', 'uj_imm20', 20, _20BITS_OPERAND_DESCRIPTOR,
+            ('uj_imm20', 'uj_imm20', 20, _20BITS_OPERAND_DESCRIPTOR,
                 '20|10:1|11|19:12', True),
             ('cw_imm3', 'cw_imm3', 7, _7BITS_OPERAND_DESCRIPTOR,
                 '5:3', False),
