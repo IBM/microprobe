@@ -42,6 +42,7 @@ from microprobe.exceptions import MicroprobeException, \
     MicroprobeMPTFormatError, MicroprobeValueError
 from microprobe.target import import_definition
 from microprobe.utils.asm import interpret_asm
+from microprobe.utils.bin import interpret_bin
 from microprobe.utils.cmdline import new_file_ext, print_info, print_warning
 from microprobe.utils.logger import get_logger
 
@@ -64,10 +65,22 @@ def generate(test_definition, outputfile, target, **kwargs):
     """
 
     variables = test_definition.variables
+
+    sequence = []
+
     print_info("Interpreting assembly...")
-    sequence = interpret_asm(
-        test_definition.code, target, [var.name for var in variables]
-    )
+    if len(test_definition.code) > 0:
+        sequence.extend(interpret_asm(
+            test_definition.code, target, [var.name for var in variables]
+        ))
+
+    print_info("Interpreting binary code regions...")
+    region_count = len(test_definition.code_regions)
+    if region_count > 0:
+        for i in range(region_count):
+            print_info("[%d/%d]" % (i + 1, region_count + 1))
+            bin_data = test_definition.code_regions[i].data()
+            sequence.extend(interpret_bin(bin_data, target))
 
     if len(sequence) < 1:
         raise MicroprobeMPTFormatError(

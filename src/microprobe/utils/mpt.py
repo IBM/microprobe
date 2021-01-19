@@ -54,6 +54,7 @@ __all__ = [
     "MicroprobeTestParser",
     "MicroprobeTestParserDefault",
     "MicroprobeTestParserV0x5",
+    "MicroprobeTestBinaryCodeRegion",
     "mpt_configuration_factory",
     "mpt_parser_factory",
     "mpt_shift",
@@ -308,6 +309,12 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractproperty
+    def code_regions(self):
+        """List of (binary) code regions (:class:`~.list` of
+           :class:`~.MicroprobeTestBinaryCodeRegion`)"""
+        raise NotImplementedError
+
+    @abc.abstractproperty
     def registers(self):
         """List of declared variables (:class:`~.list` of
            :class:`~.MicroprobeTestRegisterDefinition`)"""
@@ -383,6 +390,11 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def register_code_regions(self, region):
+        """Register new code regions."""
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def register_raw_definition(self, name, value):
         """Register new raw definition."""
         raise NotImplementedError
@@ -438,6 +450,7 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
         self._default_code_address = None
         self._default_data_address = None
         self._code = []
+        self._code_regions = []
         self._variables = []
         self._registers = []
         self._raw = {}
@@ -471,6 +484,12 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
         """List of declared variables (:class:`~.list` of
            :class:`~.MicroprobeInstructionDefinition`)"""
         return self._code
+
+    @property
+    def code_regions(self):
+        """List of (binary) code regions (:class:`~.list` of
+           :class:`~.MicroprobeTestBinaryCodeRegion`)"""
+        return self._code_regions
 
     @property
     def registers(self):
@@ -544,6 +563,11 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
             self._code = definitions + self._code
         else:
             self._code += definitions
+
+    def register_code_regions(self, regions):
+        """Register new code regions."""
+        for region in regions:
+            self._code_regions.append(region)
 
     def register_raw_definition(self, name, value):
         """Register a new raw definition."""
@@ -1109,13 +1133,15 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                             " at least twice"
                         )
 
-                    instruction_definitions = self.parse_code(
+                    (instruction_definitions, code_regions) = self.parse_code(
                         value, test_definition.default_code_address
                     )
 
                     test_definition.register_instruction_definitions(
                         instruction_definitions
                     )
+
+                    test_definition.register_code_regions(code_regions)
 
         if parser.has_section("DAT"):
 
@@ -1372,6 +1398,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
             base_address = 0
 
         instruction_definitions = []
+        code_regions = []
         content_lines = contents.split("\n")
 
         current_label = None
@@ -1406,31 +1433,52 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
                 LOG.debug("Instruction/decorator alone detected")
 
-                ins_def = MicroprobeAsmInstructionDefinition(
-                    self.parse_instruction(line.split('@')[0].strip()),
-                    current_label, current_address, _parse_decorators(
-                        current_decorator + (
-                            line + '@'
-                        ).split('@')[1].strip()
-                    ), comments
+                instruction = self.parse_instruction(
+                        line.split('@')[0].strip()
                 )
 
-                if ins_def.assembly != "":
-
-                    instruction_definitions.append(ins_def)
-                    current_label = None
-                    current_address = None
-                    comments = []
-                    current_decorator = ' '
-                    LOG.debug(ins_def)
-
-                else:
-
+                if instruction == "":  # Decorator
                     current_decorator = _parse_decorators(
                         current_decorator + (
                             line + '@'
                         ).split('@')[1].strip()
                     )
+                else:
+
+                    if instruction.strip().upper().startswith("0X"):  # Binary
+
+                        data = instruction.strip()[2:]
+
+                        if current_address is not None:
+                            code_region = MicroprobeTestBinaryCodeRegion(
+                                current_address
+                            )
+
+                            if code_region is not None:
+                                code_regions.append(code_region)
+                        else:
+                            code_region = code_regions[-1]
+
+                        code_region.add_data(data)
+
+                    else:  # Assembler
+
+                        ins_def = MicroprobeAsmInstructionDefinition(
+                            instruction,
+                            current_label, current_address, _parse_decorators(
+                                current_decorator + (
+                                    line + '@'
+                                ).split('@')[1].strip()
+                            ), comments
+                        )
+
+                        instruction_definitions.append(ins_def)
+                        LOG.debug(ins_def)
+
+                    current_label = None
+                    current_address = None
+                    comments = []
+                    current_decorator = ' '
 
             elif len(line.split(":")) == 2:
 
@@ -1598,7 +1646,28 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         instruction_definitions = self._sort_by_instructions(
             instruction_definitions)
 
-        return instruction_definitions
+        if code_region is not None:
+            code_regions.append(code_region)
+
+        code_regions = self._merge_code_regions(code_regions)
+
+        return (instruction_definitions, code_regions)
+
+    def _merge_code_regions(self, code_regions):
+        if len(code_regions) < 2:
+            return code_regions
+
+        new_list = []
+        current_region = code_regions[0]
+
+        for region in code_regions[1:]:
+            merged = current_region.merge(region)
+
+            if not merged:
+                new_list.append(current_region)
+                current_region = region
+
+        return new_list
 
     def _sort_by_instructions(self, instr_list):
 
@@ -2109,3 +2178,36 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 class MicroprobeTestParserV0x5(MicroprobeTestParserDefault):
     """Class to represent a Microprobe Test configuration (v0.5)"""
     version = 0.5
+
+
+class MicroprobeTestBinaryCodeRegion:
+
+    def __init__(self, base_address):
+        self._base_address = base_address
+        self._data = ""
+        self._length = 0
+
+    def add_data(self, data):
+        self._data += data
+        self._length += len(data) / 2
+
+    def base_address(self):
+        return self._base_address
+
+    def data(self):
+        return self._data
+
+    def length(self):
+        return self._length
+
+    def merge(self, other):
+        if (self.base_address() > other.base_address()):
+            return other.merge(self)
+
+        end_address = self.base_address() + self.length
+
+        if end_address == other.base_address():
+            self.add_data(other.data())
+            return True
+        else:
+            return False
