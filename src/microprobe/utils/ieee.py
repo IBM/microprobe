@@ -30,7 +30,7 @@ from microprobe.utils.logger import get_logger
 
 # Constants
 LOG = get_logger(__name__)
-__all__ = ["ieee_float_to_int64"]
+__all__ = ["ieee_float_to_int64", "float_to_nnp_data_type_1"]
 
 
 # Functions
@@ -55,5 +55,25 @@ def ieee_float_to_int64(float_val):
         string = '0'
         idx = 0
     return int(string[idx:], 2)
+
+
+def float_to_nnp_data_type_1(float_val):
+    """convert float to nnp_data_type_1
+
+    :param f:
+
+    """
+
+    bits = ""
+
+    # Sign
+    if float_val > 0:
+        bits += "0"
+    else:
+        bits += "1"
+
+    # Computer exponent and mantissa
+    assert len(bits) == 16
+    return int(bits, 2)
 
 # Classes

@@ -207,8 +207,15 @@ if MP_TESTING_ARCH is None:
     _PARAM3 = ['-B 10']
 
     TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
-                         "c"))
-    TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p", "S"))
+                         "c",
+                         ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
+                          "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
+                          "C.SDSP_V0", "JALR_V0"]))
+    TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p",
+                         "S",
+                         ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
+                          "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
+                          "C.SDSP_V0", "JALR_V0"]))
 else:
     _PARAM1 = ['', '-dd 1', '-dd 5.5']
     _PARAM2 = ['', '-R']
@@ -216,8 +223,15 @@ else:
 
     if MP_TESTING_ARCH is "RISCV":
         TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
-                             "c"))
-        TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p", "S"))
+                             "c",
+                             ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
+                              "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
+                              "C.SDSP_V0", "JALR_V0"]))
+        TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p",
+                             "S",
+                             ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
+                              "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
+                              "C.SDSP_V0", "JALR_V0"]))
 
 TEST_FLAGS = []
 TEST_FLAGS.extend(
@@ -232,6 +246,9 @@ for _TEST_TARGET in TEST_TARGETS:
     for _TEST_INSTR in [
         my_instr.name for my_instr in subins(
             list(_TARGET.isa.instructions.values()))]:
+
+        if _TEST_INSTR in _TEST_TARGET[2]:
+            continue
 
         for _TEST_FLAG in TEST_FLAGS:
 

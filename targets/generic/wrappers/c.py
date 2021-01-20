@@ -418,7 +418,8 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
             if instr.label is not None:
                 rstrl.append(instr.label + ":")
 
-            hstr = hex(int(instr.binary(), 2)).replace("L", "")[2:]
+            fmtstr = "%%0%dx" % (len(instr.binary())/4)
+            hstr = fmtstr % int(instr.binary(), 2)
 
             rstrl.append(".byte " +
                          ",".join(["0x%s" % hstr[idx:idx + 2]

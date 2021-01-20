@@ -364,7 +364,7 @@ class Target(Pickable):
 
         if uarch is not None:
             self.set_uarch(uarch)
-            self.microarchictecture.add_properties_to_isa(
+            self.microarchitecture.add_properties_to_isa(
                 self.isa.instructions
             )
 
@@ -393,13 +393,13 @@ class Target(Pickable):
         description = []
         description.append("Target ISA: %s" % self.isa.name)
         description.append("ISA Description: %s" % self.isa.description)
-        if self.microarchictecture is not None:
+        if self.microarchitecture is not None:
             description.append(
-                "Target Micro-architecture: %s" % self.microarchictecture.name
+                "Target Micro-architecture: %s" % self.microarchitecture.name
             )
             description.append(
                 "Micro-architecture Description: %s" %
-                self.microarchictecture.description
+                self.microarchitecture.description
             )
         else:
             description.append("Target Micro-architecture: Not defined")
@@ -421,7 +421,7 @@ class Target(Pickable):
         return self._isa
 
     @property
-    def microarchictecture(self):
+    def microarchitecture(self):
         """Microarchitecture of the Target (:class:`~.Microarchitecture`)."""
         return self._uarch
 
@@ -443,8 +443,8 @@ class Target(Pickable):
         :rtype: :class:`~.str`
         """
         rstr = self.isa.full_report() + '\n'
-        if self.microarchictecture is not None:
-            rstr += self.microarchictecture.full_report() + '\n'
+        if self.microarchitecture is not None:
+            rstr += self.microarchitecture.full_report() + '\n'
         rstr += self.environment.full_report() + '\n'
         return rstr
 

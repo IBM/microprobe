@@ -336,6 +336,8 @@ class Synthesizer(object):
         fdx = open_generic_fd(outputname, 'wb')
 
         for elem in program_str:
+            if elem == []:
+                continue
             if isinstance(elem, six.string_types) and six.PY3:
                 elem = elem.encode()
             fdx.write(elem)

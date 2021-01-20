@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-File: mp_seq
+File: mp_seqtune
 
-This script implements the tool that to tune different paramenters of the
+This script implements the tool that to tune different parameters of the
 input sequence provided, such as the memory access patterns, branch
 behavior and replacement of instructions.
 """

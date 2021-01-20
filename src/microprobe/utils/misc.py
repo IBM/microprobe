@@ -328,6 +328,7 @@ def range_to_sequence(start, *args):
         end = args[0]
         if isinstance(end, str):
             end = int(end, 0)
+        end = end + 1
     else:
         return [start]
 
@@ -337,12 +338,52 @@ def range_to_sequence(start, *args):
         if isinstance(step, str):
             step = int(step, 0)
 
-    return list(
+    retval = list(
         itertools.islice(
             itertools.count(start, step),
             (end - start + step - 1 + 2 * (step < 0)) // step
         )
     )
+
+    return retval
+
+
+def range_to_sequence_float(start, *args):
+    """
+
+    """
+
+    if len(args) > 2:
+        raise NotImplementedError(
+            "This function does not support more than 3 arguments")
+
+    step = 1
+
+    if isinstance(start, str):
+        start = float(start, 0)
+
+    if len(args) > 0:
+        end = args[0]
+        if isinstance(end, str):
+            end = float(end, 0)
+        end = end + 1
+    else:
+        return [start]
+
+    if len(args) > 1:
+        step = args[1]
+
+        if isinstance(step, str):
+            step = float(step, 0)
+
+    retval = list(
+        itertools.islice(
+            itertools.count(start, step),
+            (end - start + step - 1 + 2 * (step < 0)) // step
+        )
+    )
+
+    return retval
 
 
 def which(program):

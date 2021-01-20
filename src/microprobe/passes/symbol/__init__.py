@@ -218,13 +218,21 @@ class ResolveSymbolicReferencesPass(microprobe.passes.Pass):
 
                 if operand.type.address_relative:
 
-                    if context.code_segment is not None:
+                    if (context.code_segment is not None and
+                            isinstance(context.code_segment, int)):
                         instruction.add_comment(
                             "%s %s" % (
                                 comment, hex(
                                     context.code_segment +
                                     target_address.displacement
                                 )
+                            )
+                        )
+                    elif context.code_segment is not None:
+                        instruction.add_comment(
+                            "%s %s+0X%X" % (
+                                comment, context.code_segment,
+                                target_address.displacement
                             )
                         )
 
@@ -308,6 +316,13 @@ class ResolveSymbolicReferencesPass(microprobe.passes.Pass):
                 else:
                     raise NotImplementedError
             else:
-                LOG.critical(instruction, instruction.address, address)
-                LOG.critical(address.base_address, type(address.base_address))
+                LOG.critical(
+                    "Instr: %s Instr.Address: %s, Address: %s",
+                    instruction, instruction.address, address
+                )
+                LOG.critical(
+                    "Base address: %s Type: %s",
+                    address.base_address,
+                    type(address.base_address)
+                )
                 raise NotImplementedError

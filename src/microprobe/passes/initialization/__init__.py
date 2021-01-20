@@ -239,6 +239,7 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         self._skip_unknown = skip_unknown
         self._warn_unknown = warn_unknown
         self._force_reserved = kwargs.get("force_reserved", False)
+        self._skip_control = kwargs.get("skip_control", False)
 
         if v_value is not None:
             self._vect_value, self._vect_elemsize = v_value
@@ -289,11 +290,10 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                     not self._force_reserved):
                 LOG.debug("Skip reserved - %s", reg)
                 continue
-            elif reg in target.control_registers and value is None:
+            elif (reg in target.control_registers and
+                    (value is None or self._skip_control)):
                 LOG.debug("Skip control - %s", reg)
                 continue
-
-            LOG.debug("Setting reg - %s", reg)
 
             if value is None:
                 if reg.used_for_vector_arithmetic:

@@ -33,9 +33,10 @@ from microprobe.exceptions import MicroprobeException
 from microprobe.target.env import find_env_definitions
 from microprobe.target.isa import find_isa_definitions
 from microprobe.target.uarch import find_microarchitecture_definitions
+from microprobe.utils.bin import interpret_bin
 from microprobe.utils.config import DEFAULTSECT, DuplicateConfigParser
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import range_to_sequence
+from microprobe.utils.misc import range_to_sequence, range_to_sequence_float
 from microprobe.utils.mpt import mpt_parser_factory
 
 
@@ -366,6 +367,53 @@ def int_range(min_val, max_val):
     return function
 
 
+def float_range(min_val, max_val):
+    """
+
+    :param min_val:
+    :type min_val:
+    :param max_val:
+    :type max_val:
+    """
+
+    def function(argumentall):
+        """
+
+        :param argument:
+        :type argument:
+        """
+
+        rangedef = []
+
+        for argument in argumentall.split("-"):
+
+            try:
+                argument = float(argument, base=0)
+            except ValueError:
+                msg = "'%s' is not a valid float range." % argument
+                raise argparse.ArgumentTypeError(msg)
+
+            if argument < min_val or argument > max_val:
+                msg = "'%s' is not within the [%f, %f] range" % (
+                    argument, min_val, max_val
+                )
+                raise argparse.ArgumentTypeError(msg)
+
+            rangedef.append(argument)
+
+        if len(rangedef) > 1:
+            if rangedef[0] > rangedef[1]:
+                msg = "'%s' range is reversed. Change it to " \
+                    "low to high value." % (
+                        argumentall
+                    )
+                raise argparse.ArgumentTypeError(msg)
+
+        return range_to_sequence_float(rangedef[0], *rangedef[1:])
+
+    return function
+
+
 def string_with_fields(sep, min_elem, max_elem, fmt):
 
     def function(argument):
@@ -540,9 +588,17 @@ def parse_instruction_list(target, sequence):
     """
 
     try:
-        instructions = [
-            target.instructions[name] for name in sequence.split(",")
-        ]
+        instructions = []
+        for instr in sequence.split(","):
+            if (instr.upper().startswith("0X")):
+                instr = interpret_bin(
+                    instr[2:], target, safe=True, single=True
+                )
+                assert len(instr) == 1
+                instr = instr[0].instruction_type
+            else:
+                instr = target.instructions[instr]
+            instructions.append(instr)
     except KeyError as err:
         print_error("Instruction '%s' not found" % err.args[0])
         exit(-1)

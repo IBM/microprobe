@@ -116,6 +116,7 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             reset=kwargs['reset'],
+            endless=True
         )
         extension = "bin"
 

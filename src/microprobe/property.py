@@ -284,6 +284,13 @@ class PropertyHolder(object):
             else:
                 self._properties[prop.name] = prop
 
+        # Remove memoization at property registration
+        if hasattr(self, prop.name):
+            delattr(self, prop.name)
+
+        # Memoize by accessing
+        getattr(self, prop.name)
+
     def unregister_property(self, prop):
         """
 

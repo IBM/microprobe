@@ -31,6 +31,7 @@ from microprobe.code.var import Variable, VariableArray
 from microprobe.target.isa import GenericISA
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import twocs_to_int
+from microprobe.exceptions import MicroprobeCodeGenerationError
 
 # Constants
 LOG = get_logger(__name__)
@@ -667,3 +668,31 @@ class RISCVISA(GenericISA):
         instrs.append(ins)
 
         return instrs
+
+    def get_register_for_address_arithmetic(self, context):
+        """
+
+        :param context:
+
+        """
+        reg = [
+            reg
+            for reg in self._address_registers
+            if reg not in context.reserved_registers
+            and int(reg.codification) >= 8 and int(reg.codification) <= 15
+        ]
+
+        reg += [
+            reg
+            for reg in self._address_registers
+            if reg not in context.reserved_registers
+            and int(reg.codification) < 8 and int(reg.codification) > 15
+        ]
+
+        if len(reg) == 0:
+            raise MicroprobeCodeGenerationError(
+                "No free registers available. "
+                "Change your policy."
+            )
+
+        return reg[0]

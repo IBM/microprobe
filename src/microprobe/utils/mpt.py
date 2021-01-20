@@ -1237,6 +1237,13 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
             if memory_access_trace_path is not None:
                 memtrace = []
+
+                if not os.path.isfile(memory_access_trace_path):
+                    raise MicroprobeMPTFormatError(
+                        "Trace '%s' not found" %
+                        memory_access_trace_path
+                    )
+
                 with open_generic_fd(memory_access_trace_path, "r") as \
                         content_file:
                     lineno = 0

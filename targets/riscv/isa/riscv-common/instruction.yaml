@@ -1839,6 +1839,8 @@
   Operands:
     funct3: ['3', 'funct3', '?']
     rd: ['spreg', 'rd', 'IO']
+  ImplicitOperands:
+    X2: ['X2', 'O']
 - Name: "C.LUI_V0"
   Mnemonic: "C.LUI"
   Opcode: "1"
@@ -2025,6 +2027,8 @@
     X2: ['X2', 'I']
   MemoryOperands:
     MEM1 : [['X2', 'cd_imm6'], [8], 8, 'O']
+  ImplicitOperands:
+    X2: ['X2', 'I']
 - Name: "C.SWSP_V0"
   Mnemonic: "C.SWSP"
   Opcode: "2"

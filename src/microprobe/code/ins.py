@@ -2126,13 +2126,6 @@ def create_dependency_between_ins(output_ins, input_ins, context):
 
     return dependency_set
 
-# MicroprobeInstructionDefinition = collections.namedtuple(
-#    "MicroprobeInstructionDefinition", [
-#        "instruction_type", "operands", "label", "address", "asm",
-#        "decorators", "comments"
-#    ]
-# )
-
 
 class MicroprobeInstructionDefinition(object):
 
@@ -2178,6 +2171,8 @@ class MicroprobeInstructionDefinition(object):
         self._label = value
 
     def set_address(self, value):
+        if isinstance(value, int):
+            value = InstructionAddress(base_address="code", displacement=value)
         self._address = value
 
     def set_asm(self, value):

@@ -152,6 +152,7 @@ class BranchNextPass(Pass):
                             LOG.debug(
                                 "Branch relative, new label: '%s'", label
                             )
+
                         else:
                             label = instr.label
                             LOG.debug(
@@ -817,10 +818,7 @@ class FixIndirectBranchPass(Pass):
                     instr_ant = instr
                     continue
 
-                if branch_operand:
-                    self._fix_branch(instr_ant, instr, target)
-                else:
-                    raise NotImplementedError
+                self._fix_branch(instr_ant, instr, target)
 
                 instr_ant = instr
 

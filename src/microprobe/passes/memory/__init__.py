@@ -2131,7 +2131,6 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         if mcomp > 0:
                             last_instr = instr
                     except MicroprobeCodeGenerationError:
-
                         diff = address.displacement - \
                             reg_base_val - reg_idx_val
 
