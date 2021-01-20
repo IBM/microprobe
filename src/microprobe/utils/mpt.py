@@ -1455,6 +1455,10 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                             )
 
                             code_regions.append(code_region)
+                        elif len(code_regions) == 0:
+                            code_region = MicroprobeTestBinaryCodeRegion(None)
+
+                            code_regions.append(code_region)
                         else:
                             code_region = code_regions[-1]
 
@@ -2195,6 +2199,9 @@ class MicroprobeTestBinaryCodeRegion:
         return self._length
 
     def merge(self, other):
+        if (self.base_address() == None or other.base_address() == None):
+            return False;
+
         if (self.base_address() > other.base_address()):
             return other.merge(self)
 
