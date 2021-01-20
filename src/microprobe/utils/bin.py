@@ -621,11 +621,7 @@ def _normalize_code(code, fmt="hex", little_endian=False):
                 "Invalid input provided. Not hexadecimal number provided"
             )
 
-    code = "".join(
-        map(lambda x: _swap_bytes(x, little_endian),
-            re.split(skip_regex, code)
-            )
-        )
+    code = "".join([char for char in code if char not in skip_character])
 
     if fmt == "hex":
         return code
@@ -710,6 +706,7 @@ class MicroprobeBinInstructionStream(object):
                     return bin_str, None, None
 
         matches = []
+        max_size = max(self._lenghts) * 2
         for length in self._lenghts:
 
             if self._index == 0 and len(self._code) < (length * 2):
@@ -718,9 +715,11 @@ class MicroprobeBinInstructionStream(object):
                 LOG.debug("Skipping length %s ...", length)
                 continue
 
-            bin_str = self._code[self._index:self._index + length * 2]
-
+            bin_str = self._code[self._index:self._index + max_size]
             bin_str = _swap_bytes(bin_str, self._little_endian)
+            bin_str = bin_str[0:length * 2]
+            bin_str = _swap_bytes(bin_str, self._little_endian)
+
             bin_int = int(bin_str, 16)
 
             fmt = "0x%%0%dx" % (length * 2)
