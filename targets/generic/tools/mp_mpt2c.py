@@ -135,8 +135,13 @@ def generate(test_definition, outputfile, target, **kwargs):
 
         sequence = []
         for address in sorted(raw_dict.keys()):
+
+            # Endianess will be big endian, because we are concatenating
+            # full words resulting in the higher bits being encoded first
+
             code = interpret_bin(
-                raw_dict[address], target, safe=True, switch_endian=False
+                raw_dict[address], target, safe=True, little_endian=False,
+                word_length=4
             )
             code[0].address = address
             sequence.extend(code)
