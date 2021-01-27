@@ -16,7 +16,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 import sys
 from microprobe.target import import_definition
-from microprobe.utils.bin import interpret_bin
+from microprobe.utils.bin import interpret_bin_word
 from microprobe.code.ins import instruction_from_definition
 from microprobe.utils.asm import interpret_asm
 
@@ -24,13 +24,13 @@ target = import_definition(sys.argv[1])
 print(sys.argv[2:])
 
 for elem in sys.argv[2:]:
-    instr_def = interpret_bin(elem, target)[0]
+    instr_def = interpret_bin_word(elem, target)
     instr = instruction_from_definition(instr_def)
     codification = int(instr.binary(), 2)
     assembly = instr.assembly()
     instr_def2 = interpret_asm(assembly, target, [])[0]
     print(hex(codification))
-    instr_def3 = interpret_bin(hex(codification)[2:], target)[0]
+    instr_def3 = interpret_bin_word(hex(codification), target)
     instr2 = instruction_from_definition(instr_def2)
     instr3 = instruction_from_definition(instr_def3)
     assert instr.assembly() == instr2.assembly()

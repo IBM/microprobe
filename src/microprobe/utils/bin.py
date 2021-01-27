@@ -61,10 +61,52 @@ _CODE_CACHE_ENABLED = True
 _BIN_CACHE_ENABLED = True
 
 __all__ = ["interpret_bin",
+           "interpret_bin_word",
            "MicroprobeBinInstructionStream", ]
 
 
 # Functions
+def interpret_bin_word(word, target, fmt="hex", safe=None):
+    """
+    Return the :class:`~.MicroprobeInstructionDefinition` object that results
+    from interpreting the *word* (a binary word corresponding to a single
+    instruction, in numeric positional notation i.e. big endian).
+    The *target* object is used to validate the existence of the instruction
+    and operands in the target.
+
+    :param word: String to interpret
+    :type word: :class:`~.str` object
+    :param target: Target definition
+    :type target: :class:`~.Target` object
+    :return: An instructions resulting from interpreting the word
+    :rtype: :class:`~.list` of :class:`~.MicroprobeInstructionDefinition`
+    :raise microprobe.exceptions.MicroprobeBinaryError: if something is wrong
+        during the interpretation
+    """
+    if fmt == "hex":
+        if word.startswith("0x"):
+            word = word[2:]
+
+        word_length = math.ceil(len(word)/2)
+    elif fmt == "bin":
+        if word.startswith("0b"):
+            word = word[2:]
+
+        word_length = math.ceil(len(word)/8)
+    else:
+        raise MicroprobeBinaryError(
+            "Unknown format '%s'" % fmt
+        )
+
+    print(word)
+    instructions = interpret_bin(word, target, fmt=fmt, safe=safe, single=True,
+                                 little_endian=False, word_length=word_length)
+
+    assert len(instructions) == 1
+
+    return instructions[0]
+
+
 def interpret_bin(
         code, target, fmt="hex", safe=None,
         single=False, little_endian=None, word_length=None
