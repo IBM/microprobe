@@ -89,6 +89,15 @@ def interpret_bin(
     if safe is None:
         safe = MICROPROBE_RC['safe_bin']
 
+    if single:
+        little_endian = False
+        if fmt == "hex":
+            word_length = math.ceil(len(code)/2)
+        elif fmt == "bin":
+            word_length = math.ceil(len(code)/8)
+        else:
+            raise MicroprobeBinaryError("Unknown format '%s'" % fmt)
+
     key = "%s-%s-%s-%s" % (code, target.name, fmt, safe)
 
     if key in _CODE_CACHE and _CODE_CACHE_ENABLED:

@@ -24,13 +24,13 @@ target = import_definition(sys.argv[1])
 print(sys.argv[2:])
 
 for elem in sys.argv[2:]:
-    instr_def = interpret_bin(elem, target)[0]
+    instr_def = interpret_bin(elem, target, single=True)[0]
     instr = instruction_from_definition(instr_def)
     codification = int(instr.binary(), 2)
     assembly = instr.assembly()
     instr_def2 = interpret_asm(assembly, target, [])[0]
     print(hex(codification))
-    instr_def3 = interpret_bin(hex(codification)[2:], target)[0]
+    instr_def3 = interpret_bin(hex(codification)[2:], target, single=True)[0]
     instr2 = instruction_from_definition(instr_def2)
     instr3 = instruction_from_definition(instr_def3)
     assert instr.assembly() == instr2.assembly()
