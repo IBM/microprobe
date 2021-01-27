@@ -41,7 +41,7 @@ from microprobe.target import Target
 from microprobe.target.env import import_env_definition
 from microprobe.target.isa import import_isa_definition
 from microprobe.utils.asm import interpret_asm
-from microprobe.utils.bin import interpret_bin_word
+from microprobe.utils.bin import interpret_bin
 from microprobe.utils.logger import get_logger, set_log_level
 
 if six.PY2:
@@ -366,7 +366,11 @@ def self_codification_function(self):
                 print("Codification: 0x%x" % codification)
                 print("Assembly: %s" % instruction.assembly())
 
-                instr_def = interpret_bin_word(hex(codification), target)
+                instr_def = interpret_bin(
+                    hex(codification)[2:],
+                    target,
+                    single=True
+                )[0]
                 print("%s == %s ?" % (instr, instr_def.instruction_type))
 
                 self.assertEqual(instr.mnemonic,
