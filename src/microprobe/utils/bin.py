@@ -92,9 +92,9 @@ def interpret_bin(
     if single:
         little_endian = False
         if fmt == "hex":
-            word_length = math.ceil(len(code)/2)
+            word_length = int(math.ceil(len(code)/2))
         elif fmt == "bin":
-            word_length = math.ceil(len(code)/8)
+            word_length = int(math.ceil(len(code)/8))
         else:
             raise MicroprobeBinaryError("Unknown format '%s'" % fmt)
 
