@@ -67,7 +67,7 @@ __all__ = ["interpret_bin",
 # Functions
 def interpret_bin(
         code, target, fmt="hex", safe=None,
-        single=False, switch_endian=True
+        single=False, little_endian=None, word_length=None
         ):
     """
     Return the list of :class:`~.MicroprobeInstructionDefinition` objects
@@ -89,19 +89,30 @@ def interpret_bin(
     if safe is None:
         safe = MICROPROBE_RC['safe_bin']
 
+    if single:
+        little_endian = False
+        if fmt == "hex":
+            word_length = int(math.ceil(len(code)/2))
+        elif fmt == "bin":
+            word_length = int(math.ceil(len(code)/8))
+        else:
+            raise MicroprobeBinaryError("Unknown format '%s'" % fmt)
+
     key = "%s-%s-%s-%s" % (code, target.name, fmt, safe)
 
     if key in _CODE_CACHE and _CODE_CACHE_ENABLED:
         code = [instrdef.copy() for instrdef in _CODE_CACHE[key]]
     elif safe:
         code = _interpret_bin_code_safe(
-            code, target, single, fmt=fmt, switch_endian=switch_endian
+            code, target, single, fmt=fmt, little_endian=little_endian,
+            word_length=word_length
         )
         if _CODE_CACHE_ENABLED:
             _CODE_CACHE[key] = code[:]
     else:
         code = _interpret_bin_code(
-            code, target, single, fmt=fmt, switch_endian=switch_endian
+            code, target, single, fmt=fmt, little_endian=little_endian,
+            word_length=word_length
         )
         if _CODE_CACHE_ENABLED:
             _CODE_CACHE[key] = code[:]
@@ -110,13 +121,14 @@ def interpret_bin(
 
 
 def _interpret_bin_code(
-        code, target, single, fmt="hex", switch_endian=True
+        code, target, single, fmt="hex", little_endian=True, word_length=None
         ):
 
     instructions_and_params = []
 
     binstream = MicroprobeBinInstructionStream(
-        code, target, fmt=fmt, switch_endian=switch_endian
+        code, target, fmt=fmt, little_endian=little_endian,
+        word_length=word_length
     )
 
     while not binstream.empty():
@@ -130,7 +142,7 @@ def _interpret_bin_code(
 
 
 def _interpret_bin_code_safe(
-        code, target, single, fmt="hex", switch_endian=True
+        code, target, single, fmt="hex", little_endian=None, word_length=None
         ):
 
     instructions_and_params = []
@@ -138,7 +150,8 @@ def _interpret_bin_code_safe(
     binstream = MicroprobeBinInstructionStream(
         code, target, fmt=fmt,
         _data_cache=True,
-        switch_endian=switch_endian
+        little_endian=little_endian,
+        word_length=word_length
     )
 
     min_skip_length = min(
@@ -601,7 +614,9 @@ def _swap_bytes(original, little_endian=False):
     return result
 
 
-def _normalize_code(code, fmt="hex", little_endian=False):
+def _normalize_code(
+        code, fmt="hex", endianess_missmatch=False, word_length=None
+        ):
     """
 
     :param code:
@@ -639,6 +654,15 @@ def _normalize_code(code, fmt="hex", little_endian=False):
 
     code = "".join([char for char in code if char not in skip_character])
 
+    if endianess_missmatch:
+        LOG.debug("Fixing missmatch between input data and target's endianess")
+        assert word_length is not None
+        n = word_length * 2
+        words = [(code[i:i+n]) for i in range(0, len(code), n)]
+        code = ""
+        for word in words:
+            code += _swap_bytes(word, True)
+
     if fmt == "hex":
         return code
     elif fmt == "bin":
@@ -659,7 +683,7 @@ class MicroprobeBinInstructionStream(object):
 
     def __init__(
             self, code, target, fmt="hex",
-            _data_cache=False, switch_endian=True
+            _data_cache=False, little_endian=None, word_length=None
             ):
         """
 
@@ -670,11 +694,19 @@ class MicroprobeBinInstructionStream(object):
         """
 
         self._little_endian = target.little_endian
-        self._switch_endian = switch_endian
+
+        if little_endian is not None:
+            self._stream_little_endian = little_endian
+        else:
+            self._stream_little_endian = target.little_endian
+
+        endianess_missmatch = self._little_endian != self._stream_little_endian
+
         self._code = _normalize_code(
             code,
             fmt=fmt,
-            little_endian=self._little_endian
+            endianess_missmatch=endianess_missmatch,
+            word_length=word_length
         )
         self._fmt = fmt
         self._target = target
@@ -738,10 +770,9 @@ class MicroprobeBinInstructionStream(object):
                 continue
 
             bin_str = self._code[self._index:self._index + max_size]
-            if self._switch_endian:
-                bin_str = _swap_bytes(bin_str, self._little_endian)
             bin_str = bin_str[0:length * 2]
-            if self._switch_endian:
+
+            if self._little_endian:
                 bin_str = _swap_bytes(bin_str, self._little_endian)
 
             bin_int = int(bin_str, 16)
