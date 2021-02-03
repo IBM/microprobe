@@ -64,16 +64,70 @@ def float_to_nnp_data_type_1(float_val):
 
     """
 
-    bits = ""
+    # Format parameters
+    fsize = 16
+    bias = 31
+    exponent_size = 6
 
     # Sign
+    sign = ""
     if float_val > 0:
-        bits += "0"
+        sign += "0"
     else:
-        bits += "1"
+        sign += "1"
 
-    # Computer exponent and mantissa
-    assert len(bits) == 16
+    real = abs(int(float_val))
+    fraction = abs(float_val) - abs(real)
+
+    assert real + fraction == abs(float_val)
+
+    fraction_bits = []
+    while fraction > 0:
+        fraction = fraction * 2
+        fraction_bits.append(int(fraction))
+        fraction = fraction - int(fraction)
+
+    fraction_bits = "".join(["%d" % bit for bit in fraction_bits])
+
+    real_bits = bin(real)[2:]
+
+    if real_bits[0] == "1":
+        shift = len(real_bits) - 1
+        fraction_bits = real_bits[1:] + fraction_bits
+    else:
+        shift = -1
+        while fraction_bits[0] == "0":
+            shift = shift - 1
+            fraction_bits = fraction_bits[1:]
+        fraction_bits = fraction_bits[1:]
+
+    exponent = shift + bias
+    expfmt = "{0:>0%db}" % exponent_size
+    exponent = expfmt.format(exponent)
+
+    bits = sign + exponent + fraction_bits
+    bits = bits[0:fsize]
+    while len(bits) < fsize:
+        bits += "0"
+
+    # Validation
+    # vsignificand = "1" + bits[exponent_size+1:]
+    # value = 0
+    # bitvalue = 1
+    # for bit in vsignificand:
+    #     if bit == "1":
+    #        value = value + bitvalue
+    #    bitvalue = bitvalue / 2
+
+    # vexponent = bits[1:exponent_size+1]
+    # vexponent = int(vexponent, 2) - bias
+
+    # print(vexponent)
+    # print((2**vexponent)*value)
+
+    # vsign = bits[0]
+
+    assert len(bits) == fsize
     return int(bits, 2)
 
 # Classes

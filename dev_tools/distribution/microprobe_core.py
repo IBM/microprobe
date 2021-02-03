@@ -68,7 +68,8 @@ setup(
             'mp_dma2objdump = '
             'microprobe.definitions.generic.tools.mp_dma2objdump:main',
             'mp_epi = microprobe.definitions.generic.tools.mp_epi:main',
-            'mp_mpt2c = microprobe.definitions.generic.tools.mp_mpt2c:main',
+            'mp_mpt2test = '
+            'microprobe.definitions.generic.tools.mp_mpt2test:main',
             'mp_objdump2dma = '
             'microprobe.definitions.generic.tools.mp_objdump2dma:main',
             'mp_objdump2mpt = '

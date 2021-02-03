@@ -1,6 +1,6 @@
-==============
-Tool: mp_mpt2c
-==============
+=================
+Tool: mp_mpt2test
+=================
 
 --------
 Overview
@@ -38,7 +38,7 @@ Basic usage
 
 ::
 
-   > mp_mpt2c -T TARGET -t MPT_DEFINITION_FILE -O MPT_OUTPUT_FILE
+   > mp_mpt2test -T TARGET -t MPT_DEFINITION_FILE -O MPT_OUTPUT_FILE
 
 where:
 
@@ -54,7 +54,7 @@ Flag/Argument                                                             Descri
 Full usage
 ----------
 
-.. program-output:: ../../targets/generic/tools/mp_mpt2c.py --help
+.. program-output:: ../../targets/generic/tools/mp_mpt2test.py --help
 
 ---------
 Fix flags
@@ -106,20 +106,20 @@ Example outputs
 
 Command::
 
-   > mp_mpt2c -T riscv_v22-riscv_generic-riscv64_linux_gcc -t example1.mpt -O output.c --endless 
+   > mp_mpt2test -T riscv_v22-riscv_generic-riscv64_linux_gcc -t example1.mpt -O output.c --endless 
    
 Input file ``example1.mpt``:
 
-.. literalinclude:: ../../targets/riscv/tests/tools/mpt2c_test003.mpt
+.. literalinclude:: ../../targets/riscv/tests/tools/mpt2test_test003.mpt
     :linenos:
 
 Output:
 
-.. program-output:: ../../targets/generic/tools/mp_mpt2c.py -P ../../targets/ -T riscv_v22-riscv_generic-riscv64_linux_gcc -t ../../targets/riscv/tests/tools/mpt2c_test003.mpt -O ./examples_outputs/example_mpt2c.c --endless
+.. program-output:: ../../targets/generic/tools/mp_mpt2test.py -P ../../targets/ -T riscv_v22-riscv_generic-riscv64_linux_gcc -t ../../targets/riscv/tests/tools/mpt2test_test003.mpt -O ./examples_outputs/example_mpt2test.c --endless
  
 Output file ``output.c``:
 
-.. literalinclude:: ./examples_outputs/example_mp_mpt2c_out.c
+.. literalinclude:: ./examples_outputs/example_mp_mpt2test_out.c
     :linenos:
     :language: c
  

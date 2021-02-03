@@ -385,10 +385,10 @@ def float_range(min_val, max_val):
 
         rangedef = []
 
-        for argument in argumentall.split("-"):
+        for argument in argumentall.split("/"):
 
             try:
-                argument = float(argument, base=0)
+                argument = float(argument)
             except ValueError:
                 msg = "'%s' is not a valid float range." % argument
                 raise argparse.ArgumentTypeError(msg)

@@ -41,16 +41,16 @@ MP_TESTING_ARCH = os.environ.get("MP_TESTING_ARCH", None)
 
 
 # Classes
-class mpt2c(TestCase):  # pylint: disable=invalid-name
+class mpt2test(TestCase):  # pylint: disable=invalid-name
     """
-    mpt2c Test Class.
+    mpt2test Test Class.
     """
     _multiprocess_can_split_ = True
 
-    name = "mp_mpt2c"
-    description = "mp_mpt2c tool tests"
+    name = "mp_mpt2test"
+    description = "mp_mpt2test tool tests"
     cmd = [os.path.join(BASEPATH,
-                        "targets", "generic", "tools", "mp_mpt2c.py")]
+                        "targets", "generic", "tools", "mp_mpt2test.py")]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -77,12 +77,12 @@ class mpt2c(TestCase):  # pylint: disable=invalid-name
     @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_010(self):
         """
-        mp_mpt2c - mpt2c_test010 on riscv_v22-riscv_generic-riscv64_linux_gcc
+        mp_mpt2test - test010 on riscv_v22-riscv_generic-riscv64_linux_gcc
         """
         self._wrapper(
             "riscv_v22-riscv_generic-riscv64_linux_gcc", os.path.join(
                 BASEPATH, "targets", "generic", "tests", "tools",
-                "mpt2c_test010.mpt"
+                "mpt2test_test010.mpt"
             )
         )
 
@@ -120,7 +120,7 @@ class mpt2c(TestCase):  # pylint: disable=invalid-name
         self.assertEqual(error_code, 0)
 
 
-TEST_CLASSES = [mpt2c]
+TEST_CLASSES = [mpt2test]
 
 if __name__ == '__main__':
     main()

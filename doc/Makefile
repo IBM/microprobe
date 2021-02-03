@@ -90,12 +90,12 @@ test2: ./source/examples_outputs/example_mp_objdump2dma.dma
 	mkdir -p ./source/examples_outputs/
 	mp_objdump2dma.py -O ./source/examples_outputs/example_mp_objdump2dma.dma -i ./source/examples/example_mp_objdump2mpt.dump
 
-test4: ./source/examples_outputs/example_mp_mpt2c_out.c
+test4: ./source/examples_outputs/example_mp_mpt2test_out.c
 
-./source/examples_outputs/example_mp_mpt2c_out.c: ../targets/riscv/tests/tools/mpt2c_test003.mpt ../targets/generic/tools/mp_mpt2c.py
-	rm -f ./source/examples_outputs/example_mp_mpt2c*.c
+./source/examples_outputs/example_mp_mpt2test_out.c: ../targets/riscv/tests/tools/mpt2test_test003.mpt ../targets/generic/tools/mp_mpt2test.py
+	rm -f ./source/examples_outputs/example_mp_mpt2test*.c
 	mkdir -p ./source/examples_outputs/
-	mp_mpt2c.py -P ../targets/ -T riscv_v22-riscv_generic-riscv64_linux_gcc -t ../targets/riscv/tests/tools/mpt2c_test003.mpt -O ./source/examples_outputs/example_mp_mpt2c_out.c --endless
+	mp_mpt2test.py -P ../targets/ -T riscv_v22-riscv_generic-riscv64_linux_gcc -t ../targets/riscv/tests/tools/mpt2test_test003.mpt -O ./source/examples_outputs/example_mp_mpt2test_out.c --endless
 
 test5: ./source/examples_outputs/example_mp_c2mpt.mpt
 

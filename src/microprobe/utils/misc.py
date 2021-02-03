@@ -192,7 +192,6 @@ def closest_divisor(target, closer):
     if value < (closer * 0.1):
         value = closer
 
-    # print(target, mprimes, closer, value)
     return value
 
 
@@ -290,9 +289,9 @@ def RNDINT(maxmin=None):  # pylint: disable-msg=invalid-name
         return _RNDINT.randint(*maxmin)
 
 
-def RNDFP():  # pylint: disable-msg=invalid-name
-    """Returns a random floating point between 1 and 1.0000001. """
-    return (_RNDFP.random() / 1000000) + 1
+def RNDFP(x=0, y=1):  # pylint: disable-msg=invalid-name
+    """Returns a random floating point between x and y """
+    return _RNDFP.uniform(x, y)
 
 
 def iter_flatten(iterable):
@@ -358,7 +357,6 @@ def range_to_sequence_float(start, *args):
             "This function does not support more than 3 arguments")
 
     step = 1
-
     if isinstance(start, str):
         start = float(start, 0)
 
@@ -366,7 +364,7 @@ def range_to_sequence_float(start, *args):
         end = args[0]
         if isinstance(end, str):
             end = float(end, 0)
-        end = end + 1
+        end = end + 0.0000000000001
     else:
         return [start]
 
@@ -376,12 +374,12 @@ def range_to_sequence_float(start, *args):
         if isinstance(step, str):
             step = float(step, 0)
 
-    retval = list(
-        itertools.islice(
-            itertools.count(start, step),
-            (end - start + step - 1 + 2 * (step < 0)) // step
-        )
-    )
+    retval = [start]
+    cval = start
+
+    while (cval + step) < end:
+        retval.append(cval + step)
+        cval += step
 
     return retval
 

@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-File: mp_mpt2c
+File: mp_mpt2test
 
-This script implements the tool that converts mpt files C code.
+This script implements the tool that converts mpt files Test code.
 """
 
 # Futures
@@ -253,14 +253,17 @@ def main():
     """
     args = sys.argv[1:]
     cmdline = microprobe.utils.cmdline.CLI(
-        "MicroprobeTest (mpt) to C tool",
+        "MicroprobeTest (mpt) to test tool",
         mpt_options=True,
-        default_config_file="mp_mpt2c.cfg",
+        default_config_file="mp_mpt2test.cfg",
         force_required=['target']
     )
 
-    groupname = "MPT to C arguments"
-    cmdline.add_group(groupname, "Command arguments related to MPT to C tool")
+    groupname = "MPT to test arguments"
+    cmdline.add_group(
+        groupname,
+        "Command arguments related to MPT to test tool"
+    )
 
     cmdline.add_option(
         "c-output-file",

@@ -25,7 +25,7 @@ sections for further details:
    tools_mp_coblst2mpt
    tools_mp_dma2objdump
    tools_mp_epi
-   tools_mp_mpt2c
+   tools_mp_mpt2test
    tools_mp_objdump2dma
    tools_mp_objdump2mpt
    tools_mp_seq
