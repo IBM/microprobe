@@ -17,9 +17,15 @@ This is the asm module documentation
 # Futures
 from __future__ import absolute_import
 
+# Built-in modules
+import itertools
+
 # Own modules
 import microprobe.code.wrapper
+from microprobe.code.ins import Instruction, MicroprobeInstructionDefinition
+from microprobe.code.address import InstructionAddress
 from microprobe.utils.logger import get_logger
+from microprobe.utils.misc import getnextf
 
 
 # Constants
@@ -34,9 +40,11 @@ __all__ = ["Assembly"]
 class Assembly(microprobe.code.wrapper.Wrapper):
     """:class:`Wrapper` to generate assembly (.s) files."""
 
-    def __init__(self):
+    def __init__(self, sections=[], start_label=None):
         """Initialization abstract method."""
         super(Assembly, self).__init__()
+        self._sections = sections
+        self._start_label = start_label
 
     def outputname(self, name):
         """
@@ -59,10 +67,48 @@ class Assembly(microprobe.code.wrapper.Wrapper):
     def declare_global_var(self, var):
         """
 
-        :param dummy_var:
+        :param var:
 
         """
-        return ""
+
+        align = var.align
+        if align is None or align is 0:
+            align = ""
+        else:
+            align = ".align %d" % align
+
+        if var.array():
+
+            if var.value is not None:
+
+                valuestr = ""
+
+                value = var.value
+                if not isinstance(value, list):
+                    value = [value]
+
+                get_value = getnextf(itertools.cycle(value))
+
+                for dummy_idx in range(var.elems):
+                    value = get_value()
+                    if callable(value):
+                        value = value()
+                    valuestr = "%s%s," % (valuestr, value)
+
+                print(".data.%s %s : { *(.data.%s) }" % (var.name, var.address.base_address[4:], var.name))
+                return ".section .data.%s\n.global %s\n%s:\n.byte %s\n" % (
+                        var.name, var.name, var.name, valuestr[:-1]
+                )
+
+        else:
+
+            if var.value is not None:
+
+                return ".section .data.%s\n.global %s\n%s:\n.byte %s\n" % (
+                    var.name, var.name, var.name, var.value
+                )
+
+        return "# Unhandled variable: %s\n" % var.name
 
     def init_global_var(self, dummy_var, dummy_value):
         """
@@ -79,7 +125,7 @@ class Assembly(microprobe.code.wrapper.Wrapper):
 
     def start_main(self):
         """ """
-        return ""
+        return "\n.text\n.global _start\n_start:"
 
     def start_loop(self, dummy_instr, dummy_instr_reset, dummy_aligned=True):
         """
@@ -114,7 +160,14 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         else:
             ins.append(instr.assembly())
 
-        return ins[0] + "\n"
+        section = ""
+
+        if instr.address is not None and instr.address.displacement in self._sections:
+            section_name = ".text.%s" % hex(instr.address.displacement)
+            section = "\n.section %s\n" % section_name
+            print("%s %s : { *(%s) }" % (section_name, hex(instr.address.displacement), section_name))
+
+        return section + ins[0] + "\n"
 
     def end_loop(self, dummy_instr):
         """

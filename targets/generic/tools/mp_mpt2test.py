@@ -27,6 +27,8 @@ import sys
 # Own modules
 import microprobe
 import microprobe.code
+from microprobe.code.address import InstructionAddress
+from microprobe.code.ins import instruction_to_definition
 import microprobe.passes.address
 import microprobe.passes.branch
 import microprobe.passes.ilp
@@ -52,7 +54,7 @@ LOG = get_logger(__name__)
 
 
 # Functions
-def generate(test_definition, outputfile, target, **kwargs):
+def generate(test_definition, outputfile, language, target, **kwargs):
     """
     Microbenchmark generation policy
 
@@ -143,7 +145,10 @@ def generate(test_definition, outputfile, target, **kwargs):
                 raw_dict[address], target, safe=True, little_endian=False,
                 word_length=4
             )
-            code[0].address = address
+            code[0].address = address + test_definition.default_code_address
+            for i in range(1, len(code)):
+                assert code[i-1].get_instruction_type().format.length > 0
+                code[i].address = code[i-1].address + code[i-1].get_instruction_type().format.length
             sequence.extend(code)
 
     else:
@@ -161,22 +166,85 @@ def generate(test_definition, outputfile, target, **kwargs):
     registers = test_definition.registers
     raw = test_definition.raw
 
-    for instruction_def in sequence:
-        if instruction_def.address is not None:
-            print_warning(
-                "Instruction address not needed in '%s'" % instruction_def.asm
-            )
-
     if test_definition.default_data_address is not None:
         print_warning("Default data address not needed")
 
-    if test_definition.default_code_address is not None:
-        print_warning("Default code address not needed")
+    wrapper_kwargs = {}
 
-    wrapper_name = "CWrapper"
-    if kwargs.get("endless", False):
-        print_warning("Using endless C wrapper")
-        wrapper_name = "CInfGen"
+    if language == "c":
+        if kwargs.get("wrap_function", False):
+            raise MicroprobeException("The wrap-function option is incompatible with the C langauge backend.")
+
+        wrapper_name = "C"
+        if kwargs.get("endless", False):
+            print_warning("Using endless c wrapper")
+            wrapper_name = "CInfGen"
+    elif language == "asm":
+        wrapper_name = "Assembly"
+        if sequence[0].label is not None:
+            start_label = sequence[0].label
+        else:
+            start_label = sequence[0].label = "START_TEST"
+
+        wrapper_kwargs["sections"] = [addr + test_definition.default_code_address for addr in raw_dict.keys()]
+        wrapper_kwargs["start_label"] = start_label
+
+        reset_instructions = []
+
+        if kwargs.get("wrap_function", False):
+            print("Adding function wrapping instructions...")
+            instructions = target.function_call("0x%x" % test_definition.default_code_address)
+            instructions[0].set_label("LOOP_START")
+
+            for instr in instructions:
+                reset_instructions.append(instruction_to_definition(instr))
+        else:
+            print("Adding jump to test instructions...")
+            source_address = InstructionAddress(
+                base_address="dummy", # Rely on symbolic jump
+                displacement=0
+            )
+
+            target_address = InstructionAddress(
+                base_address=start_label,
+                displacement=0
+            )
+
+            instr = target.branch_unconditional_relative(
+                    source_address,
+                    target_address
+            )
+
+            instr.set_label("LOOP_START")
+
+            reset_instructions.append(instruction_to_definition(instr))
+
+        if kwargs.get("endless", False):
+            source_address = InstructionAddress(
+                base_address="dummy", # Rely on symbolic jump
+                displacement=0
+            )
+
+            target_address = InstructionAddress(
+                base_address="LOOP_START",
+                displacement=0
+            )
+
+            instr = target.branch_unconditional_relative(
+                    source_address,
+                    target_address
+            )
+
+            instr = instruction_to_definition(instr)
+
+            if kwargs.get("wrap_function", False):
+                print("Adding loop instruction after function wrapper")
+                reset_instructions.append(instr)
+            else:
+                print("Adding loop instruction after test")
+                sequence.append(instr)
+
+        sequence = reset_instructions + sequence
 
     print_info("Creating benchmark synthesizer...")
 
@@ -190,7 +258,6 @@ def generate(test_definition, outputfile, target, **kwargs):
             (wrapper_name, str(exc))
         )
 
-    wrapper_kwargs = {}
     wrapper = cwrapper(**wrapper_kwargs)
 
     synth = microprobe.code.Synthesizer(target, wrapper, extra_raw=raw)
@@ -266,13 +333,46 @@ def main():
     )
 
     cmdline.add_option(
-        "c-output-file",
+        "output-file",
         "O",
         None,
-        "C output file name",
+        "Output file name",
         group=groupname,
-        opt_type=new_file_ext(".c"),
+        opt_type=new_file_ext([".s", ".c"]),
         required=True
+    )
+
+    cmdline.add_option(
+        "language",
+        "l",
+        "c",
+        "Test language"
+    )
+
+    cmdline.add_flag(
+        "safe-bin", None, "Ignore unrecognized binary codifications (do not"
+                          "fail). Useful when MPTs are generated by dumping "
+                          "directly code "
+                          "pages, which contain padding zeros and other "
+                          "non-code stuff)",
+        groupname,
+    )
+    cmdline.add_flag(
+        "raw-bin", None, "Process all instruction entries together. They "
+                         "all shoud be binary entries. Implies --safe-bin "
+                         "flag. Useful when MPTs are generated by dumping "
+                         "directly code "
+                         "pages, which contain padding zeros and other "
+                         "non-code stuff)",
+        groupname,
+    )
+    cmdline.add_flag(
+        "endless", None, "Wrap the code generated within an endless loop",
+        groupname
+    )
+    cmdline.add_flag(
+        "wrap-function", None, "Wrap the code generated as a function instead of a regular branch",
+        groupname
     )
 
     groupname = "Fixing options"
@@ -297,27 +397,6 @@ def main():
         " storage address computations (implies "
         "--fix-memory-referenes flag)", groupname
     )
-    cmdline.add_flag(
-        "safe-bin", None, "Ignore unrecognized binary codifications (do not"
-                          "fail). Useful when MPTs are generated by dumping "
-                          "directly code "
-                          "pages, which contain padding zeros and other "
-                          "non-code stuff)",
-        groupname,
-    )
-    cmdline.add_flag(
-        "raw-bin", None, "Process all instruction entries together. They "
-                         "all shoud be binary entries. Implies --safe-bin "
-                         "flag. Useful when MPTs are generated by dumping "
-                         "directly code "
-                         "pages, which contain padding zeros and other "
-                         "non-code stuff)",
-        groupname,
-    )
-    cmdline.add_flag(
-        "endless", None, "Wrap the code generated within an endless loop",
-        groupname
-    )
 
     print_info("Processing input arguments...")
     cmdline.main(args, _main)
@@ -341,10 +420,11 @@ def _main(arguments):
     print_info("Importing target definition...")
     target = import_definition(arguments.pop('target'))
     test_definition = arguments.pop('mpt_definition')
-    outputfile = arguments.pop('c_output_file')
+    outputfile = arguments.pop('output_file')
+    language = arguments.pop('language')
 
     print_info("Start generating '%s'" % outputfile)
-    generate(test_definition, outputfile, target, **arguments)
+    generate(test_definition, outputfile, language, target, **arguments)
     print_info("'%s' generated!" % outputfile)
 
 
