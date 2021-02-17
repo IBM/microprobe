@@ -648,7 +648,11 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
         for bbl in building_block.cfg.bbls:
 
-            for instr in bbl.instrs:
+            allinstrs = bbl.instrs
+            if bbl == building_block.cfg.bbls[-1]:
+                allinstrs += building_block.fini
+
+            for instr in allinstrs:
 
                 for operand in instr.operands():
 

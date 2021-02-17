@@ -43,7 +43,7 @@ __all__ = ['DeclareVariablesPass']
 class DeclareVariablesPass(microprobe.passes.Pass):
     """ """
 
-    def __init__(self, variables):
+    def __init__(self, variables, code_init=False):
         """
 
         :param variables:
@@ -52,6 +52,7 @@ class DeclareVariablesPass(microprobe.passes.Pass):
         super(DeclareVariablesPass, self).__init__()
 
         self._variables = []
+        self._code_init = code_init
 
         for name, vartype, elems, address, align, init_value in variables:
 
@@ -79,7 +80,7 @@ class DeclareVariablesPass(microprobe.passes.Pass):
             str(var) for var in self._variables
         ]
 
-    def __call__(self, building_block, dummy_target):
+    def __call__(self, building_block, target):
         """
 
         :param building_block:
@@ -99,3 +100,35 @@ class DeclareVariablesPass(microprobe.passes.Pass):
 
             LOG.debug("Declaring: %s", var)
             building_block.register_var(var, building_block.context)
+
+        if not self._code_init:
+            return
+
+        context = building_block.context
+        instrs = []
+
+        for var in self._variables:
+            values = var.value
+            if var.array():
+                typesize = var.size // var.elems
+                elems = var.elems
+                if not isinstance(var.value, list):
+                    values = [var.value] * elems
+            else:
+                typesize = var.size
+                elems = 1
+                if not isinstance(var.value, list):
+                    values = [var.value] * elems
+
+            assert len(values) == elems
+
+            vreg = target.scratch_registers[0]
+            iaddress = var.address.copy()
+            for value in values:
+                instrs += target.set_register(vreg, value, context)
+                instrs += target.store_integer(
+                    vreg, iaddress, typesize * 8, context
+                )
+                iaddress += typesize
+
+        building_block.add_init(instrs)

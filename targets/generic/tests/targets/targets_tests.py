@@ -46,7 +46,7 @@ from microprobe.utils.logger import get_logger, set_log_level
 
 if six.PY2:
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-    from exceptions import AssertionError  # pylint: disable=no-name-in-module
+    from exceptions import AssertionError  # pylint: disable=import-error
 else:
     import subprocess  # @Reimport
 

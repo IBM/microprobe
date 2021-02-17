@@ -280,7 +280,10 @@ def int_type(min_val, max_val):
         """
 
         try:
-            argument = int(argument, base=0)
+            if argument.upper().startswith("0X"):
+                argument = int(argument, base=0)
+            else:
+                argument = int(argument)
         except ValueError:
             msg = "'%s' is not valid positive integer" % argument
             raise argparse.ArgumentTypeError(msg)
@@ -301,7 +304,10 @@ def int_type(min_val, max_val):
         """
 
         try:
-            argument = int(argument, base=0)
+            if argument.upper().startswith("0X"):
+                argument = int(argument, base=0)
+            else:
+                argument = int(argument)
         except ValueError:
             msg = "'%s' is not valid positive integer" % argument
             raise argparse.ArgumentTypeError(msg)
@@ -341,7 +347,10 @@ def int_range(min_val, max_val):
         for argument in argumentall.split("-"):
 
             try:
-                argument = int(argument, base=0)
+                if argument.upper().startswith("0X"):
+                    argument = int(argument, base=0)
+                else:
+                    argument = int(argument)
             except ValueError:
                 msg = "'%s' is not a valid integer range." % argument
                 raise argparse.ArgumentTypeError(msg)
