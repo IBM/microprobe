@@ -95,7 +95,6 @@ class Assembly(microprobe.code.wrapper.Wrapper):
                         value = value()
                     valuestr = "%s%s," % (valuestr, value)
 
-                print(".data.%s %s : { *(.data.%s) }" % (var.name, var.address.base_address[4:], var.name))
                 return ".section .data.%s\n.global %s\n%s:\n.byte %s\n" % (
                         var.name, var.name, var.name, valuestr[:-1]
                 )
@@ -171,7 +170,6 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         if instr.address is not None and instr.address.displacement in self._sections:
             section_name = ".text.%s" % hex(instr.address.displacement)
             section = "\n.section %s\n" % section_name
-            print("%s %s : { *(%s) }" % (section_name, hex(instr.address.displacement), section_name))
 
         return section + ins[0] + "\n"
 

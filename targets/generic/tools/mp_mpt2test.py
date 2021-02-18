@@ -55,7 +55,7 @@ LOG = get_logger(__name__)
 
 
 # Functions
-def generate(test_definition, outputfile, language, target, **kwargs):
+def generate(test_definition, outputfile, ldscriptfile, language, target, **kwargs):
     """
     Microbenchmark generation policy
 
@@ -167,6 +167,8 @@ def generate(test_definition, outputfile, language, target, **kwargs):
     registers = test_definition.registers
     raw = test_definition.raw
 
+    code_sections = [addr + test_definition.default_code_address for addr in raw_dict.keys()]
+
     if test_definition.default_data_address is not None:
         print_warning("Default data address not needed")
 
@@ -187,7 +189,7 @@ def generate(test_definition, outputfile, language, target, **kwargs):
         else:
             start_label = sequence[0].label = "START_TEST"
 
-        wrapper_kwargs["sections"] = [addr + test_definition.default_code_address for addr in raw_dict.keys()]
+        wrapper_kwargs["sections"] = code_sections
         wrapper_kwargs["start_label"] = start_label
 
         start_test_instructions = []
@@ -335,6 +337,30 @@ def generate(test_definition, outputfile, language, target, **kwargs):
 
     # Save the microbenchmark
     synth.save(outputfile, bench=bench)
+
+    print_info("Generating linker script...")
+    script_contents = "SECTIONS {\n"
+
+    script_contents += "\t/* Code sections */\n"
+    for address in code_sections:
+        # Same section name as in the ASM wrapper
+        address_str = hex(address)
+        section_name = ".text.%s" % address_str
+        script_contents += "\t%s %s : { *(%s) }\n" % (section_name, address_str, section_name)
+
+    script_contents += "\t/* Data sections */\n"
+    for variable in test_definition.variables:
+        # Same section name as in the ASM wrapper
+        address_str = hex(variable.address)
+        section_name = ".data.%s" % variable.name
+        script_contents += "\t%s %s : { *(%s) }\n" % (section_name, address_str, section_name)
+
+    script_contents += "}"
+
+    script_file = open(ldscriptfile, "w")
+    script_file.write(script_contents)
+    script_file.close()
+
     return
 
 
@@ -365,6 +391,14 @@ def main():
         group=groupname,
         opt_type=new_file_ext([".s", ".c"]),
         required=True
+    )
+
+    cmdline.add_option(
+        "output-ld-script",
+        "L",
+        None,
+        "Output linker script file name",
+        group=groupname
     )
 
     cmdline.add_option(
@@ -455,8 +489,13 @@ def _main(arguments):
     outputfile = arguments.pop('output_file')
     language = arguments.pop('language')
 
+    if "output_ld_script" in arguments:
+        ldscriptfile = arguments.pop('output_ld_script')
+    else:
+        ldscriptfile = outputfile + ".lds"
+
     print_info("Start generating '%s'" % outputfile)
-    generate(test_definition, outputfile, language, target, **arguments)
+    generate(test_definition, outputfile, ldscriptfile, language, target, **arguments)
     print_info("'%s' generated!" % outputfile)
 
 
