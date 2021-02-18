@@ -28,6 +28,7 @@ import sys
 import microprobe
 import microprobe.code
 from microprobe.code.address import InstructionAddress
+from microprobe.code.context import Context
 from microprobe.code.ins import instruction_to_definition
 import microprobe.passes.address
 import microprobe.passes.branch
@@ -189,7 +190,7 @@ def generate(test_definition, outputfile, language, target, **kwargs):
         wrapper_kwargs["sections"] = [addr + test_definition.default_code_address for addr in raw_dict.keys()]
         wrapper_kwargs["start_label"] = start_label
 
-        reset_instructions = []
+        start_test_instructions = []
 
         if kwargs.get("wrap_function", False):
             print("Adding function wrapping instructions...")
@@ -197,7 +198,7 @@ def generate(test_definition, outputfile, language, target, **kwargs):
             instructions[0].set_label("LOOP_START")
 
             for instr in instructions:
-                reset_instructions.append(instruction_to_definition(instr))
+                start_test_instructions.append(instruction_to_definition(instr))
         else:
             print("Adding jump to test instructions...")
             source_address = InstructionAddress(
@@ -217,9 +218,30 @@ def generate(test_definition, outputfile, language, target, **kwargs):
 
             instr.set_label("LOOP_START")
 
-            reset_instructions.append(instruction_to_definition(instr))
+            start_test_instructions.append(instruction_to_definition(instr))
 
         if kwargs.get("endless", False):
+            context = Context() # Throw-away context
+            reset_instructions = []
+
+            if kwargs.get("reset_registers", False):
+                # TODO: The following register lists are hard-coded for RISCV,
+                # there needs to be an API for each target/env to define its
+                # own set of registers
+                all_registers = ["X%d" % n for n in range(1, 32)]
+                # This contains the registers involved in argument passing
+                # when calling functions (as per the ABI).
+                arg_abi_registers = ["X%d" % n for n in range(10, 18)]
+
+                reset_registers = arg_abi_registers if kwargs.get("wrap_function", None) else all_registers
+
+                register_dict = {reg.name:reg.value for reg in registers}
+                for register in target.registers.values():
+                    if register.name in reset_registers and register.name in register_dict:
+                        instrs = target.set_register(register, register_dict[register.name], context)
+                        for instr in instrs:
+                            reset_instructions.append(instr)
+
             source_address = InstructionAddress(
                 base_address="dummy", # Rely on symbolic jump
                 displacement=0
@@ -230,21 +252,24 @@ def generate(test_definition, outputfile, language, target, **kwargs):
                 displacement=0
             )
 
-            instr = target.branch_unconditional_relative(
+            branch_instruction = target.branch_unconditional_relative(
                     source_address,
                     target_address
             )
 
-            instr = instruction_to_definition(instr)
+            reset_instructions.append(branch_instruction)
+
+            old_instructions = reset_instructions
+            reset_instructions = []
+            for instr in old_instructions:
+                reset_instructions.append(instruction_to_definition(instr))
 
             if kwargs.get("wrap_function", False):
-                print("Adding loop instruction after function wrapper")
-                reset_instructions.append(instr)
+                start_test_instructions.extend(reset_instructions)
             else:
-                print("Adding loop instruction after test")
-                sequence.append(instr)
+                sequence.extend(reset_instructions)
 
-        sequence = reset_instructions + sequence
+        sequence = start_test_instructions + sequence
 
     print_info("Creating benchmark synthesizer...")
 
@@ -396,6 +421,13 @@ def main():
         "Fix non-storage instructions touching registers used for"
         " storage address computations (implies "
         "--fix-memory-referenes flag)", groupname
+    )
+
+    groupname = "Memory state options"
+    cmdline.add_group(groupname, "Command arguments related to the memory state")
+    cmdline.add_flag(
+        "reset-registers", None, "Reset registers after each iteration",
+        groupname
     )
 
     print_info("Processing input arguments...")
