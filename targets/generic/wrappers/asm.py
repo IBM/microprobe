@@ -147,8 +147,14 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         if isinstance(instr, str):
             return(instr)
 
+        asm = instr.assembly()
+
+        if instr.architecture_type.mnemonic == "raw":
+            parts = asm.split(" ")
+            bytes_str = ["0x" + parts[1][i:i+2] for i in range(2, len(parts[1]), 2)]
+            asm = ".byte " + ",".join(reversed(bytes_str))
+
         if instr.comments:
-            asm = instr.assembly()
             bstr = " " * len(asm) + " /* "
 
             for idx, comment in enumerate(instr.comments):
@@ -158,7 +164,7 @@ class Assembly(microprobe.code.wrapper.Wrapper):
                     asm = asm + "\n" + bstr + comment + " */ "
             ins.append(asm)
         else:
-            ins.append(instr.assembly())
+            ins.append(asm)
 
         section = ""
 
