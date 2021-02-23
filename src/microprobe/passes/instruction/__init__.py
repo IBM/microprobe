@@ -1125,7 +1125,7 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, opcodes, operand_pos, value, force=False):
+    def __init__(self, opcodes, operand_pos, value, force=False, ifval=None):
         """
 
         :param opcodes:
@@ -1146,6 +1146,7 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
         self._pos = operand_pos
         self._base_value = value
         self._force = force
+        self._ifval = ifval
 
         if not isinstance(value, list):
 
@@ -1166,7 +1167,11 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
         """
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
+
                 if instr.name in self._opcodes:
+                    if (self._ifval is not None and
+                            instr.operands()[self._pos].value != self._ifval):
+                        continue
                     if instr.operands()[
                             self._pos].value is None or self._force:
                         instr.operands()[self._pos].set_value(self._value())

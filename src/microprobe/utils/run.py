@@ -47,6 +47,10 @@ def run_cmd(scmd, trials=1, _return_output=False):
             break
 
     if error_code is not 0:
+
+        if not isinstance(cmd_output, str):
+            cmd_output = cmd_output.decode()
+
         raise MicroprobeRunCmdError(
             "Command '%s' non-zero return code.\nOutput:\n%s" % (
                 scmd, cmd_output

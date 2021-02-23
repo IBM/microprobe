@@ -250,7 +250,7 @@ class Benchmark(BuildingBlock):
 
         self._global_vars[var.name] = var
 
-        if context.symbolic:
+        if context.symbolic and var.address is None:
 
             LOG.debug("Context symbolic. No need to track base addresses")
             var_address = Address(base_address=var.name, displacement=0)

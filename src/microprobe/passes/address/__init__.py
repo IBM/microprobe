@@ -59,11 +59,13 @@ class UpdateInstructionAddressesPass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, force=False):
+    def __init__(self, force=False, noinit=False, init_from_first=False):
         """ """
         super(UpdateInstructionAddressesPass, self).__init__()
 
         self._force = force
+        self._noinit = noinit
+        self._init_from_first = init_from_first
         self._description = "Compute addresses. (Force: %s)" % force
 
     def __call__(self, building_block, target):
@@ -74,15 +76,25 @@ class UpdateInstructionAddressesPass(microprobe.passes.Pass):
 
         """
 
+        if self._init_from_first:
+            caddress = building_block.cfg.bbls[0].instrs[0].address
+            if caddress is None:
+                raise NotImplementedError
+
+            for instr in reversed(building_block.init):
+                caddress = caddress - instr.architecture_type.format.length
+                instr.set_address(caddress.copy())
+
         caddress = InstructionAddress(base_address="code", displacement=0)
 
         # TODO: this is a hack, should not be done here. Once we implement
         # a proper code generation back-end, this will be fixed
         caddress += target.wrapper.init_main_pad()
 
-        for instr in building_block.init:
-            instr.set_address(caddress.copy())
-            caddress += instr.architecture_type.format.length
+        if not self._noinit:
+            for instr in building_block.init:
+                instr.set_address(caddress.copy())
+                caddress += instr.architecture_type.format.length
 
         # TODO: this is a hack, should not be done here. Once we implement
         # a proper code generation back-end, this will be fixed
