@@ -717,7 +717,7 @@ class GenericISA(ISA):
         self._flag_registers = []
 
         self._scratch_var = VariableArray(
-            "%s_scratch_var" % self._name, "char", 256
+            ("%s_scratch_var" % self._name).upper(), "char", 256, align=8
         )
         self._context_var = None
 

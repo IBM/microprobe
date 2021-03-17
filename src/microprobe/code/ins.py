@@ -32,7 +32,7 @@ from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
     MicroprobeCodeGenerationError, MicroprobeDuplicatedValueError, \
     MicroprobeLookupError, MicroprobeValueError
 from microprobe.target.isa.operand import Operand, \
-    OperandConstReg, OperandDescriptor
+    OperandConstReg, OperandDescriptor, OperandImmRange
 from microprobe.target.isa.register import Register
 from microprobe.utils.asm import interpret_asm
 from microprobe.utils.logger import get_logger
@@ -161,6 +161,7 @@ def instruction_set_def_properties(instr,
     if len(operands) > 0:
 
         fixed_operands = []
+        relocation_mode = False
         LOG.debug("Fixed operands: %s", fixed_operands)
 
         for idx, operand in enumerate(operands):
@@ -199,7 +200,7 @@ def instruction_set_def_properties(instr,
             # Check if there is displacement from a variable
             if building_block is not None:
                 for var in building_block.registered_global_vars():
-                    if operand.startswith(var.name):
+                    if operand.startswith(var.name) and "@" not in operand:
                         if operand.replace(var.name, "") != "":
                             displacement = int(
                                 operand.replace(var.name, ""),
@@ -248,6 +249,14 @@ def instruction_set_def_properties(instr,
                     fixed_operands.append(taddress)
                     continue
 
+            if (isinstance(instr.operands()[idx].type, OperandImmRange)
+                    and "@" in operand):
+
+                LOG.debug("Relocation in immediate")
+                fixed_operands.append(operand)
+                relocation_mode = True
+                continue
+
             raise MicroprobeCodeGenerationError(
                 "I do not know how to set operand '%s' in instruction "
                 "'%s'" % (operand, asm))
@@ -255,7 +264,15 @@ def instruction_set_def_properties(instr,
         assert len(fixed_operands) == len(operands)
 
         LOG.debug("Setting operands: %s", fixed_operands)
-        instr.set_operands(fixed_operands)
+        if not relocation_mode:
+            instr.set_operands(fixed_operands)
+        else:
+            for operand, value in zip(instr.operands(), fixed_operands):
+                if (isinstance(operand.type, OperandImmRange) and
+                        "@" in value):
+                    operand.set_value(value, check=False)
+                else:
+                    operand.set_value(value)
 
     if address is not None:
         instr.set_address(address.copy())

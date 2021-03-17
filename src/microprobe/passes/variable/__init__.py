@@ -132,3 +132,71 @@ class DeclareVariablesPass(microprobe.passes.Pass):
                 iaddress += typesize
 
         building_block.add_init(instrs)
+
+
+class UpdateVariableAddressesPass(microprobe.passes.Pass):
+    """ """
+
+    def __init__(self):
+        """
+        """
+        self._description = "Update Variable addreses"
+
+    def __call__(self, building_block, target):
+        """
+        """
+
+        ivars = [var for var in building_block.registered_global_vars()
+                 if var.address is None or var.address.base_address != "data"]
+        context = building_block.context
+
+        maxdispl = None
+        for bbl in building_block.cfg.bbls:
+            for instr in bbl.instrs:
+                if instr.address is None:
+                    continue
+                caddress = instr.address
+                if caddress.base_address != "code":
+                    continue
+                if maxdispl is None:
+                    maxdispl = caddress.displacement
+                elif maxdispl < caddress.displacement:
+                    maxdispl = caddress.displacement
+
+        code_region = (context.code_segment, ((maxdispl // 0x100) + 1) * 0x100)
+
+        for var in ivars:
+            ranges = sorted([code_region] +
+                            [(var.address.displacement, var.size)
+                             for var in building_block.registered_global_vars()
+                             if var.address is not None
+                             and var.address.base_address == "data"],
+                            key=lambda x: x[0])
+
+            align = var.align
+            if align is None:
+                align = 1
+
+            if len(ranges) == 1:
+                var.set_address(
+                    Address(
+                        base_address="data",
+                        displacement=(
+                            ((ranges[0][0] + ranges[0][1]) // align) + 1
+                            ) * align
+                        )
+                )
+                continue
+
+            for idx in range(0, len(ranges)-1):
+                mrange = ranges[idx]
+                ndisp = (((mrange[0] + mrange[1]) // align) + 1) * align
+                if ndisp + var.size >= ranges[idx+1][0]:
+                    continue
+                var.set_address(
+                   Address(
+                       base_address="data",
+                       displacement=ndisp
+                       )
+                )
+                break

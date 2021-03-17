@@ -72,21 +72,21 @@ class MicroprobeConfiguration(dict):
 
         if key in ["hex_all", "hex_address", "hex_none"] and value is True:
 
-            if key is "hex_all":
+            if key == "hex_all":
                 super(MicroprobeConfiguration, self).__setitem__(
                     'hex_address', False
                 )
                 super(MicroprobeConfiguration, self).__setitem__(
                     'hex_none', False
                 )
-            elif key is "hex_address":
+            elif key == "hex_address":
                 super(MicroprobeConfiguration, self).__setitem__(
                     'hex_all', False
                 )
                 super(MicroprobeConfiguration, self).__setitem__(
                     'hex_none', False
                 )
-            elif key is "hex_none":
+            elif key == "hex_none":
                 super(MicroprobeConfiguration, self).__setitem__(
                     'hex_all', False
                 )

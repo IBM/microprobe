@@ -127,7 +127,7 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
         """
 
         align = var.align
-        if align is None or align is 0:
+        if align is None or align == 0:
             align = ""
         else:
             align = " __attribute__ ((aligned (%d)))" % align

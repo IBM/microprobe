@@ -110,7 +110,7 @@ def _parse_decorators(contents):
 def mpt_configuration_factory(version=None):
     if version is None:
         return MicroprobeTestDefinitionDefault()
-    elif version is '0.5':
+    elif version == '0.5':
         return MicroprobeTestDefinitionV0x5()
     else:
         raise MicroprobeValueError(
@@ -121,7 +121,7 @@ def mpt_configuration_factory(version=None):
 def mpt_parser_factory(version=None):
     if version is None:
         return MicroprobeTestParserDefault()
-    elif version is '0.5':
+    elif version == '0.5':
         return MicroprobeTestParserV0x5()
     else:
         raise MicroprobeValueError(
@@ -176,12 +176,12 @@ def mpt_shift(definition, start, end, shift):
         maxf = maxf + 1
 
     for register in definition.registers:
-        if register.value is not 0:
+        if register.value != 0:
             if register.value & mask in addresses:
                 register.value = register.value + shift
 
     for variable in definition.variables:
-        if variable.var_type is not "uint8_t":
+        if variable.var_type != "uint8_t":
             continue
 
         for idx in range(0, variable.num_elements, 8):
@@ -243,6 +243,26 @@ class MicroprobeTestVariableDefinition(object):
     def copy(self):
         return copy.deepcopy(self)
 
+    def __str__(self):
+        address = self.address
+        if address is not None:
+            address = hex(self.address)
+        return "MicroprobeTestVariableDefinition(%s, %s, %s, %s, %s)" % (
+            self.name, self.var_type, str(self.num_elements),
+            address,
+            str(self.alignment)
+        )
+
+    def __repr__(self):
+        address = self.address
+        if address is not None:
+            address = hex(self.address)
+        return "MicroprobeTestVariableDefinition(%s, %s, %s, %s, %s)" % (
+            self.name, self.var_type, str(self.num_elements),
+            address,
+            str(self.alignment)
+        )
+
 
 class MicroprobeTestRegisterDefinition(object):
     def __init__(self, name, value):
@@ -253,6 +273,10 @@ class MicroprobeTestRegisterDefinition(object):
         return copy.deepcopy(self)
 
     def __str__(self):
+        return "MicroprobeTestRegisterDefinition(%s, %s)" % (
+            self.name, self.value)
+
+    def __repr__(self):
         return "MicroprobeTestRegisterDefinition(%s, %s)" % (
             self.name, self.value)
 
@@ -527,6 +551,10 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
         """Register a new variable definition."""
         self._variables.append(definition)
 
+    def set_variables_definition(self, definitions):
+        """Register a new set of variable definitions."""
+        self._variables = definitions
+
     def update_register_definition(self, definition):
         """Update a register definition."""
         self._registers = [elem for elem in self._registers
@@ -544,6 +572,10 @@ class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
             self._code = definitions + self._code
         else:
             self._code += definitions
+
+    def set_instruction_definitions(self, definitions):
+        """Set new instruction definitions."""
+        self._code = definitions
 
     def register_raw_definition(self, name, value):
         """Register a new raw definition."""
@@ -1996,6 +2028,10 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         new_contents = []
 
         for line in content_lines:
+
+            if line.strip().startswith(";"):
+                continue
+
             if line.strip().startswith("#include"):
 
                 filename = line.split("<")[1].replace(">", "")

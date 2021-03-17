@@ -1110,7 +1110,7 @@ class InitializeBranchDecorator(Pass):
                     taken_target_address = itertools.cycle(ltarget_addr)
 
                     while True:
-                        if next(target_iter) is 'N':
+                        if next(target_iter) == 'N':
                             yield lnext_address
                         else:
                             yield next(taken_target_address)

@@ -361,7 +361,8 @@ def _extract_asm_operands(asm):
     :type asm:
     """
     operands = " ".join(asm.strip().upper().split()[1:])
-    return re.findall(r"[.a-zA-Z0-9_+-]+", operands)
+    operands = operands.replace(",", " ")
+    return re.findall(r"[.a-zA-Z0-9_+-@]+", operands)
 
 
 def _interpret_decorators(str_decorators):
@@ -484,6 +485,7 @@ def _find_instr_with_mnemonic(mnemonic, asm_operands, target):
     if len(instructions) == 0 and len(base_instructions) > 0:
         # There are instructions but for some reason the number of operands
         # is not correct
+
         instructions = []
         for instruction in base_instructions:
             # check if it is our fault or user's fault
@@ -619,7 +621,6 @@ def _extract_operands(base_asm, asm_operands, intr_types, target, labels):
         for operand_candidate in _find_operand_candidates(
             operand_candidates, instruction
         ):
-
             LOG.debug("Checking ASM for %s", operand_candidate)
             if _check_assembly_string(
                 base_asm, instr_type, target, operand_candidate
@@ -811,14 +812,26 @@ def _check_assembly_string(base_asm, instr_type, target, operands):
 
     operands = list(operands)
 
+    relocation_mode = False
     for idx, operand in enumerate(operands):
-        if isinstance(operand, six.string_types):
+        if isinstance(operand, six.string_types) and "@" not in operand:
             operands[idx] = Address(base_address=operand)
+        if isinstance(operand, six.string_types) and "@" in operand:
+            relocation_mode = True
 
     instruction = target.new_instruction(instr_type.name)
 
     try:
-        instruction.set_operands(operands)
+        if not relocation_mode:
+            instruction.set_operands(operands)
+        else:
+            # Go one by one, and make relocation safe
+            for operand, value in zip(instruction.operands(), operands):
+                if (isinstance(operand.type, OperandImmRange) and
+                        "@" in value):
+                    operand.set_value(value, check=False)
+                else:
+                    operand.set_value(value)
     except MicroprobeValueError:
         LOG.debug("End checking assembly string: Operands not valid")
         return False
@@ -900,6 +913,12 @@ def _validate_operands(operand_values, instruction):
         if isinstance(operand_value, six.string_types):
 
             LOG.debug("Value is a string")
+
+            if (isinstance(operand.type, OperandImmRange) and
+                    "@" in operand_value):
+                LOG.debug("Look like a relocation")
+                return True
+
             if not isinstance(operand.type, InstructionAddressRelativeOperand):
                 LOG.debug("Invalid: A string in a non-relative operand")
                 return False
@@ -1002,7 +1021,7 @@ def _generate_operand_candidates(operands, target, instruction, labels):
 
             islabel = False
             for label in labels:
-                if operand.startswith(label):
+                if operand.upper().startswith(label.upper()):
                     islabel = True
                     break
 
@@ -1132,15 +1151,16 @@ def _filter_operands_by_type(candidates, instruction):
     for candidate in candidates:
 
         operand_candidates = []
+
         for operand_option in candidate:
 
             LOG.debug("Operand option: %s", operand_option)
 
             if (
-                isinstance(operand_option, six.string_types) and 'label' in [
+                isinstance(operand_option, six.string_types) and ('label' in [
                     oper for oper in operand_types
                     if isinstance(oper, six.string_types)
-                ]
+                ] or "@" in operand_option)
             ):
                 operand_candidates.append(operand_option)
             elif (
