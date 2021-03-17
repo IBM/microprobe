@@ -1,0 +1,41 @@
+microprobe.passes.instruction.AddOnePass
+========================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: AddOnePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AddOnePass.__init__
+      ~AddOnePass.check
+      ~AddOnePass.info
+      ~AddOnePass.report
+      ~AddOnePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

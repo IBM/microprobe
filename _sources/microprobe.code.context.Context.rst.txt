@@ -1,0 +1,70 @@
+microprobe.code.context.Context
+===============================
+
+.. currentmodule:: microprobe.code.context
+
+.. autoclass:: Context
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Context.__init__
+      ~Context.add_reserved_registers
+      ~Context.copy
+      ~Context.dump
+      ~Context.get_closest_address_value
+      ~Context.get_memory_value
+      ~Context.get_register_closest_value
+      ~Context.get_register_value
+      ~Context.get_registername_value
+      ~Context.register_has_value
+      ~Context.registers_get_value
+      ~Context.remove_reserved_registers
+      ~Context.set_absolute
+      ~Context.set_code_segment
+      ~Context.set_dat
+      ~Context.set_data_segment
+      ~Context.set_memory_value
+      ~Context.set_register_value
+      ~Context.set_symbolic
+      ~Context.unset_memory
+      ~Context.unset_register
+      ~Context.unset_registers
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Context.code_segment
+      ~Context.dat
+      ~Context.data_segment
+      ~Context.force_absolute
+      ~Context.register_values
+      ~Context.reserved_registers
+      ~Context.symbolic
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

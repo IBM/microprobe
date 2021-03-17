@@ -1,0 +1,65 @@
+microprobe.code.benchmark.MultiThreadedBenchmark
+================================================
+
+.. currentmodule:: microprobe.code.benchmark
+
+.. autoclass:: MultiThreadedBenchmark
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MultiThreadedBenchmark.__init__
+      ~MultiThreadedBenchmark.add_fini
+      ~MultiThreadedBenchmark.add_info
+      ~MultiThreadedBenchmark.add_init
+      ~MultiThreadedBenchmark.add_instructions
+      ~MultiThreadedBenchmark.add_pass_info
+      ~MultiThreadedBenchmark.add_requirement
+      ~MultiThreadedBenchmark.add_warning
+      ~MultiThreadedBenchmark.register_var
+      ~MultiThreadedBenchmark.registered_global_vars
+      ~MultiThreadedBenchmark.rm_init
+      ~MultiThreadedBenchmark.set_cfg
+      ~MultiThreadedBenchmark.set_context
+      ~MultiThreadedBenchmark.set_current_thread
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MultiThreadedBenchmark.cfg
+      ~MultiThreadedBenchmark.code_size
+      ~MultiThreadedBenchmark.context
+      ~MultiThreadedBenchmark.fini
+      ~MultiThreadedBenchmark.info
+      ~MultiThreadedBenchmark.init
+      ~MultiThreadedBenchmark.labels
+      ~MultiThreadedBenchmark.pass_info
+      ~MultiThreadedBenchmark.requirements
+      ~MultiThreadedBenchmark.warnings
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

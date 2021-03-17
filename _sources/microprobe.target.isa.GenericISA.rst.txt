@@ -1,0 +1,79 @@
+microprobe.target.isa.GenericISA
+================================
+
+.. currentmodule:: microprobe.target.isa
+
+.. autoclass:: GenericISA
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GenericISA.__init__
+      ~GenericISA.add_to_register
+      ~GenericISA.branch_to_itself
+      ~GenericISA.branch_unconditional_relative
+      ~GenericISA.compare_and_branch
+      ~GenericISA.full_report
+      ~GenericISA.get_context
+      ~GenericISA.get_dat
+      ~GenericISA.get_register_for_address_arithmetic
+      ~GenericISA.get_register_for_float_arithmetic
+      ~GenericISA.load
+      ~GenericISA.load_float
+      ~GenericISA.negate_register
+      ~GenericISA.new_instruction
+      ~GenericISA.nop
+      ~GenericISA.normalize_asm
+      ~GenericISA.randomize_register
+      ~GenericISA.register_value_comparator
+      ~GenericISA.set_context
+      ~GenericISA.set_register
+      ~GenericISA.set_register_bits
+      ~GenericISA.set_register_to_address
+      ~GenericISA.set_target
+      ~GenericISA.store_decimal
+      ~GenericISA.store_float
+      ~GenericISA.store_integer
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GenericISA.address_registers
+      ~GenericISA.context_var
+      ~GenericISA.control_registers
+      ~GenericISA.description
+      ~GenericISA.flag_registers
+      ~GenericISA.float_registers
+      ~GenericISA.instructions
+      ~GenericISA.name
+      ~GenericISA.registers
+      ~GenericISA.scratch_registers
+      ~GenericISA.scratch_var
+      ~GenericISA.target
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

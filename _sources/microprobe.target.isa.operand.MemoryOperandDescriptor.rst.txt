@@ -1,0 +1,50 @@
+microprobe.target.isa.operand.MemoryOperandDescriptor
+=====================================================
+
+.. currentmodule:: microprobe.target.isa.operand
+
+.. autoclass:: MemoryOperandDescriptor
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MemoryOperandDescriptor.__init__
+      ~MemoryOperandDescriptor.full_report
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MemoryOperandDescriptor.bit_rate
+      ~MemoryOperandDescriptor.is_agen
+      ~MemoryOperandDescriptor.is_branch_target
+      ~MemoryOperandDescriptor.is_load
+      ~MemoryOperandDescriptor.is_prefetch
+      ~MemoryOperandDescriptor.is_store
+      ~MemoryOperandDescriptor.type
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

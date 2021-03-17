@@ -1,0 +1,52 @@
+microprobe.code.ins.InstructionOperandValue
+===========================================
+
+.. currentmodule:: microprobe.code.ins
+
+.. autoclass:: InstructionOperandValue
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InstructionOperandValue.__init__
+      ~InstructionOperandValue.copy
+      ~InstructionOperandValue.register_operand_callbacks
+      ~InstructionOperandValue.set_descriptor
+      ~InstructionOperandValue.set_value
+      ~InstructionOperandValue.sets
+      ~InstructionOperandValue.unset_value
+      ~InstructionOperandValue.uses
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InstructionOperandValue.descriptor
+      ~InstructionOperandValue.representation
+      ~InstructionOperandValue.value
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

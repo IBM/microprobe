@@ -1,0 +1,12 @@
+<map id="inheritance846ba2717b" name="inheritance846ba2717b">
+<area shape="rect" id="node1" href="microprobe.target.isa.operand.InstructionAddressRelativeOperand.html#microprobe.target.isa.operand.InstructionAddressRelativeOperand" target="_top" title="Class to represent a relative instruction address operand." alt="" coords="382,25,763,46"/>
+<area shape="rect" id="node2" href="microprobe.target.isa.operand.Operand.html#microprobe.target.isa.operand.Operand" target="_top" title="This represents a machine instruction operand" alt="" coords="55,130,291,151"/>
+<area shape="rect" id="node5" href="microprobe.target.isa.operand.OperandConst.html#microprobe.target.isa.operand.OperandConst" target="_top" title="Class to represent a constant operand." alt="" coords="440,66,706,88"/>
+<area shape="rect" id="node6" href="microprobe.target.isa.operand.OperandConstReg.html#microprobe.target.isa.operand.OperandConstReg" target="_top" title="Class to represent a constant register operand." alt="" coords="430,108,716,130"/>
+<area shape="rect" id="node8" href="microprobe.target.isa.operand.OperandImmRange.html#microprobe.target.isa.operand.OperandImmRange" target="_top" title="Class to represent a immediate range operand." alt="" coords="425,150,720,171"/>
+<area shape="rect" id="node9" href="microprobe.target.isa.operand.OperandReg.html#microprobe.target.isa.operand.OperandReg" target="_top" title="Class to represent a register operand." alt="" coords="445,191,700,213"/>
+<area shape="rect" id="node10" href="microprobe.target.isa.operand.OperandValueSet.html#microprobe.target.isa.operand.OperandValueSet" target="_top" title="Class to represent a value set operand." alt="" coords="431,233,714,254"/>
+<area shape="rect" id="node3" href="microprobe.target.isa.operand.MemoryOperand.html#microprobe.target.isa.operand.MemoryOperand" target="_top" title="This represents a machine instruction memory operand. It contains" alt="" coords="33,88,312,109"/>
+<area shape="rect" id="node4" href="microprobe.target.isa.operand.MemoryOperandDescriptor.html#microprobe.target.isa.operand.MemoryOperandDescriptor" target="_top" title="Class to represent a memory operand descriptor." alt="" coords="5,46,341,68"/>
+<area shape="rect" id="node7" href="microprobe.target.isa.operand.OperandDescriptor.html#microprobe.target.isa.operand.OperandDescriptor" target="_top" title="Class to represent an operand descriptor." alt="" coords="27,5,319,26"/>
+</map>

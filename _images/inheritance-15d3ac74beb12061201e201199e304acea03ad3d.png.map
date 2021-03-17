@@ -1,0 +1,5 @@
+<map id="inheritance478c75b485" name="inheritance478c75b485">
+<area shape="rect" id="node1" href="microprobe.target.isa.register.GenericRegister.html#microprobe.target.isa.register.GenericRegister" target="_top" title="A Generic architected register" alt="" coords="325,31,648,56"/>
+<area shape="rect" id="node2" href="microprobe.target.isa.register.Register.html#microprobe.target.isa.register.Register" target="_top" title="Abstract class to represent an architecture register." alt="" coords="5,5,277,31"/>
+<area shape="rect" id="node3" href="microprobe.utils.misc.Pickable.html#microprobe.utils.misc.Pickable" target="_top" title="A helper class to implement the pickling interface." alt="" coords="30,55,253,80"/>
+</map>

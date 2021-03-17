@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeCodeGenerationError
+===================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeCodeGenerationError
+
+   
+
+   
+   
+
+   
+   
+   

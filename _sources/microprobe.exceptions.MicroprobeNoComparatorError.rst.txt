@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeNoComparatorError
+=================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeNoComparatorError
+
+   
+
+   
+   
+
+   
+   
+   

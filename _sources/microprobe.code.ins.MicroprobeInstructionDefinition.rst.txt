@@ -1,0 +1,64 @@
+microprobe.code.ins.MicroprobeInstructionDefinition
+===================================================
+
+.. currentmodule:: microprobe.code.ins
+
+.. autoclass:: MicroprobeInstructionDefinition
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroprobeInstructionDefinition.__init__
+      ~MicroprobeInstructionDefinition.copy
+      ~MicroprobeInstructionDefinition.get_address
+      ~MicroprobeInstructionDefinition.get_asm
+      ~MicroprobeInstructionDefinition.get_comments
+      ~MicroprobeInstructionDefinition.get_decorators
+      ~MicroprobeInstructionDefinition.get_instruction_type
+      ~MicroprobeInstructionDefinition.get_label
+      ~MicroprobeInstructionDefinition.get_operands
+      ~MicroprobeInstructionDefinition.set_address
+      ~MicroprobeInstructionDefinition.set_asm
+      ~MicroprobeInstructionDefinition.set_comments
+      ~MicroprobeInstructionDefinition.set_decorators
+      ~MicroprobeInstructionDefinition.set_instruction_type
+      ~MicroprobeInstructionDefinition.set_label
+      ~MicroprobeInstructionDefinition.set_operands
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MicroprobeInstructionDefinition.address
+      ~MicroprobeInstructionDefinition.asm
+      ~MicroprobeInstructionDefinition.comments
+      ~MicroprobeInstructionDefinition.decorators
+      ~MicroprobeInstructionDefinition.instruction_type
+      ~MicroprobeInstructionDefinition.label
+      ~MicroprobeInstructionDefinition.operands
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

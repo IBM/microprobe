@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>microprobe.utils.cmdline.LazyArgumentParser &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.utils.cmdline.ParagraphFormatterML" href="microprobe.utils.cmdline.ParagraphFormatterML.html" />
+    <link rel="prev" title="microprobe.utils.cmdline.CLI" href="microprobe.utils.cmdline.CLI.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Microprobe: Microbenchmark Generation Framework
+          
+
+          
+            
+            <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5 - HEAD 
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.cmdline.CLI.html">microprobe.utils.cmdline.CLI</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">microprobe.utils.cmdline.LazyArgumentParser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.cmdline.ParagraphFormatterML.html">microprobe.utils.cmdline.ParagraphFormatterML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.cmdline.LazyArgumentError.html">microprobe.utils.cmdline.LazyArgumentError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.cmdline.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="api.html">API Documentation</a> &raquo;</li>
+        
+          <li><a href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a> &raquo;</li>
+        
+      <li>microprobe.utils.cmdline.LazyArgumentParser</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="microprobe.utils.cmdline.ParagraphFormatterML.html" class="btn btn-neutral float-right" title="microprobe.utils.cmdline.ParagraphFormatterML" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      
+      
+        <a href="microprobe.utils.cmdline.CLI.html" class="btn btn-neutral float-left" title="microprobe.utils.cmdline.CLI" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="microprobe-utils-cmdline-lazyargumentparser">
+<h1>microprobe.utils.cmdline.LazyArgumentParser<a class="headerlink" href="#microprobe-utils-cmdline-lazyargumentparser" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">LazyArgumentParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/cmdline.html#LazyArgumentParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/argparse.html#argparse.ArgumentParser" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">argparse.ArgumentParser</span></code></a></p>
+<p>A Lazy argument parser.</p>
+<p>An argument parser that first parses all the arguments provided and if
+any of them is not correct, an argument error is raided. This differs
+from the base class where parser stops right after the first argument
+error is reported.</p>
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/cmdline.html#LazyArgumentParser.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.__init__" title="microprobe.utils.cmdline.LazyArgumentParser.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(**kwargs)</p></td>
+<td><p>Initialize self.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.add_argument" title="microprobe.utils.cmdline.LazyArgumentParser.add_argument"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_argument</span></code></a>(dest, …[, name])</p></td>
+<td><p>add_argument(option_string, option_string, …, name=value, …)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.add_argument_group" title="microprobe.utils.cmdline.LazyArgumentParser.add_argument_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_argument_group</span></code></a>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.add_mutually_exclusive_group" title="microprobe.utils.cmdline.LazyArgumentParser.add_mutually_exclusive_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_mutually_exclusive_group</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.add_subparsers" title="microprobe.utils.cmdline.LazyArgumentParser.add_subparsers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_subparsers</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.check_argument_errors" title="microprobe.utils.cmdline.LazyArgumentParser.check_argument_errors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_argument_errors</span></code></a>()</p></td>
+<td><p>Check for argument errors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.convert_arg_line_to_args" title="microprobe.utils.cmdline.LazyArgumentParser.convert_arg_line_to_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_arg_line_to_args</span></code></a>(arg_line)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.error" title="microprobe.utils.cmdline.LazyArgumentParser.error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">error</span></code></a>(message)</p></td>
+<td><p>Prints a usage message incorporating the message to stderr and exits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.exit" title="microprobe.utils.cmdline.LazyArgumentParser.exit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exit</span></code></a>([status, message])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.force_error" title="microprobe.utils.cmdline.LazyArgumentParser.force_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">force_error</span></code></a>(msg)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param msg</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.format_help" title="microprobe.utils.cmdline.LazyArgumentParser.format_help"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_help</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.format_usage" title="microprobe.utils.cmdline.LazyArgumentParser.format_usage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_usage</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.get_default" title="microprobe.utils.cmdline.LazyArgumentParser.get_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_default</span></code></a>(dest)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.parse_args" title="microprobe.utils.cmdline.LazyArgumentParser.parse_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_args</span></code></a>([args, namespace])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.parse_known_args" title="microprobe.utils.cmdline.LazyArgumentParser.parse_known_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_known_args</span></code></a>([args, namespace])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.print_help" title="microprobe.utils.cmdline.LazyArgumentParser.print_help"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_help</span></code></a>([file])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.print_usage" title="microprobe.utils.cmdline.LazyArgumentParser.print_usage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_usage</span></code></a>([file])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.register" title="microprobe.utils.cmdline.LazyArgumentParser.register"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register</span></code></a>(registry_name, value, object)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.cmdline.LazyArgumentParser.set_defaults" title="microprobe.utils.cmdline.LazyArgumentParser.set_defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_defaults</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr width="75%">
+<br><dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.error">
+<code class="sig-name descname"><span class="pre">error</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/cmdline.html#LazyArgumentParser.error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a usage message incorporating the message to stderr and
+exits.</p>
+<p>If you override this in a subclass, it should not return – it
+should either exit or raise an exception.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.check_argument_errors">
+<code class="sig-name descname"><span class="pre">check_argument_errors</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/cmdline.html#LazyArgumentParser.check_argument_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.check_argument_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for argument errors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.force_error">
+<code class="sig-name descname"><span class="pre">force_error</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/cmdline.html#LazyArgumentParser.force_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.force_error" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.add_argument">
+<code class="sig-name descname"><span class="pre">add_argument</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dest</span></em>, <em class="sig-param"><span class="pre">...</span></em>, <em class="sig-param"><span class="pre">name=value</span></em>, <em class="sig-param"><span class="pre">...</span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.add_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>add_argument(option_string, option_string, …, name=value, …)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.add_argument_group">
+<code class="sig-name descname"><span class="pre">add_argument_group</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.add_argument_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.add_mutually_exclusive_group">
+<code class="sig-name descname"><span class="pre">add_mutually_exclusive_group</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.add_mutually_exclusive_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.add_subparsers">
+<code class="sig-name descname"><span class="pre">add_subparsers</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.add_subparsers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.convert_arg_line_to_args">
+<code class="sig-name descname"><span class="pre">convert_arg_line_to_args</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg_line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.convert_arg_line_to_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.exit">
+<code class="sig-name descname"><span class="pre">exit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.format_help">
+<code class="sig-name descname"><span class="pre">format_help</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.format_help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.format_usage">
+<code class="sig-name descname"><span class="pre">format_usage</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.format_usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.get_default">
+<code class="sig-name descname"><span class="pre">get_default</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.get_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.parse_args">
+<code class="sig-name descname"><span class="pre">parse_args</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.parse_known_args">
+<code class="sig-name descname"><span class="pre">parse_known_args</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.parse_known_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.print_help">
+<code class="sig-name descname"><span class="pre">print_help</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.print_help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.print_usage">
+<code class="sig-name descname"><span class="pre">print_usage</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.print_usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.register">
+<code class="sig-name descname"><span class="pre">register</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">registry_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.utils.cmdline.LazyArgumentParser.set_defaults">
+<code class="sig-name descname"><span class="pre">set_defaults</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.cmdline.LazyArgumentParser.set_defaults" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">
+        Last updated on Mar 16, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

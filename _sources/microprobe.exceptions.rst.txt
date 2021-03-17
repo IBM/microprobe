@@ -1,0 +1,77 @@
+﻿=====================
+microprobe.exceptions
+=====================
+
+.. automodule:: microprobe.exceptions
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :template: myexception.rst 
+      :toctree:
+   
+      MicroprobeAddressTranslationError
+      MicroprobeArchitectureDefinitionError
+      MicroprobeArchitectureFormatError
+      MicroprobeAsmError
+      MicroprobeBinaryError
+      MicroprobeBranchConditionError
+      MicroprobeCacheError
+      MicroprobeCalledProcessError
+      MicroprobeCodeGenerationError
+      MicroprobeConstantRegisterError
+      MicroprobeDMAFormatError
+      MicroprobeDuplicatedValueError
+      MicroprobeError
+      MicroprobeException
+      MicroprobeImportDefinitionError
+      MicroprobeImportError
+      MicroprobeLookupError
+      MicroprobeMPTFormatError
+      MicroprobeModelError
+      MicroprobeNoComparatorError
+      MicroprobeNoGenerationPathError
+      MicroprobeObjdumpError
+      MicroprobePolicyError
+      MicroprobeRunCmdError
+      MicroprobeTargetDefinitionError
+      MicroprobeTypeError
+      MicroprobeUncheckableEnvironmentWarning
+      MicroprobeValueError
+      MicroprobeWarning
+      MicroprobeYamlFormatError
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

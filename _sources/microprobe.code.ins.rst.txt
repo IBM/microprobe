@@ -1,0 +1,79 @@
+﻿===================
+microprobe.code.ins
+===================
+
+.. automodule:: microprobe.code.ins
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      create_dependency_between_ins
+      instruction_factory
+      instruction_from_definition
+      instruction_set_def_properties
+      instruction_to_definition
+      instructions_from_asm
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Instruction
+      InstructionMemoryOperandValue
+      InstructionOperandValue
+      MicroprobeInstructionDefinition
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Instruction  InstructionMemoryOperandValue  InstructionOperandValue  MicroprobeInstructionDefinition 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: create_dependency_between_ins
+   .. autofunction:: instruction_factory
+   .. autofunction:: instruction_from_definition
+   .. autofunction:: instruction_set_def_properties
+   .. autofunction:: instruction_to_definition
+   .. autofunction:: instructions_from_asm
+   

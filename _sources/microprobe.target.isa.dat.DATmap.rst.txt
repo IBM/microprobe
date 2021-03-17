@@ -1,0 +1,47 @@
+microprobe.target.isa.dat.DATmap
+================================
+
+.. currentmodule:: microprobe.target.isa.dat
+
+.. autoclass:: DATmap
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DATmap.__init__
+      ~DATmap.address_in_map
+      ~DATmap.address_translate
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DATmap.mask
+      ~DATmap.source
+      ~DATmap.target
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

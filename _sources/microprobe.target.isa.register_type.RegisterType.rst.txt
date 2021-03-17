@@ -1,0 +1,48 @@
+microprobe.target.isa.register_type.RegisterType
+================================================
+
+.. currentmodule:: microprobe.target.isa.register_type
+
+.. autoclass:: RegisterType
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RegisterType.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~RegisterType.description
+      ~RegisterType.name
+      ~RegisterType.size
+      ~RegisterType.used_for_address_arithmetic
+      ~RegisterType.used_for_float_arithmetic
+      ~RegisterType.used_for_vector_arithmetic
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

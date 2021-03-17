@@ -1,0 +1,6 @@
+<map id="inheritance5f1dca7826" name="inheritance5f1dca7826">
+<area shape="rect" id="node1" href="microprobe.passes.Pass.html#microprobe.passes.Pass" target="_top" title="Class to represent a benchmak transformation pass." alt="" coords="5,55,184,80"/>
+<area shape="rect" id="node2" href="microprobe.passes.ilp.AverageDependencyDistancePass.html#microprobe.passes.ilp.AverageDependencyDistancePass" target="_top" title="AverageDependencyDistancePass pass." alt="" coords="235,5,624,31"/>
+<area shape="rect" id="node3" href="microprobe.passes.ilp.ConstantDependencyDistancePass.html#microprobe.passes.ilp.ConstantDependencyDistancePass" target="_top" title="ConstantDependencyDistancePass pass." alt="" coords="232,55,627,80"/>
+<area shape="rect" id="node4" href="microprobe.passes.ilp.RandomDependencyDistancePass.html#microprobe.passes.ilp.RandomDependencyDistancePass" target="_top" title="RandomDependencyDistancePass pass." alt="" coords="234,104,625,129"/>
+</map>

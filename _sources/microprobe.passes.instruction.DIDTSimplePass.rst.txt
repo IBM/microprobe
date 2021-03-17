@@ -1,0 +1,41 @@
+microprobe.passes.instruction.DIDTSimplePass
+============================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: DIDTSimplePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DIDTSimplePass.__init__
+      ~DIDTSimplePass.check
+      ~DIDTSimplePass.info
+      ~DIDTSimplePass.report
+      ~DIDTSimplePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,68 @@
+﻿=========================
+microprobe.code.benchmark
+=========================
+
+.. automodule:: microprobe.code.benchmark
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      benchmark_factory
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Benchmark
+      BuildingBlock
+      MultiThreadedBenchmark
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Benchmark  BuildingBlock  MultiThreadedBenchmark 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: benchmark_factory
+   

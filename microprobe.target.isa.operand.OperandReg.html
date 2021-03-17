@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>microprobe.target.isa.operand.OperandReg &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.target.isa.operand.OperandValueSet" href="microprobe.target.isa.operand.OperandValueSet.html" />
+    <link rel="prev" title="microprobe.target.isa.operand.OperandImmRange" href="microprobe.target.isa.operand.OperandImmRange.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Microprobe: Microbenchmark Generation Framework
+          
+
+          
+            
+            <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5 - HEAD 
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.InstructionAddressRelativeOperand.html">microprobe.target.isa.operand.InstructionAddressRelativeOperand</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.MemoryOperand.html">microprobe.target.isa.operand.MemoryOperand</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.MemoryOperandDescriptor.html">microprobe.target.isa.operand.MemoryOperandDescriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.Operand.html">microprobe.target.isa.operand.Operand</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.OperandConst.html">microprobe.target.isa.operand.OperandConst</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.OperandConstReg.html">microprobe.target.isa.operand.OperandConstReg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.OperandDescriptor.html">microprobe.target.isa.operand.OperandDescriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.OperandImmRange.html">microprobe.target.isa.operand.OperandImmRange</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">microprobe.target.isa.operand.OperandReg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.OperandValueSet.html">microprobe.target.isa.operand.OperandValueSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.target.isa.operand.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="api.html">API Documentation</a> &raquo;</li>
+        
+          <li><a href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a> &raquo;</li>
+        
+      <li>microprobe.target.isa.operand.OperandReg</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="microprobe.target.isa.operand.OperandValueSet.html" class="btn btn-neutral float-right" title="microprobe.target.isa.operand.OperandValueSet" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      
+      
+        <a href="microprobe.target.isa.operand.OperandImmRange.html" class="btn btn-neutral float-left" title="microprobe.target.isa.operand.OperandImmRange" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="microprobe-target-isa-operand-operandreg">
+<h1>microprobe.target.isa.operand.OperandReg<a class="headerlink" href="#microprobe-target-isa-operand-operandreg" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="microprobe.target.isa.operand.OperandReg">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">OperandReg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">floating_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="microprobe.target.isa.operand.Operand.html#microprobe.target.isa.operand.Operand" title="microprobe.target.isa.operand.Operand"><code class="xref py py-class docutils literal notranslate"><span class="pre">microprobe.target.isa.operand.Operand</span></code></a></p>
+<p>Class to represent a register operand.</p>
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">floating_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – </p></li>
+<li><p><strong>descr</strong> – </p></li>
+<li><p><strong>regs</strong> – </p></li>
+<li><p><strong>address_base</strong> – </p></li>
+<li><p><strong>address_index</strong> – </p></li>
+<li><p><strong>floating_point</strong> – </p></li>
+<li><p><strong>vector</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.__init__" title="microprobe.target.isa.operand.OperandReg.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(name, descr, regs, address_base, …)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param name</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.access" title="microprobe.target.isa.operand.OperandReg.access"><code class="xref py py-obj docutils literal notranslate"><span class="pre">access</span></code></a>(value)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param value</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.check" title="microprobe.target.isa.operand.OperandReg.check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check</span></code></a>(value)</p></td>
+<td><p>Check if a value is valid for the operand.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.codification" title="microprobe.target.isa.operand.OperandReg.codification"><code class="xref py py-obj docutils literal notranslate"><span class="pre">codification</span></code></a>(value)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param value</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.copy" title="microprobe.target.isa.operand.OperandReg.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.random_value" title="microprobe.target.isa.operand.OperandReg.random_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">random_value</span></code></a>()</p></td>
+<td><p>Return a random possible value for the operand.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.representation" title="microprobe.target.isa.operand.OperandReg.representation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representation</span></code></a>(value)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param value</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.set_valid_values" title="microprobe.target.isa.operand.OperandReg.set_valid_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_valid_values</span></code></a>(values)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">param values</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.values" title="microprobe.target.isa.operand.OperandReg.values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code></a>()</p></td>
+<td><p>Return the possible value of the operand.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.address_absolute" title="microprobe.target.isa.operand.OperandReg.address_absolute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">address_absolute</span></code></a></p></td>
+<td><p>Operand is for generating absolute addresses (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.address_base" title="microprobe.target.isa.operand.OperandReg.address_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">address_base</span></code></a></p></td>
+<td><p>Operand is the base register for an address (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.address_immediate" title="microprobe.target.isa.operand.OperandReg.address_immediate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">address_immediate</span></code></a></p></td>
+<td><p>Operand is an immediate of an address (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.address_index" title="microprobe.target.isa.operand.OperandReg.address_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">address_index</span></code></a></p></td>
+<td><p>Operand is the index register for an address (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.address_relative" title="microprobe.target.isa.operand.OperandReg.address_relative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">address_relative</span></code></a></p></td>
+<td><p>Operand is for generating relative addresses (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.constant" title="microprobe.target.isa.operand.OperandReg.constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constant</span></code></a></p></td>
+<td><p>Operand is constant (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.description" title="microprobe.target.isa.operand.OperandReg.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></p></td>
+<td><p>Operand description (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.float" title="microprobe.target.isa.operand.OperandReg.float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code></a></p></td>
+<td><p>Operand is float (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.immediate" title="microprobe.target.isa.operand.OperandReg.immediate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">immediate</span></code></a></p></td>
+<td><p>Operand is immediate (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.name" title="microprobe.target.isa.operand.OperandReg.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<td><p>Operand name (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.target.isa.operand.OperandReg.vector" title="microprobe.target.isa.operand.OperandReg.vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector</span></code></a></p></td>
+<td><p>Operand is vector (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr width="75%">
+<br><dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.values">
+<code class="sig-name descname"><span class="pre">values</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the possible value of the operand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <a class="reference internal" href="microprobe.target.isa.register.Register.html#microprobe.target.isa.register.Register" title="microprobe.target.isa.register.Register"><code class="xref py py-class docutils literal notranslate"><span class="pre">Register</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.representation">
+<code class="sig-name descname"><span class="pre">representation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.representation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.representation" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.codification">
+<code class="sig-name descname"><span class="pre">codification</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.codification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.codification" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.random_value">
+<code class="sig-name descname"><span class="pre">random_value</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.random_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.random_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a random possible value for the operand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="microprobe.target.isa.register.Register.html#microprobe.target.isa.register.Register" title="microprobe.target.isa.register.Register"><code class="xref py py-class docutils literal notranslate"><span class="pre">Register</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.access">
+<code class="sig-name descname"><span class="pre">access</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.access"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.access" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.copy">
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.set_valid_values">
+<code class="sig-name descname"><span class="pre">set_valid_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/target/isa/operand.html#OperandReg.set_valid_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.set_valid_values" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.address_absolute">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">address_absolute</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.address_absolute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is for generating absolute addresses (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.address_base">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">address_base</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.address_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is the base register for an address (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.address_immediate">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">address_immediate</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.address_immediate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is an immediate of an address (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.address_index">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">address_index</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.address_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is the index register for an address (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.address_relative">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">address_relative</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.address_relative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is for generating relative addresses (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.check">
+<code class="sig-name descname"><span class="pre">check</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a value is valid for the operand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="microprobe.target.isa.register.Register.html#microprobe.target.isa.register.Register" title="microprobe.target.isa.register.Register"><code class="xref py py-class docutils literal notranslate"><span class="pre">Register</span></code></a> or
+<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – value of the operand.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="microprobe.exceptions.MicroprobeValueError.html#microprobe.exceptions.MicroprobeValueError" title="microprobe.exceptions.MicroprobeValueError"><strong>microprobe.exceptions.MicroprobeValueError</strong></a> – if
+the value is not allowed for the operand</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.constant">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">constant</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is constant (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.description">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">description</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand description (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.float">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">float</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is float (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.immediate">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">immediate</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.immediate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is immediate (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand name (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="microprobe.target.isa.operand.OperandReg.vector">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vector</span></code><a class="headerlink" href="#microprobe.target.isa.operand.OperandReg.vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Operand is vector (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">
+        Last updated on Mar 16, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

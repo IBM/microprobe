@@ -1,0 +1,76 @@
+microprobe.utils.config.DuplicateConfigParser
+=============================================
+
+.. currentmodule:: microprobe.utils.config
+
+.. autoclass:: DuplicateConfigParser
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DuplicateConfigParser.__init__
+      ~DuplicateConfigParser.add_section
+      ~DuplicateConfigParser.clear
+      ~DuplicateConfigParser.defaults
+      ~DuplicateConfigParser.get
+      ~DuplicateConfigParser.getboolean
+      ~DuplicateConfigParser.getfloat
+      ~DuplicateConfigParser.getint
+      ~DuplicateConfigParser.has_option
+      ~DuplicateConfigParser.has_section
+      ~DuplicateConfigParser.items
+      ~DuplicateConfigParser.keys
+      ~DuplicateConfigParser.options
+      ~DuplicateConfigParser.optionxform
+      ~DuplicateConfigParser.pop
+      ~DuplicateConfigParser.popitem
+      ~DuplicateConfigParser.read
+      ~DuplicateConfigParser.read_dict
+      ~DuplicateConfigParser.read_file
+      ~DuplicateConfigParser.read_string
+      ~DuplicateConfigParser.readfp
+      ~DuplicateConfigParser.remove_option
+      ~DuplicateConfigParser.remove_section
+      ~DuplicateConfigParser.sections
+      ~DuplicateConfigParser.set
+      ~DuplicateConfigParser.setdefault
+      ~DuplicateConfigParser.update
+      ~DuplicateConfigParser.values
+      ~DuplicateConfigParser.write
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DuplicateConfigParser.BOOLEAN_STATES
+      ~DuplicateConfigParser.NONSPACECRE
+      ~DuplicateConfigParser.OPTCRE
+      ~DuplicateConfigParser.OPTCRE_NV
+      ~DuplicateConfigParser.SECTCRE
+      ~DuplicateConfigParser.converters
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,66 @@
+﻿================================
+microprobe.target.isa.comparator
+================================
+
+.. automodule:: microprobe.target.isa.comparator
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      import_classes_from
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Comparator
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Comparator 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: import_classes_from
+   

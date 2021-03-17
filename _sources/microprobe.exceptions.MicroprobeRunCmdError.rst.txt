@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeRunCmdError
+===========================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeRunCmdError
+
+   
+
+   
+   
+
+   
+   
+   

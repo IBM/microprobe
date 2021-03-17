@@ -1,0 +1,41 @@
+microprobe.passes.memory.SetMemoryOperandByOpcodePass
+=====================================================
+
+.. currentmodule:: microprobe.passes.memory
+
+.. autoclass:: SetMemoryOperandByOpcodePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetMemoryOperandByOpcodePass.__init__
+      ~SetMemoryOperandByOpcodePass.check
+      ~SetMemoryOperandByOpcodePass.info
+      ~SetMemoryOperandByOpcodePass.report
+      ~SetMemoryOperandByOpcodePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

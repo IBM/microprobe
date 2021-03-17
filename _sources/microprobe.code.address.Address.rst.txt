@@ -1,0 +1,46 @@
+microprobe.code.address.Address
+===============================
+
+.. currentmodule:: microprobe.code.address
+
+.. autoclass:: Address
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Address.__init__
+      ~Address.check_alignment
+      ~Address.copy
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Address.base_address
+      ~Address.displacement
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

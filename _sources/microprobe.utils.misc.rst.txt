@@ -1,0 +1,105 @@
+﻿=====================
+microprobe.utils.misc
+=====================
+
+.. automodule:: microprobe.utils.misc
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      RNDFP
+      RNDINT
+      closest_divisor
+      dict2OrderedDict
+      findfiles
+      getnextf
+      int_to_twocs
+      iter_flatten
+      longest_common_substr
+      move_file
+      natural_sort
+      open_generic_fd
+      primes
+      range_to_sequence
+      range_to_sequence_float
+      shift_with_sign
+      smart_copy_dict
+      twocs_to_int
+      which
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Pickable
+      Progress
+      RejectingDict
+      RejectingOrderedDict
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Pickable  Progress  RejectingDict  RejectingOrderedDict 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: RNDFP
+   .. autofunction:: RNDINT
+   .. autofunction:: closest_divisor
+   .. autofunction:: dict2OrderedDict
+   .. autofunction:: findfiles
+   .. autofunction:: getnextf
+   .. autofunction:: int_to_twocs
+   .. autofunction:: iter_flatten
+   .. autofunction:: longest_common_substr
+   .. autofunction:: move_file
+   .. autofunction:: natural_sort
+   .. autofunction:: open_generic_fd
+   .. autofunction:: primes
+   .. autofunction:: range_to_sequence
+   .. autofunction:: range_to_sequence_float
+   .. autofunction:: shift_with_sign
+   .. autofunction:: smart_copy_dict
+   .. autofunction:: twocs_to_int
+   .. autofunction:: which
+   

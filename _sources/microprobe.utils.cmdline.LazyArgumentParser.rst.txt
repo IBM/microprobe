@@ -1,0 +1,55 @@
+microprobe.utils.cmdline.LazyArgumentParser
+===========================================
+
+.. currentmodule:: microprobe.utils.cmdline
+
+.. autoclass:: LazyArgumentParser
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LazyArgumentParser.__init__
+      ~LazyArgumentParser.add_argument
+      ~LazyArgumentParser.add_argument_group
+      ~LazyArgumentParser.add_mutually_exclusive_group
+      ~LazyArgumentParser.add_subparsers
+      ~LazyArgumentParser.check_argument_errors
+      ~LazyArgumentParser.convert_arg_line_to_args
+      ~LazyArgumentParser.error
+      ~LazyArgumentParser.exit
+      ~LazyArgumentParser.force_error
+      ~LazyArgumentParser.format_help
+      ~LazyArgumentParser.format_usage
+      ~LazyArgumentParser.get_default
+      ~LazyArgumentParser.parse_args
+      ~LazyArgumentParser.parse_known_args
+      ~LazyArgumentParser.print_help
+      ~LazyArgumentParser.print_usage
+      ~LazyArgumentParser.register
+      ~LazyArgumentParser.set_defaults
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

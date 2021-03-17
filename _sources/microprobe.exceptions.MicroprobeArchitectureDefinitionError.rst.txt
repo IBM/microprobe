@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeArchitectureDefinitionError
+===========================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeArchitectureDefinitionError
+
+   
+
+   
+   
+
+   
+   
+   

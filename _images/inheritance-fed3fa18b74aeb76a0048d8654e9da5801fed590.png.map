@@ -1,0 +1,4 @@
+<map id="inheritancecd4dae799a" name="inheritancecd4dae799a">
+<area shape="rect" id="node1" href="microprobe.target.isa.register_type.GenericRegisterType.html#microprobe.target.isa.register_type.GenericRegisterType" target="_top" title="A class to represent a register type. Each register type is identified" alt="" coords="383,5,763,30"/>
+<area shape="rect" id="node2" href="microprobe.target.isa.register_type.RegisterType.html#microprobe.target.isa.register_type.RegisterType" target="_top" title="Abstract base class to represent a Register Type" alt="" coords="5,5,336,30"/>
+</map>

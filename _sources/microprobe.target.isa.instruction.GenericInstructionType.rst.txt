@@ -1,0 +1,64 @@
+microprobe.target.isa.instruction.GenericInstructionType
+========================================================
+
+.. currentmodule:: microprobe.target.isa.instruction
+
+.. autoclass:: GenericInstructionType
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GenericInstructionType.__init__
+      ~GenericInstructionType.assembly
+      ~GenericInstructionType.binary
+      ~GenericInstructionType.full_report
+      ~GenericInstructionType.list_properties
+      ~GenericInstructionType.match
+      ~GenericInstructionType.register_property
+      ~GenericInstructionType.sets
+      ~GenericInstructionType.unregister_property
+      ~GenericInstructionType.uses
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GenericInstructionType.bit_mask
+      ~GenericInstructionType.description
+      ~GenericInstructionType.format
+      ~GenericInstructionType.implicit_operands
+      ~GenericInstructionType.instruction_checks
+      ~GenericInstructionType.memory_operand_descriptors
+      ~GenericInstructionType.mnemonic
+      ~GenericInstructionType.name
+      ~GenericInstructionType.opcode
+      ~GenericInstructionType.operand_descriptors
+      ~GenericInstructionType.operands
+      ~GenericInstructionType.properties
+      ~GenericInstructionType.target_checks
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
