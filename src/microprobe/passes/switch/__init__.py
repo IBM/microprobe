@@ -247,9 +247,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                 assert output_registers[idx] is None
 
                                 if statuses[0][0] == "None":
-
                                     continue
-
                                 try:
 
                                     output_registers[idx] = \
@@ -269,7 +267,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                     raise NotImplementedError
 
                                 context.add_reserved_registers(
-                                    [output_registers[idx]]
+                                    operand.type.access(output_registers[idx])
                                 )
 
                                 building_block.add_init(
@@ -411,11 +409,29 @@ class SwitchingInstructions(microprobe.passes.Pass):
                     elif isinstance(switch_input, str) and \
                             switch_input.startswith("Mem:"):
 
-                        LOG.debug("Memory operand")
                         # Memory
-                        required_value = int(switch_input.split(":")[1], 0)
+                        LOG.debug("Memory operand")
+
                         memoperand = memoperand_list[memoperand_idx]
                         address = memoperand.address
+
+                        required_value = switch_input.split(":")[1]
+                        if "_" in required_value:
+                            size = int(required_value.split("_")[1], 10)
+                            required_value = required_value.split("_")[0]
+                            prefix = ""
+                            if required_value.upper().startswith("0X"):
+                                prefix = "0x"
+                                required_value = required_value[2:]
+                            elif required_value.upper().startswith("0B"):
+                                prefix = "0b"
+                                required_value = required_value[2:]
+
+                            opsize = memoperand.length * 8
+                            assert opsize % size == 0
+                            mult = int(opsize / size)
+                            required_value = prefix + required_value * mult
+                            required_value = int(required_value, 0)
 
                         # we can modify a bit the address if we maintain the
                         # same cache line
@@ -516,12 +532,41 @@ class SwitchingInstructions(microprobe.passes.Pass):
 
                     else:
 
-                        LOG.debug("Required value: %s", switch_input)
                         operand = operand_list[operand_idx]
                         LOG.debug("Operand: %s", operand)
 
-                        if operand.is_output:
+                        if isinstance(switch_input, str):
+                            LOG.debug(
+                                "Required value before: %s", switch_input
+                            )
 
+                            if "_" in switch_input:
+                                size = int(switch_input.split("_")[1], 10)
+                                switch_input = switch_input.split("_")[0]
+                                prefix = ""
+                                if switch_input.upper().startswith("0X"):
+                                    prefix = "0x"
+                                    switch_input = switch_input[2:]
+                                elif switch_input.upper().startswith("0B"):
+                                    prefix = "0b"
+                                    switch_input = switch_input[2:]
+
+                                if operand.type.immediate:
+                                    raise MicroprobeCodeGenerationError(
+                                        "No support for immediate definition "
+                                        "with '_'. Provide the full value."
+                                    )
+                                else:
+                                    opsize = \
+                                        operand.type.random_value().type.size
+                                    assert opsize % size == 0
+                                    mult = int(opsize / size)
+                                    switch_input = prefix + switch_input * mult
+
+                            switch_input = int(switch_input, 0)
+                            LOG.debug("Required value: %s", switch_input)
+
+                        if operand.is_output:
                             LOG.debug(
                                 "Operand is output. Already fixed to "
                                 "'%s' ", output_register
@@ -529,7 +574,6 @@ class SwitchingInstructions(microprobe.passes.Pass):
                             operand.set_value(output_register)
 
                         elif operand.type.immediate:
-
                             LOG.debug(
                                 "Operand is immediate. Set to '%s' (0x%X)",
                                 switch_input, switch_input
@@ -541,7 +585,6 @@ class SwitchingInstructions(microprobe.passes.Pass):
                         ) and building_block.context.registers_get_value(
                                     switch_input
                                 )[0] in operand.type.values():
-
                             treg = building_block.context.registers_get_value(
                                 switch_input
                             )[0]
@@ -550,7 +593,6 @@ class SwitchingInstructions(microprobe.passes.Pass):
                             operand.set_value(treg)
 
                         else:
-
                             LOG.debug("Initializing register contents")
                             tregs = [
                                 reg
@@ -576,9 +618,12 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                 building_block.context.set_register_value(
                                     treg, switch_input
                                 )
+
                                 building_block.context.add_reserved_registers(
-                                    [treg]
+                                    [reg for reg in operand.uses()
+                                     if reg not in context.reserved_registers]
                                 )
+
                                 LOG.debug(
                                     "Register '%s' set to '%s'", treg,
                                     switch_input

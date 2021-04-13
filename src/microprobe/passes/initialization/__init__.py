@@ -529,8 +529,8 @@ class AutoAlignPass(microprobe.passes.Pass):
                 newinstr = microprobe.code.ins.Instruction()
                 newinstr.set_arch_type(instr)
                 newinstr.set_operands(operands)
-
                 displacement += newinstr.format.length
+
                 if ((displacement) % self._mod) == 0:
                     break
 

@@ -385,7 +385,8 @@ class InstructionOperandValue(Pickable):
         :rtype: :class:`~.InstructionOperandValue`
         """
         newobj = InstructionOperandValue(self._operand_descriptor)
-        newobj.set_value(self.value)
+        if self.value is not None:
+            newobj.set_value(self.value)
         newobj.register_operand_callbacks(self._set_function,
                                           self._unset_function)
         return newobj

@@ -191,7 +191,7 @@ def _generic_policy_wrapper(all_arguments):
             "No memory streams provided "
             "using 1K stream stride 64 bytes"
         )
-        memory_streams = [(1, 1024, 1, 64, 1)]
+        memory_streams = [(1, 4096, 1, 256, 1, 0, (0, 0))]
 
     streamid = 0
     new_memory_streams = []

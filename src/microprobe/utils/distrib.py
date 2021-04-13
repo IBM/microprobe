@@ -439,7 +439,7 @@ def locality(values, locdef):
     length = locdef[0]
     repeat = locdef[1]
 
-    if repeat <= 0:
+    if repeat <= 1:
         return values
 
     values = [
