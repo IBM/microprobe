@@ -131,7 +131,8 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_name = "Cronus"
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
-            reset=kwargs['reset']
+            reset=kwargs['reset'],
+            endless=kwargs['endless'],
         )
         extension = "bin"
 
@@ -142,7 +143,8 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             os.path.basename(outputfile.replace("%EXT%", extension)),
-            reset=kwargs['reset']
+            reset=kwargs['reset'],
+            endless=kwargs['endless'],
         )
 
     elif target.name.endswith("riscv64_test_p"):
@@ -152,7 +154,7 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             reset=kwargs['reset'],
-            endless=True
+            endless=kwargs['endless'],
         )
 
     elif target.environment.default_wrapper:
