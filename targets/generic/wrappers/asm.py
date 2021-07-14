@@ -167,7 +167,7 @@ class Assembly(microprobe.code.wrapper.Wrapper):
 
         if instr.architecture_type.mnemonic == "raw":
             parts = asm.split(" ")
-            bytes_str = ["0x" + parts[1][i:i+2] for i in range(2, len(parts[1]), 2)]
+            bytes_str = ["0x" + parts[1][i-2:i] for i in range(len(parts[1]), 2, -2)]
             asm = ".byte " + ",".join(reversed(bytes_str))
 
         if instr.comments:
