@@ -182,13 +182,25 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         else:
             ins.append(asm)
 
-        section = ""
+        directives = ""
 
+        # Section directive
         if instr.address is not None and instr.address.displacement in self._sections:
             section_name = ".text.%s" % hex(instr.address.displacement)
-            section = "\n.section %s\n" % section_name
+            directives += "\n.section %s\n" % section_name
 
-        return section + ins[0] + "\n"
+        if self.target.isa.name == "riscv_v22" and self.target.environment.name == "riscv64_linux_gcc":
+            # GCC will sometimes translate regular instructions to compressed
+            # instructions. Because we want to reproduce the instruction
+            # sequence verbatim, put a rv/norvc directive before each
+            # instruction to prevent GCC from using the wrong instruction.
+
+            if instr.architecture_type.mnemonic.startswith("C."):
+                directives += ".option rvc\n"
+            else:
+                directives += ".option norvc\n"
+
+        return directives + ins[0] + "\n"
 
     def end_loop(self, dummy_instr):
         """
