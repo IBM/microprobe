@@ -45,7 +45,8 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         super(Assembly, self).__init__()
         self._sections = sections
         self._start_label = start_label
-        self._padding_page_str = ".byte %s" % ",".join(["0" for i in range(4096)])
+        self._padding_page_str = \
+            ".byte %s" % ",".join(["0" for i in range(4096)])
         self._last_address = None
 
     def outputname(self, name):
@@ -101,7 +102,8 @@ class Assembly(microprobe.code.wrapper.Wrapper):
 
                 retval = ""
 
-                if self._last_address != None and (address - self._last_address <= 4096 * 8):
+                if (self._last_address is not None and
+                        (address - self._last_address <= 4096 * 8)):
                     # Add up to 8 pages for padding to reduce sections
                     for i in range(self._last_address + 4096, address, 4096):
                         retval += self._padding_page_str + "\n"
@@ -167,7 +169,8 @@ class Assembly(microprobe.code.wrapper.Wrapper):
 
         if instr.architecture_type.mnemonic == "raw":
             parts = asm.split(" ")
-            bytes_str = ["0x" + parts[1][i-2:i] for i in range(len(parts[1]), 2, -2)]
+            bytes_str = \
+                ["0x" + parts[1][i-2:i] for i in range(len(parts[1]), 2, -2)]
             asm = ".byte " + ",".join(reversed(bytes_str))
 
         if instr.comments:
@@ -185,11 +188,13 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         directives = ""
 
         # Section directive
-        if instr.address is not None and instr.address.displacement in self._sections:
+        if (instr.address is not None and
+                instr.address.displacement in self._sections):
             section_name = ".text.%s" % hex(instr.address.displacement)
             directives += "\n.section %s\n" % section_name
 
-        if self.target.isa.name == "riscv_v22" and self.target.environment.name == "riscv64_linux_gcc":
+        if (self.target.isa.name == "riscv_v22" and
+                self.target.environment.name == "riscv64_linux_gcc"):
             # GCC will sometimes translate regular instructions to compressed
             # instructions. Because we want to reproduce the instruction
             # sequence verbatim, put a rv/norvc directive before each

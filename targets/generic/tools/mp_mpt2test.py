@@ -55,7 +55,8 @@ LOG = get_logger(__name__)
 
 
 # Functions
-def generate(test_definition, outputfile, ldscriptfile, language, target, **kwargs):
+def generate(test_definition, outputfile, ldscriptfile, language, target,
+             **kwargs):
     """
     Microbenchmark generation policy
 
@@ -149,7 +150,8 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
             code[0].address = address + test_definition.default_code_address
             for i in range(1, len(code)):
                 assert code[i-1].get_instruction_type().format.length > 0
-                code[i].address = code[i-1].address + code[i-1].get_instruction_type().format.length
+                code[i].address = code[i-1].address + \
+                    code[i-1].get_instruction_type().format.length
             sequence.extend(code)
 
     else:
@@ -167,7 +169,9 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
     registers = test_definition.registers
     raw = test_definition.raw
 
-    code_sections = [addr + test_definition.default_code_address for addr in raw_dict.keys()]
+    code_sections = []
+    for addr in raw_dict.keys():
+        code_sections.append(addr + test_definition.default_code_address)
 
     if test_definition.default_data_address is not None:
         print_warning("Default data address not needed")
@@ -176,7 +180,9 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
 
     if language == "c":
         if kwargs.get("wrap_function", False):
-            raise MicroprobeException("The wrap-function option is incompatible with the C langauge backend.")
+            raise MicroprobeException("The wrap-function option "
+                                      "is incompatible with the C langauge "
+                                      "backend.")
 
         wrapper_name = "C"
         if kwargs.get("endless", False):
@@ -196,15 +202,17 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
 
         if kwargs.get("wrap_function", False):
             print("Adding function wrapping instructions...")
-            instructions = target.function_call("0x%x" % test_definition.default_code_address)
+            target_address = "0x%x" % test_definition.default_code_address
+            instructions = target.function_call(target_address)
             instructions[0].set_label("LOOP_START")
 
             for instr in instructions:
-                start_test_instructions.append(instruction_to_definition(instr))
+                intr_def = instruction_to_definition(instr)
+                start_test_instructions.append(instr_def)
         else:
             print("Adding jump to test instructions...")
             source_address = InstructionAddress(
-                base_address="dummy", # Rely on symbolic jump
+                base_address="dummy",  # Rely on symbolic jump
                 displacement=0
             )
 
@@ -223,7 +231,7 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
             start_test_instructions.append(instruction_to_definition(instr))
 
         if kwargs.get("endless", False):
-            context = Context() # Throw-away context
+            context = Context()  # Throw-away context
             reset_instructions = []
 
             if kwargs.get("reset_registers", False):
@@ -235,17 +243,22 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
                 # when calling functions (as per the ABI).
                 arg_abi_registers = ["X%d" % n for n in range(10, 18)]
 
-                reset_registers = arg_abi_registers if kwargs.get("wrap_function", None) else all_registers
+                if kwargs.get("wrap_function", None):
+                    reset_registers = arg_abi_registers
+                else:
+                    reset_registers = all_registers
 
-                register_dict = {reg.name:reg.value for reg in registers}
+                register_dict = {reg.name: reg.value for reg in registers}
                 for register in target.registers.values():
-                    if register.name in reset_registers and register.name in register_dict:
-                        instrs = target.set_register(register, register_dict[register.name], context)
+                    if (register.name in reset_registers and
+                            register.name in register_dict):
+                        value = register_dict[register.name]
+                        instrs = target.set_register(register, value, context)
                         for instr in instrs:
                             reset_instructions.append(instr)
 
             source_address = InstructionAddress(
-                base_address="dummy", # Rely on symbolic jump
+                base_address="dummy",  # Rely on symbolic jump
                 displacement=0
             )
 
@@ -281,8 +294,8 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
         raise MicroprobeException(
             "Wrapper '%s' not available. Check if you have the wrappers "
             "of the target installed or set up an appropriate "
-            "MICROPROBEWRAPPERS environment variable. Original error was: %s" %
-            (wrapper_name, str(exc))
+            "MICROPROBEWRAPPERS environment variable. "
+            "Original error was: %s" % (wrapper_name, str(exc))
         )
 
     wrapper = cwrapper(**wrapper_kwargs)
@@ -346,14 +359,18 @@ def generate(test_definition, outputfile, ldscriptfile, language, target, **kwar
         # Same section name as in the ASM wrapper
         address_str = hex(address)
         section_name = ".text.%s" % address_str
-        script_contents += "\t%s %s : { *(%s) }\n" % (section_name, address_str, section_name)
+        script_contents += "\t%s %s : { *(%s) }\n" % (section_name,
+                                                      address_str,
+                                                      section_name)
 
     script_contents += "\t/* Data sections */\n"
     for variable in test_definition.variables:
         # Same section name as in the ASM wrapper
         address_str = hex(variable.address)
         section_name = ".data.%s" % variable.name
-        script_contents += "\t%s %s : { *(%s) }\n" % (section_name, address_str, section_name)
+        script_contents += "\t%s %s : { *(%s) }\n" % (section_name,
+                                                      address_str,
+                                                      section_name)
 
     script_contents += "}"
 
@@ -430,7 +447,8 @@ def main():
         groupname
     )
     cmdline.add_flag(
-        "wrap-function", None, "Wrap the code generated as a function instead of a regular branch",
+        "wrap-function", None, "Wrap the code generated as a function "
+                               "instead of a regular branch",
         groupname
     )
 
@@ -458,7 +476,8 @@ def main():
     )
 
     groupname = "Memory state options"
-    cmdline.add_group(groupname, "Command arguments related to the memory state")
+    cmdline.add_group(groupname, "Command arguments related to the memory "
+                                 "state")
     cmdline.add_flag(
         "reset-registers", None, "Reset registers after each iteration",
         groupname
@@ -495,7 +514,8 @@ def _main(arguments):
         ldscriptfile = outputfile + ".lds"
 
     print_info("Start generating '%s'" % outputfile)
-    generate(test_definition, outputfile, ldscriptfile, language, target, **arguments)
+    generate(test_definition, outputfile, ldscriptfile, language, target,
+             **arguments)
     print_info("'%s' generated!" % outputfile)
 
 
