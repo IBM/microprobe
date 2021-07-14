@@ -45,6 +45,8 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         super(Assembly, self).__init__()
         self._sections = sections
         self._start_label = start_label
+        self._padding_page_str = ".byte %s" % ",".join(["0" for i in range(4096)])
+        self._last_address = None
 
     def outputname(self, name):
         """
@@ -95,9 +97,24 @@ class Assembly(microprobe.code.wrapper.Wrapper):
                         value = value()
                     valuestr = "%s%s," % (valuestr, value)
 
-                return ".section .data.%s\n.global %s\n%s:\n.byte %s\n" % (
-                        var.name, var.name, var.name, valuestr[:-1]
-                )
+                address = int(var.name[4:], 16)
+
+                retval = ""
+
+                if self._last_address != None and (address - self._last_address <= 4096 * 8):
+                    # Add up to 8 pages for padding to reduce sections
+                    for i in range(self._last_address + 4096, address, 4096):
+                        retval += self._padding_page_str + "\n"
+                else:
+                    retval += ".section .data.%s\n.global %s\n%s:\n" % (
+                            var.name, var.name, var.name
+                    )
+
+                self._last_address = address
+
+                retval += ".byte %s\n" % valuestr[:-1]
+
+                return retval
 
         else:
 
