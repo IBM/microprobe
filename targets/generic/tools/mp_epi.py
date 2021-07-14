@@ -77,6 +77,7 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             reset=kwargs['reset'],
+            endless=True
         )
         extension = "avp"
 
@@ -88,6 +89,7 @@ def _generic_policy_wrapper(all_arguments):
             outputname.replace("%INSTR%", bname).replace("%EXT%",
                                                          "tst"),
             reset=kwargs['reset'],
+            endless=True
         )
         extension = "tst"
 
@@ -126,6 +128,7 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             reset=kwargs['reset'],
+            endless=True
         )
         extension = "S"
 

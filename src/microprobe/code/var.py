@@ -307,6 +307,10 @@ class VariableSingle(Variable):
         """ """
         return "(%s) %s" % (self.type, self.name)
 
+    def __repr__(self):
+        """ """
+        return "(%s) %s" % (self.type, self.name)
+
 
 class VariableArray(Variable):
     """ """
@@ -405,5 +409,9 @@ class VariableArray(Variable):
         return self._elems
 
     def __str__(self):
+        """ """
+        return "(%s) %s[%s]" % (self.type, self.name, self._elems)
+
+    def __repr__(self):
         """ """
         return "(%s) %s[%s]" % (self.type, self.name, self._elems)

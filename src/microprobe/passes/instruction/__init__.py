@@ -69,6 +69,7 @@ __all__ = [
     'SetInstructionTypeByElementPass',
     'AddAssemblyByIndexPass',
     'ReplaceLoadInstructionsPass',
+    'AddOnePass',
 ]
 
 # Functions
@@ -1124,7 +1125,7 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, opcodes, operand_pos, value, force=False):
+    def __init__(self, opcodes, operand_pos, value, force=False, ifval=None):
         """
 
         :param opcodes:
@@ -1145,6 +1146,7 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
         self._pos = operand_pos
         self._base_value = value
         self._force = force
+        self._ifval = ifval
 
         if not isinstance(value, list):
 
@@ -1165,7 +1167,11 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
         """
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
+
                 if instr.name in self._opcodes:
+                    if (self._ifval is not None and
+                            instr.operands()[self._pos].value != self._ifval):
+                        continue
                     if instr.operands()[
                             self._pos].value is None or self._force:
                         instr.operands()[self._pos].set_value(self._value())
@@ -1415,3 +1421,64 @@ def _set_props(largs, queue=None, show_progress=False):
         queue.put(rlist)
 
     return rlist
+
+
+class AddOnePass(microprobe.passes.Pass):
+    """AddOne pass.
+
+    """
+
+    def __init__(self, varname):
+        """
+
+        :param instr:
+
+        """
+        super(AddOnePass, self).__init__()
+        self._varname = varname
+
+    def __call__(self, building_block, target):
+        """
+
+        :param building_block:
+        :param dummy_target:
+
+        """
+
+        loopvar = None
+        for var in building_block.registered_global_vars():
+            if var.name == self._varname:
+                loopvar = var
+                break
+
+        if loopvar is None:
+            raise MicroprobeCodeGenerationError(
+                "AddOne pass var '%s' not declared" % self._varname
+            )
+
+        context = building_block.context
+
+        areg = target.get_register_for_address_arithmetic(
+            context
+        )
+        context.add_reserved_registers([areg])
+
+        # Reset register to zero
+        instrs = target.set_register(areg, 0, context)
+
+        for instr in instrs:
+            instr.add_comment("Loop counter init")
+
+        building_block.add_init(instrs)
+
+        instrs = target.add_to_register(areg, 1)
+        instrs += target.store_integer(
+            areg, loopvar.address, 64, context
+        )
+
+        for instr in instrs:
+            instr.add_comment("Loop update")
+
+        building_block.add_fini(instrs)
+
+        return []

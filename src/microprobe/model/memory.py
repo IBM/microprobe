@@ -246,7 +246,7 @@ class EndlessLoopDataMemoryModel(GenericModel):
                                 setm[idx] = 0
 
                 # sets = mcomp.setsways()
-                sets = [s1 for s1, s2 in zip(sets, setm) if s2 is not 0]
+                sets = [s1 for s1, s2 in zip(sets, setm) if s2 != 0]
                 lsets = len(sets)
                 sets = sets[0:int(lsets * ratio // accum)]
 

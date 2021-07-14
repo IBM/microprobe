@@ -489,12 +489,12 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
 
                     if operand.immediate():
 
-                        if self._immediate is not "random" and \
+                        if self._immediate != "random" and \
                                 operand.check(self._immediate, safe=True):
 
                             instroperands.append(self._immediate)
 
-                        elif self._immediate is not "random" and \
+                        elif self._immediate != "random" and \
                                 not operand.check(self._immediate, safe=True):
 
                             instroperands.append(operand.max)
@@ -648,7 +648,11 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
         for bbl in building_block.cfg.bbls:
 
-            for instr in bbl.instrs:
+            allinstrs = bbl.instrs
+            if bbl == building_block.cfg.bbls[-1]:
+                allinstrs += building_block.fini
+
+            for instr in allinstrs:
 
                 for operand in instr.operands():
 

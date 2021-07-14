@@ -2441,7 +2441,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
                         for mkreg in instr.sets():
                             if not instr.allows(mkreg):
-                                instr.add_allow_register(valid_one)
+                                instr.add_allow_register(mkreg)
 
                             if mkreg not in \
                                     building_block.context.reserved_registers:

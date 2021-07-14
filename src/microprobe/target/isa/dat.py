@@ -147,14 +147,15 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
             new_dat.add_mapping(datmap.source, datmap.target, datmap.mask)
         return new_dat
 
-    def translate(self, address):
+    def translate(self, address, rev=False):
         """ """
 
         if not self.control['DAT']:
             return address
 
         tmap = [
-            tmap for tmap in self.maps.values() if tmap.address_in_map(address)
+            tmap for tmap in self.maps.values()
+            if tmap.address_in_map(address, rev=rev)
         ]
 
         if len(tmap) > 1:
@@ -167,7 +168,7 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
                 "No translation maps found for address '%s'" % hex(address)
             )
         else:
-            return tmap[0].address_translate(address)
+            return tmap[0].address_translate(address, rev=rev)
 
     def raw_parse(self, raw_str):
         """ """
@@ -223,11 +224,13 @@ class DATmap(object):
     def target(self):
         return self._target
 
-    def address_in_map(self, address):
+    def address_in_map(self, address, rev=False):
+        if rev:
+            return self.target & self.mask == address & self.mask
         return self.source & self.mask == address & self.mask
 
-    def address_translate(self, address):
-        if not self.address_in_map(address):
+    def address_translate(self, address, rev=False):
+        if not self.address_in_map(address, rev=rev):
             raise MicroprobeAddressTranslationError(
                 "Unable to translate address '%s' in map: %s" % (
                     hex(address), str(self)
@@ -235,5 +238,8 @@ class DATmap(object):
             )
 
         address &= (~self.mask)
-        address |= (self.target & self.mask)
+        if rev:
+            address |= (self.source & self.mask)
+        else:
+            address |= (self.target & self.mask)
         return address
