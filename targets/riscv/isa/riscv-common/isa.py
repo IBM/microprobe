@@ -96,7 +96,7 @@ class RISCVISA(GenericISA):
                 instrs += self.set_register(self._scratch_registers[0], value,
                                             context)
 
-                instr = self.new_instruction("FCVT.S.L_V0")
+                instr = self.new_instruction("FMV.D.X_V0")
                 instr.set_operands([self._scratch_registers[0], register])
                 instrs.append(instr)
 
@@ -140,17 +140,15 @@ class RISCVISA(GenericISA):
 
                     LOG.debug("This is the scratch register. Long path")
 
+                    if value_high > 2047:
+                        value_highest = value_highest + 1
+                        value_high = value_high - (4096)
+
                     lui = self.new_instruction("LUI_V0")
                     lui.set_operands([value_highest, register])
                     instrs.append(lui)
+
                     addiw = self.new_instruction("ADDIW_V0")
-
-                    if value_high >= (2**11-1):
-                        addiw.set_operands([2**11-1, register, register])
-                        instrs.append(addiw)
-                        addiw = self.new_instruction("ADDIW_V0")
-                        value_high = value_high - (2**11-1)
-
                     addiw.set_operands([value_high, register, register])
                     instrs.append(addiw)
 

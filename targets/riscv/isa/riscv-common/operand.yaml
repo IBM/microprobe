@@ -102,6 +102,7 @@
   Description: 6-bit immediate (signed)
   Min: -32
   Max: 31
+  Except: [0]
 - Name: imm6
   Description: 6-bit immediate
   Min: 0

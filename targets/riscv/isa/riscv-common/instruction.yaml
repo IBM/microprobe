@@ -358,34 +358,34 @@
     sb_imm7: ['@sb_imm7', 'sb_imm7', 'I']
   MemoryOperands:
     MEM1 : [['@sb_imm7'], [0], 0, 'B']
-- Name: "CUSTOM0_V0"
-  Mnemonic: "CUSTOM0"
-  Opcode: "b"
-  Description: "Custom instruction 0"
-  Format: "custom"
-  Operands:
-    funct3: ['7', 'funct3', '?']
-- Name: "CUSTOM1_V0"
-  Mnemonic: "CUSTOM1"
-  Opcode: "2b"
-  Description: "Custom instruction 1"
-  Format: "custom"
-  Operands:
-    funct3: ['7', 'funct3', '?']
-- Name: "CUSTOM2_V0"
-  Mnemonic: "CUSTOM2"
-  Opcode: "5b"
-  Description: "Custom instruction 2"
-  Format: "custom"
-  Operands:
-    funct3: ['7', 'funct3', '?']
-- Name: "CUSTOM3_V0"
-  Mnemonic: "CUSTOM3"
-  Opcode: "7b"
-  Description: "Custom instruction 3"
-  Format: "custom"
-  Operands:
-    funct3: ['7', 'funct3', '?']
+    #- Name: "CUSTOM0_V0"
+    #  Mnemonic: "CUSTOM0"
+    #  Opcode: "b"
+    #  Description: "Custom instruction 0"
+    #  Format: "custom"
+    #  Operands:
+    #    funct3: ['7', 'funct3', '?']
+    #- Name: "CUSTOM1_V0"
+    #  Mnemonic: "CUSTOM1"
+    #  Opcode: "2b"
+    #  Description: "Custom instruction 1"
+    #  Format: "custom"
+    #  Operands:
+    #    funct3: ['7', 'funct3', '?']
+    #- Name: "CUSTOM2_V0"
+    #  Mnemonic: "CUSTOM2"
+    #  Opcode: "5b"
+    #  Description: "Custom instruction 2"
+    #  Format: "custom"
+    #  Operands:
+    #    funct3: ['7', 'funct3', '?']
+    #- Name: "CUSTOM3_V0"
+    #  Mnemonic: "CUSTOM3"
+    #  Opcode: "7b"
+    #  Description: "Custom instruction 3"
+    #  Format: "custom"
+    #  Operands:
+    #    funct3: ['7', 'funct3', '?']
 - Name: "DIV_V0"
   Mnemonic: "DIV"
   Opcode: "33"
@@ -1942,6 +1942,7 @@
   Format: "ci_ls"
   Operands:
     funct3: ['0', 'funct3', '?']
+    rd: ['nzreg', 'rd', 'IO']
 - Name: "C.FLDSP_V0"
   Mnemonic: "C.FLDSP"
   Opcode: "2"
