@@ -207,7 +207,7 @@ def generate(test_definition, outputfile, ldscriptfile, language, target,
             instructions[0].set_label("LOOP_START")
 
             for instr in instructions:
-                intr_def = instruction_to_definition(instr)
+                instr_def = instruction_to_definition(instr)
                 start_test_instructions.append(instr_def)
         else:
             print("Adding jump to test instructions...")
