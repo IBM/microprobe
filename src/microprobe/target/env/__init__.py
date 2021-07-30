@@ -216,6 +216,11 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         raise NotImplementedError
 
     @abc.abstractproperty
+    def default_endless_wrapper(self):
+        """ """
+        raise NotImplementedError
+
+    @abc.abstractproperty
     def stack_pointer(self):
         """ """
         raise NotImplementedError
@@ -286,6 +291,7 @@ class GenericEnvironment(Environment):
         self._threads = 1
         self._target = None
         self._default_wrapper = None
+        self._default_endless_wrapper = None
         self._little_endian = little_endian
         self.register_property(
             Property(
@@ -364,6 +370,11 @@ class GenericEnvironment(Environment):
     def default_wrapper(self):
         """ """
         return self._default_wrapper
+
+    @property
+    def default_endless_wrapper(self):
+        """ """
+        return self._default_endless_wrapper
 
     def elf_abi(self, stack_size, start_symbol, **kwargs):
         """ """

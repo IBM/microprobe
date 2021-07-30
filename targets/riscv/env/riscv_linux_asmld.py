@@ -29,7 +29,7 @@ from microprobe.target.env import GenericEnvironment
 # Classes
 
 
-class riscv64_linux_gcc(GenericEnvironment):
+class riscv64_linux_asmld(GenericEnvironment):
 
     _elf_code = ""\
                 ""\
@@ -37,17 +37,17 @@ class riscv64_linux_gcc(GenericEnvironment):
 
     def __init__(self, isa):
         super(
-            riscv64_linux_gcc,
+            riscv64_linux_asmld,
             self).__init__(
-            "riscv64_linux_gcc",
+            "riscv64_linux_asmld",
             "RISC-V architecture (64bit addressing mode), "
-            "Linux operating system, GCC compiler",
+            "Linux operating system, Assembly compiler",
             isa,
             little_endian=True
             )
 
-        self._default_wrapper = "CWrapper"
-        self._default_endless_wrapper = "CInfGen"
+        self._default_wrapper = "AssemblyLd"
+        self._default_endless_wrapper = "AssemblyLd"
 
     @property
     def stack_pointer(self):
@@ -61,10 +61,10 @@ class riscv64_linux_gcc(GenericEnvironment):
 
     def elf_abi(self, stack_size, start_symbol, **kwargs):
 
-        return super(riscv64_linux_gcc, self).elf_abi(stack_size,
-                                                      start_symbol,
-                                                      stack_alignment=16,
-                                                      **kwargs)
+        return super(riscv64_linux_asmld, self).elf_abi(stack_size,
+                                                        start_symbol,
+                                                        stack_alignment=16,
+                                                        **kwargs)
 
     def function_call(self, target,
                       return_address_reg=None):
