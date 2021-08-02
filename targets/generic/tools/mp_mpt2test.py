@@ -169,10 +169,6 @@ def generate(test_definition, outputfile, ldscriptfile, target,
     registers = test_definition.registers
     raw = test_definition.raw
 
-    code_sections = []
-    for addr in raw_dict.keys():
-        code_sections.append(addr + test_definition.default_code_address)
-
     if test_definition.default_data_address is not None:
         print_warning("Default data address not needed")
 
@@ -188,6 +184,10 @@ def generate(test_definition, outputfile, ldscriptfile, target,
             start_label = sequence[0].label
         else:
             start_label = sequence[0].label = "START_TEST"
+
+        code_sections = []
+        for addr in raw_dict.keys():
+            code_sections.append(addr + test_definition.default_code_address)
 
         wrapper_kwargs["sections"] = code_sections
         wrapper_kwargs["start_label"] = start_label
@@ -345,32 +345,33 @@ def generate(test_definition, outputfile, ldscriptfile, target,
     # Save the microbenchmark
     synth.save(outputfile, bench=bench)
 
-    print_info("Generating linker script...")
-    script_contents = "SECTIONS {\n"
+    if wrapper_name == "AssemblyLd":
+        print_info("Generating linker script...")
+        script_contents = "SECTIONS {\n"
 
-    script_contents += "\t/* Code sections */\n"
-    for address in code_sections:
-        # Same section name as in the ASM wrapper
-        address_str = hex(address)
-        section_name = ".text.%s" % address_str
-        script_contents += "\t%s %s : { *(%s) }\n" % (section_name,
-                                                      address_str,
-                                                      section_name)
+        script_contents += "\t/* Code sections */\n"
+        for address in code_sections:
+            # Same section name as in the ASM wrapper
+            address_str = hex(address)
+            section_name = ".text.%s" % address_str
+            script_contents += "\t%s %s : { *(%s) }\n" % (section_name,
+                                                          address_str,
+                                                          section_name)
 
-    script_contents += "\t/* Data sections */\n"
-    for variable in test_definition.variables:
-        # Same section name as in the ASM wrapper
-        address_str = hex(variable.address)
-        section_name = ".data.%s" % variable.name
-        script_contents += "\t%s %s : { *(%s) }\n" % (section_name,
-                                                      address_str,
-                                                      section_name)
+        script_contents += "\t/* Data sections */\n"
+        for variable in test_definition.variables:
+            # Same section name as in the ASM wrapper
+            address_str = hex(variable.address)
+            section_name = ".data.%s" % variable.name
+            script_contents += "\t%s %s : { *(%s) }\n" % (section_name,
+                                                          address_str,
+                                                          section_name)
 
-    script_contents += "}"
+        script_contents += "}"
 
-    script_file = open(ldscriptfile, "w")
-    script_file.write(script_contents)
-    script_file.close()
+        script_file = open(ldscriptfile, "w")
+        script_file.write(script_contents)
+        script_file.close()
 
     return
 
