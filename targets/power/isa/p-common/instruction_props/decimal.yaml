@@ -1,0 +1,106 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: decimal
+  Description: Boolean indication if the instruction requires inputs in decimal format
+  Default: False
+  Values:
+    DADD_V0: True
+    DADDx_V0: True
+    DADDQ_V0: True
+    DADDQx_V0: True
+    DCFFIX_V0: True
+    DCFFIXx_V0: True
+    DCFFIXQ_V0: True
+    DCFFIXQx_V0: True
+    DCMPO_V0: True
+    DCMPOQ_V0: True
+    DCMPU_V0: True
+    DCMPUQ_V0: True
+    DCTDP_V0: True
+    DCTDPx_V0: True
+    DCTFIX_V0: True
+    DCTFIXx_V0: True
+    DCTFIXQ_V0: True
+    DCTFIXQx_V0: True
+    DCTQPQ_V0: True
+    DCTQPQx_V0: True
+    DDEDPD_V0: True
+    DDEDPDx_V0: True
+    DDEDPDQ_V0: True
+    DDEDPDQx_V0: True
+    DDIV_V0: True
+    DDIVx_V0: True
+    DDIVQ_V0: True
+    DDIVQx_V0: True
+    DENBCD_V0: True
+    DENBCDx_V0: True
+    DENBCDQ_V0: True
+    DENBCDQx_V0: True
+    DIEX_V0: True
+    DIEXx_V0: True
+    DIEXQ_V0: True
+    DIEXQx_V0: True
+    DMUL_V0: True
+    DMULx_V0: True
+    DMULQ_V0: True
+    DMULQx_V0: True
+    DQUA_V0: True
+    DQUAx_V0: True
+    DQUAI_V0: True
+    DQUAIx_V0: True
+    DQUAIQ_V0: True
+    DQUAIQx_V0: True
+    DQUAQ_V0: True
+    DQUAQx_V0: True
+    DRDPQ_V0: True
+    DRDPQx_V0: True
+    DRINTN_V0: True
+    DRINTNx_V0: True
+    DRINTNQ_V0: True
+    DRINTNQx_V0: True
+    DRINTX_V0: True
+    DRINTXx_V0: True
+    DRINTXQ_V0: True
+    DRINTXQx_V0: True
+    DRRND_V0: True
+    DRRNDx_V0: True
+    DRRNDQ_V0: True
+    DRRNDQx_V0: True
+    DRSP_V0: True
+    DRSPx_V0: True
+    DSCLI_V0: True
+    DSCLIx_V0: True
+    DSCLIQ_V0: True
+    DSCLIQx_V0: True
+    DSCRI_V0: True
+    DSCRIx_V0: True
+    DSCRIQ_V0: True
+    DSCRIQx_V0: True
+    DSUB_V0: True
+    DSUBx_V0: True
+    DSUBQ_V0: True
+    DSUBQx_V0: True
+    DTSTDC_V0: True
+    DTSTDCQ_V0: True
+    DTSTDG_V0: True
+    DTSTDGQ_V0: True
+    DTSTEX_V0: True
+    DTSTEXQ_V0: True
+    DTSTSF_V0: True
+    DTSTSFQ_V0: True
+    DXEX_V0: True
+    DXEXx_V0: True
+    DXEXQ_V0: True
+    DXEXQx_V0: True

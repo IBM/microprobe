@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 set -e # Finish right after a non-zero return command
 
-if [ "x$WORKSPACE" = "x" ]; then
+if [ "$WORKSPACE" = "" ]; then
 	WORKSPACEORIG="$(pwd)"
 else
     WORKSPACEORIG="$WORKSPACE"
@@ -40,7 +40,7 @@ unset MICROPROBEWRAPPERS
 
 start_script "$0"
 
-if [ "x$1" = "x" ]; then
+if [ "$1" = "" ]; then
     echo "I need a the python version"
 	exit_error "$0"
 fi
@@ -93,6 +93,10 @@ deactivate
 . "$tmpdir/bin/activate"
 
 ($NICE mp_target -T riscv_v22-riscv_generic-riscv64_linux_gcc > /dev/null) || error=1
+($NICE mp_target -T power_v310-power10-ppc64_linux_gcc > /dev/null &&
+ $NICE mp_target -T power_v300-power9-ppc64_linux_gcc > /dev/null &&
+ $NICE mp_target -T power_v207-power8-ppc64_linux_gcc > /dev/null &&
+ $NICE mp_target -T power_v206-power7-ppc64_linux_gcc > /dev/null ) || error=1
 
 # Test target definitions
 for file in "$WORKSPACE"/targets/*/dev_tools/ci/test_deploy_001_install.sh; do

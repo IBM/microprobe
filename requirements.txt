@@ -3,3 +3,5 @@ ordereddict
 argparse
 rxjson
 six
+fasteners
+cachetools

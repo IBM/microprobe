@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ setup(
     install_requires=['microprobe_core>=%s' % VERSION,
                       'microprobe_doc>=%s' % VERSION,
                       'microprobe_target_riscv>=%s' % VERSION,
+                      'microprobe_target_power>=%s' % VERSION,
                       ],
     long_description=read(os.path.join(".", "ABOUT.rst")),
     classifiers=CLASSIFIERS,

@@ -8,7 +8,7 @@ Developers
 The main developers of Microprobe are:
 
 - Ramon Bertran <rbertra@us.ibm.com> (main)
-- Schuyler Eldridge <Schuyler.Eldridge@ibm.com> (RISC-V port)
+- Arnau Bigas <arnau.bigas@gmail.com> (RISC-V port)
 
 Feel free to join this list. Check out the :doc:`devel` section.
 
@@ -20,11 +20,11 @@ Microprobe is being developed by the
 group at IBM T. J. Watson Research Center. We are:
 
 - Ramon Bertran <rbertra@us.ibm.com> (main developer)
-- Schuyler Eldridge <Schuyler.Eldridge@ibm.com> (RISC-V port)
+- Karthik Swaminathan <kvswamin@us.ibm.com>
 - Alper Buyuktosunoglu <alperb@us.ibm.com>
 - Pradip Bose <pbose@us.ibm.com> (manager)
 
 Collaborators and contributors
 ------------------------------
 
-- Arnau Bigas <arnau.bigas@gmail.com> (RISC-V port)
+- Schuyler Eldridge <schuyler.eldridge@gmail.com> (RISC-V port)

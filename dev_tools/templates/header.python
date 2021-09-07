@@ -11,9 +11,9 @@ Docstring
 # Own modules
 
 __author__ = "Ramon Bertran"
-__copyright__ = "Copyright 2011-2018 IBM Corporation"
+__copyright__ = "Copyright 2011-2021 IBM Corporation"
 __credits__ = []
-__license__ = "IBM (c) 2011-2018 All rights reserved"
+__license__ = "IBM (c) 2011-2021 All rights reserved"
 __version__ = "0.5"
 __maintainer__ = "Ramon Bertran"
 __email__ = "rbertra@us.ibm.com"

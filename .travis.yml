@@ -1,10 +1,6 @@
 language: python
 python:
-    - 2.7
-    - 3.6
-    - 3.7
     - 3.8
-    - 3.9-dev
 os:
     - linux
 cache:
@@ -12,14 +8,15 @@ cache:
     pip: false
     directories:
         - toolchain_riscv/install
-        - toolchain_riscv/riscv-gnu-toolchain
+        - /opt/at14.0
     timeout: 1000
-dist: xenial
+dist: bionic
 git:
     submodules: false
 addons:
     apt:
         packages:
+            - axel
             - autoconf
             - automake
             - autotools-dev
@@ -39,132 +36,92 @@ addons:
             - zlib1g-dev
             - graphviz
             - shellcheck
+            - gcc-8-riscv64-linux-gnu
+            - gcc-riscv64-linux-gnu
+            - g++-8-riscv64-linux-gnu
+            - g++-riscv64-linux-gnu
+
 stages:
     - shell_conventions
-    - cache
-    - checkout
-    - compile
+    - dependencies
     - tests
 jobs:
     fast_finish: true
     include:
-        - stage: cache
-          name: prepare cache
-          python: 2.7
-          script: true
-        - stage: cache
-          name: prepare cache
-          python: 3.6
-          script: true
-        - stage: cache
-          name: prepare cache
-          python: 3.7
-          script: true
-        - stage: cache
-          name: prepare cache
-          python: 3.8
-          script: true
-        - stage: cache
-          name: prepare cache
-          python: 3.9-dev
-          script: true
-        - stage: checkout
-          name: checkout gcc riscv 2.7
-          python: 2.7
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 0
-        - stage: checkout
-          name: checkout gcc riscv 3.6
-          python: 3.6
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 0
-        - stage: checkout
-          name: checkout gcc riscv 3.7
-          python: 3.7
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 0
-        - stage: checkout
-          name: checkout gcc riscv 3.8
-          python: 3.8
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 0
-        - stage: checkout
-          name: checkout gcc riscv 3.9-dev
-          python: 3.9-dev
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 0
-        - stage: compile
-          name: compile gcc riscv 2.7
-          python: 2.7
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 1
-        - stage: compile
-          name: compile gcc riscv 3.6
-          python: 3.6
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 1
-        - stage: compile
-          name: compile gcc riscv 3.7
-          python: 3.7
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 1
-        - stage: compile
-          name: compile gcc riscv 3.8
-          python: 3.8
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 1
-        - stage: compile
-          name: compile gcc riscv 3.9-dev
-          python: 3.9-dev
-          script:
-              - ./dev_tools/ci/install_riscv_toolchain.sh 1
         - stage: shell_conventions
-          name: shell conventions 2.7
-          python: 2.7
+          name: shell conventions
+          cache: false
           script:
               - set -e
               - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
-        - stage: shell_conventions
-          name: shell conventions 3.6
-          python: 3.6
+        - stage: dependencies
+          name: build toolchain gcc powerpc
           script:
               - set -e
-              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
-        - stage: shell_conventions
-          name: shell conventions 3.7
-          python: 3.7
+              - ./dev_tools/ci/install_advanced_toolchain.sh
+        - stage: tests
+          name: pycodestyle
           script:
               - set -e
-              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
-        - stage: shell_conventions
-          name: shell conventions 3.8
-          python: 3.8
+              - . ./dev_tools/ci/travis_prolog
+              - ./dev_tools/ci/code_conventions_001_pycodestyle.sh
+        - stage: tests
+          name: pylint
           script:
               - set -e
-              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
-        - stage: shell_conventions
-          name: shell conventions 3.9-dev
-          python: 3.9-dev
+              - . ./dev_tools/ci/travis_prolog
+              - ./dev_tools/ci/code_conventions_002_pylint.sh
+        - stage: tests
+          name: pylint
           script:
               - set -e
-              - shellcheck -x -s sh bootstrap_environment.sh dev_tools/*/*.sh $(/bin/ls ./targets/*/dev_tools/*/*.sh)
-script:
-    - set -e
-    - pip install -U -r requirements_devel.txt
-    - export NEEDINSTALL=False
-    - export PATH=$PATH:$(pwd)/toolchain_riscv/install/bin
-    - for file in ./targets/*/dev_tools/ci/travis.sh ; do if [ -f $file ]; then . $file; fi; done;
-    # Code Conventions (always run)
-    - ./dev_tools/ci/code_conventions_001_pycodestyle.sh
-    - ./dev_tools/ci/code_conventions_002_pylint.sh
-    - ./dev_tools/ci/code_conventions_003_documentation.sh
-    # Functional/Integration tests (always run)
-    - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_001_end2end_tools.sh RISCV
-    - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_002_end2end_examples.sh RISCV
-    - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_003_end2end_targets.sh RISCV
-    # Build Release (always run)
-    - ./dev_tools/ci/build_001_distribution.sh
-    # Test Release Deploy (always run)
-    - ./dev_tools/ci/test_deploy_001_install.sh ${TRAVIS_PYTHON_VERSION}
+              - . ./dev_tools/ci/travis_prolog
+              - ./dev_tools/ci/code_conventions_003_documentation.sh
+        - stage: tests
+          name: tools RISCV
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_001_end2end_tools.sh RISCV
+        - stage: tests
+          name: examples RISCV
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_002_end2end_examples.sh RISCV
+        - stage: tests
+          name: target RISCV
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_003_end2end_targets.sh RISCV
+        - stage: tests
+          name: tools POWER10
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - MP_TESTING_ARCH=POWER10 ./dev_tools/ci/test_001_end2end_tools.sh POWER10
+        - stage: tests
+          name: examples POWER10
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - MP_TESTING_ARCH=POWER10 ./dev_tools/ci/test_002_end2end_examples.sh POWER10
+        - stage: tests
+          name: target POWER10
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - MP_TESTING_ARCH=POWER10 ./dev_tools/ci/test_003_end2end_targets.sh POWER10
+        - stage: tests
+          name: build and test distribution
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - ./dev_tools/ci/build_001_distribution.sh
+              - ./dev_tools/ci/test_deploy_001_install.sh ${TRAVIS_PYTHON_VERSION}
+
 before_cache:
     - rm -fr $HOME/.cache/pip
+    - rm -fr /home/travis/.cache/pip
+    - rm -fr /home/travis/build/rbertra/microprobe_private/.cache/pip

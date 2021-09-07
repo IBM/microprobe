@@ -1,0 +1,6 @@
+set -e
+pip install -U -r requirements_devel.txt
+export NEEDINSTALL=False
+export PATH=$PATH:$(pwd)/toolchain_riscv/install/bin
+export PATH=$PATH:/opt/at14.0/bin
+for file in ./targets/*/dev_tools/ci/travis.sh ; do if [ -f $file ]; then . $file; fi; done;

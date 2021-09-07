@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ The main elements of this module are the following:
 from __future__ import absolute_import, division, print_function
 
 # Built-in modules
+import atexit
 import copy
 import itertools
 import multiprocessing as mp
@@ -38,6 +39,7 @@ import re
 import string
 
 # Third party modules
+import cachetools
 import six
 from six.moves import range, zip
 
@@ -47,10 +49,12 @@ from microprobe import MICROPROBE_RC
 from microprobe.code.address import Address, InstructionAddress
 from microprobe.exceptions import MicroprobeAsmError, \
     MicroprobeCodeGenerationError, MicroprobeDuplicatedValueError, \
-    MicroprobeValueError
+    MicroprobeValueError, MicroprobeCacheError
 from microprobe.target.isa.operand import InstructionAddressRelativeOperand, \
     OperandConst, OperandImmRange, OperandValueSet
 from microprobe.utils.bin import interpret_bin
+from microprobe.utils.cache import read_default_cache_data, \
+    write_default_cache_data
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress, RejectingDict, twocs_to_int, \
     range_to_sequence
@@ -58,8 +62,16 @@ from microprobe.utils.misc import Progress, RejectingDict, twocs_to_int, \
 
 # Constants
 LOG = get_logger(__name__)
-_ASM_CACHE = RejectingDict()
+
+_ASM_CACHE_ENABLED = True
+_ASM_CACHE_FILE = __file__ + ".asm"
+_ASM_CACHE = None
+_ASM_CACHE_SIZE = 128*1024
+_ASM_CACHE_USED = False
+
 _DECORATOR_CACHE = RejectingDict()
+_DECORATOR_CACHE_ENABLED = True
+
 __all__ = [
     "interpret_asm", "MicroprobeAsmInstructionDefinition",
     "instruction_to_asm_definition"
@@ -89,6 +101,17 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
     :raise microprobe.exceptions.MicroprobeAsmError: if something is wrong
         during the interpretation
     """
+
+    global _ASM_CACHE
+    global _ASM_CACHE_SIZE
+
+    if _ASM_CACHE is None:
+        try:
+            _ASM_CACHE = cachetools.LRUCache(_ASM_CACHE_SIZE, getsizeof=None)
+            if _ASM_CACHE_ENABLED:
+                _ASM_CACHE = read_default_cache_data(_ASM_CACHE_FILE)
+        except MicroprobeCacheError:
+            _ASM_CACHE = cachetools.LRUCache(_ASM_CACHE_SIZE, getsizeof=None)
 
     LOG.debug("Start interpret_asm")
     instructions_and_params = []
@@ -167,8 +190,14 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
             if isinstance(instr_def, six.string_types):
                 instr_def = _str_to_asmdef(instr_def)
 
-            intr_asm = _interpret_instr_def(instr_def, target, def_labels)
+            safe = None
+            if instr_def.assembly.split(" ")[0].upper() == "RAW:":
+                instr_def.assembly = instr_def.assembly.split(" ")[1]
+                safe = True
 
+            intr_asm = _interpret_instr_def(
+                instr_def, target, def_labels, safe=safe
+            )
             instructions_and_params.append(intr_asm)
 
             LOG.debug("Instruction: '%s' interpreted", instr_def.assembly)
@@ -226,11 +255,12 @@ def instruction_to_asm_definition(instr):
     label = instr.label
     instr.set_label(None)
     return MicroprobeAsmInstructionDefinition(
-        instr.assembly(), label, instr.address, None, instr.comments
+        instr.assembly(), label, instr.address.displacement,
+        None, instr.comments
     )
 
 
-def _interpret_instr_def(instr_def, target, labels):
+def _interpret_instr_def(instr_def, target, labels, safe=None):
     """
 
     :param instr_def:
@@ -240,24 +270,34 @@ def _interpret_instr_def(instr_def, target, labels):
     :param labels:
     :type labels:
     """
+    global _ASM_CACHE_USED
 
     LOG.debug("Start interpret_asm: '%s'", instr_def)
-    if instr_def.assembly in _ASM_CACHE:
+    key = (target.name, target.isa.path, instr_def.assembly)
+    if key in _ASM_CACHE and _ASM_CACHE_ENABLED:
 
-        instruction_type, operands = _ASM_CACHE[instr_def.assembly]
+        instruction_type, operands = _ASM_CACHE[key]
         operands = operands[:]
 
     elif instr_def.assembly.upper().startswith("0X"):
 
         binary_def = interpret_bin(
-            instr_def.assembly[2:], target, fmt="hex", single=True
+            instr_def.assembly[2:], target, fmt="hex", single=True, safe=safe
         )
         if len(binary_def) > 1:
             raise MicroprobeAsmError("More than one instruction parsed.")
 
         instruction_type = binary_def[0].instruction_type
         operands = binary_def[0].operands
-        _ASM_CACHE[instr_def.assembly] = (instruction_type, operands)
+        if _ASM_CACHE_ENABLED:
+            _ASM_CACHE[key] = (instruction_type, operands)
+            if not _ASM_CACHE_USED:
+                atexit.register(
+                    write_default_cache_data,
+                    _ASM_CACHE_FILE, _ASM_CACHE,
+                    data_reload=True
+                )
+                _ASM_CACHE_USED = True
 
     elif instr_def.assembly.upper().startswith("0B"):
 
@@ -266,7 +306,14 @@ def _interpret_instr_def(instr_def, target, labels):
             raise MicroprobeAsmError("More than one instruction parsed.")
         instruction_type = binary_def[0].instruction_type
         operands = binary_def[0].operands
-        _ASM_CACHE[instr_def.assembly] = (instruction_type, operands)
+        if _ASM_CACHE_ENABLED:
+            _ASM_CACHE[key] = (instruction_type, operands)
+            if not _ASM_CACHE_USED:
+                atexit.register(
+                    write_default_cache_data,
+                    _ASM_CACHE_FILE, _ASM_CACHE
+                )
+                _ASM_CACHE_USED = True
 
     else:
 
@@ -313,15 +360,23 @@ def _interpret_instr_def(instr_def, target, labels):
             instr_def.assembly, asm_operands, instruction_types, target, labels
         )
 
-        _ASM_CACHE[instr_def.assembly] = (instruction_type, operands)
+        if _ASM_CACHE_ENABLED:
+            _ASM_CACHE[key] = (instruction_type, operands)
+            if not _ASM_CACHE_USED:
+                atexit.register(
+                    write_default_cache_data,
+                    _ASM_CACHE_FILE, _ASM_CACHE
+                )
+                _ASM_CACHE_USED = True
 
     address = _extract_address(instr_def.address)
 
-    if instr_def.decorators in _DECORATOR_CACHE:
+    if instr_def.decorators in _DECORATOR_CACHE and _DECORATOR_CACHE_ENABLED:
         decorators = copy.deepcopy(_DECORATOR_CACHE[instr_def.decorators])
     else:
         decorators = _interpret_decorators(instr_def.decorators)
-        _DECORATOR_CACHE[instr_def.decorators] = decorators
+        if _DECORATOR_CACHE_ENABLED:
+            _DECORATOR_CACHE[instr_def.decorators] = decorators
 
     label = None
     if instr_def.label is not None:
@@ -450,6 +505,7 @@ def _find_instr_with_mnemonic(mnemonic, asm_operands, target):
     """
 
     # First, look for default instructions
+
     base_instructions = [
         instr
         for instr in target.instructions.values()

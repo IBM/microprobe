@@ -38,6 +38,14 @@ Name                                  Type          Description
 microprobe_all                        Meta-Package  All Microprobe common packages
 microprobe_core                       Package       Core modules
 microprobe_doc                        Package       Documentation
+====================================  ============  ===========================================
+
+**Backend packages**:
+
+====================================  ============  ===========================================
+Name                                  Type          Description
+====================================  ============  ===========================================
 microprobe_target_riscv               Package       All RISCV target/tools definitions
+microprobe_target_power               Package       All PowerPC target/tools definitions
 ====================================  ============  ===========================================
 

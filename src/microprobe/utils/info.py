@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ from __future__ import absolute_import
 from microprobe import MICROPROBE_RC
 
 __author__ = "Ramon Bertran"
-__copyright__ = "Copyright 2018 IBM Corporation"
+__copyright__ = "Copyright 2011-2021 IBM Corporation"
 __credits__ = []
 __license__ = "Apaceh Version 2.0"
 __version__ = "0.5"
@@ -45,7 +45,7 @@ __all__ = ["AUTHOR",
            "KEYWORDS"
            ]
 AUTHOR = "Ramon Bertran"
-COPYRIGHT = "Copyright 2018 IBM Corporation"
+COPYRIGHT = "Copyright 2011-2021 IBM Corporation"
 LICENSE = "Apache Version 2.0"
 VERSION = "0.5"
 MAINTAINER = "Ramon Bertran"

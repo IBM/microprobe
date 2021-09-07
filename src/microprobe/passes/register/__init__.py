@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -143,6 +143,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                         LOG.debug("Operand already set")
                         pass
                     elif operand.type.immediate:
+                        LOG.debug("Operand immediate")
                         if self._immediate != "random":
                             try:
                                 svalue = self._immediate
@@ -167,7 +168,6 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                             operand.set_value(operand.type.random_value())
 
                     elif operand.type.address_relative:
-
                         LOG.warning(
                             "Operand '%s' in instruction '%s' "
                             "not modeled properly", operand.type, instr.name
@@ -175,6 +175,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                         operand.set_value(list(operand.type.values())[0])
 
                     else:
+                        LOG.debug("Operand is register")
 
                         if operand.is_input and distance > 0 and \
                            not dependency_ok and idx > distance:
@@ -182,22 +183,25 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                             LOG.debug("Setting dependency distance")
 
                             regs = list(operand.type.values())
-                            valid_values = []
 
-                            for reg in regs:
-
-                                if len(
-                                    rregs.intersection(
-                                        operand.type.access(reg)
-                                    )
-                                ) == 0:
-                                    valid_values.append(reg)
+                            if len(regs) == 1:
+                                # There is not option
+                                valid_values = regs
+                            else:
+                                valid_values = []
+                                for reg in regs:
+                                    if len(
+                                        rregs.intersection(
+                                            operand.type.access(reg)
+                                        )
+                                    ) == 0:
+                                        valid_values.append(reg)
 
                             if (len(valid_values) == 0 and
                                     operand.is_input and
                                     not operand.is_output):
                                 # Try to use reserved values
-                                # if the operand is reading only
+                                # if the operand is read only
                                 valid_values = list(operand.type.values())
 
                             LOG.debug("Current idx: %d", idx)
@@ -228,17 +232,22 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                             dependency_ok = True
 
                         else:
+                            LOG.debug("No need for distance")
 
                             regs = list(operand.type.values())
                             valid_values = []
 
-                            for reg in regs:
-                                if len(
-                                    rregs.intersection(
-                                        operand.type.access(reg)
-                                    )
-                                ) == 0:
-                                    valid_values.append(reg)
+                            if len(regs) == 1:
+                                # There is not option
+                                valid_values = regs
+                            else:
+                                for reg in regs:
+                                    if len(
+                                        rregs.intersection(
+                                            operand.type.access(reg)
+                                        )
+                                    ) == 0:
+                                        valid_values.append(reg)
 
                             if (len(valid_values) == 0 and
                                     operand.is_input and
@@ -1064,3 +1073,7 @@ class RandomAllocationPass(microprobe.passes.Pass):
             for instr in bbl.instrs:
                 for operand in instr.operands():
                     operand.set_value(operand.type.random_value())
+                    # TODO: This is a POWERPC hack (remove in future)
+                    if operand.type.name == "BO_Values":
+                        while operand.value in [17, 19, 21]:
+                            operand.set_value(operand.type.random_value())

@@ -1,0 +1,5550 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: execution_units
+  Description: List indicating the microarchitecture units executing the instruction
+  Default: None
+  Values:
+    ADD_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ADDx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDC_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDCx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDCO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDCOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDE_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDEx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDEO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDEOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDI_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ADDI_V1:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ADDIC_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDICx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDIS_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ADDIS_V1:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ADDME_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDMEx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDMEO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDMEOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDZE_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDZEx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDZEO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ADDZEOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    AND_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ANDx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ANDC_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ANDCx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ANDIx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ANDISx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    B_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BA_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BC_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BCA_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BCCTR_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BCCTRL_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BCL_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BCLA_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BCLR_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BCLRL_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BL_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BLA_V0:
+     - BPU
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    BPERMD_V0:
+     - BSU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CMP_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CMPB_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CMPI_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CMPL_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CMPLI_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CNTLZD_V0:
+     - CNT
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CNTLZDx_V0:
+     - CNT
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CNTLZW_V0:
+     - CNT
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CNTLZWx_V0:
+     - CNT
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    CRAND_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    CRANDC_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    CREQV_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    CRNAND_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    CRNOR_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    CROR_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    CRORC_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    CRXOR_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    DADD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DADDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DADDQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DADDQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCBT_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    DCBTST_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    DCFFIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCFFIXx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCFFIXQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCFFIXQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCMPO_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCMPOQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCMPU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCMPUQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCTDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCTDPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCTFIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCTFIXx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCTFIXQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DCTFIXQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDEDPD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDEDPDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDEDPDQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDEDPDQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDIV_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDIVx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDIVQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DDIVQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DENBCD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DENBCDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DENBCDQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DENBCDQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DIEX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DIEXx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DIEXQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DIEXQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DIVD_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVDx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVDO_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVDOx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVDU_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVDUx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVDUO_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVDUOx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVW_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVWx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVWO_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVWOx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVWU_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVWUx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVWUO_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DIVWUOx_V0:
+     - DIS
+     - DIV
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    DMUL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DMULx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DMULQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DMULQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUA_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUAx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUAI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUAIx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUAIQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUAIQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUAQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DQUAQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRDPQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRDPQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTN_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTNx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTNQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTNQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTXx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTXQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRINTXQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRRND_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRRNDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRRNDQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRRNDQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DRSPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCLI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCLIx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCLIQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCLIQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCRI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCRIx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCRIQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSCRIQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSUBx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSUBQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DSUBQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTDC_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTDCQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTDG_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTDGQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTEX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTEXQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTSF_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DTSTSFQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DXEX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DXEXx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DXEXQ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    DXEXQx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VDU
+     - VSU1
+    ECIWX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    ECOWX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    EQV_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    EQVx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    EXTSB_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    EXTSBx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    EXTSH_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    EXTSHx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    EXTSW_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    EXTSWx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    FABS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FABSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FADD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FADDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FADDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FADDSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCFID_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCFIDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCMPO_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCMPU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCPSGN_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTID_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTIDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTIDZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTIDZx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTIW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTIWx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTIWZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FCTIWZx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FDIV_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FDIVx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FDIVS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FDIVSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMADD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMADDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMADDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMADDSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMRx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMSUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMSUBx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMSUBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMSUBSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMUL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMULx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMULS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FMULSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNABS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNABSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNEG_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNEGx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMADD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMADDx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMADDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMADDSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMSUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMSUBx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMSUBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FNMSUBSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRE_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FREx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRES_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRESx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRIM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRIMx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRIN_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRINx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRIP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRIPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRIZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRIZx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRSPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRSQRTE_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRSQRTEx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRSQRTES_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FRSQRTESx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSEL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSELx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSQRT_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSQRTx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSQRTS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSQRTSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSUBx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSUBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    FSUBSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    LBZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LBZCIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LBZU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LBZUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LBZX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LDCIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LDU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LDUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LDX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFDPX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFDU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFDUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFDX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFIWAX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFSU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFSUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LFSX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHA_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHAU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHAUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHAX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHBRX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHZCIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHZU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHZUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LHZX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    #LI_V0:
+    # - ALU
+    # - DIS
+    # - FXU0
+    # - FXU1
+    # - GCT
+    # - IFU
+    # - ISU
+    # - LSU0
+    # - LSU1
+    #LIS_V0:
+    # - ALU
+    # - DIS
+    # - FXU0
+    # - FXU1
+    # - GCT
+    # - IFU
+    # - ISU
+    # - LSU0
+    # - LSU1
+    LVEBX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LVEHX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LVEWX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LVX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LVXL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWA_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWAUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWAX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWBRX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWZCIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWZU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWZUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LWZX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LXSDX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LXVD2X_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LXVDSX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    LXVW4X_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MCRF_V0:
+     - CRBPU
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MCRFS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    MFCR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MFFS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MFFSx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MFMSR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MFSPR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MFSR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MFSRIN_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    #MFTB_V0:
+    # - DIS
+    # - GCT
+    # - IFU
+    # - ISU
+    #MFTBU_V0:
+    # - DIS
+    # - GCT
+    # - IFU
+    # - ISU
+    #MFTGPR_V0:
+    # - DIS
+    # - GCT
+    # - IFU
+    # - ISU
+    MFVSCR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSB0_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSB0x_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSB1_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSB1x_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSF_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSFx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSFI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTFSFIx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTMSR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTSPR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTSR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    #MTSRD_V0:
+    # - DIS
+    # - GCT
+    # - IFU
+    # - ISU
+    MTSRIN_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MTVSCR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    MULHD_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULHDx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULHDU_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULHDUx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULHW_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULHWx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULHWU_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULHWUx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLD_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLDx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLDO_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLDOx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLI_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLW_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLWx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLWO_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    MULLWOx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MUL
+    NAND_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    NANDx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    NEG_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    NEGx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    NEGO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    NEGOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    #NOP_V0:
+    # - DIS
+    # - GCT
+    # - IFU
+    # - ISU
+    NOR_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    NORx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    OR_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ORx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ORC_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ORCx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    ORI_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ORI_V1:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    ORIS_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    POPCNTB_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    PRTYD_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    PRTYW_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - MXU
+    #RFI_V0:
+    # - DIS
+    # - GCT
+    # - IFU
+    # - ISU
+    RLDCL_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDCLx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDCR_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDCRx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDIC_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDICx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDICL_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDICLx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDICR_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDICRx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDIMI_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLDIMIx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLWIMI_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLWIMIx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLWINM_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLWINMx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLWNM_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    RLWNMx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SLD_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SLDx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SLW_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SLWx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRAD_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRADx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRADI_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRADIx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRAW_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRAWx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRAWI_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRAWIx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRD_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRDx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRW_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    SRWx_V0:
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - ROT
+    STB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STBU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STBUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STBX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STDCIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STDU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STDUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STDX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFD_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFDPX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFDU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFDUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFDX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFIWX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFSU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFSUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STFSX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STHBRX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STHCIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STHU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STHUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STHX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STVEBX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STVEHX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STVEWX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STVX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STVXL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STWBRX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STWCIX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STWU_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STWUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STWX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STXSDX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STXVD2X_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    STXVW4X_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    SUBF_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFC_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFCx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFCO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFCOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFE_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFEx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFEO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFEOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFIC_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFME_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFMEx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFMEO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFMEOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFZE_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFZEx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFZEO_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    SUBFZEOx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    TD_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    TDI_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    TLBSYNC_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+    TW_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    TWI_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    VADDCUW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VADDSBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDSHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDSWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDUBM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDUBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDUHM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDUHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDUWM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VADDUWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VAND_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VANDC_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VAVGSB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VAVGSH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VAVGSW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VAVGUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VAVGUH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VAVGUW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCFSX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCFUX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPBFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPBFPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPEQFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPEQFPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPEQUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPEQUBx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPEQUH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPEQUHx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPEQUW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPEQUWx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGEFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPGEFPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPGTFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPGTFPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VCMPGTSB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTSBx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTSH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTSHx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTSW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTSWx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTUBx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTUH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTUHx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTUW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCMPGTUWx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCTSXS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VCTUXS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VEXPTEFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VLOGEFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMADDFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMAXFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMAXSB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMAXSH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMAXSW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMAXUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMAXUH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMAXUW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMHADDSHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMHRADDSHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMINFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMINSB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMINSH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMINSW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMINUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMINUH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMINUW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VMLADDUHM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMRGHB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VMRGHH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VMRGHW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VMRGLB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VMRGLH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VMRGLW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VMSUMMBM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMSUMSHM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMSUMSHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMSUMUBM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMSUMUHM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMSUMUHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULESB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULESH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULEUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULEUH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULOSB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULOSH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULOUB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VMULOUH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VNMSUBFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VNOR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VOR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VPERM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKPX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKSHSS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKSHUS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKSWSS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKSWUS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKUHUM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKUHUS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKUWUM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VPKUWUS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VREFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VRFIM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VRFIN_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VRFIP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VRFIZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VRLB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VRLH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VRLW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VRSQRTEFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VSEL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSLB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSLDOI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSLH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSLO_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSLW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSPLTB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSPLTH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSPLTISB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSPLTISH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSPLTISW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSPLTW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSRAB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSRAH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSRAW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSRB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSRH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSRO_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSRW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VSUBCUW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBFP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VSUBSBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBSHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBSWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBUBM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBUBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBUHM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBUHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBUWM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUBUWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    VSUM2SWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VSUM4SBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VSUM4SHS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VSUM4UBS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VSUMSWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    VUPKHPX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VUPKHSB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VUPKHSH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VUPKLPX_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VUPKLSB_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VUPKLSH_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    VXOR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VSU0
+     - VXS
+    XOR_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    XORx_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+    XORI_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    XORIS_V0:
+     - ALU
+     - DIS
+     - FXU0
+     - FXU1
+     - GCT
+     - IFU
+     - ISU
+     - LSU0
+     - LSU1
+    XSABSDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSADDDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCMPODP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCMPUDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCPSGNDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVDPSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVDPSXDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVDPSXWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVDPUXDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVDPUXWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVSPDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVSXDDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSCVUXDDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSDIVDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSMADDADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSMADDMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSMAXDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSMINDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSMSUBADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSMSUBMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSMULDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSNABSDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSNEGDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSNMADDADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSNMADDMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSNMSUBADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSNMSUBMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSRDPI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSRDPIC_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSRDPIM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSRDPIP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSRDPIZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSREDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSRSQRTEDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSSUBDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSTDIVDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XSTSQRTDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVABSDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVABSSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVADDDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVADDSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPEQDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPEQDPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPEQSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPEQSPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGEDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGEDPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGESP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGESPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGTDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGTDPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGTSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCMPGTSPx_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCPSGNDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCPSGNSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVDPSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVDPSXDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVDPSXWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVDPUXDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVDPUXWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSPDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSPSXDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSPSXWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSPUXDS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSPUXWS_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSXDDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSXDSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSXWDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVSXWSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVUXDDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVUXDSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVUXWDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVCVUXWSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVDIVDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVDIVSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMADDADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMADDASP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMADDMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMADDMSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMAXDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMAXSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMINDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMINSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMSUBADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMSUBASP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMSUBMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMSUBMSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMULDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVMULSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNABSDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNABSSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNEGDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNEGSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMADDADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMADDASP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMADDMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMADDMSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMSUBADP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMSUBASP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMSUBMDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVNMSUBMSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRDPI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRDPIC_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRDPIM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRDPIP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRDPIZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVREDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRESP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRSPI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRSPIC_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRSPIM_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRSPIP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRSPIZ_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRSQRTEDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVRSQRTESP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVSQRTDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVSQRTSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVSUBDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVSUBSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVTDIVDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVTDIVSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVTSQRTDP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XVTSQRTSP_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XXLAND_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XXLANDC_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XXLNOR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XXLOR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XXLXOR_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XXMRGHW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    XXMRGLW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    XXPERMDI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    XXSEL_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VFP
+     - VSU0
+     - VSU1
+    XXSLDWI_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1
+    XXSPLTW_V0:
+     - DIS
+     - GCT
+     - IFU
+     - ISU
+     - VPM
+     - VSU1

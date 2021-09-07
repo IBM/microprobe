@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1796,6 +1796,7 @@
   Format: "cl_w"
   Operands:
     funct3: ['6', 'funct3', '?']
+    crs1: ['crega', 'crs1', 'I'] 
   MemoryOperands:
     MEM1 : [['cw_imm3', 'crs1'], [8], 8, 'O']
 - Name: "C.SD_V0"
@@ -1804,6 +1805,9 @@
   Format: "cl_d"
   Operands:
     funct3: ['7', 'funct3', '?']
+    crs1: ['crega', 'crs1', 'I'] 
+  MemoryOperands:
+    MEM1 : [['cd_imm3', 'crs1'], [8], 8, 'O']
 - Name: "C.NOP_V0"
   Mnemonic: "C.NOP"
   Opcode: "1"
@@ -1981,7 +1985,7 @@
   Format: "cr_jr"
   Operands:
     funct4: ['8', 'funct4', '?']
-    rd: ['nzreg', 'rd', 'I']
+    rd: ['nzreg_ab', 'rd', 'I']
   MemoryOperands:
     MEM1 : [['rd'], [0], 0, 'B']
 - Name: "C.MV_V0"

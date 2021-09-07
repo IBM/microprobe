@@ -25,6 +25,7 @@ Therefore, possible target definitions could be:
  - **power_v206-power7-ppc64_linux_gcc** for POWER7 C/asm code.
  - **power_v207-power8-ppc64_linux_gcc** for POWER8 C/asm code.
  - **power_v300-power9-ppc64_linux_gcc** for POWER9 C/asm code.
+ - **power_v310-power10-ppc64_linux_gcc** for POWER10 C/asm code.
 
 .. note::
 

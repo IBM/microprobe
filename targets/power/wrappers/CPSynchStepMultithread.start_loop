@@ -1,0 +1,40 @@
+        if (local_master != 0) {
+
+            /* printf("CPU%d: Master Synchronizing\n", cpu); */
+
+            *stck=1;
+            clock = -1;
+
+            while(
+                    (((clock & $SYNCHMASK1$) >> 4 ) != $SYNCHBIAS$) ||
+                    ((clock & $SYNCHMASK2$) == clock_ant)
+                 )
+            {
+                clock = __ppc_get_timebase();
+            }
+
+            clock_ant = clock & $SYNCHMASK2$;
+            /* printf("CPU%d: Master wake up at %lx \n", cpu, clock); */
+            *stck=0;
+
+            $MASTERSTEPS$
+
+            $MASTERDELAY$
+
+        } else {
+
+            /* printf("CPU%d: Slave Synchronizing\n", cpu); */
+
+            while(*stck!=0){
+                __asm("nop");
+                __asm("nop");
+                __asm("nop");
+            }
+
+            /* printf("CPU%d: Slave wake up\n", cpu); */
+
+            $SLAVESTEPS$
+
+        }
+
+    $DELAY$ 

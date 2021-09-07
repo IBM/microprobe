@@ -1,0 +1,761 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: Zero
+  Description: Zero operand (special, not shown)
+  Value: 0
+- Name: BitSet
+  Description: Bit Set operand (special, not shown)
+  Value: 1
+- Name: VSR_regs
+  Description: VSR Register operand
+  Registers:
+    VSR0 : ['VSR0','FPR0']
+    VSR1 : ['VSR1','FPR1']
+    VSR2 : ['VSR2','FPR2']
+    VSR3 : ['VSR3','FPR3']
+    VSR4 : ['VSR4','FPR4']
+    VSR5 : ['VSR5','FPR5']
+    VSR6 : ['VSR6','FPR6']
+    VSR7 : ['VSR7','FPR7']
+    VSR8 : ['VSR8','FPR8']
+    VSR9 : ['VSR9','FPR9']
+    VSR10 : ['VSR10','FPR10']
+    VSR11 : ['VSR11','FPR11']
+    VSR12 : ['VSR12','FPR12']
+    VSR13 : ['VSR13','FPR13']
+    VSR14 : ['VSR14','FPR14']
+    VSR15 : ['VSR15','FPR15']
+    VSR16 : ['VSR16','FPR16']
+    VSR17 : ['VSR17','FPR17']
+    VSR18 : ['VSR18','FPR18']
+    VSR19 : ['VSR19','FPR19']
+    VSR20 : ['VSR20','FPR20']
+    VSR21 : ['VSR21','FPR21']
+    VSR22 : ['VSR22','FPR22']
+    VSR23 : ['VSR23','FPR23']
+    VSR24 : ['VSR24','FPR24']
+    VSR25 : ['VSR25','FPR25']
+    VSR26 : ['VSR26','FPR26']
+    VSR27 : ['VSR27','FPR27']
+    VSR28 : ['VSR28','FPR28']
+    VSR29 : ['VSR29','FPR29']
+    VSR30 : ['VSR30','FPR30']
+    VSR31 : ['VSR31','FPR31']
+    VSR32 : ['VSR32','VR0']
+    VSR33 : ['VSR33','VR1']
+    VSR34 : ['VSR34','VR2']
+    VSR35 : ['VSR35','VR3']
+    VSR36 : ['VSR36','VR4']
+    VSR37 : ['VSR37','VR5']
+    VSR38 : ['VSR38','VR6']
+    VSR39 : ['VSR39','VR7']
+    VSR40 : ['VSR40','VR8']
+    VSR41 : ['VSR41','VR9']
+    VSR42 : ['VSR42','VR10']
+    VSR43 : ['VSR43','VR11']
+    VSR44 : ['VSR44','VR12']
+    VSR45 : ['VSR45','VR13']
+    VSR46 : ['VSR46','VR14']
+    VSR47 : ['VSR47','VR15']
+    VSR48 : ['VSR48','VR16']
+    VSR49 : ['VSR49','VR17']
+    VSR50 : ['VSR50','VR18']
+    VSR51 : ['VSR51','VR19']
+    VSR52 : ['VSR52','VR20']
+    VSR53 : ['VSR53','VR21']
+    VSR54 : ['VSR54','VR22']
+    VSR55 : ['VSR55','VR23']
+    VSR56 : ['VSR56','VR24']
+    VSR57 : ['VSR57','VR25']
+    VSR58 : ['VSR58','VR26']
+    VSR59 : ['VSR59','VR27']
+    VSR60 : ['VSR60','VR28']
+    VSR61 : ['VSR61','VR29']
+    VSR62 : ['VSR62','VR30']
+    VSR63 : ['VSR63','VR31']
+- Name: VSR_regpairs
+  Description: VSR Register operand pairs
+  Registers:
+    VSR0 : ['VSR0','FPR0']
+    VSR2 : ['VSR2','FPR2']
+    VSR4 : ['VSR4','FPR4']
+    VSR6 : ['VSR6','FPR6']
+    VSR8 : ['VSR8','FPR8']
+    VSR10 : ['VSR10','FPR10']
+    VSR12 : ['VSR12','FPR12']
+    VSR14 : ['VSR14','FPR14']
+    VSR16 : ['VSR16','FPR16']
+    VSR18 : ['VSR18','FPR18']
+    VSR20 : ['VSR20','FPR20']
+    VSR22 : ['VSR22','FPR22']
+    VSR24 : ['VSR24','FPR24']
+    VSR26 : ['VSR26','FPR26']
+    VSR28 : ['VSR28','FPR28']
+    VSR30 : ['VSR30','FPR30']
+    VSR32 : ['VSR32','VR0']
+    VSR34 : ['VSR34','VR2']
+    VSR36 : ['VSR36','VR4']
+    VSR38 : ['VSR38','VR6']
+    VSR40 : ['VSR40','VR8']
+    VSR42 : ['VSR42','VR10']
+    VSR44 : ['VSR44','VR12']
+    VSR46 : ['VSR46','VR14']
+    VSR48 : ['VSR48','VR16']
+    VSR50 : ['VSR50','VR18']
+    VSR52 : ['VSR52','VR20']
+    VSR54 : ['VSR54','VR22']
+    VSR56 : ['VSR56','VR24']
+    VSR58 : ['VSR58','VR26']
+    VSR60 : ['VSR60','VR28']
+    VSR62 : ['VSR62','VR30']
+- Name: CR_regs
+  Description: CR Register operand
+  Registers:
+    CR0 : ['CR0']
+    CR1 : ['CR1']
+    CR2 : ['CR2']
+    CR3 : ['CR3']
+    CR4 : ['CR4']
+    CR5 : ['CR5']
+    CR6 : ['CR6']
+    CR7 : ['CR7']
+- Name: BH_Values
+  Description: Branch BH operand
+  Values:
+  - 0
+  - 1
+  - 3
+- Name: BH_BCCTR_Values
+  Description: Branch BH operand for BCCTR
+  Values:
+  - 0
+  - 3
+- Name: BO_Values
+  Description: Branch BO operand
+  Values:
+  - 0
+  - 2
+  - 4
+  - 6
+  - 7
+  - 8
+  - 10
+  - 12
+  - 14
+  - 15
+  - 16
+  - 17 # Need to remove
+  - 18
+  - 19 # Need to remove
+  - 20
+  - 21 # Need to remove
+  - 24
+  - 25
+  - 26
+  - 27
+- Name: BO_BCCTR_Values
+  Description: Branch BO operand for BCCTR
+  Values:
+  - 4
+  - 6
+  - 7
+  - 12
+  - 14
+  - 15
+  - 20
+  - 21 # Need to remove
+- Name: BO_BCTARl_Values
+  Description: Branch BO operand for BCTARl
+  Values:
+  - 0
+  - 2
+  - 4
+  - 6
+  - 7
+  - 8
+  - 10
+  - 12
+  - 14
+  - 15
+  - 16
+  - 18
+  - 20
+  - 24
+  - 25
+  - 26
+  - 27
+- Name: FPRp_regs
+  Description: FPR Pair register operand
+  Registers:
+    FPR0 : ['FPR0','FPR1','VSR0','VSR1']
+    FPR2 : ['FPR2','FPR3','VSR2','VSR3']
+    FPR4 : ['FPR4','FPR5','VSR4','VSR5']
+    FPR6 : ['FPR6','FPR7','VSR6','VSR7']
+    FPR8 : ['FPR8','FPR9','VSR8','VSR9']
+    FPR10 : ['FPR10','FPR11','VSR10','VSR11']
+    FPR12 : ['FPR12','FPR13','VSR12','VSR13']
+    FPR14 : ['FPR14','FPR15','VSR14','VSR15']
+    FPR16 : ['FPR16','FPR17','VSR16','VSR17']
+    FPR18 : ['FPR18','FPR19','VSR18','VSR19']
+    FPR20 : ['FPR20','FPR21','VSR20','VSR21']
+    FPR22 : ['FPR22','FPR23','VSR22','VSR23']
+    FPR24 : ['FPR24','FPR25','VSR24','VSR25']
+    FPR26 : ['FPR26','FPR27','VSR26','VSR27']
+    FPR28 : ['FPR28','FPR29','VSR28','VSR29']
+    FPR30 : ['FPR30','FPR31','VSR30','VSR31']
+- Name: FPR_regs
+  Description: FPR Register operand 
+  Registers:
+    FPR0 : ['FPR0','VSR0']
+    FPR1 : ['FPR1','VSR1']
+    FPR2 : ['FPR2','VSR2']
+    FPR3 : ['FPR3','VSR3']
+    FPR4 : ['FPR4','VSR4']
+    FPR5 : ['FPR5','VSR5']
+    FPR6 : ['FPR6','VSR6']
+    FPR7 : ['FPR7','VSR7']
+    FPR8 : ['FPR8','VSR8']
+    FPR9 : ['FPR9','VSR9']
+    FPR10 : ['FPR10','VSR10']
+    FPR11 : ['FPR11','VSR11']
+    FPR12 : ['FPR12','VSR12']
+    FPR13 : ['FPR13','VSR13']
+    FPR14 : ['FPR14','VSR14']
+    FPR15 : ['FPR15','VSR15']
+    FPR16 : ['FPR16','VSR16']
+    FPR17 : ['FPR17','VSR17']
+    FPR18 : ['FPR18','VSR18']
+    FPR19 : ['FPR19','VSR19']
+    FPR20 : ['FPR20','VSR20']
+    FPR21 : ['FPR21','VSR21']
+    FPR22 : ['FPR22','VSR22']
+    FPR23 : ['FPR23','VSR23']
+    FPR24 : ['FPR24','VSR24']
+    FPR25 : ['FPR25','VSR25']
+    FPR26 : ['FPR26','VSR26']
+    FPR27 : ['FPR27','VSR27']
+    FPR28 : ['FPR28','VSR28']
+    FPR29 : ['FPR29','VSR29']
+    FPR30 : ['FPR30','VSR30']
+    FPR31 : ['FPR31','VSR31']
+- Name: GPRp_regs
+  Description: GPR Pair Register operand 
+  Registers:
+    GPR0 : ['GPR0','GPR1']
+    GPR2 : ['GPR2','GPR3']
+    GPR4 : ['GPR4','GPR5']
+    GPR6 : ['GPR6','GPR7']
+    GPR8 : ['GPR8','GPR9']
+    GPR10 : ['GPR10','GPR11']
+    GPR12 : ['GPR12','GPR13']
+    GPR14 : ['GPR14','GPR15']
+    GPR16 : ['GPR16','GPR17']
+    GPR18 : ['GPR18','GPR19']
+    GPR20 : ['GPR20','GPR21']
+    GPR22 : ['GPR22','GPR23']
+    GPR24 : ['GPR24','GPR25']
+    GPR26 : ['GPR26','GPR27']
+    GPR28 : ['GPR28','GPR29']
+    GPR30 : ['GPR30','GPR31']
+- Name: GPR_regs
+  Description: GPR Register operand 
+  Registers:
+    GPR0 : ['GPR0']
+    GPR1 : ['GPR1']
+    GPR2 : ['GPR2']
+    GPR3 : ['GPR3']
+    GPR4 : ['GPR4']
+    GPR5 : ['GPR5']
+    GPR6 : ['GPR6']
+    GPR7 : ['GPR7']
+    GPR8 : ['GPR8']
+    GPR9 : ['GPR9']
+    GPR10 : ['GPR10']
+    GPR11 : ['GPR11']
+    GPR12 : ['GPR12']
+    GPR13 : ['GPR13']
+    GPR14 : ['GPR14']
+    GPR15 : ['GPR15']
+    GPR16 : ['GPR16']
+    GPR17 : ['GPR17']
+    GPR18 : ['GPR18']
+    GPR19 : ['GPR19']
+    GPR20 : ['GPR20']
+    GPR21 : ['GPR21']
+    GPR22 : ['GPR22']
+    GPR23 : ['GPR23']
+    GPR24 : ['GPR24']
+    GPR25 : ['GPR25']
+    GPR26 : ['GPR26']
+    GPR27 : ['GPR27']
+    GPR28 : ['GPR28']
+    GPR29 : ['GPR29']
+    GPR30 : ['GPR30']
+    GPR31 : ['GPR31']
+- Name: GPR_regs_multiple
+  Description: GPR Register operand 
+  Registers:
+    GPR0 : ['GPR0','GPR1','GPR2','GPR3','GPR4','GPR5','GPR6','GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR1 : ['GPR1','GPR2','GPR3','GPR4','GPR5','GPR6','GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR2 : ['GPR2','GPR3','GPR4','GPR5','GPR6','GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR3 : ['GPR3','GPR4','GPR5','GPR6','GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR4 : ['GPR4','GPR5','GPR6','GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR5 : ['GPR5','GPR6','GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR6 : ['GPR6','GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR7 : ['GPR7','GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR8 : ['GPR8','GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR9 : ['GPR9','GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR10 : ['GPR10','GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR11 : ['GPR11','GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR12 : ['GPR12','GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR13 : ['GPR13','GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR14 : ['GPR14','GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR15 : ['GPR15','GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR16 : ['GPR16','GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR17 : ['GPR17','GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR18 : ['GPR18','GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR19 : ['GPR19','GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR20 : ['GPR20','GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR21 : ['GPR21','GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR22 : ['GPR22','GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR23 : ['GPR23','GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR24 : ['GPR24','GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR25 : ['GPR25','GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR26 : ['GPR26','GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR27 : ['GPR27','GPR28','GPR29','GPR30','GPR31']
+    GPR28 : ['GPR28','GPR29','GPR30','GPR31']
+    GPR29 : ['GPR29','GPR30','GPR31']
+    GPR30 : ['GPR30','GPR31']
+    GPR31 : ['GPR31']
+- Name: GPR_n0
+  Description: GPR Register operand without GPR0
+  Registers:
+    GPR1 : ['GPR1']
+    GPR2 : ['GPR2']
+    GPR3 : ['GPR3']
+    GPR4 : ['GPR4']
+    GPR5 : ['GPR5']
+    GPR6 : ['GPR6']
+    GPR7 : ['GPR7']
+    GPR8 : ['GPR8']
+    GPR9 : ['GPR9']
+    GPR10 : ['GPR10']
+    GPR11 : ['GPR11']
+    GPR12 : ['GPR12']
+    GPR13 : ['GPR13']
+    GPR14 : ['GPR14']
+    GPR15 : ['GPR15']
+    GPR16 : ['GPR16']
+    GPR17 : ['GPR17']
+    GPR18 : ['GPR18']
+    GPR19 : ['GPR19']
+    GPR20 : ['GPR20']
+    GPR21 : ['GPR21']
+    GPR22 : ['GPR22']
+    GPR23 : ['GPR23']
+    GPR24 : ['GPR24']
+    GPR25 : ['GPR25']
+    GPR26 : ['GPR26']
+    GPR27 : ['GPR27']
+    GPR28 : ['GPR28']
+    GPR29 : ['GPR29']
+    GPR30 : ['GPR30']
+    GPR31 : ['GPR31']
+- Name: GPR_abn0
+  Description: GPR Register operand without GPR0 used for address base
+  AddressBase: True
+  Registers:
+    GPR1 : ['GPR1']
+    GPR2 : ['GPR2']
+    GPR3 : ['GPR3']
+    GPR4 : ['GPR4']
+    GPR5 : ['GPR5']
+    GPR6 : ['GPR6']
+    GPR7 : ['GPR7']
+    GPR8 : ['GPR8']
+    GPR9 : ['GPR9']
+    GPR10 : ['GPR10']
+    GPR11 : ['GPR11']
+    GPR12 : ['GPR12']
+    GPR13 : ['GPR13']
+    GPR14 : ['GPR14']
+    GPR15 : ['GPR15']
+    GPR16 : ['GPR16']
+    GPR17 : ['GPR17']
+    GPR18 : ['GPR18']
+    GPR19 : ['GPR19']
+    GPR20 : ['GPR20']
+    GPR21 : ['GPR21']
+    GPR22 : ['GPR22']
+    GPR23 : ['GPR23']
+    GPR24 : ['GPR24']
+    GPR25 : ['GPR25']
+    GPR26 : ['GPR26']
+    GPR27 : ['GPR27']
+    GPR28 : ['GPR28']
+    GPR29 : ['GPR29']
+    GPR30 : ['GPR30']
+    GPR31 : ['GPR31']
+- Name: GPR_ai
+  Description: GPR Register operand used for address index
+  AddressIndex: True
+  Registers:
+    GPR0 : ['GPR0']
+    GPR1 : ['GPR1']
+    GPR2 : ['GPR2']
+    GPR3 : ['GPR3']
+    GPR4 : ['GPR4']
+    GPR5 : ['GPR5']
+    GPR6 : ['GPR6']
+    GPR7 : ['GPR7']
+    GPR8 : ['GPR8']
+    GPR9 : ['GPR9']
+    GPR10 : ['GPR10']
+    GPR11 : ['GPR11']
+    GPR12 : ['GPR12']
+    GPR13 : ['GPR13']
+    GPR14 : ['GPR14']
+    GPR15 : ['GPR15']
+    GPR16 : ['GPR16']
+    GPR17 : ['GPR17']
+    GPR18 : ['GPR18']
+    GPR19 : ['GPR19']
+    GPR20 : ['GPR20']
+    GPR21 : ['GPR21']
+    GPR22 : ['GPR22']
+    GPR23 : ['GPR23']
+    GPR24 : ['GPR24']
+    GPR25 : ['GPR25']
+    GPR26 : ['GPR26']
+    GPR27 : ['GPR27']
+    GPR28 : ['GPR28']
+    GPR29 : ['GPR29']
+    GPR30 : ['GPR30']
+    GPR31 : ['GPR31']
+- Name: GPR_ab 
+  Description: GPR Register operand used for address base
+  AddressBase: True
+  Registers:
+    GPR0 : ['GPR0']
+    GPR1 : ['GPR1']
+    GPR2 : ['GPR2']
+    GPR3 : ['GPR3']
+    GPR4 : ['GPR4']
+    GPR5 : ['GPR5']
+    GPR6 : ['GPR6']
+    GPR7 : ['GPR7']
+    GPR8 : ['GPR8']
+    GPR9 : ['GPR9']
+    GPR10 : ['GPR10']
+    GPR11 : ['GPR11']
+    GPR12 : ['GPR12']
+    GPR13 : ['GPR13']
+    GPR14 : ['GPR14']
+    GPR15 : ['GPR15']
+    GPR16 : ['GPR16']
+    GPR17 : ['GPR17']
+    GPR18 : ['GPR18']
+    GPR19 : ['GPR19']
+    GPR20 : ['GPR20']
+    GPR21 : ['GPR21']
+    GPR22 : ['GPR22']
+    GPR23 : ['GPR23']
+    GPR24 : ['GPR24']
+    GPR25 : ['GPR25']
+    GPR26 : ['GPR26']
+    GPR27 : ['GPR27']
+    GPR28 : ['GPR28']
+    GPR29 : ['GPR29']
+    GPR30 : ['GPR30']
+    GPR31 : ['GPR31']
+- Name: DImm14swordshift2
+  Description: Relative Displacement Immediate (bit size 14) - Single word aligned - Shifted 2
+  Relative: True
+  MinDisplacement: -8192
+  MaxDisplacement: 8191
+  Shift: 2
+- Name: SImm16
+  Description: Signed Immediate (bit size 16)
+  Min: -32768
+  Max: 32767
+  Step: 1
+  Shift: 0
+  AddressIndex: True 
+- Name: SImm16qword_4
+  Description: Signed Immediate (bit size 16) - Quad word aligned 
+  Min: -32768
+  Max: 32767
+  Step: 16
+  Shift: 4
+  AddressIndex: True 
+- Name: SImm16qword
+  Description: Signed Immediate (bit size 16) - Quad word aligned
+  Min: -32768
+  Max: 32767
+  Step: 16
+  Shift: 2
+  AddressIndex: True 
+- Name: SImm16dword
+  Description: Signed Immediate (bit size 16) - Double word aligned
+  Min: -32768
+  Max: 32767
+  Step: 8
+  Shift: 0
+  AddressIndex: True 
+- Name: SImm16sword
+  Description: Signed Immediate (bit size 16) - Single word aligned
+  Min: -32768
+  Max: 32767
+  Step: 4
+  Shift: 0
+  AddressIndex: True 
+- Name: SImm16hword
+  Description: Signed Immediate (bit size 16) - Half word aligned
+  Min: -32768
+  Max: 32767
+  Step: 2
+  Shift: 0
+  AddressIndex: True 
+- Name: DImm24swordshift2
+  Description: Relative Displacement Immediate (bit size 24) - Single word aligned - Shifted 2
+  Relative: True
+  MinDisplacement: -8388608
+  MaxDisplacement: 8388607
+  Shift: 2
+- Name: DImm24swordshift2Abs
+  Description: Absolute Displacement Immediate (bit size 24) - Single word aligned - Shifted 2
+  Min: -8388608
+  Max: 8388607
+  Shift: 2
+  AddressIndex: True 
+  Step: 4
+- Name: SImm5
+  Description: Signed Immediate (bit size 5)
+  Min: -16
+  Max: 15
+  Step: 1
+  Shift: 0
+- Name: SPR_regs
+  Description: Register operand (SPR)
+  Registers:
+    - SPR
+- Name: SPR32_regs
+  Description: Register operand 32 bits (SPR32)
+  Registers:
+    - SPR32
+- Name: SPR_regsNotPriv
+  Description: Register operand (SPR)
+  Registers:
+    - XER
+    - LR
+    - CTR
+    - VRSAVE
+- Name: UImm1
+  Description: Unsigned Immediate (bit size 1)
+  Min: 0
+  Max: 1
+  Step: 1
+  Shift: 0
+- Name: UImm3
+  Description: Unsigned Immediate (bit size 3)
+  Min: 0
+  Max: 7
+  Step: 1
+  Shift: 0
+- Name: UImm16
+  Description: Unsigned Immediate (bit size 16)
+  Min: 0
+  Max: 65535
+  Step: 1
+  Shift: 0
+- Name: UImm2
+  Description: Unsigned Immediate (bit size 2)
+  Min: 0
+  Max: 3
+  Step: 1
+  Shift: 0
+- Name: UImm2Not2
+  Description: Unsigned Immediate (bit size 2)
+  Values:
+    - 0
+    - 1
+    - 3
+- Name: UImm2Not3
+  Description: Unsigned Immediate (bit size 2)
+  Values:
+    - 0
+    - 1
+    - 2
+- Name: UImm4
+  Description: Unsigned Immediate (bit size 4)
+  Min: 0
+  Max: 15
+  Step: 1
+  Shift: 0
+- Name: UImm5
+  Description: Unsigned Immediate (bit size 5)
+  Min: 0
+  Max: 31
+  Step: 1
+  Shift: 0
+- Name: UImm6
+  Description: Unsigned Immediate (bit size 6)
+  Min: 0
+  Max: 63
+  Step: 1
+  Shift: 0
+- Name: UImm8
+  Description: Unsigned Immediate (bit size 8)
+  Min: 0
+  Max: 255
+  Step: 1
+  Shift: 0
+- Name: VR_regs
+  Description: VR Register operand
+  Registers:
+    VR0 : ['VR0','VSR32']
+    VR1 : ['VR1','VSR33']
+    VR2 : ['VR2','VSR34']
+    VR3 : ['VR3','VSR35']
+    VR4 : ['VR4','VSR36']
+    VR5 : ['VR5','VSR37']
+    VR6 : ['VR6','VSR38']
+    VR7 : ['VR7','VSR39']
+    VR8 : ['VR8','VSR40']
+    VR9 : ['VR9','VSR41']
+    VR10 : ['VR10','VSR42']
+    VR11 : ['VR11','VSR43']
+    VR12 : ['VR12','VSR44']
+    VR13 : ['VR13','VSR45']
+    VR14 : ['VR14','VSR46']
+    VR15 : ['VR15','VSR47']
+    VR16 : ['VR16','VSR48']
+    VR17 : ['VR17','VSR49']
+    VR18 : ['VR18','VSR50']
+    VR19 : ['VR19','VSR51']
+    VR20 : ['VR20','VSR52']
+    VR21 : ['VR21','VSR53']
+    VR22 : ['VR22','VSR54']
+    VR23 : ['VR23','VSR55']
+    VR24 : ['VR24','VSR56']
+    VR25 : ['VR25','VSR57']
+    VR26 : ['VR26','VSR58']
+    VR27 : ['VR27','VSR59']
+    VR28 : ['VR28','VSR60']
+    VR29 : ['VR29','VSR61']
+    VR30 : ['VR30','VSR62']
+    VR31 : ['VR31','VSR63']
+- Name: XER
+  Description: Fixed point exception register
+  Register: XER
+- Name: VSCR
+  Description: Vector Status Control register
+  Register: VSCR
+- Name: GPR0
+  Description: General purpose register 0
+  Register: GPR0
+- Name: CR0
+  Description: Condition register 0
+  Register: CR0
+- Name: CR1
+  Description: Condition register 1
+  Register: CR1
+- Name: CR2
+  Description: Condition register 2
+  Register: CR2
+- Name: CR3
+  Description: Condition register 3
+  Register: CR3
+- Name: CR4
+  Description: Condition register 4
+  Register: CR4
+- Name: CR5
+  Description: Condition register 5
+  Register: CR5
+- Name: CR6
+  Description: Condition register 6
+  Register: CR6
+- Name: CR7
+  Description: Condition register 7
+  Register: CR7
+- Name: LR
+  Description: Link register
+  Register: LR
+- Name: CTR
+  Description: Count register
+  Register: CTR
+- Name: FPSCR
+  Description: Floating-Point Status and Control Register
+  Register: FPSCR
+- Name: MSR
+  Description: Machine State Register
+  Register: MSR
+- Name: SRR0
+  Description: Save/Restore Register 0
+  Register: SRR0
+- Name: SRR1
+  Description: Save/Restore Register 0
+  Register: SRR1
+- Name: IH_Values
+  Description: IH Values
+  Values:
+    - 0
+    - 1
+    - 2
+    - 6
+- Name: UImm8_single
+  Description: Unsigned Immediate only 1 bit set (bit size 8)
+  Values: 
+    - 1
+    - 2
+    - 4
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+- Name: UImm8_notsingle
+  Description: Unsigned Immediate only more than one bit set (bit size 8)
+  Min: 0
+  Max: 255
+  Except: 
+    - 1
+    - 2
+    - 4
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+- Name: UImm8_mult
+  Description: Unsigned Immediate multiple bits set (bit size 8)
+  Min: 0
+  Max: 255
+  Step: 1
+  Shift: 0
+  Except: 
+    - 1
+    - 2
+    - 4
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+- Name: regbit
+  Description: Bit position in a register (between 0 and 31) 
+  Min: 0
+  Max: 31
+  Step: 1
+  Shift: 0

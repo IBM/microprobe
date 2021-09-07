@@ -1,0 +1,138 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: Processor
+  Type: Processor
+  Subelements:
+    - SCM
+- Name: SCM
+  Type: SCM
+  Subelements:
+    - Core0
+    - Core1
+    - Core2
+    - Core3
+    - Core4
+    - Core5
+    - Core6
+    - Core7
+    - L3
+    - MEM
+- Name: Core0
+  Type: Core
+  Repeat:
+    From: 0
+    To: 7
+  Subelements:
+    - L1D
+    - L1I
+    - L2
+    - ISU
+    - IFU
+    - FXU0
+    - FXU1
+    - VSU0
+    - VSU1
+    - LSU0
+    - LSU1
+    - BPU
+    - CRU
+    - GPR
+    - VSR
+- Name: L3
+  Type: L3
+- Name: MEM
+  Type: MEM
+- Name: L1D  
+  Type: L1D
+- Name: L1I 
+  Type: L1I
+- Name: L2 
+  Type: L2
+- Name: ISU
+  Type: ISU
+  Subelements:
+    - GCT
+    - DIS
+- Name: IFU
+  Type: IFU
+  Subelements:
+    - BPU
+    - CRBPU
+- Name: LSU0
+  Type: LSU
+- Name: LSU1
+  Type: LSU
+- Name: FXU0
+  Type: FXU
+  Repeat:
+    From: 0
+    To: 1
+  Subelements:
+    - ALU
+    - ROT
+    - CNT
+    - BSU
+    - MXU
+    - MUL
+    - DIV
+- Name: VSU0
+  Type: VSU
+  Subelements:
+    - VXS
+    - VFP
+- Name: VSU1
+  Type: VSU
+  Subelements:
+    - VPM
+    - VFP
+    - VDU
+- Name: BPU
+  Type: BU
+- Name: CRU
+  Type: CRU
+- Name: GPR
+  Type: GPR
+- Name: VSR
+  Type: VSR
+- Name: CRBPU
+  Type: CRBPU
+- Name: VXS
+  Type: VXS
+- Name: VFP
+  Type: VFP
+- Name: VPM
+  Type: VPM
+- Name: VDU
+  Type: VDU
+- Name: GCT
+  Type: GCT
+- Name: DIS
+  Type: DIS
+- Name: ALU
+  Type: ALU
+- Name: ROT
+  Type: ROT
+- Name: CNT
+  Type: CNT
+- Name: BSU
+  Type: BSU
+- Name: MXU
+  Type: MXU
+- Name: MUL
+  Type: MUL
+- Name: DIV
+  Type: DIV
+
+
+

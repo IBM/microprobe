@@ -1,0 +1,85 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: switching
+  Description: Input values required to maximize the computational switching
+  Default: None
+  Values:
+    ADDI_V0: [[ None, 0x3FFFFFFFFFFFFFFF, 1],
+              [ None, 0x0000000000000000, -1]]
+    VNMSUBFP_V0: [[ None, "0xa5aa5555_32", "0xcccc3333_32", "0x4CCC1618_32"],
+                  [ None, "0xa855aaaa_32", "0x3333cccc_32", "0x3333F58A_32" ]]
+    MULLI_V0: [[ None, "0xaaaaaaaa55555556", -4],
+               [ None, "0x55555555aaaaaaaa", -4]]
+    EQV_V0: [[ None, "0xaaaaaaaa55555555", "0x3c3c3c3cc3c3c3c3"],
+             [ None, "0x3c3c3c3cc3c3c3c3", "0x55555555aaaaaaaa"]]
+    VRLH_V0: [[ None, "0x55aa_16", "0xaaaf_16" ],
+              [ None, "0xaa55_16", "0x555f_16" ],
+              [ None, "0x55aa_16", "0xaaaf_16" ],
+              [ None, "0xaa55_16", "0x555f_16" ]]
+    MULLD_V0:  [[ None, 0xAAAAAAAAAAAAAAAA, 0xFFFFFFFFFFFFFFFF],
+                [ None, 0xFFFFFFFFFFFFFFFF, 0x5555555555555555]] 
+    XVMULLDP_V0: [[ None, "0x5555aaaa_32", "0x3F7F7CEE_32" ],
+                  [ None, "0xaaaa5555_32", "0xBF804020_32" ],
+                  [ None, "0xEA205030_32", "0xaaaa5555_32" ],
+                  [ None, "0x14CC0334_32", "0x5555aaaa_32" ]]
+    XVMADDADP_V0: [["0x5555555555555555_64", "0xaaaaaaaa55555555_64", "0x6a99988381bd33e5_64"],
+                   ["0xAAAAAAAAAAAAAAAA_64", "0x5a555555aaaaaaaa_64", "0x3aeffe3617c04403_64"],
+                   ["0x5555555555555555_64", "0x6a99988381bd33e5_64", "0xaaaaaaaa55555555_64"],
+                   ["0xAAAAAAAAAAAAAAAA_64", "0x3aeffe3617c04403_64", "0x5a555555aaaaaaaa_64"]]
+    XVNMSUBMDP_V0: [["0x5555555555555555_64", "0xa5aaaaaa55555555_64", "0xbb11cb9e8d5da1f6_64"],
+                    ["0xAAAAAAAAAAAAAAAA_64", "0x5a555555aaaaaaaa_64", "0xd555409eb72c612e_64"],
+                    ["0x5555555555555555_64", "0xbb11cb9e8d5da1f6_64", "0xa5aaaaaa55555555_64"],
+                    ["0xAAAAAAAAAAAAAAAA_64", "0xd555409eb72c612e_64", "0x5a555555aaaaaaaa_64"]]
+    RLWIMIx_V0: [[ None, 0xaaaaaaaa55555555, 31, 0, 31],
+                 [ None, 0x55555555aaaaaaaa, 31, 0, 31]]
+    SUBFIC_V0:  [[ None, 0xaaaaaaaaaaaaaaaa, -1],
+                 [ None, 0x5555555555555555, 0x3fff]]
+    VCIPHER_V0: [[ None, "0xaa55_16", "0x55aa_16"],
+                 [ None, "0x55aa_16", "0xaa55_16"]]
+    VMHADDSHS_V0: [[ None,"0x3aaa5555_32","0x55553aaa_32","0xf21846cd_32" ],
+                   [ None,"0x55553aaa_32","0x3aaa5555_32","0x46cdf218_32" ]]
+    VMSUMUHS_V0: [[ None, "0x3aaa_16", "0x5555_16", "0x1e89ccc1_32"],
+                  [ None, "0x5555_16", "0x3aaa_16", "0x333e8176_32"]]
+    #LWA_V0: [[ None, "Mem:0x5555555555" ],
+    #         [ None, "Mem:0xAAAAAAAAAA" ]]
+    #LD_V0: [[ None, "Mem:0x5555555555" ],
+    #        [ None, "Mem:0xAAAAAAAAAA" ]]
+    #LXVD2X_V0: [[ None, "Mem:0x55555555" ],
+    #            [ None, "Mem:0xAAAAAAAA" ]]
+    #STXVD2X_V0: [[ "0xaaaaaaaa55555555", None, None ],
+    #             [ "0x55555555aaaaaaaa", None, None ]]
+    #LXVW4X_V0: [[ None, "Mem:0x55555555" ],
+    #            [ None, "Mem:0xAAAAAAAA" ]]
+    #STVX_V0: [[ "0x55555555aaaaaaaa", None, None,],
+    #          [ "0xaaaaaaaa55555555", None, None ]]
+    #LVXL_V0: [[ None, "Mem:0x55555555" ],
+    #          [ None, "Mem:0xAAAAAAAA" ]]
+    XVNMADDADP_V0: [["0x5555555555555555_64", "0xaaaaaaaa55555555_64", "0x6a99988381bd33e5_64"],
+                    ["0xAAAAAAAAAAAAAAAA_64", "0x5a555555aaaaaaaa_64", "0x3aeffe3617c04403_64"],
+                    ["0x5555555555555555_64", "0x6a99988381bd33e5_64", "0xaaaaaaaa55555555_64"],
+                    ["0xAAAAAAAAAAAAAAAA_64", "0x3aeffe3617c04403_64", "0x5a555555aaaaaaaa_64"]]
+    VRLQMI_V0: [[ "0x5555_16", "0xAAAA_16", "0x0000000000007F7F_64" ],
+                [ "0xAAAA_16", "0x5555_16", "0x0000000000007F7F_64" ]]
+    LXVP_V0: [[ None, "Mem:0x5555_16" ],
+              [ None, "Mem:0xAAAA_16" ]]
+    LFSU_V0: [[ None, "Mem:0xAAAAAAAA_32" ],
+              [ None, "Mem:0x55555555_32" ]]
+    ADDPCIS_V0: [[ None, "0x7AAA"],
+                 [ None, "0x0555"],
+                 [ None, "0x7F00"],
+                 [ None, "0x00FF"]]
+    XVF64GERPN_V0: [[ "0xCCCC_16", "0xAAAA_16", "0x5555_16" ],
+                    [ "0x3333_16", "0x5555_16", "0xAAAA_16" ]]
+

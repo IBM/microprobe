@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -127,12 +127,12 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
             test_cmd.extend([
                 "--target-c-compiler",
                 os.environ.get("MP_TESTING_COMPILER_RISCV",
-                               "riscv64-unknown-elf-gcc")])
+                               "riscv64-linux-gnu-gcc-8")])
             test_cmd.extend(
                 ["--target-objdump",
                  os.environ.get(
                      "MP_TESTING_COMPILER_RISCV",
-                     "riscv64-unknown-elf-gcc").replace("gcc",
+                     "riscv64-linux-gnu-gcc-8").replace("gcc-8",
                                                         "objdump")])
         print(" ".join(test_cmd))
 

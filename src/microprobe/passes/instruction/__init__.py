@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1472,9 +1472,24 @@ class AddOnePass(microprobe.passes.Pass):
         building_block.add_init(instrs)
 
         instrs = target.add_to_register(areg, 1)
-        instrs += target.store_integer(
-            areg, loopvar.address, 64, context
-        )
+
+        try:
+            instrs += target.store_integer(
+                areg, loopvar.address, 64, context
+            )
+        except MicroprobeCodeGenerationError:
+            areg = target.scratch_registers[0]
+            instrs += target.set_register_to_address(
+                    areg,
+                    loopvar.address,
+                    context,
+                )
+            context.set_register_value(
+                areg, loopvar.address
+            )
+            instrs += target.store_integer(
+                areg, loopvar.address, 64, context
+            )
 
         for instr in instrs:
             instr.add_comment("Loop update")

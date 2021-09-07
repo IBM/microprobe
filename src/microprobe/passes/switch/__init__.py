@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -416,6 +416,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
                         address = memoperand.address
 
                         required_value = switch_input.split(":")[1]
+                        LOG.debug("Raw required value %s", str(required_value))
                         if "_" in required_value:
                             size = int(required_value.split("_")[1], 10)
                             required_value = required_value.split("_")[0]
@@ -431,6 +432,8 @@ class SwitchingInstructions(microprobe.passes.Pass):
                             assert opsize % size == 0
                             mult = int(opsize / size)
                             required_value = prefix + required_value * mult
+                            required_value = int(required_value, 0)
+                        else:
                             required_value = int(required_value, 0)
 
                         # we can modify a bit the address if we maintain the

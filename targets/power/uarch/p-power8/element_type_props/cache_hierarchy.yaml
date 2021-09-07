@@ -1,0 +1,53 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: cache_size
+  Description: Cache size in kb
+  Default: NO_DEFAULT
+  Values:
+    L3:  98304
+    L2:    256
+    L1D:    32
+    L1I:    32
+- Name: cache_linesize
+  Description: Cache line size in bytes
+  Default: NO_DEFAULT
+  Values:
+    L3:  128
+    L2: 128
+    L1D: 128
+    L1I: 128
+- Name: cache_ways
+  Description: Cache ways
+  Default: NO_DEFAULT
+  Values:
+    L3:  8
+    L2:  8
+    L1D:  8
+    L1I:  8
+- Name: cache_address_size
+  Description: Address size in bits
+  Default: NO_DEFAULT
+  Values:
+    L3:  64
+    L2: 64
+    L1D: 64
+    L1I: 64
+- Name: cache_next_level
+  Description: Next cache level
+  Default: NO_DEFAULT
+  Values:
+    L2: L3
+    L1D: L2
+    L1I: L2

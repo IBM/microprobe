@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 
 set -e # Finish right after a non-zero return command
 
-if [ -f "$0.error" ] && [ "x$1" = "x-c" ]; then
+if [ -f "$0.error" ] && [ "$1" = "-c" ]; then
     echo "Error in $0"
     cat "$0.error"
     echo "Error in $0"
     exit 1
-elif [ "x$1" = "x-c" ]; then
+elif [ "$1" = "-c" ]; then
     echo "Not error in $0"
     exit 0
 else
@@ -36,6 +36,7 @@ if [ -z "$MAXJOBS" ] ; then
     if [ "$MAXJOBS" -gt 48 ]; then
         MAXJOBS=48
     fi
+    echo "MAXJOBS $MAXJOBS"
 fi
 
 export MAXJOBS
@@ -45,18 +46,18 @@ export TIMEOUT
 # Check if we are in travis
 if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
     export NICE=""
-    export WORKSPACE=$TRAVIS_BUILD_DIR
+    export WORKSPACE="$TRAVIS_BUILD_DIR"
     if [ "$TRAVIS_BRANCH" = "master" ]; then
         export BUILD_TYPE="stable"
     fi
     MAXJOBS=1
     export NOSEOPTS=" -d -v -e load_tests --exe --processes=$MAXJOBS --detailed-errors --process-timeout=$TIMEOUT "
 
-    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-unknown-elf-gcc)
+    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-linux-gnu-gcc-8)
     export MP_TESTING_COMPILER_RISCV_V22
 else
     export NICE="nice -n 1"
-    if [ "x$WORKSPACE" = "x" ]; then
+    if [ "$WORKSPACE" = "" ]; then
         WORKSPACE=$(pwd)
         export WORKSPACE
     fi
@@ -65,20 +66,20 @@ else
     # export NOSEOPTS="-d -v -e load_tests --exe --processes=$MAXJOBS -x --detailed-errors --process-timeout=$TIMEOUT"
 
     set +e
-    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-unknown-elf-gcc)
+    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-linux-gnu-gcc-8)
     export MP_TESTING_COMPILER_RISCV_V22
     set -e
 
 fi
 
 # Python option. Make sure we are in a controlled environment
-if [ "x$PYTHON_VERSION" = "x" ]; then
+if [ "$PYTHON_VERSION" = "" ]; then
     PYTHON_VERSION="$(python -V 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)"
     echo "PYTHON_VERSION=$PYTHON_VERSION"
     export PYTHON_VERSION
 fi
 
-if [ "x$BUILD_TYPE" != "xstable" ]; then
+if [ "$BUILD_TYPE" != "stable" ]; then
     export BUILD_TYPE='devel'
 else
     export BUILD_TYPE='stable'
@@ -87,6 +88,51 @@ fi
 export MP_TESTING_CFLAGS_RISCV_V22="-march=rv64gc"
 export MP_TESTING_DFLAGS_RISCV_V22="-M numeric,no-aliases"
 export MP_TESTING_AFLAGS_RISCV_V22="-march=rv64gc"
+
+# Check if we are in travis
+if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
+    MP_TESTING_COMPILER_POWER=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER
+    MP_TESTING_COMPILER_POWER_V206=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V206
+    MP_TESTING_COMPILER_POWER_V207=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V207
+    MP_TESTING_COMPILER_POWER_V300=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V300
+    MP_TESTING_COMPILER_POWER_V310=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V310
+else
+    set +e
+    MP_TESTING_COMPILER_POWER=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER
+    MP_TESTING_COMPILER_POWER_V206=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V206
+    MP_TESTING_COMPILER_POWER_V207=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V207
+    MP_TESTING_COMPILER_POWER_V300=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V300
+    MP_TESTING_COMPILER_POWER_V310=$(command -v powerpc64le-linux-gnu-gcc)
+    export MP_TESTING_COMPILER_POWER_V310
+    set -e
+fi
+
+export MP_TESTING_CFLAGS_POWER_V206="-mcpu=power7 -mtune=power7"
+export MP_TESTING_DFLAGS_POWER_V206="-M power7"
+export MP_TESTING_AFLAGS_POWER_V206="-mpower7"
+
+export MP_TESTING_CFLAGS_POWER_V207="-mcpu=power8 -mtune=power8"
+export MP_TESTING_DFLAGS_POWER_V207="-M power8"
+export MP_TESTING_AFLAGS_POWER_V207="-mpower8"
+
+export MP_TESTING_CFLAGS_POWER_V300="-mcpu=power9 -mtune=power9"
+export MP_TESTING_DFLAGS_POWER_V300="-M power9"
+export MP_TESTING_AFLAGS_POWER_V300="-mpower9"
+
+export MP_TESTING_CFLAGS_POWER_V310="-mcpu=power10 -mtune=power10"
+export MP_TESTING_DFLAGS_POWER_V310="-M power10"
+export MP_TESTING_AFLAGS_POWER_V310="-mpower10"
+
+
 
 export PYTHONNOUSERSITE=True
 export PYTHONPATH=""
@@ -120,14 +166,22 @@ exit_success() {
 exit_error() {
     if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
         echo "Error in $1"
-        if [ -f "$2" ]; then
-            cat "$2"
+        if [ "$2" != "" ]; then
+            if [ -f "$2" ]; then
+                set +e
+                timeout 5 cat "$2"
+                set -e
+            fi
         fi
         exit 1
     else
         touch "$1.error"
-        if [ -f "$2" ]; then
-            tee "$1.error" < "$2"
+        if [ "$2" != "" ]; then
+            if [ -f "$2" ]; then
+                set +e
+                timeout 5 tee "$1.error" < "$2"
+                set -e
+            fi
         fi
         exit 0
     fi
@@ -143,7 +197,7 @@ if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
 else
     # Create a virtual environment and activate it and install dependencies
     # only if we are not already in a virtual env
-    if [ "x$VIRTUAL_ENV" = "x" ]; then
+    if [ "$VIRTUAL_ENV" = "" ]; then
 
         # No user packages within the virtual env
         export PYTHONPATH=""
@@ -165,7 +219,7 @@ else
         # shellcheck source=/dev/null
         .  "$WORKSPACE/venv-python$PYTHON_VERSION/bin/activate"
 
-        if [ "x$NEEDINSTALL" = "xTrue" ] || [ "$BUILD_TYPE" = "stable" ]; then
+        if [ "$NEEDINSTALL" = "True" ] || [ "$BUILD_TYPE" = "stable" ]; then
 
             pip=$(command -v pip)
             vpython=$(head -n 1 "$pip" | sed "s/#\\!//g")
@@ -195,8 +249,8 @@ else
 fi
 
 # Add PATHs
-export PYTHONPATH=$WORKSPACE/src/:$PYTHONPATH
-export MICROPROBEDATA=$WORKSPACE/targets/
+export PYTHONPATH="$WORKSPACE/src/:$PYTHONPATH"
+export MICROPROBEDATA="$WORKSPACE/targets/"
 MICROPROBETEMPLATES="$(find "$(pwd)"/targets -type d -name templates -exec echo -n {}: \;)"
 export MICROPROBETEMPLATES
 MICROPROBEWRAPPERS="$(find "$(pwd)"/targets -type d -name wrappers -exec echo -n {}: \;)"

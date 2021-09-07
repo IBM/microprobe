@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ set -e
 cmd="yapf -i --verify --style pep8 "
 cmd2="autopep8 -a -a -a -i "
 
-if [ "x$1" = "x" ]; then
+if [ "$1" = "" ]; then
     echo "Please provide a file name"
     exit 255
 fi
@@ -66,7 +66,7 @@ format2 () {
 
 
 cfile=$1
-while [ "x$cfile" != "x" ]; do
+while [ "$cfile" != "" ]; do
 
     if [ -e "$cfile" ]; then
         if [ -f "$cfile" ]; then

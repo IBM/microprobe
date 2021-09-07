@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -79,7 +79,9 @@ if [ ! -d "$basedir/toolchain_riscv/install/bin" ]; then
             exit 0
         fi
     fi
-    rm -fr "$basedir/toolchain_riscv/riscv-gnu-toolchain/*"
+    rm -fr "$basedir/toolchain_riscv/riscv-gnu-toolchain/"
+else
+    rm -fr "$basedir/toolchain_riscv/riscv-gnu-toolchain/"
 fi
 
 PATH=$PATH:$basedir/toolchain_riscv/install/bin

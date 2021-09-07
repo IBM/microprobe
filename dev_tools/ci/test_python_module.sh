@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 set -e # Finish right after a non-zero return command
 
-if [ "x$WORKSPACE" = "x" ]; then
+if [ "$WORKSPACE" = "" ]; then
 	WORKSPACE=$(pwd)
     export WORKSPACE
 fi
@@ -27,7 +27,7 @@ fi
 . "$WORKSPACE/dev_tools/ci/environment.sh"
 start_script "$0"
 
-if [ "x" = "x$1" ]; then
+if [ "" = "$1" ]; then
     echo "Need to provide a python module"
     exit_error "$0"
 fi

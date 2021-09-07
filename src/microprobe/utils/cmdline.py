@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1721,7 +1721,7 @@ class CLI(object):
             isa_def = [
                 definition
                 for definition in definitions if definition.name == isa_def
-            ][0]
+            ][-1]
 
         definitions = find_microarchitecture_definitions()
         if architecture_def not in [
@@ -1738,7 +1738,7 @@ class CLI(object):
                 definition
                 for definition in definitions
                 if definition.name == architecture_def
-            ][0]
+            ][-1]
 
         definitions = find_env_definitions()
 
@@ -1752,7 +1752,7 @@ class CLI(object):
             env_def = [
                 definition
                 for definition in definitions if definition.name == env_def
-            ][0]
+            ][-1]
 
         self._arguments["target"] = (isa_def, architecture_def, env_def)
 

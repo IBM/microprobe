@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 set -e # Finish right after a non-zero return command
 
-if [ "x$WORKSPACE" = "x" ]; then
+if [ "$WORKSPACE" = "" ]; then
 	WORKSPACE=$(pwd)
     export WORKSPACE
 fi
@@ -31,9 +31,15 @@ command -v nosetests
 python "$(command -v nosetests)" --version
 
 set +e
-# shellcheck disable=SC2086,SC2046
-$NICE python "$(command -v nosetests)" $(find "$WORKSPACE/targets/" -type d -name "tools" | grep "tests/tools")  --xunitmp-file="tests_tools${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_tools${PYTHON_VERSION}$1.xml"
-error=$?
+if [ "$2" = "" ]; then
+    # shellcheck disable=SC2086,SC2046
+    $NICE python "$(command -v nosetests)" $(find "$WORKSPACE/targets/" -type d -name "tools" | grep "tests/tools")  --xunitmp-file="tests_tools${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_tools${PYTHON_VERSION}$1.xml"
+    error=$?
+else
+    # shellcheck disable=SC2086,SC2046
+    $NICE python "$(command -v nosetests)" $(find "$WORKSPACE/targets/" -type d -name "tools" | grep "tests/tools" | grep "$2")  --xunitmp-file="tests_tools${PYTHON_VERSION}$1.xml" $NOSEOPTS --cover-xml-file="cover_tools${PYTHON_VERSION}$1.xml"
+    error=$?
+fi
 set -e
 
 if [ "$error" -ne 0 ]; then

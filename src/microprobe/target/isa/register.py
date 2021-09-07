@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -178,7 +178,7 @@ class GenericRegister(Register, Pickable):
         self._hash = hash(
             (
                 self.name, self.description,
-                self.representation, str(self.type)
+                self.representation, str(hash(self.type))
             )
         )
 

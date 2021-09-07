@@ -1,5 +1,5 @@
 #!/usr/bin/env sh 
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 set -e
-if [ "x$WORKSPACE" = "x" ]; then  
+if [ "$WORKSPACE" = "" ]; then  
     WORKSPACE=$(pwd)        
 	export WORKSPACE
 fi                                                                                                                                                                                                                                                                                     
