@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ tmp2=$(mktemp -d)
 
 # Target package directory
 
-if [ "x$2" = "x" ]; then
+if [ "$2" = "" ]; then
     echo "No target specified"
     exit 255
 else
@@ -106,13 +106,13 @@ infodaily="egg_info --tag-build .$mdate --egg-base $tmp2"
 ############################## END BUILD FLAGS ################################
 ###############################################################################
 
-if [ "x$1" = "xcandidate" ]; then
+if [ "$1" = "candidate" ]; then
      info=$inforc
      finaldir="stable"
-elif [ "x$1" = "xstable" ]; then
+elif [ "$1" = "stable" ]; then
      info=$infooff
      finaldir="stable"
-elif [ "x$1" = "xdevel" ]; then
+elif [ "$1" = "devel" ]; then
      info=$infodaily
      finaldir="dev"
 else
@@ -217,6 +217,9 @@ mv -f ./microprobe.orig ./src/microprobe/microprobe.cfg
 
 create_tmp_package ./src/microprobe/definitions/riscv/ ./targets/riscv/ 1 1
 create_wheel microprobe_target_riscv.py common
+
+create_tmp_package ./src/microprobe/definitions/power/ ./targets/power/ 1 1
+create_wheel microprobe_target_power.py common
 
 remove_tmp_package ./src/microprobe/definitions/
 

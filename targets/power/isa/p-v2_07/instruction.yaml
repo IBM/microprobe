@@ -1,0 +1,1043 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: "BCDADDx_V0"
+  Mnemonic: "BCDADD."
+  Description: "Decimal Add Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v06"
+  Operands:
+    XO: ['1', 'XO', '?']
+  ImplicitOperands:
+    CR6: ['CR6', 'O']
+- Name: "BCDSUBx_V0"
+  Mnemonic: "BCDSUB."
+  Description: "Decimal Subtract Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v06"
+  Operands:
+    XO: ['65', 'XO', '?']
+  ImplicitOperands:
+    CR6: ['CR6', 'O']
+- Name: "BCTAR_V0"
+  Mnemonic: "BCTAR"
+  Description: "Branch Conditional to Branch Target Address Register relative"
+  Opcode: "13"
+  Format: "XL_FORM_v04"
+  Operands:
+    XO: ['560', 'XO', '?']
+    LK: ['0', 'LK', '?']
+    BO: ['BO_BCTARl_Values', 'BO', 'I']
+  ImplicitOperands:
+    TAR: ['TAR', 'I']
+- Name: "BCTARL_V0"
+  Mnemonic: "BCTARL"
+  Description: "Branch Conditional to Branch Target Address Register relative and link"
+  Opcode: "13"
+  Format: "XL_FORM_v04"
+  Operands:
+    XO: ['560', 'XO', '?']
+    LK: ['1', 'LK', '?']
+    BO: ['BO_BCTARl_Values', 'BO', 'I']
+  ImplicitOperands:
+    LR: ['LR', 'O']
+    TAR: ['TAR', 'I']
+- Name: "CLRBHRB_V0"
+  Mnemonic: "CLRBHRB"
+  Description: "Clear BHRB"
+  Opcode: "1F"
+  Format: "X_FORM_v15"
+  Operands:
+    XO: ['430', 'XO', '?']
+- Name: "FMRGEW_V0"
+  Mnemonic: "FMRGEW"
+  Description: "Floating Merge Even Word"
+  Opcode: "3F"
+  Format: "X_FORM_v39"
+  Operands:
+    XO: ['966', 'XO', '?']
+    Rc: ['0', 'Rc', '?']
+- Name: "FMRGOW_V0"
+  Mnemonic: "FMRGOW"
+  Description: "Floating Merge Odd Word"
+  Opcode: "3F"
+  Format: "X_FORM_v39"
+  Operands:
+    XO: ['838', 'XO', '?']
+    Rc: ['0', 'Rc', '?']
+- Name: "LBEPX_V0"
+  Mnemonic: "LBEPX"
+  Description: "Load Byte by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v33"
+  Operands:
+    XO: ['95', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [1], 1, 'I']
+- Name: "LHEPX_V0"
+  Mnemonic: "LHEPX"
+  Description: "Load Halfword by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v33"
+  Operands:
+    XO: ['287', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [2], 2, 'I']
+- Name: "LWEPX_V0"
+  Mnemonic: "LWEPX"
+  Description: "Load Word by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v33"
+  Operands:
+    XO: ['31', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [4], 4, 'I']
+- Name: "LDEPX_V0"
+  Mnemonic: "LDEPX"
+  Description: "Load Doubleword by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v33"
+  Operands:
+    XO: ['29', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [8], 8, 'I']
+- Name: "LQARX_V0"
+  Mnemonic: "LQARX"
+  Description: "Load Quadword And Reserve Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v60"
+  Operands:
+    XO: ['276', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [16], 16, 'I']
+  InstructionChecks:
+    C0: ['check_operands', 'RA_abn0', 'RTP', 'equal', False]
+    C1: ['check_operands', 'RB_ai', 'RTP', 'equal', False]
+    C2: ['check_operands', 'RA_abn0', 'RB_ai', 'equal', False]
+- Name: "LXSIWAX_V0"
+  Mnemonic: "LXSIWAX"
+  Description: "Load VSX Scalar as Integer Word Algebraic Indexed"
+  Opcode: "1F"
+  Format: "XX1_FORM_v00"
+  Operands:
+    XO: ['76', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [4], 4, 'I']
+- Name: "LXSIWZX_V0"
+  Mnemonic: "LXSIWZX"
+  Description: "Load VSX Scalar as Integer Word and Zero Indexed"
+  Opcode: "1F"
+  Format: "XX1_FORM_v00"
+  Operands:
+    XO: ['12', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [4], 4, 'I']
+- Name: "LXSSPX_V0"
+  Mnemonic: "LXSSPX"
+  Description: "Load VSX Scalar Single-Precision Indexed"
+  Opcode: "1F"
+  Format: "XX1_FORM_v00"
+  Operands:
+    XO: ['524', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [4], 4, 'I']
+- Name: "MFBHRBE_V0"
+  Mnemonic: "MFBHRBE"
+  Description: "Move From Branch History Rolling Buffer"
+  Opcode: "1F"
+  Format: "XFX_FORM_v06"
+  Operands:
+    XO: ['302', 'XO', '?']
+- Name: "MFVSRD_V0"
+  Mnemonic: "MFVSRD"
+  Description: "Move From VSR Doubleword"
+  Opcode: "1F"
+  Format: "XX1_FORM_v02"
+  Operands:
+    XO: ['51', 'XO', '?']
+    RA: ['@ORIG@', 'RA', 'O']
+- Name: "MFVSRWZ_V0"
+  Mnemonic: "MFVSRWZ"
+  Description: "Move From VSR Word and Zero"
+  Opcode: "1F"
+  Format: "XX1_FORM_v02"
+  Operands:
+    XO: ['115', 'XO', '?']
+    RA: ['@ORIG@', 'RA', 'O']
+- Name: "MSGCLR_V0"
+  Mnemonic: "MSGCLR"
+  Description: "Message Clear"
+  Opcode: "1F"
+  Format: "X_FORM_v27"
+  Operands:
+    XO: ['238', 'XO', '?']
+- Name: "MSGCLRP_V0"
+  Mnemonic: "MSGCLRP"
+  Description: "Message Clear Privileged"
+  Opcode: "1F"
+  Format: "X_FORM_v27"
+  Operands:
+    XO: ['174', 'XO', '?']
+- Name: "MSGSND_V0"
+  Mnemonic: "MSGSND"
+  Description: "Message Send"
+  Opcode: "1F"
+  Format: "X_FORM_v27"
+  Operands:
+    XO: ['206', 'XO', '?']
+- Name: "MSGSNDP_V0"
+  Mnemonic: "MSGSNDP"
+  Description: "Message Send Privileged"
+  Opcode: "1F"
+  Format: "X_FORM_v27"
+  Operands:
+    XO: ['142', 'XO', '?']
+- Name: "MTVSRD_V0"
+  Mnemonic: "MTVSRD"
+  Description: "Move To VSR Doubleword"
+  Opcode: "1F"
+  Format: "XX1_FORM_v03"
+  Operands:
+    XO: ['179', 'XO', '?']
+- Name: "MTVSRWA_V0"
+  Mnemonic: "MTVSRWA"
+  Description: "Move To VSR Word Algebraic"
+  Opcode: "1F"
+  Format: "XX1_FORM_v03"
+  Operands:
+    XO: ['211', 'XO', '?']
+- Name: "MTVSRWZ_V0"
+  Mnemonic: "MTVSRWZ"
+  Description: "Move To VSR Word and Zero"
+  Opcode: "1F"
+  Format: "XX1_FORM_v03"
+  Operands:
+    XO: ['243', 'XO', '?']
+- Name: "RFEBB_V0"
+  Mnemonic: "RFEBB"
+  Description: "Return from Event Based Branch"
+  Opcode: "13"
+  Format: "XL_FORM_v05"
+  Operands:
+    XO: ['146', 'XO', '?']
+- Name: "STBEPX_V0"
+  Mnemonic: "STBEPX"
+  Description: "Store Byte by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO: ['223', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [1], 1, 'O']
+- Name: "STHEPX_V0"
+  Mnemonic: "STHEPX"
+  Description: "Store Halfword by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO: ['415', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [8], 8, 'O']
+- Name: "STWEPX_V0"
+  Mnemonic: "STWEPX"
+  Description: "Store Word by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO: ['159', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [4], 4, 'O']
+- Name: "STDEPX_V0"
+  Mnemonic: "STDEPX"
+  Description: "Store Doubleword by External PID Indexed"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO: ['157', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [8], 8, 'O']
+- Name: "STQCXx_V0"
+  Mnemonic: "STQCX."
+  Description: "Store Quadword Conditional Indexed and record CR0"
+  Opcode: "1F"
+  Format: "X_FORM_v61"
+  Operands:
+    XO: ['182', 'XO', '?']
+    Rc: ['1' , 'Rc', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [16], 16, 'O']
+- Name: "STXSIWX_V0"
+  Mnemonic: "STXSIWX"
+  Description: "Store VSX Scalar as Integer Word Indexed"
+  Opcode: "1F"
+  Format: "XX1_FORM_v01"
+  Operands:
+    XO: ['140', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [4], 4, 'O']
+- Name: "STXSSPX_V0"
+  Mnemonic: "STXSSPX"
+  Description: "Store VSR Scalar Word Indexed"
+  Opcode: "1F"
+  Format: "XX1_FORM_v01"
+  Operands:
+    XO: ['652', 'XO', '?']
+  MemoryOperands:
+    MEM1: [['RA_abn0', 'RB_ai'], [4], 4, 'O']
+- Name: "TABORTx_V0"
+  Mnemonic: "TABORT."
+  Description: "Transaction Abort"
+  Opcode: "1F"
+  Format: "X_FORM_v63"
+  Operands:
+    XO: ['910', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TABORTDCx_V0"
+  Mnemonic: "TABORTDC."
+  Description: "Transaction Abort Doubleword Conditional"
+  Opcode: "1F"
+  Format: "X_FORM_v64"
+  Operands:
+    XO: ['814', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TABORTDCIx_V0"
+  Mnemonic: "TABORTDCI."
+  Description: "Transaction Abort Doubleword Conditional Immediate"
+  Opcode: "1F"
+  Format: "X_FORM_v65"
+  Operands:
+    XO: ['878', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TABORTWCx_V0"
+  Mnemonic: "TABORTWC."
+  Description: "Transaction Abort Word Conditional"
+  Opcode: "1F"
+  Format: "X_FORM_v64"
+  Operands:
+    XO: ['782', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TABORTWCIx_V0"
+  Mnemonic: "TABORTWCI."
+  Description: "Transaction Abort Word Conditional Immediate"
+  Opcode: "1F"
+  Format: "X_FORM_v65"
+  Operands:
+    XO: ['846', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TBEGINx_V0"
+  Mnemonic: "TBEGIN."
+  Description: "Transaction Begin"
+  Opcode: "1F"
+  Format: "X_FORM_v68"
+  Operands:
+    XO: ['654', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TCHECK_V0"
+  Mnemonic: "TCHECK"
+  Description: "Transaction Check"
+  Opcode: "1F"
+  Format: "X_FORM_v67"
+  Operands:
+    XO: ['718', 'XO', '?']
+- Name: "TENDx_V0"
+  Mnemonic: "TEND."
+  Description: "Transaction End"
+  Opcode: "1F"
+  Format: "X_FORM_v62"
+  Operands:
+    XO: ['686', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TRECHKPTx_V0"
+  Mnemonic: "TRECHKPT."
+  Description: "Transaction Recheckpoint"
+  Opcode: "1F"
+  Format: "X_FORM_v30"
+  Operands:
+    XO: ['1006', 'XO', '?']
+    Rc: ['1', 'Rc', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TRECLAIMx_V0"
+  Mnemonic: "TRECLAIM."
+  Description: "Transaction Reclaim"
+  Opcode: "1F"
+  Format: "X_FORM_v63"
+  Operands:
+    XO: ['942', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "TSRx_V0"
+  Mnemonic: "TSR."
+  Description: "Transaction Suspend or Resume"
+  Opcode: "1F"
+  Format: "X_FORM_v66"
+  Operands:
+    XO: ['750', 'XO', '?']
+  ImplicitOperands:
+    CR0: ['CR0', 'O']
+- Name: "VADDCUQ_V0"
+  Mnemonic: "VADDCUQ"
+  Description: "Vector Add & write Carry Unsigned Quadword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['320', 'XO', '?']
+- Name: "VADDECUQ_V0"
+  Mnemonic: "VADDECUQ"
+  Description: "Vector Add Extended & write Carry Unsigned Quadword"
+  Opcode: "4"
+  Format: "VA_FORM_v00"
+  Operands:
+    XO: ['61', 'XO', '?']
+- Name: "VADDEUQM_V0"
+  Mnemonic: "VADDEUQM"
+  Description: "Vector Add Extended Unsigned Quadword Modulo"
+  Opcode: "4"
+  Format: "VA_FORM_v00"
+  Operands:
+    XO: ['60', 'XO', '?']
+- Name: "VADDUDM_V0"
+  Mnemonic: "VADDUDM"
+  Description: "Vector Add Unsigned Doubleword Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['192', 'XO', '?']
+- Name: "VADDUQM_V0"
+  Mnemonic: "VADDUQM"
+  Description: "Vector Add Unsigned Quadword Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['256', 'XO', '?']
+- Name: "VBPERMQ_V0"
+  Mnemonic: "VBPERMQ"
+  Description: "Vector Bit Permute Quadword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1356', 'XO', '?']
+- Name: "VCIPHER_V0"
+  Mnemonic: "VCIPHER"
+  Description: "Vector AES Cipher"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1288', 'XO', '?']
+- Name: "VCIPHERLAST_V0"
+  Mnemonic: "VCIPHERLAST"
+  Description: "Vector AES Cipher Last"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1289', 'XO', '?']
+- Name: "VCLZB_V0"
+  Mnemonic: "VCLZB"
+  Description: "Vector Count Leading Zeros Byte"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1794', 'XO', '?']
+- Name: "VCLZD_V0"
+  Mnemonic: "VCLZD"
+  Description: "Vector Count Leading Zeros Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1986', 'XO', '?']
+- Name: "VCLZH_V0"
+  Mnemonic: "VCLZH"
+  Description: "Vector Count Leading Zeros Halfword"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1858', 'XO', '?']
+- Name: "VCLZW_V0"
+  Mnemonic: "VCLZW"
+  Description: "Vector Count Leading Zeros Word"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1922', 'XO', '?']
+- Name: "VCMPEQUD_V0"
+  Mnemonic: "VCMPEQUD"
+  Description: "Vector Compare Equal To Unsigned Doubleword (Rc=0)"
+  Opcode: "4"
+  Format: "VC_FORM_v00"
+  Operands:
+    XO: ['199', 'XO', '?']
+    Rc: ['0', 'Rc', '?']
+- Name: "VCMPEQUDx_V0"
+  Mnemonic: "VCMPEQUD."
+  Description: "Vector Compare Equal To Unsigned Doubleword (Rc=1)"
+  Opcode: "4"
+  Format: "VC_FORM_v00"
+  Operands:
+    XO: ['199', 'XO', '?']
+    Rc: ['1', 'Rc', '?']
+  ImplicitOperands:
+    CR6: ['CR6', 'O']
+- Name: "VCMPGTSD_V0"
+  Mnemonic: "VCMPGTSD"
+  Description: "Vector Compare Greater Than Signed Doubleword (Rc=0)"
+  Opcode: "4"
+  Format: "VC_FORM_v00"
+  Operands:
+    XO: ['967', 'XO', '?']
+    Rc: ['0', 'Rc', '?']
+- Name: "VCMPGTSDx_V0"
+  Mnemonic: "VCMPGTSD."
+  Description: "Vector Compare Greater Than Signed Doubleword (Rc=1)"
+  Opcode: "4"
+  Format: "VC_FORM_v00"
+  Operands:
+    XO: ['967', 'XO', '?']
+    Rc: ['1', 'Rc', '?']
+  ImplicitOperands:
+    CR6: ['CR6', 'O']
+- Name: "VCMPGTUD_V0"
+  Mnemonic: "VCMPGTUD"
+  Description: "Vector Compare Greater Than Unsigned Doubleword (Rc=0)"
+  Opcode: "4"
+  Format: "VC_FORM_v00"
+  Operands:
+    XO: ['711', 'XO', '?']
+    Rc: ['0', 'Rc', '?']
+- Name: "VCMPGTUDx_V0"
+  Mnemonic: "VCMPGTUD."
+  Description: "Vector Compare Greater Than Unsigned Doubleword (Rc=1)"
+  Opcode: "4"
+  Format: "VC_FORM_v00"
+  Operands:
+    XO: ['711', 'XO', '?']
+    Rc: ['1', 'Rc', '?']
+  ImplicitOperands:
+    CR6: ['CR6', 'O']
+- Name: "VEQV_V0"
+  Mnemonic: "VEQV"
+  Description: "Vector Equivalence"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1668', 'XO', '?']
+- Name: "VGBBD_V0"
+  Mnemonic: "VGBBD"
+  Description: "Vector Gather Bits by Byte by Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1292', 'XO', '?']
+- Name: "VMAXSD_V0"
+  Mnemonic: "VMAXSD"
+  Description: "Vector Maximum Signed Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['450', 'XO', '?']
+- Name: "VMAXUD_V0"
+  Mnemonic: "VMAXUD"
+  Description: "Vector Maximum Unsigned Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['194', 'XO', '?']
+- Name: "VMINSD_V0"
+  Mnemonic: "VMINSD"
+  Description: "Vector Minimum Signed Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['962', 'XO', '?']
+- Name: "VMINUD_V0"
+  Mnemonic: "VMINUD"
+  Description: "Vector Minimum Unsigned Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['706', 'XO', '?']
+- Name: "VMRGEW_V0"
+  Mnemonic: "VMRGEW"
+  Description: "Vector Merge Even Word"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1932', 'XO', '?']
+- Name: "VMRGOW_V0"
+  Mnemonic: "VMRGOW"
+  Description: "Vector Merge Odd Word"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1676', 'XO', '?']
+- Name: "VMULESW_V0"
+  Mnemonic: "VMULESW"
+  Description: "Vector Multiply Even Signed Word"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['904', 'XO', '?']
+- Name: "VMULEUW_V0"
+  Mnemonic: "VMULEUW"
+  Description: "Vector Multiply Even Unsigned Word"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['648', 'XO', '?']
+- Name: "VMULOSW_V0"
+  Mnemonic: "VMULOSW"
+  Description: "Vector Multiply Odd Signed Word"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['392', 'XO', '?']
+- Name: "VMULOUW_V0"
+  Mnemonic: "VMULOUW"
+  Description: "Vector Multiply Odd Unsigned Word"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['136', 'XO', '?']
+- Name: "VMULUWM_V0"
+  Mnemonic: "VMULUWM"
+  Description: "Vector Multiply Unsigned Word Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['137', 'XO', '?']
+- Name: "VNAND_V0"
+  Mnemonic: "VNAND"
+  Description: "Vector NAND"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1412', 'XO', '?']
+- Name: "VNCIPHER_V0"
+  Mnemonic: "VNCIPHER"
+  Description: "Vector AES Inverse Cipher"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1352', 'XO', '?']
+- Name: "VNCIPHERLAST_V0"
+  Mnemonic: "VNCIPHERLAST"
+  Description: "Vector AES Inverse Cipher Last"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1353', 'XO', '?']
+- Name: "VORC_V0"
+  Mnemonic: "VORC"
+  Description: "Vector OR with Complement"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1348', 'XO', '?']
+- Name: "VPERMXOR_V0"
+  Mnemonic: "VPERMXOR"
+  Description: "Vector Permute and Exclusive-OR"
+  Opcode: "4"
+  Format: "VA_FORM_v00"
+  Operands:
+    XO: ['45', 'XO', '?']
+- Name: "VPKSDSS_V0"
+  Mnemonic: "VPKSDSS"
+  Description: "Vector Pack Signed Doubleword Signed Saturate"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1486', 'XO', '?']
+- Name: "VPKSDUS_V0"
+  Mnemonic: "VPKSDUS"
+  Description: "Vector Pack Signed Doubleword Unsigned Saturate"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1358', 'XO', '?']
+- Name: "VPKUDUM_V0"
+  Mnemonic: "VPKUDUM"
+  Description: "Vector Pack Unsigned Doubleword Unsigned Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1102', 'XO', '?']
+- Name: "VPKUDUS_V0"
+  Mnemonic: "VPKUDUS"
+  Description: "Vector Pack Unsigned Doubleword Unsigned Saturate"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1230', 'XO', '?']
+- Name: "VPMSUMB_V0"
+  Mnemonic: "VPMSUMB"
+  Description: "Vector Polynomial Multiply-Sum Byte"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1032', 'XO', '?']
+- Name: "VPMSUMD_V0"
+  Mnemonic: "VPMSUMD"
+  Description: "Vector Polynomial Multiply-Sum Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1224', 'XO', '?']
+- Name: "VPMSUMH_V0"
+  Mnemonic: "VPMSUMH"
+  Description: "Vector Polynomial Multiply-Sum Halfword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1096', 'XO', '?']
+- Name: "VPMSUMW_V0"
+  Mnemonic: "VPMSUMW"
+  Description: "Vector Polynomial Multiply-Sum Word"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1160', 'XO', '?']
+- Name: "VPOPCNTB_V0"
+  Mnemonic: "VPOPCNTB"
+  Description: "Vector Population Count Byte"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1795', 'XO', '?']
+- Name: "VPOPCNTD_V0"
+  Mnemonic: "VPOPCNTD"
+  Description: "Vector Population Count Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1987', 'XO', '?']
+- Name: "VPOPCNTH_V0"
+  Mnemonic: "VPOPCNTH"
+  Description: "Vector Population Count Halfword"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1859', 'XO', '?']
+- Name: "VPOPCNTW_V0"
+  Mnemonic: "VPOPCNTW"
+  Description: "Vector Population Count Word"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1923', 'XO', '?']
+- Name: "VRLD_V0"
+  Mnemonic: "VRLD"
+  Description: "Vector Rotate Left Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['196', 'XO', '?']
+- Name: "VSBOX_V0"
+  Mnemonic: "VSBOX"
+  Description: "Vector AES S-Box"
+  Opcode: "4"
+  Format: "VX_FORM_v07"
+  Operands:
+    XO: ['1480', 'XO', '?']
+- Name: "VSHASIGMAD_V0"
+  Mnemonic: "VSHASIGMAD"
+  Description: "Vector SHA-512 Sigma Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v08"
+  Operands:
+    XO: ['1730', 'XO', '?']
+    SIX: ['SIX_dw_values', 'SIX', 'I']
+- Name: "VSHASIGMAW_V0"
+  Mnemonic: "VSHASIGMAW"
+  Description: "Vector SHA-256 Sigma Word"
+  Opcode: "4"
+  Format: "VX_FORM_v08"
+  Operands:
+    XO: ['1666', 'XO', '?']
+- Name: "VSLD_V0"
+  Mnemonic: "VSLD"
+  Description: "Vector Shift Left Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1476', 'XO', '?']
+- Name: "VSRAD_V0"
+  Mnemonic: "VSRAD"
+  Description: "Vector Shift Right Algebraic Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['964', 'XO', '?']
+- Name: "VSRD_V0"
+  Mnemonic: "VSRD"
+  Description: "Vector Shift Right Doubleword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1732', 'XO', '?']
+- Name: "VSUBCUQ_V0"
+  Mnemonic: "VSUBCUQ"
+  Description: "Vector Subtract & write Carry Unsigned Quadword"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1344', 'XO', '?']
+- Name: "VSUBECUQ_V0"
+  Mnemonic: "VSUBECUQ"
+  Description: "Vector Subtract Extended & write Carry Unsigned Quadword"
+  Opcode: "4"
+  Format: "VA_FORM_v00"
+  Operands:
+    XO: ['63', 'XO', '?']
+- Name: "VSUBEUQM_V0"
+  Mnemonic: "VSUBEUQM"
+  Description: "Vector Subtract Extended Unsigned Quadword Modulo"
+  Opcode: "4"
+  Format: "VA_FORM_v00"
+  Operands:
+    XO: ['62', 'XO', '?']
+- Name: "VSUBUDM_V0"
+  Mnemonic: "VSUBUDM"
+  Description: "Vector Subtract Unsigned Doubleword Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1216', 'XO', '?']
+- Name: "VSUBUQM_V0"
+  Mnemonic: "VSUBUQM"
+  Description: "Vector Subtract Unsigned Quadword Modulo"
+  Opcode: "4"
+  Format: "VX_FORM_v00"
+  Operands:
+    XO: ['1280', 'XO', '?']
+- Name: "VUPKHSW_V0"
+  Mnemonic: "VUPKHSW"
+  Description: "Vector Unpack High Signed Word"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1614', 'XO', '?']
+- Name: "VUPKLSW_V0"
+  Mnemonic: "VUPKLSW"
+  Description: "Vector Unpack Low Signed Word"
+  Opcode: "4"
+  Format: "VX_FORM_v01"
+  Operands:
+    XO: ['1742', 'XO', '?']
+- Name: "XSADDSP_V0"
+  Mnemonic: "XSADDSP"
+  Description: "VSX Scalar Add Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['0', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSCVDPSPN_V0"
+  Mnemonic: "XSCVDPSPN"
+  Description: "VSX Scalar Convert Double-Precision to Single-Precision format Non-signalling"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['267', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSCVSPDPN_V0"
+  Mnemonic: "XSCVSPDPN"
+  Description: "Scalar Convert Single-Precision to Double-Precision format Non-signalling"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['331', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSCVSXDSP_V0"
+  Mnemonic: "XSCVSXDSP"
+  Description: "VSX Scalar Convert Signed Fixed-Point Doubleword to Single-Precision"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['312', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSCVUXDSP_V0"
+  Mnemonic: "XSCVUXDSP"
+  Description: "VSX Scalar Convert Unsigned Fixed-Point Doubleword to Single-Precision"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['296', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSDIVSP_V0"
+  Mnemonic: "XSDIVSP"
+  Description: "VSX Scalar Divide Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['24', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSMADDASP_V0"
+  Mnemonic: "XSMADDASP"
+  Description: "VSX Scalar Multiply-Add Type-A Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['1', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSMADDMSP_V0"
+  Mnemonic: "XSMADDMSP"
+  Description: "VSX Scalar Multiply-Add Type-M Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['9', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSMSUBASP_V0"
+  Mnemonic: "XSMSUBASP"
+  Description: "VSX Scalar Multiply-Subtract Type-A Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['17', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSMSUBMSP_V0"
+  Mnemonic: "XSMSUBMSP"
+  Description: "VSX Scalar Multiply-Subtract Type-M Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['25', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSMULSP_V0"
+  Mnemonic: "XSMULSP"
+  Description: "VSX Scalar Multiply Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['16', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSNMADDASP_V0"
+  Mnemonic: "XSNMADDASP"
+  Description: "VSX Scalar Negative Multiply-Add Type-A Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['129', 'XO', '?']
+- Name: "XSNMADDMSP_V0"
+  Mnemonic: "XSNMADDMSP"
+  Description: "VSX Scalar Negative Multiply-Add Type-M Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['137', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSNMSUBASP_V0"
+  Mnemonic: "XSNMSUBASP"
+  Description: "VSX Scalar Negative Multiply-Subtract Type-A Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['145', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSNMSUBMSP_V0"
+  Mnemonic: "XSNMSUBMSP"
+  Description: "VSX Scalar Negative Multiply-Subtract Type-M Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['153', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSRESP_V0"
+  Mnemonic: "XSRESP"
+  Description: "VSX Scalar Reciprocal Estimate Single-Precision"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['26', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSRSP_V0"
+  Mnemonic: "XSRSP"
+  Description: "VSX Scalar Round to Single-Precision"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['281', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSRSQRTESP_V0"
+  Mnemonic: "XSRSQRTESP"
+  Description: "VSX Scalar Reciprocal Square Root Estimate Single-Precision"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['10', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSSQRTSP_V0"
+  Mnemonic: "XSSQRTSP"
+  Description: "VSX Scalar Square Root Single-Precision"
+  Opcode: "3C"
+  Format: "XX2_FORM_v00"
+  Operands:
+    XO: ['11', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XSSUBSP_V0"
+  Mnemonic: "XSSUBSP"
+  Description: "VSX Scalar Subtract Single-Precision"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['8', 'XO', '?']
+  ImplicitOperands:
+    FPSCR: ['FPSCR', 'IO']
+- Name: "XXLEQV_V0"
+  Mnemonic: "XXLEQV"
+  Description: "VSX Logical Equivalence"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['186', 'XO', '?']
+- Name: "XXLNAND_V0"
+  Mnemonic: "XXLNAND"
+  Description: "VSX Logical NAND"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['178', 'XO', '?']
+- Name: "XXLORC_V0"
+  Mnemonic: "XXLORC"
+  Description: "VSX Logical OR with Complement"
+  Opcode: "3C"
+  Format: "XX3_FORM_v00"
+  Operands:
+    XO: ['170', 'XO', '?']
+

@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,8 +44,9 @@ _RISCV_PCREL_LABEL = 0
 # Classes
 class RISCVISA(GenericISA):
 
-    def __init__(self, name, descr, ins, regs, comparators, generators):
-        super(RISCVISA, self).__init__(name, descr, ins, regs, comparators,
+    def __init__(self, name, descr, path, ins, regs, comparators, generators):
+        super(RISCVISA, self).__init__(name, descr, path, ins, regs,
+                                       comparators,
                                        generators)
         self._scratch_registers += [self.registers["X31"],
                                     self.registers["F7"]]

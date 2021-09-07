@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,12 +30,14 @@ The main elements of this module are the following:
 from __future__ import absolute_import, division, print_function
 
 # Built-in modules
+import atexit
 import itertools
 import math
 import string
 import re
 
 # Third party modules
+import cachetools
 import six
 from six.moves import range, zip
 
@@ -43,8 +45,11 @@ from six.moves import range, zip
 import microprobe.code.ins
 from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeBinaryError, \
-    MicroprobeCodeGenerationError, MicroprobeValueError
+    MicroprobeCodeGenerationError, MicroprobeValueError, \
+    MicroprobeCacheError
 from microprobe.target.isa.instruction import instruction_type_from_bin
+from microprobe.utils.cache import read_default_cache_data, \
+    write_default_cache_data
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress, \
     RejectingDict, int_to_twocs, twocs_to_int
@@ -52,13 +57,20 @@ from microprobe.utils.misc import Progress, \
 
 # Constants
 LOG = get_logger(__name__)
-_BIN_CACHE = RejectingDict()
-_CODE_CACHE = RejectingDict()
+
+_BIN_CACHE_ENABLED = True
+_BIN_CACHE_FILE = __file__ + ".bin"
+_BIN_CACHE = None
+_BIN_CACHE_USED = False
+_BIN_CACHE_SIZE = 128*1024
+_CODE_CACHE_ENABLED = True
+_CODE_CACHE_FILE = __file__ + ".code"
+_CODE_CACHE = None
+_CODE_CACHE_USED = False
+_CODE_CACHE_SIZE = 256
 _DATA_CACHE = RejectingDict()
 _DATA_CACHE_LENGTHS = []
 _DATA_CACHE_ENABLED = True
-_CODE_CACHE_ENABLED = True
-_BIN_CACHE_ENABLED = True
 
 __all__ = ["interpret_bin",
            "MicroprobeBinInstructionStream", ]
@@ -86,6 +98,31 @@ def interpret_bin(
         during the interpretation
     """
 
+    global _BIN_CACHE
+    global _CODE_CACHE
+
+    global _BIN_CACHE_USED
+    global _CODE_CACHE_USED
+
+    global _BIN_CACHE_SIZE
+    global _CODE_CACHE_SIZE
+
+    if _BIN_CACHE is None:
+        try:
+            _BIN_CACHE = cachetools.LRUCache(_BIN_CACHE_SIZE, getsizeof=None)
+            if _BIN_CACHE_ENABLED:
+                _BIN_CACHE = read_default_cache_data(_BIN_CACHE_FILE)
+        except MicroprobeCacheError:
+            _BIN_CACHE = cachetools.LRUCache(_BIN_CACHE_SIZE, getsizeof=None)
+
+    if _CODE_CACHE is None:
+        try:
+            _CODE_CACHE = cachetools.LRUCache(_CODE_CACHE_SIZE, getsizeof=None)
+            if _CODE_CACHE_ENABLED:
+                _CODE_CACHE = read_default_cache_data(_CODE_CACHE_FILE)
+        except MicroprobeCacheError:
+            _CODE_CACHE = cachetools.LRUCache(_CODE_CACHE_SIZE, getsizeof=None)
+
     if safe is None:
         safe = MICROPROBE_RC['safe_bin']
 
@@ -98,7 +135,10 @@ def interpret_bin(
         else:
             raise MicroprobeBinaryError("Unknown format '%s'" % fmt)
 
-    key = "%s-%s-%s-%s" % (code, target.name, fmt, safe)
+    key = "%s-%s-%s-%s" % (code, target.name + target.isa.path, fmt, safe)
+
+    updated_code = False
+    bin_cache_len = len(_BIN_CACHE)
 
     if key in _CODE_CACHE and _CODE_CACHE_ENABLED:
         code = [instrdef.copy() for instrdef in _CODE_CACHE[key]]
@@ -109,6 +149,7 @@ def interpret_bin(
         )
         if _CODE_CACHE_ENABLED:
             _CODE_CACHE[key] = code[:]
+            updated_code = True
     else:
         code = _interpret_bin_code(
             code, target, single, fmt=fmt, little_endian=little_endian,
@@ -116,6 +157,25 @@ def interpret_bin(
         )
         if _CODE_CACHE_ENABLED:
             _CODE_CACHE[key] = code[:]
+            updated_code = True
+
+    if (_BIN_CACHE_ENABLED and len(_BIN_CACHE) > bin_cache_len and
+            not _BIN_CACHE_USED):
+        atexit.register(
+            write_default_cache_data,
+            _BIN_CACHE_FILE, _BIN_CACHE,
+            data_reload=True
+        )
+        _BIN_CACHE_USED = True
+
+    if (_CODE_CACHE_ENABLED and updated_code and
+            len(_BIN_CACHE) > bin_cache_len and not _CODE_CACHE_USED):
+        atexit.register(
+            write_default_cache_data,
+            _CODE_CACHE_FILE, _CODE_CACHE,
+            data_reload=True
+        )
+        _CODE_CACHE_USED = True
 
     return code
 
@@ -156,7 +216,7 @@ def _interpret_bin_code_safe(
 
     min_skip_length = min(
         [ins.format.length for ins in target.instructions.values()]) * 2
-    fmt = "0x%%0%dx" % (min_skip_length)
+    fmt = "0x%%0%dx" % min_skip_length
 
     while not binstream.empty():
         try:
@@ -179,7 +239,7 @@ def _interpret_bin_code_safe(
 
             if _BIN_CACHE_ENABLED:
                 key = (fmt % int(skip, 16)).lower()
-                _BIN_CACHE[key] = (
+                _BIN_CACHE[target.name+target.isa.path+key] = (
                     fmt %
                     int(skip, 16), instr_type, ())
 
@@ -780,11 +840,15 @@ class MicroprobeBinInstructionStream(object):
             fmt = "0x%%0%dx" % (length * 2)
             bin_str = fmt % bin_int
 
-            if bin_str in _BIN_CACHE and _BIN_CACHE_ENABLED:
-                add = _BIN_CACHE[bin_str][1].format.length * 2
+            if (self._target.name + self._target.isa.path+bin_str in
+                    _BIN_CACHE and _BIN_CACHE_ENABLED):
+                add = _BIN_CACHE[self._target.name + self._target.isa.path +
+                                 bin_str][1].format.length * 2
                 self._index += add
                 self._progress(increment=add)
-                return _BIN_CACHE[bin_str]
+                return _BIN_CACHE[
+                    self._target.name + self._target.isa.path + bin_str
+                ]
 
             LOG.debug("Looking for length: %d", length)
 
@@ -859,9 +923,11 @@ class MicroprobeBinInstructionStream(object):
 
                     if _BIN_CACHE_ENABLED:
                         key = (fmt % bin_int).lower()
-                        _BIN_CACHE[key] = (fmt % bin_int,
-                                           instr_type,
-                                           operand_values)
+                        _BIN_CACHE[
+                            self._target.name + self._target.isa.path + key
+                        ] = (
+                            fmt % bin_int, instr_type, operand_values
+                        )
 
                     return (fmt % bin_int, instr_type, operand_values)
 

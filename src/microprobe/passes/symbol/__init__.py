@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -94,12 +94,13 @@ class ResolveSymbolicReferencesPass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, strict=False, instructions=None):
+    def __init__(self, strict=False, instructions=None, onlyraw=False):
         """ """
         super(ResolveSymbolicReferencesPass, self).__init__()
         self._description = "Translate labels of address into values"
         self._labels = RejectingDict()
         self._strict = strict
+        self._onlyraw = onlyraw
         self._instructions = []
         if instructions is not None:
             self._instructions = instructions
@@ -166,6 +167,9 @@ class ResolveSymbolicReferencesPass(microprobe.passes.Pass):
         :param context:
 
         """
+
+        if self._onlyraw and not instruction.disable_asm:
+            return
 
         if self._instructions != []:
             if instruction.name not in self._instructions:

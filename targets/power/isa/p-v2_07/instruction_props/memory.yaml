@@ -1,0 +1,33 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: access_storage
+  Description: Boolean indicating if the instruction has storage operands
+  Default: False
+  Values:
+    LBEPX_V0: True
+    LHEPX_V0: True
+    LWEPX_V0: True
+    LDEPX_V0: True
+    LQARX_V0: True
+    LXSIWAX_V0: True
+    LXSIWZX_V0: True
+    LXSSPX_V0: True
+    STBEPX_V0: True
+    STHEPX_V0: True
+    STWEPX_V0: True
+    STDEPX_V0: True
+    STQCXx_V0: True
+    STXSIWX_V0: True
+    STXSSPX_V0: True

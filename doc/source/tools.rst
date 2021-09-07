@@ -22,11 +22,11 @@ sections for further details:
    tools_mp_bin2asm
    tools_mp_bin2objdump
    tools_mp_c2mpt
-   tools_mp_coblst2mpt
-   tools_mp_dma2objdump
    tools_mp_epi
+   tools_mp_mpt2bin
+   tools_mp_mpt2elf
    tools_mp_mpt2test
-   tools_mp_objdump2dma
+   tools_mp_mpt2trace
    tools_mp_objdump2mpt
    tools_mp_seq
    tools_mp_seqtune

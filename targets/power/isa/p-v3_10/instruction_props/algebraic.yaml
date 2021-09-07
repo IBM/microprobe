@@ -1,0 +1,42 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: algebraic
+  Description: Boolean indicating if operation uses algebraic rules to keep values
+  Default: False
+  Values:
+    LFIWAX_V0: True
+    LFIWAX_V1: True
+    LHA_V0: True
+    LHAU_V0: True
+    LHAUX_V0: True
+    LHAX_V0: True
+    LWA_V0: True
+    LWAUX_V0: True
+    LWAX_V0: True
+    LXSIWAX_V0: True
+    MTVSRWA_V0: True
+    SRAD_V0: True
+    SRADx_V0: True
+    SRADI_V0: True
+    SRADIx_V0: True
+    SRAW_V0: True
+    SRAWx_V0: True
+    SRAWI_V0: True
+    SRAWIx_V0: True
+    VSRAB_V0: True
+    VSRAD_V0: True
+    VSRAH_V0: True
+    VSRAW_V0: True
+

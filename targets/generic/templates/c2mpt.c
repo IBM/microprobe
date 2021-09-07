@@ -380,9 +380,9 @@ void c2mpt_dump_var(c2mpt_var var)
                 (uint64_t) var.address - (uint64_t) MPT_BASE_ADDRESS, 
                 var.alignment);
     #else
-	printf("%s = [ \"%s\", %"PRIu64", 0x%"PRIx32", %"PRIu64", ", 
+	printf("%s = [ \"%s\", %"PRIu64", 0x%"PRIx64", %"PRIu64", ", 
                 var.varname, fix_vartype, var.nelems * multiplier,
-                (uint32_t) var.address - (uint64_t) MPT_BASE_ADDRESS,
+                (uint64_t) var.address - (uint64_t) MPT_BASE_ADDRESS,
                 var.alignment);
     #endif
 

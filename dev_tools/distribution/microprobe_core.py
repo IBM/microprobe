@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -63,15 +63,11 @@ setup(
             'mp_bin2objdump = '
             'microprobe.definitions.generic.tools.mp_bin2objdump:main',
             'mp_c2mpt = microprobe.definitions.generic.tools.mp_c2mpt:main',
-            'mp_coblst2mpt = '
-            'microprobe.definitions.generic.tools.mp_coblst2mpt:main',
-            'mp_dma2objdump = '
-            'microprobe.definitions.generic.tools.mp_dma2objdump:main',
             'mp_epi = microprobe.definitions.generic.tools.mp_epi:main',
+            'mp_mpt2bin = microprobe.definitions.generic.tools.mp_mpt2bin:main',
+            'mp_mpt2elf = microprobe.definitions.generic.tools.mp_mpt2elf:main',
             'mp_mpt2test = '
             'microprobe.definitions.generic.tools.mp_mpt2test:main',
-            'mp_objdump2dma = '
-            'microprobe.definitions.generic.tools.mp_objdump2dma:main',
             'mp_objdump2mpt = '
             'microprobe.definitions.generic.tools.mp_objdump2mpt:main',
             'mp_seq = microprobe.definitions.generic.tools.mp_seq:main',
@@ -84,6 +80,8 @@ setup(
         'PyYAML',
         'rxjson',
         'argparse',
+        'fasteners',
+        'cachetools',
         'six'],
     long_description=read(
         os.path.join(

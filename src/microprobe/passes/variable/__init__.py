@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import microprobe.code.var
 import microprobe.passes
 from microprobe.code.address import Address
 from microprobe.utils.logger import get_logger
+from microprobe.exceptions import MicroprobeCodeGenerationError
 
 # Local modules
 
@@ -126,9 +127,27 @@ class DeclareVariablesPass(microprobe.passes.Pass):
             iaddress = var.address.copy()
             for value in values:
                 instrs += target.set_register(vreg, value, context)
-                instrs += target.store_integer(
-                    vreg, iaddress, typesize * 8, context
+                context.set_register_value(
+                    vreg, value
                 )
+                try:
+                    instrs += target.store_integer(
+                        vreg, iaddress, typesize * 8, context
+                    )
+                except MicroprobeCodeGenerationError:
+                    areg = target.scratch_registers[1]
+                    instrs += target.set_register_to_address(
+                            areg,
+                            iaddress,
+                            context,
+                        )
+                    context.set_register_value(
+                        areg, iaddress
+                    )
+                    instrs += target.store_integer(
+                        vreg, iaddress, typesize * 8, context
+                    )
+
                 iaddress += typesize
 
         building_block.add_init(instrs)

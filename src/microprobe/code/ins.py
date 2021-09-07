@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -2188,8 +2188,8 @@ class MicroprobeInstructionDefinition(object):
     def set_label(self, value):
         self._label = value
 
-    def set_address(self, value):
-        if isinstance(value, int):
+    def set_address(self, value, convert=True):
+        if isinstance(value, int) and convert:
             value = InstructionAddress(base_address="code", displacement=value)
         self._address = value
 

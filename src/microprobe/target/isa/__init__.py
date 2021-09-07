@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -269,7 +269,7 @@ def import_isa_definition(path):
 
     try:
         isa = isa_cls(
-            isadef["Name"], isadef["Description"], ins,
+            isadef["Name"], isadef["Description"], path, ins,
             regs, comp_clss, gen_clss
         )
     except TypeError as exc:
@@ -395,6 +395,11 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
     @abc.abstractproperty
     def description(self):
         """ISA description (:class:`~.str`)."""
+        raise NotImplementedError
+
+    @abc.abstractproperty
+    def path(self):
+        """Path to definition (:class:`~.str`)."""
         raise NotImplementedError
 
     @abc.abstractproperty
@@ -679,7 +684,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
 class GenericISA(ISA):
     """Class to represent a generic Instruction Set Architecture (ISA)."""
 
-    def __init__(self, name, descr, ins, regs, comparators, generators):
+    def __init__(self, name, descr, path, ins, regs, comparators, generators):
         """
 
         :param name:
@@ -693,6 +698,7 @@ class GenericISA(ISA):
         super(GenericISA, self).__init__()
         self._name = name
         self._descr = descr
+        self._path = path
         self._instructions = ins
         self._registers = regs
         self._target = None
@@ -730,6 +736,11 @@ class GenericISA(ISA):
     def description(self):
         """ """
         return self._descr
+
+    @property
+    def path(self):
+        """Path to definition (:class:`~.str`)."""
+        return self._path
 
     @property
     def address_registers(self):

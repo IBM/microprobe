@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ class bin2asm(TestCase):  # pylint: disable-msg=invalid-name
     @skipIf(MP_TESTING_ARCH is not None, "Long testing")
     def test_001(self):
         """
-        bin2asm_test001 generic
+        bin2asm_test001 test
         """
         self._wrapper("none", "none", extra="-h")
 

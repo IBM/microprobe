@@ -4,6 +4,10 @@ __pycache__
 *.pyc
 *.yaml.cache
 *.yaml.*.cache
+*.cache.lock
+.asm.py.asm.cache
+.bin.py.bin.cache
+.bin.py.code.cache
 .coverage*
 .settings
 *.swp
@@ -42,3 +46,6 @@ tags
 TAGS
 .pydevproject
 /.pydevproject
+doc/error.log
+doc/errors.txt
+get_pip

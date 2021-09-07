@@ -1,0 +1,115 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: "CY"
+  Description: "CY instruction field"
+  Operand: "UImm2"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "Dd0"
+  Description: "Dd0 instruction field"
+  Operand: "UImm10"
+  Show: False
+  Size: 10
+  IO: "I"
+- Name: "Dd1"
+  Description: "Dd1 instruction field"
+  Operand: "SImm16"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "Dd2"
+  Description: "Dd2 instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "XO2_5"
+  Description: "XO2_5 instruction field"
+  Operand: "UImm5"
+  Show: False
+  Size: 5
+  IO: "?"
+- Name: "XO2_3"
+  Description: "XO2_3 instruction field"
+  Operand: "UImm3"
+  Show: False
+  Size: 3
+  IO: "?"
+- Name: "DRM"
+  Description: "DRM instruction field"
+  Operand: "UImm3"
+  Show: True
+  Size: 3
+  IO: "I"
+- Name: "FC"
+  Description: "FC instruction field"
+  Operand: "FC"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "RO"
+  Description: "RO instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "?"
+- Name: "EX"
+  Description: "EX instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "?"
+- Name: "DCMX"
+  Description: "DCMX instruction field"
+  Operand: "UImm7"
+  Show: True
+  Size: 7
+  IO: "I"
+- Name: "dx"
+  Description: "dx instruction field"
+  Operand: "UImm7"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "dc"
+  Description: "dc instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "?"
+- Name: "dm"
+  Description: "dm instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "?"
+- Name: "UIM"
+  Description: "UIM instruction field"
+  Operand: "UImm4"
+  Show: True
+  Size: 4
+  IO: "I"
+- Name: "UIM6"
+  Description: "UIM6 instruction field"
+  Operand: "UImm6"
+  Show: True
+  Size: 6
+  IO: "I"
+- Name: "IMM8"
+  Description:  "IMM8 instruction field"
+  Operand: "UImm8"
+  Show: True
+  Size: 8
+  IO: "I"

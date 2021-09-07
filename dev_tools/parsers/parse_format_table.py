@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ dscr = "No description provided"
 
 # functions
 def print_header():
-    print("# Copyright 2011-2018 IBM Corporation")
+    print("# Copyright 2011-2021 IBM Corporation")
     print("# All rights reserved")
     print("#")
     print("# Author: Ramon Bertran")

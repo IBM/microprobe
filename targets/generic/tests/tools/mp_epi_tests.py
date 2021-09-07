@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ else:
 # Constants
 BASEPATH = os.path.join(os.path.dirname(microprobe.__file__), "..", "..")
 MP_TESTING_ARCH = os.environ.get("MP_TESTING_ARCH", None)
+MP_CI = os.environ.get("TRAVIS", None)
 
 
 def copy_func(f, name=None):
@@ -72,13 +73,12 @@ def subins(instructions):
     :type instructions:
     """
 
-    if MP_TESTING_ARCH is not None:
+    if MP_TESTING_ARCH is not None and MP_CI is None:
         return instructions
 
     myins = []
 
     for instr in instructions:
-
         if instr.format not in [ins.format for ins in myins]:
             myins.append(instr)
             continue
@@ -204,7 +204,7 @@ TEST_TARGETS = []
 if MP_TESTING_ARCH is None:
     _PARAM1 = ['']
     _PARAM2 = ['']
-    _PARAM3 = ['-B 10']
+    _PARAM3 = ['-B 5']
 
     TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
                          "c",
@@ -217,11 +217,11 @@ if MP_TESTING_ARCH is None:
                           "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
                           "C.SDSP_V0", "JALR_V0"]))
 else:
-    _PARAM1 = ['', '-dd 1', '-dd 5.5']
+    _PARAM1 = ['', '-dd 1']
     _PARAM2 = ['', '-R']
-    _PARAM3 = ['', '-B 10']
+    _PARAM3 = ['-B 5']
 
-    if MP_TESTING_ARCH is "RISCV":
+    if MP_TESTING_ARCH == "RISCV":
         TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
                              "c",
                              ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",

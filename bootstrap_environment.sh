@@ -7,7 +7,7 @@ set -e
 scriptpath=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
 
 ver="$1"
-if [ "x$ver" = "x" ]; then
+if [ -z "$ver" ]; then
     ver=3
 fi
 

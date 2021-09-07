@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -145,7 +145,7 @@ def _parse_definition_tuple(definition_tuple):
         isa_def = [
             definition
             for definition in definitions if definition.name == isa_def
-        ][0]
+        ][-1]
 
     definitions = find_microarchitecture_definitions()
     if architecture_def not in [definition.name for definition in definitions]:
@@ -157,7 +157,7 @@ def _parse_definition_tuple(definition_tuple):
             definition
             for definition in definitions
             if definition.name == architecture_def
-        ][0]
+        ][-1]
 
     definitions = find_env_definitions()
     if env_def not in [definition.name for definition in definitions]:
@@ -168,7 +168,7 @@ def _parse_definition_tuple(definition_tuple):
         env_def = [
             definition
             for definition in definitions if definition.name == env_def
-        ][0]
+        ][-1]
 
     return (isa_def, architecture_def, env_def)
 

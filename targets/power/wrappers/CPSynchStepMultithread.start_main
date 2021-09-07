@@ -1,0 +1,113 @@
+    int i; 
+    volatile uint8_t * stck __attribute__ ((aligned (128)));
+    uint64_t clock __attribute__ ((aligned (128)));
+    uint64_t clock_ant __attribute__ ((aligned (128))) = 0;
+    int shm, cpu, sched_res;
+    volatile int local_master;
+    sem_t * mutex;
+    int * master;
+    cpu_set_t mask;
+    char * master_name;
+    char * clock_name;
+
+    /* Get CPU affinity if any */
+    sched_res = sched_getaffinity(0, sizeof(cpu_set_t), &mask);
+    if (sched_res < 0) { exit(-1); }
+    cpu=0;
+    while(!CPU_ISSET(cpu, &mask)){cpu++;}
+
+    /* Get master name */
+    
+    printf("CPU%d: Checking if master name set in MP_MASTER_SHM_NAME env...\n", cpu);
+    master_name = getenv("MP_MASTER_SHM_NAME");
+    if (master_name == NULL) { master_name = "microprobe_master"; }
+    printf("CPU%d: Master lock object: /dev/shm/%s \n", cpu, master_name);
+
+    /* Set up master shared memory space */
+    if ((shm = shm_open(master_name, O_RDWR | O_CREAT, S_IRWXU)) < 0)
+    {   
+        perror("shm_open");
+        exit(1);
+    }
+
+    if ( ftruncate(shm, sizeof(int)) < 0 )
+    {
+        perror("ftruncate");
+        exit(1);
+    }
+
+    if ((master = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE,
+                    MAP_SHARED, shm, 0)) == MAP_FAILED) {
+        perror("mmap");
+        exit(1);
+    }
+    /* master points to a shared memory location  */
+
+    printf("CPU%d: Master pointer set up; \n", cpu);
+
+    /* Get master name */
+    printf("CPU%d: Checking if clock name set in MP_CLOCK_SHM_NAME env...\n", cpu);
+    clock_name = getenv("MP_CLOCK_SHM_NAME");
+    if (clock_name == NULL) { clock_name = "microprobe_clock"; }
+    printf("CPU%d: Clock object: /dev/shm/%s \n", cpu, master_name);
+
+    /* Set up clock shared memory space */
+    if ((shm = shm_open(clock_name, O_RDWR | O_CREAT, S_IRWXU)) < 0)
+    {
+        perror("shm_open");
+        exit(1);
+    }
+
+    if ( ftruncate(shm, sizeof(uint64_t)) < 0 )
+    {
+        perror("ftruncate");
+        exit(1);
+    }
+
+    if ((stck = mmap(NULL, sizeof(uint64_t), PROT_READ | PROT_WRITE,
+                    MAP_SHARED, shm, 0)) == MAP_FAILED) {
+        perror("mmap");
+        exit(1);
+    }
+
+    /* stck points to a shared memory location */
+
+    printf("CPU%d: STCK pointer set up; \n", cpu);
+
+    if ((mutex = sem_open("mysemaphore", O_CREAT, 0644, 1)) == SEM_FAILED)
+    {
+        perror("semaphore initilization");
+        exit(1);
+    }
+
+    printf("CPU%d: MUTEX created; \n", cpu);
+
+    sem_wait(mutex);
+    printf("CPU%d: thread entered critical section \n", cpu);
+    if (*master == 0)
+    {
+        local_master = 1;
+        *master = 0x1;
+        *stck = 0x1;
+        printf("CPU%d: I'm master \n", cpu);
+    }
+    else
+    {
+        local_master = 0;
+        printf("CPU%d: I'm slave \n", cpu);
+    }
+    printf("CPU%d: thread leaving critical section\n", cpu);
+    sem_post(mutex);
+
+    sem_unlink("mysemaphore");
+
+    if(local_master)
+    {
+        printf("CPU%d: Time base updated every: %lu MHz\n",cpu,  __ppc_get_timebase_freq()/1000000);
+        printf("CPU%d: Tick time: %f us\n",cpu, 1000000.0/ __ppc_get_timebase_freq());
+        printf("CPU%d: Synchronizing every: %f us\n",cpu, (1000000.0/ __ppc_get_timebase_freq()) *(1 << 21));
+        printf("CPU%d: Synchronizing every: %f us\n",cpu, (1000000.0/ __ppc_get_timebase_freq()) *(1 << 29));
+    }
+
+    printf("CPU%d: Workload started\n", cpu);
+

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Copyright 2018 IBM Corporation
+#
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# shellcheck disable=SC2039,SC2086,SC2089,SC2090,SC2181
 #
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,13 +27,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# shellcheck disable=SC2039,SC2086,SC2089,SC2090,SC2181,SC3010
 
 usage () {
-    echo -e "Usage: $0 [OPTION]... [FILE]...\\n\
-\\n\
-Options:\\n\
-  -h                         print this help text\
-"
+    echo "Usage: $0 file"
 }
 
 # Determine the comment syntax of a file
@@ -156,10 +154,30 @@ fi
 # The copyright
 maybe_copyright_line=$(sed "$start q;d" "$1")
 copyright_re="(^.+(Copyright|copyright).+)[0-9]{4}(.+IBM.+$)"
-if [[ $maybe_copyright_line =~ $copyright_re ]]; then
+
+if [ "$(grep "^$comment Copyright" < $1 | grep -c "IBM Corporation")" -gt 1 ]; then
+    echo "File needs review (duplicated): $1"
+    exit
+elif [[ $maybe_copyright_line =~ $copyright_re ]]; then
     echo "Updating copyright for file: $1"
     sed -i "$start s/[0-9]\\{4\\}/$year/" "$1"
 else
     echo "Adding copyright for file: $1"
     sed -i "$start i $copyright" "$1"
 fi
+
+if [ "$(grep -c "$comment Licensed under the Apache License" $1)" -eq 0 ]; then
+    echo "File needs review (missing): $1"
+    exit
+fi
+
+if [ "$(grep -c "$comment http://www.apache.org/licenses/LICENSE-2.0" $1)" -eq 0 ]; then
+    echo "File needs review (missing): $1"
+    exit
+fi
+
+if [ "$(grep -c "$comment WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND" $1)" -eq 0 ]; then
+    echo "File needs review (missing): $1"
+    exit
+fi
+

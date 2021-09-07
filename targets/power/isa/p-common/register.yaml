@@ -1,0 +1,809 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: VSCR
+  Type: VSCR
+  Representation: 'N/A'
+  Description: Vector Status and Control Register
+- Name: VSR0
+  Type: VSR
+  Representation: '0'
+  Description: Vector Scalar Register 0
+  Repeat:
+    From: 0
+    To: 63
+- Name: VR0
+  Type: VR
+  Representation: '0'
+  Description: Vector Register 0
+  Repeat:
+    From: 0
+    To: 31
+- Name: FPSCR
+  Type: FPSCR
+  Representation: 'N/A'
+  Description: Floating-Point Status and Control Register
+- Name: FPR0
+  Type: FPR
+  Representation: '0'
+  Description: Floating-Point Register 0
+  Repeat:
+    From: 0
+    To: 31
+- Name: SPRG4
+  Type: SPR
+  Representation: '260'
+  Description: Software use SPR 4
+- Name: SPRG5
+  Type: SPR
+  Representation: '261'
+  Description: Software use SPR 5
+- Name: SPRG6
+  Type: SPR
+  Representation: '262'
+  Description: Software use SPR 6
+- Name: SPRG7
+  Type: SPR
+  Representation: '263'
+  Description: Software use SPR 7
+- Name: GPR0
+  Type: GPR
+  Representation: '0'
+  Description: General Register 0
+  Repeat:
+    From: 0
+    To: 31
+- Name: LR
+  Type: SPR
+  Representation: '8'
+  Description: Link Register
+- Name: CTR
+  Type: SPR
+  Representation: '9'
+  Description: Count Register
+- Name: CR0
+  Type: CR
+  Representation: '0'
+  Description: Condition Register 0
+  Repeat:
+    From: 0
+    To: 7
+- Name: XER
+  Type: SPR
+  Description: Fixed point exception register
+  Representation: '1'
+- Name: VRSAVE
+  Type: SPR
+  Representation: '256'
+  Description: VR Save register
+- Name: SPEFSCR
+  Type: SPR
+  Representation: '512'
+  Description: Signal Processing and Embedded Floating-Point Status and Control Register
+- Name: AMR
+  Type: SPR
+  Representation: '13'
+  Description: Authority Mask Register
+- Name: PPR
+  Type: SPR
+  Representation: '896'
+  Description: Program Priority Register
+- Name: PPR32
+  Type: SPR
+  Representation: '898'
+  Description: Program Priority Register 32 bits
+- Name: DSCR
+  Type: SPR
+  Representation: '3'
+  Description: Data Stream Control Register
+- Name: TFHAR
+  Type: SPR
+  Representation: '128'
+  Description: Transaction Failure Handler Address Register
+- Name: TFIAR
+  Type: SPR
+  Representation: '129'
+  Description: Transaction Failure Instruction Address Register
+- Name: TEXASR
+  Type: SPR
+  Representation: '130'
+  Description: Transaction Exception And Summary Register
+- Name: TEXASRU
+  Type: SPR
+  Representation: '131'
+  Description: Transaction Exception And Summary Register Upper
+- Name: MMCR2
+  Type: SPR
+  Representation: '769'
+  Description: Monitor Mode Control Register 2
+- Name: MMCRA
+  Type: SPR
+  Representation: '770'
+  Description: Monitor Mode Control Register A
+- Name: PMC1
+  Type: SPR
+  Representation: '771'
+  Description: Performance Monitoring Counter 1
+- Name: PMC2
+  Type: SPR
+  Representation: '772'
+  Description: Performance Monitoring Counter 2
+- Name: PMC3
+  Type: SPR
+  Representation: '773'
+  Description: Performance Monitoring Counter 3
+- Name: PMC4
+  Type: SPR
+  Representation: '774'
+  Description: Performance Monitoring Counter 4
+- Name: PMC5
+  Type: SPR
+  Representation: '775'
+  Description: Performance Monitoring Counter 5
+- Name: PMC6
+  Type: SPR
+  Representation: '776'
+  Description: Performance Monitoring Counter 6
+- Name: MMCR0
+  Type: SPR
+  Representation: '779'
+  Description: Monitor Mode Control Register 0
+- Name: BESCRS
+  Type: SPR
+  Representation: '800'
+  Description: Branch Event Status and Control Set 
+- Name: BESCRSU
+  Type: SPR
+  Representation: '801'
+  Description: Branch Event Status and Control Set Upper
+- Name: BESCRR
+  Type: SPR
+  Representation: '802'
+  Description: Branch Event Status and Control Reset
+- Name: BESCRRU
+  Type: SPR
+  Representation: '803'
+  Description: Branch Event Status and Control Reset Upper
+- Name: EBBHR
+  Type: SPR
+  Representation: '804'
+  Description: Event-Based Branch Handler Register
+- Name: EBBRR
+  Type: SPR
+  Representation: '805'
+  Description: Event-Based Branch Return Register
+- Name: BESCR
+  Type: SPR
+  Representation: '806'
+  Description: Branch Event Status and Control Register
+- Name: TB
+  Type: SPR
+  Representation: '268'
+  Description: Time Base Register
+- Name: TBU
+  Type: SPR
+  Representation: '289'
+  Description: Time Base Register (Upper 32 bits)
+- Name: TBL
+  Type: SPR
+  Representation: '284'
+  Description: Time Base Register (Lower 32 bits)
+- Name: TBU40
+  Type: SPR
+  Representation: '286'
+  Description: Time Base Register (Upper 40 bits)
+- Name: PROCID
+  Type: SPR
+  Representation: '1023'
+  Description: Processor identification register
+- Name: MMCR0priv
+  Type: SPR
+  Representation: '795'
+  Description: MMCR0 register
+- Name: MSR
+  Type: MSR
+  Representation: 'N/A'
+  Description: Machine State Register
+- Name: SRR0
+  Type: SPR
+  Representation: '26'
+  Description: Save/Restore Register 0
+- Name: SRR1
+  Type: SPR
+  Representation: '27'
+  Description: Save/Restore Register 1
+- Name: IMA0
+  Type: SPR
+  Representation: 'N/A'
+  Description: IMA0 Register
+  Repeat:
+    From: 0
+    To: 15
+- Name: SIM_CTRL
+  Type: SPR
+  Representation: 'N/A'
+  Description: SIM_CTRL Register
+- Name: SIM_CTRL1
+  Type: SPR
+  Representation: 'N/A'
+  Description: SIM_CTRL1 Register
+- Name: SPATTN
+  Type: SPR
+  Representation: 'N/A'
+  Description: SPATTN Register
+- Name: CTSR
+  Type: SPR
+  Representation: 'N/A'
+  Description: CTSR Register
+- Name: SCRATCH0
+  Type: SPR
+  Representation: 'N/A'
+  Description: SCRATCH0 Register
+  Repeat:
+    From: 0
+    To:  7
+- Name: BHRBE0
+  Type: SPR
+  Representation: 'N/A'
+  Description: Branch History Rolling Buffer Register
+  Repeat:
+    From: 0
+    To:  31
+- Name: DSISR
+  Type: SPR32
+  Representation: '18'
+  Description: "Data Storage Interrupt Register"
+- Name: DAR
+  Type: SPR
+  Representation: '19'
+  Description: Data Address Register
+- Name: HDAR
+  Type: SPR
+  Representation: '307'
+  Description: Hypervisor Data Address Register
+- Name: DEC
+  Type: SPR
+  Representation: '22'
+  Description: Decrementer Register
+- Name: CFAR
+  Type: SPR
+  Representation: '28'
+  Description: CFAR Register
+- Name: PIDR
+  Type: SPR32
+  Representation: '48'
+  Description: PIDR Register
+- Name: AESR
+  Type: SPR
+  Representation: 'N/A'
+  Description: AESR Register
+- Name: AMOR
+  Type: SPR
+  Representation: '349'
+  Description: AMOR Register
+- Name: UAMOR
+  Type: SPR
+  Representation: '157'
+  Description: UAMOR Register
+- Name: ASDR
+  Type: SPR
+  Representation: '816'
+  Description: ASDR Register
+- Name: CESR
+  Type: SPR
+  Representation: 'N/A'
+  Description: CESR Register
+- Name: CIABR
+  Type: SPR
+  Representation: '187'
+  Description: CIABR Register
+- Name: CTRL
+  Type: SPR32
+  Representation: '152'
+  Description: CTRL Register
+- Name: DAWR0
+  Type: SPR
+  Representation: '180'
+  Description: DAWR0 Register
+- Name: DAWR1
+  Type: SPR
+  Representation: 'N/A'
+  Description: DAWR1 Register
+- Name: DAWRX0
+  Type: SPR
+  Representation: '188'
+  Description: DAWRX0 Register
+- Name: DAWRX1
+  Type: SPR
+  Representation: 'N/A'
+  Description: DAWRX1 Register
+- Name: DPDES
+  Type: SPR
+  Representation: '176'
+  Description: DPDES Register
+- Name: ELPIDR
+  Type: SPR
+  Representation: 'N/A'
+  Description: ELPIDR Register
+- Name: FSCR
+  Type: SPR
+  Representation: '153'
+  Description: FSCR Register
+- Name: GSR
+  Type: SPR
+  Representation: '158'
+  Description: GSR Register
+- Name: HDEC
+  Type: SPR
+  Representation: '310'
+  Description: HDEC Register
+- Name: HDSISR
+  Type: SPR
+  Representation: '306'
+  Description: HDSISR Register
+- Name: HEIR
+  Type: SPR
+  Representation: '339'
+  Description: HEIR Register
+- Name: HFSCR
+  Type: SPR
+  Representation: '190'
+  Description: HFSCR Register
+- Name: HID
+  Type: SPR
+  Representation: 'N/A'
+  Description: HID Register
+- Name: HMEER
+  Type: SPR
+  Representation: '337'
+  Description: HMEER Register
+- Name: HMER
+  Type: SPR
+  Representation: '336'
+  Description: HMER Register
+- Name: HRMOR
+  Type: SPR
+  Representation: '313'
+  Description: HRMOR Register
+- Name: HSPRG0
+  Type: SPR
+  Representation: '304'
+  Description: HSPRG0 Register
+- Name: HSPRG1
+  Type: SPR
+  Representation: '305'
+  Description: HSPRG1 Register
+- Name: HSRR0
+  Type: SPR
+  Representation: '314'
+  Description: HSRR0 Register
+- Name: HSRR1
+  Type: SPR
+  Representation: '315'
+  Description: HSRR1 Register
+- Name: IAMR
+  Type: SPR
+  Representation: '61'
+  Description: IAMR Register
+- Name: ICR
+  Type: SPR
+  Representation: 'N/A'
+  Description: ICR Register
+- Name: IESR1
+  Type: SPR
+  Representation: 'N/A'
+  Description: IESR1 Register
+- Name: IESR2
+  Type: SPR
+  Representation: 'N/A'
+  Description: IESR2 Register
+- Name: IMC
+  Type: SPR
+  Representation: 'N/A'
+  Description: IMC Register
+- Name: L2QOSR
+  Type: SPR
+  Representation: 'N/A'
+  Description: L2QOSR Register
+- Name: LDBAR
+  Type: SPR
+  Representation: 'N/A'
+  Description: LDBAR Register
+- Name: LMRR
+  Type: SPR
+  Representation: 'N/A'
+  Description: LMRR Register
+- Name: LMSER
+  Type: SPR
+  Representation: 'N/A'
+  Description: LMSER Register
+- Name: LPCR
+  Type: SPR
+  Representation: '318'
+  Description: LPCR Register
+- Name: LPIDR
+  Type: SPR32
+  Representation: '319'
+  Description: LPIDR Register
+- Name: MESR1
+  Type: SPR
+  Representation: 'N/A'
+  Description: MESR1 Register
+- Name: MESR2
+  Type: SPR
+  Representation: 'N/A'
+  Description: MESR2 Register
+- Name: MMCR1
+  Type: SPR
+  Representation: '782'
+  Description: MMCR1 Register
+- Name: MMCR3
+  Type: SPR
+  Representation: 'N/A'
+  Description: MMCR3 Register
+- Name: MMCRC
+  Type: SPR
+  Representation: 'N/A'
+  Description: MMCRC Register
+- Name: PCR
+  Type: SPR
+  Representation: '338'
+  Description: PCR Register
+- Name: PMCR
+  Type: SPR
+  Representation: 'N/A'
+  Description: PMCR Register
+- Name: PMSR
+  Type: SPR
+  Representation: 'N/A'
+  Description: PMSR Register
+- Name: PSPB
+  Type: SPR
+  Representation: '159'
+  Description: PSPB Register
+- Name: PSSCR
+  Type: SPR
+  Representation: '823'
+  Description: PSSCR Register
+- Name: PTCR
+  Type: SPR
+  Representation: '464'
+  Description: PTCR Register
+- Name: PURR
+  Type: SPR
+  Representation: '309'
+  Description: PURR Register
+- Name: PVR
+  Type: SPR32
+  Representation: '287'
+  Description: PVR Register
+- Name: RPR
+  Type: SPR
+  Representation: '186'
+  Description: RPR Register
+- Name: RWMR
+  Type: SPR
+  Representation: 'N/A'
+  Description: RWMR Register
+- Name: SCOMC
+  Type: SPR
+  Representation: 'N/A'
+  Description: SCOMC Register
+- Name: SCOMD
+  Type: SPR
+  Representation: 'N/A'
+  Description: SCOMD Register
+- Name: SDAR
+  Type: SPR
+  Representation: '781'
+  Description: SDAR Register
+- Name: SIAR
+  Type: SPR
+  Representation: '780'
+  Description: SIAR Register
+- Name: SIERA
+  Type: SPR
+  Representation: 'N/A'
+  Description: SIERA Register
+- Name: SIERB
+  Type: SPR
+  Representation: 'N/A'
+  Description: SIERB Register
+- Name: SIER
+  Type: SPR
+  Representation: 'N/A'
+  Description: SIER Register
+- Name: SMFCTRL
+  Type: SPR
+  Representation: 'N/A'
+  Description: SMFCTRL Register
+- Name: SPRG0
+  Type: SPR
+  Representation: '272'
+  Description: SPRG0 Register
+- Name: SPRG1
+  Type: SPR
+  Representation: '273'
+  Description: SPRG1 Register
+- Name: SPRG2
+  Type: SPR
+  Representation: '274'
+  Description: SPRG2 Register
+- Name: SPRG3
+  Type: SPR
+  Representation: '275'
+  Description: SPRG3 Register
+- Name: SPURR
+  Type: SPR
+  Representation: '308'
+  Description: SPURR Register
+- Name: STAR
+  Type: SPR
+  Representation: 'N/A'
+  Description: STAR Register
+- Name: TB40
+  Type: SPR
+  Representation: 'N/A'
+  Description: TB40 Register
+- Name: TFMR
+  Type: SPR
+  Representation: 'N/A'
+  Description: TFMR Register
+- Name: TIR
+  Type: SPR
+  Representation: '446'
+  Description: TIR Register
+- Name: TRACE
+  Type: SPR
+  Representation: 'N/A'
+  Description: TRACE Register
+- Name: TRIG0
+  Type: SPR
+  Representation: 'N/A'
+  Description: TRIG0 Register
+- Name: TRIG1
+  Type: SPR
+  Representation: 'N/A'
+  Description: TRIG1 Register
+- Name: TRIG2
+  Type: SPR
+  Representation: 'N/A'
+  Description: TRIG2 Register
+- Name: TSCR
+  Type: SPR
+  Representation: 'N/A'
+  Description: TSCR Register
+- Name: TSR1
+  Type: SPR
+  Representation: 'N/A'
+  Description: TSR1 Register
+- Name: TTR
+  Type: SPR
+  Representation: 'N/A'
+  Description: TTR Register
+- Name: VTB
+  Type: SPR
+  Representation: '849'
+  Description: VTB Register
+- Name: WORT
+  Type: SPR32
+  Representation: 'N/A'
+  Description: WORT Register
+- Name: XESR1
+  Type: SPR
+  Representation: 'N/A'
+  Description: XESR1 Register
+- Name: XESR2
+  Type: SPR
+  Representation: 'N/A'
+  Description: XESR2 Register
+- Name: URMOR
+  Type: SPR
+  Representation: '505'
+  Description: URMOR Register
+- Name: PC
+  Type: SPR
+  Representation: 'N/A'
+  Description: PC Register
+- Name: XER_CHANGE
+  Type: SPR
+  Representation: 'N/A'
+  Description: XER_CHANGE Register
+- Name: FPSCR_CHANGE
+  Type: SPR
+  Representation: 'N/A'
+  Description: FPSCR_CHANGE Register
+- Name: FPR_INVALID_MAP
+  Type: SPR
+  Representation: 'N/A'
+  Description: FPR_INVALID_MAP RegisterAP
+- Name: VSCR_CHANGE
+  Type: SPR
+  Representation: 'N/A'
+  Description: VSCR_CHANGE Register
+- Name: SPR_MODEREG
+  Type: SPR
+  Representation: 'N/A'
+  Description: SPR_MODEREG Register
+- Name: CP_TAG0
+  Type: SPR
+  Representation: 'N/A'
+  Description: CP_TAG0 Register
+  Repeat:
+    From: 0
+    To: 15
+- Name: UAMR
+  Type: SPR
+  Representation: 'N/A'
+  Description: UAMR Register
+- Name: CTRL_RO
+  Type: SPR
+  Representation: 'N/A'
+  Description: CTRL_RO Register
+- Name: SPRGR_RO
+  Type: SPR
+  Representation: 'N/A'
+  Description: SPRGR_RO Register
+- Name: TBU_RO
+  Type: SPR
+  Representation: 'N/A'
+  Description: TBU_RO Register
+- Name: USPRG0
+  Type: SPR
+  Representation: 'N/A'
+  Description: USPRG0 Register
+- Name: USPRG1
+  Type: SPR
+  Representation: 'N/A'
+  Description: USPRG1 Register
+- Name: UMMCR3
+  Type: SPR
+  Representation: 'N/A'
+  Description: UMMCR3 Register
+- Name: UMMCRA
+  Type: SPR
+  Representation: 'N/A'
+  Description: UMMCRA Register
+- Name: UPMC1
+  Type: SPR
+  Representation: 'N/A'
+  Description: UPMC1 Register
+  Repeat:
+    From: 1
+    To: 6
+- Name: UMMCR0
+  Type: SPR
+  Representation: 'N/A'
+  Description: UMMCR0 Register
+- Name: USIAR
+  Type: SPR
+  Representation: 'N/A'
+  Description: USIAR Register
+- Name: USDAR
+  Type: SPR
+  Representation: 'N/A'
+  Description: USDAR Register
+- Name: UMMCR1
+  Type: SPR
+  Representation: 'N/A'
+  Description: UMMCR1 Register
+- Name: USRR0
+  Type: SPR
+  Representation: 'N/A'
+  Description: USRR0 Register
+- Name: USRR1
+  Type: SPR
+  Representation: 'N/A'
+  Description: USRR1 Register
+- Name: SPRG3_RO
+  Type: SPR
+  Representation: 'N/A'
+  Description: SPRG3_RO Register
+- Name: LPAR 
+  Type: SPR
+  Representation: 'N/A'
+  Description: LPAR Register
+- Name: CP_DAR
+  Type: SPR
+  Representation: 'N/A'
+  Description: CP_DAR Register
+- Name: DPFCT
+  Type: SPR
+  Representation: 'N/A'
+  Description: DPFCT Register
+- Name: DPFP
+  Type: SPR
+  Representation: 'N/A'
+  Description: DPFP Register
+- Name: DPFT
+  Type: SPR
+  Representation: 'N/A'
+  Description: DPFT Register
+- Name: DEXCR
+  Type: SPR
+  Representation: 'N/A'
+  Description: DEXCR Register
+- Name: HDEXCR
+  Type: SPR
+  Representation: 'N/A'
+  Description: HDEXCR Register
+- Name: RESRVE
+  Type: SPR
+  Representation: 'N/A'
+  Description: RESRVE Register
+- Name: RESRV
+  Type: SPR
+  Representation: 'N/A'
+  Description: RESRV Register
+- Name: CP0
+  Type: SPR
+  Representation: 'N/A'
+  Description: CP0 Register
+  Repeat:
+    From: 0
+    To: 15
+- Name: DPFDS0
+  Type: SPR
+  Representation: 'N/A'
+  Description: DPFDS0 Register
+  Repeat:
+    From: 0
+    To: 15
+- Name: CP_STATE
+  Type: SPR
+  Representation: 'N/A'
+  Description: CP_STATE Register
+- Name: PRSYNC
+  Type: SPR
+  Representation: 'N/A'
+  Description: PRSYNC Register
+- Name: TDOOMED
+  Type: SPR
+  Representation: 'N/A'
+  Description: TDOOMED Register
+- Name: SPIDR
+  Type: SPR
+  Representation: 'N/A'
+  Description: SPIDR Register
+- Name: RESERVED_SPR_848
+  Type: SPR
+  Representation: '848'
+  Description: RESERVED SPR Register 848
+- Name: RESERVED_SPR_850
+  Type: SPR
+  Representation: '850'
+  Description: RESERVED SPR Register 850
+  Repeat:
+    From: 850
+    To: 863
+- Name: RESERVED_SPR_880
+  Type: SPR
+  Representation: '880'
+  Description: RESERVED SPR Register 880
+  Repeat:
+    From: 880
+    To: 895
+- Name: RESERVED_SPR_976
+  Type: SPR
+  Representation: '976'
+  Description: RESERVED SPR Register 976
+  Repeat:
+    From: 976
+    To: 991
+- Name: RESERVED_SPR_1008
+  Type: SPR
+  Representation: '1008'
+  Description: RESERVED SPR Register 1008
+  Repeat:
+    From: 1008
+    To: 1022

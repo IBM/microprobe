@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,13 +44,13 @@ replace () {
     rm -fr "$tmpfile"
 }
 
-if [ "x$1" = "x" ]; then
+if [ "$1" = "" ]; then
     echo "Provide previous version string"
     usage
     exit 255
 fi
 
-if [ "x$2" = "x" ]; then
+if [ "$2" = "" ]; then
     echo "Provide new version string"
     usage
     exit 255
@@ -67,4 +67,4 @@ for directory in ./src/ ./targets/ ./doc/ ./dev_tools/; do
     replace $directory .sh "# IBM (c) $1 All rights reserved" "# IBM (c) $2 All rights reserved"
 done
 
-echo "DONE!"
+echo "DONE"

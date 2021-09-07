@@ -1,0 +1,748 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+- Name: "0_1"
+  Description: Zero instruction field (size 1)
+  Size: 1
+- Name: "0_2"
+  Description: Zero instruction field (size 2)
+  Size: 2
+- Name: "0_3"
+  Description: Zero instruction field (size 3)
+  Size: 3
+- Name: "0_4"
+  Description: Zero instruction field (size 4)
+  Size: 4
+- Name: "0_5"
+  Description: Zero instruction field (size 5)
+  Size: 5
+- Name: "0_10"
+  Description: Zero instruction field (size 10)
+  Size: 10
+- Name: "0_14"
+  Description: Zero instruction field (size 14)
+  Size: 14
+- Name: "0_26"
+  Description: Zero instruction field (size 26)
+  Size: 26
+- Name: "0_1b"
+  Description: Zero instruction field (size 1)
+  Size: 1
+- Name: "0_2b"
+  Description: Zero instruction field (size 2)
+  Size: 2
+- Name: "0_5b"
+  Description: Zero instruction field (size 5)
+  Size: 5
+- Name: "0_5c"
+  Description: Zero instruction field (size 5)
+  Size: 5
+- Name: "0_1c"
+  Description: Zero instruction field (size 1)
+  Size: 1
+- Name: "1_1"
+  Description: One instruction field (size 1)
+  Operand: "BitSet"
+  Size: 1
+- Name: "1_1b"
+  Description: One instruction field (size 1)
+  Operand: "BitSet"
+  Size: 1
+- Name: "A"
+  Description: "A instruction field"
+  Operand: "VSR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "Ap"
+  Description: "Ap instruction field"
+  Operand: "VSR_regpairs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "AA"
+  Description: "AA instruction field"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "AX"
+  Description: "AX instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "W"
+  Description: "W instruction field"
+  Operand: "UImm1"
+  Show: True
+  Size: 1
+  IO: "I"
+- Name: "B"
+  Description: "B instruction field"
+  Operand: "VSR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "BA"
+  Description: "BA instruction field"
+  Operand: "regbit"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "BB"
+  Description: "BB instruction field"
+  Operand: "regbit"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "BD"
+  Description: "BD instruction field"
+  Operand: "DImm14swordshift2"
+  Show: True
+  Size: 14
+  IO: "I"
+- Name: "BF"
+  Description: "BF instruction field"
+  Operand: "CR_regs"
+  Show: True
+  Size: 3
+  IO: "O"
+- Name: "BC"
+  Description: "BC instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "BFA"
+  Description: "BFA instruction field"
+  Operand: "CR_regs"
+  Show: True
+  Size: 3
+  IO: "I"
+- Name: "BH"
+  Description: "BH instruction field"
+  Operand: "BH_Values"
+  Show: True
+  Size: 3
+  IO: "I"
+- Name: "BI"
+  Description: "BI instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "SRS"
+  Description: "SRS instruction field"
+  Operand: "UImm4"
+  Show: True
+  Size: 4
+  IO: "I"
+- Name: "BO"
+  Description: "BO instruction field"
+  Operand: "BO_Values"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "BT"
+  Description: "BT instruction field"
+  Operand: "regbit"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "BX"
+  Description: "BX instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "C"
+  Description: "C instruction field"
+  Operand: "VSR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "CX"
+  Description: "CX instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "D"
+  Description: "D instruction field"
+  Operand: "SImm16"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "DCM"
+  Description: "DCM instruction field"
+  Operand: "UImm6"
+  Show: True
+  Size: 6
+  IO: "I"
+- Name: "DGM"
+  Description: "DGM instruction field"
+  Operand: "UImm6"
+  Show: True
+  Size: 6
+  IO: "I"
+- Name: "DM"
+  Description: "DM instruction field"
+  Operand: "UImm2"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "EH"
+  Description: "EH instruction field"
+  Operand: "UImm1"
+  Show: True
+  Size: 1
+  IO: "I"
+- Name: "D_12qw"
+  Description: "Double word aligned 14-bit displacement instruction field"
+  Operand: "SImm16qword_4"
+  Show: True
+  Size: 12
+  IO: "I"
+- Name: "D_14dw"
+  Description: "Double word aligned 14-bit displacement instruction field"
+  Operand: "SImm16sword"
+  Show: True
+  Size: 14
+  IO: "I"
+- Name: "D_14qw"
+  Description: "Quad word aligned 14-bit displacement instruction field"
+  Operand: "SImm16qword"
+  Show: True
+  Size: 14
+  IO: "I"
+- Name: "D_14qw2"
+  Description: "Quad word aligned 14-bit displacement instruction field"
+  Operand: "SImm16qword"
+  Show: True
+  Size: 14
+  IO: "I"
+- Name: "D_16qw"
+  Description: "Quad word aligned 16-bit displacement instruction field"
+  Operand: "SImm16qword"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "D_14sw"
+  Description: "Single word aligned 14-bit displacement instruction field"
+  Operand: "SImm16sword"
+  Show: True
+  Size: 14
+  IO: "I"
+- Name: "D_16dw"
+  Description: "Double word aligned 16-bit displacement instruction field"
+  Operand: "SImm16dword"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "D_16sw"
+  Description: "Single word aligned 16-bit displacement instruction field"
+  Operand: "SImm16sword"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "D_16hw"
+  Description: "Half word aligned 16-bit displacement instruction field"
+  Operand: "SImm16hword"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "D_16"
+  Description: "Half word aligned 16-bit displacement instruction field"
+  Operand: "SImm16"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "FXM_single"
+  Description: "FXM instruction field"
+  Operand: "UImm8_single"
+  Show: True
+  Size: 8
+  IO: "I"
+- Name: "FXM_mult"
+  Description: "FXM instruction field"
+  Operand: "UImm8_mult"
+  Show: True
+  Size: 8
+  IO: "I"
+- Name: "FLM"
+  Description: "FLM instruction field"
+  Operand: "UImm8"
+  Show: True
+  Size: 8
+  IO: "I"
+- Name: "FRA"
+  Description: "FRA instruction field"
+  Operand: "FPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "FRAP"
+  Description: "FRAp instruction field"
+  Operand: "FPRp_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "FRB"
+  Description: "FRB instruction field"
+  Operand: "FPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "FRBP"
+  Description: "FRBP instruction field"
+  Operand: "FPRp_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "FRC"
+  Description: "FRC instruction field"
+  Operand: "FPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "FRS"
+  Description: "FRS instruction field"
+  Operand: "FPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "FRSP"
+  Description: "FRSP instruction field"
+  Operand: "FPRp_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "FRT"
+  Description: "FRT instruction field"
+  Operand: "FPR_regs"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "FRTP"
+  Description: "FRTP instruction field"
+  Operand: "FPRp_regs"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "RTP"
+  Description: "RTP instruction field"
+  Operand: "GPRp_regs"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "RSP"
+  Description: "RSP instruction field"
+  Operand: "GPRp_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "L"
+  Description: "L instruction field"
+  Operand: "UImm1"
+  Show: True
+  Size: 1
+  IO: "I"
+- Name: "L_2"
+  Description: "L instruction field"
+  Operand: "UImm2Not2"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "L_2b"
+  Description: "L instruction field"
+  Operand: "UImm2Not3"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "LI"
+  Description: "LI instruction field"
+  Operand: "DImm24swordshift2"
+  Show: True
+  Size: 24
+  IO: "I"
+- Name: "LK"
+  Description: "LK instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "MB5"
+  Description: "MB5 instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "MB6"
+  Description: "MB6 instruction field"
+  Operand: "UImm6"
+  Show: True
+  Size: 6
+  IO: "I"
+- Name: "NB"
+  Description: "NB instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "ME5"
+  Description: "ME5 instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "ME6"
+  Description: "ME6 instruction field"
+  Operand: "UImm6"
+  Show: True
+  Size: 6
+  IO: "I"
+- Name: "OE"
+  Description: "OE instruction field"
+  Show: False
+  Operand: "UImm1"
+  Size: 1
+  IO: "I"
+- Name: "R"
+  Description: "R instruction field"
+  Operand: "UImm1"
+  Show: True
+  Size: 1
+  IO: "I"
+- Name: "RA"
+  Description: "RA instruction field"
+  Operand: "GPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "RA_out"
+  Description: "RA instruction field (output)"
+  Operand: "GPR_regs"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "RA_abn0"
+  Description: "RA instruction field not GR0"
+  Operand: "GPR_abn0"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "RA_ab"
+  Description: "RA instruction field for address base"
+  Operand: "GPR_ab"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "RB"
+  Description: "RB instruction field"
+  Operand: "GPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "RB_ai"
+  Description: "RB instruction field for address index"
+  Operand: "GPR_ai"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "RMC"
+  Description: "RMC instruction field"
+  Operand: "UImm2"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "RS"
+  Description: "RS instruction field"
+  Operand: "GPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "RT"
+  Description: "RT instruction field"
+  Operand: "GPR_regs"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "RC"
+  Description: "RC instruction field"
+  Operand: "GPR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "Rc"
+  Description: "Rc instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "S"
+  Description: "S instruction field"
+  Operand: "VSR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "S1"
+  Description: "S1 instruction field"
+  Operand: "UImm1"
+  Show: True
+  Size: 1
+  IO: "I"
+- Name: "SH0"
+  Description: "SH0 instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "SH3"
+  Description: "SH3 instruction field"
+  Operand: "UImm3"
+  Show: True
+  Size: 3
+  IO: "I"
+- Name: "SH4"
+  Description: "SH4 instruction field"
+  Operand: "UImm4"
+  Show: True
+  Size: 4
+  IO: "I"
+- Name: "TH"
+  Description: "TH instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "SH6_5"
+  Description: "SH6 instruction field split (5+1)"
+  Operand: "UImm6"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "SH5"
+  Description: "SH5 instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "SH6"
+  Description: "SH6 instruction field"
+  Operand: "UImm6"
+  Show: True
+  Size: 6
+  IO: "I"
+- Name: "SHW"
+  Description: "SHW instruction field"
+  Operand: "UImm2"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "SI"
+  Description: "SI instruction field"
+  Operand: "SImm16"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "SIMM"
+  Description: "SIMM instruction field"
+  Operand: "SImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "SP"
+  Description: "SP instruction field"
+  Operand: "UImm2"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "SPR"
+  Description: "SPR instruction field"
+  Operand: "SPR_regs"
+  Show: True
+  Size: 10
+  IO: "?"
+- Name: "SX"
+  Description: "SX instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "T"
+  Description: "T instruction field"
+  Operand: "VSR_regs"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "TE"
+  Description: "TE instruction field"
+  Operand: "SImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "TO"
+  Description: "TO instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "TX"
+  Description: "TX instruction field"
+  Operand: "UImm1"
+  Show: False
+  Size: 1
+  IO: "I"
+- Name: "U"
+  Description: "U instruction field"
+  Operand: "UImm4"
+  Show: True
+  Size: 4
+  IO: "I"
+- Name: "UI"
+  Description: "UI instruction field"
+  Operand: "UImm16"
+  Show: True
+  Size: 16
+  IO: "I"
+- Name: "UIM2"
+  Description: "UIM2 instruction field"
+  Operand: "UImm2"
+  Show: True
+  Size: 2
+  IO: "I"
+- Name: "UIM4"
+  Description: "UIM4 instruction field"
+  Operand: "UImm4"
+  Show: True
+  Size: 4
+  IO: "I"
+- Name: "UIMM"
+  Description: "UIMM instruction field"
+  Operand: "UImm5"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "VA"
+  Description: "VA instruction field"
+  Operand: "VR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "VB"
+  Description: "VB instruction field"
+  Operand: "VR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "VC"
+  Description: "VC instruction field"
+  Operand: "VR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "VS"
+  Description: "VS instruction field"
+  Operand: "VR_regs"
+  Show: True
+  Size: 5
+  IO: "I"
+- Name: "VT"
+  Description: "VT instruction field"
+  Operand: "VR_regs"
+  Show: True
+  Size: 5
+  IO: "O"
+- Name: "XO_5"
+  Description: "Extended opcode instruction field (size 5)"
+  Show: False
+  Size: 5
+  IO: "I"
+- Name: "XO_2"
+  Description: "Extended opcode instruction field (size 2)"
+  Show: False
+  Size: 2
+  IO: "?"
+- Name: "XO_3"
+  Description: "Extended opcode instruction field (size 3)"
+  Show: False
+  Size: 3
+  IO: "?"
+- Name: "XO_4"
+  Description: "Extended opcode instruction field (size 4)"
+  Show: False
+  Size: 4
+  IO: "?"
+- Name: "XO2_4"
+  Description: "Extended opcode 2 instruction field (size 4)"
+  Show: False
+  Size: 4
+  IO: "?"
+- Name: "opcode"
+  Description: "opcode instruction field (size 6)"
+  Show: False
+  Size: 6
+  IO: "?"
+- Name: "XO_6"
+  Description: "Extended opcode instruction field (size 6)"
+  Show: False
+  Size: 6
+  IO: "?"
+- Name: "XO2_6"
+  Description: "Extended opcode instruction field (size 6)"
+  Show: False
+  Size: 6
+  IO: "?"
+- Name: "XO_11"
+  Description: "Extended opcode instruction field (size 11)"
+  Show: False
+  Size: 11
+  IO: "?"
+- Name: "XO_10"
+  Description: "Extended opcode instruction field (size 10)"
+  Show: False
+  Size: 10
+  IO: "?"
+- Name: "XO_7"
+  Description: "Extended opcode instruction field (size 7)"
+  Show: False
+  Size: 7
+  IO: "?"
+- Name: "XO_9"
+  Description: "Extended opcode instruction field (size 9)"
+  Show: False
+  Size: 9
+  IO: "?"
+- Name: "XO_8"
+  Description: "Extended opcode instruction field (size 8)"
+  Show: False
+  Size: 8
+  IO: "?"
+- Name: "LEV"
+  Description: "LEV instruction field"
+  Operand: "UImm1"
+  Show: True
+  Size: 7
+  IO: "I"
+- Name: "IH"
+  Description: "IH instruction field"
+  Operand: "IH_Values"
+  Show: True
+  Size: 3
+  IO: "I"
+- Name: "PT"
+  Description: "PT instruction field"
+  Operand: "UImm4"
+  Show: False
+  Size: 4
+  IO: "I"

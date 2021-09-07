@@ -1,0 +1,154 @@
+# Copyright 2011-2021 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- Name: privileged
+  Description: Boolean indicating if the instruction is privileged
+  Default: False
+  Values:
+    LBEPX_V0: True
+    LHEPX_V0: True
+    LWEPX_V0: True
+    LDEPX_V0: True
+    STBEPX_V0: True
+    STHEPX_V0: True
+    STWEPX_V0: True
+    STDEPX_V0: True
+    MSGCLRP_V0: True
+    MSGSNDP_V0: True
+    TRECHKPTx_V0: True
+    TRECLAIMx_V0: True
+    LQ_V0: True
+    MFMSR_V0: True
+    MFSPR_V0: True
+    MFSR_V0: True
+    MFSRIN_V0: True
+    MTMSR_V0: True
+    MTMSRD_V0: True
+    MTSPR_V0: True
+    MTSR_V0: True
+    MTSRIN_V0: True
+    RFID_V0: True
+    SLBFEEx_V0: True
+    SLBIA_V0: True
+    SLBIE_V0: True
+    SLBMFEE_V0: True
+    SLBMFEV_V0: True
+    SLBMTE_V0: True
+    STQ_V0: True
+    TLBIEL_V0: True
+    CLRBHRB_V0: True
+    DARN_V0: True
+    HRFID_V0: True
+    LBZCIX_V0: True
+    LDCIX_V0: True
+    LHZCIX_V0: True
+    LWZCIX_V0: True
+    MFBHRBE_V0: True
+    MFMSR_V0: True
+    MFSPR_V0: True
+    MFSPR_V2: True
+    MFSPR_V3: True
+    MFSPR_V4: True
+    MFSPR_V5: True
+    MFSPR_V6: True
+    MFSPR_V7: True
+    MFSPR_V8: True
+    MFSPR_V9: True
+    MSGCLRP_V0: True
+    MSGCLR_V0: True
+    MSGSNDP_V0: True
+    MSGSND_V0: True
+    MSGSYNC_V0: True
+    MTMSRD_V0: True
+    MTMSRD_V1: True
+    MTMSR_V0: True
+    MTMSR_V1: True
+    MTSPR_V0: True
+    MTSPR_V2: True
+    MTSPR_V3: True
+    MTSPR_V4: True
+    MTSPR_V5: True
+    MTSPR_V6: True
+    MTSPR_V7: True
+    MTSPR_V8: True
+    MTSPR_V9: True
+    RFID_V0: True
+    RFSCV_V0: True
+    SCV_V0: True
+    SLBFEEx_V0: True
+    SLBIAG_V0: True
+    SLBIA_V0: True
+    SLBIEG_V0: True
+    SLBIE_V0: True
+    SLBMFEE_V0: True
+    SLBMFEV_V0: True
+    SLBMTE_V0: True
+    SLBSYNC_V0: True
+    STBCIX_V0: True
+    STDCIX_V0: True
+    STHCIX_V0: True
+    STOP_V0: True
+    STWCIX_V0: True
+    TLBIEL_V0: True
+    TLBIE_V0: True
+    TLBSYNC_V0: True
+    TRECHKPTx_V0: True
+    TRECLAIMx_V0: True
+    URFID_V0: True
+    MTMSR_V0: True
+    MSGCLRU_V0: True
+    MSGSNDU_V0: True
+    CLRBHRB_V0: True
+    DARN_V0: True
+    HRFID_V0: True
+    LBZCIX_V0: True
+    LDCIX_V0: True
+    LHZCIX_V0: True
+    LWZCIX_V0: True
+    MFBHRBE_V0: True
+    MFMSR_V0: True
+    MFSPR_V0: True
+    MFSPR_V2: True
+    MFSPR_V3: True
+    MSGCLRP_V0: True
+    MSGCLR_V0: True
+    MSGSNDP_V0: True
+    MSGSND_V0: True
+    MSGSYNC_V0: True
+    MTMSRD_V0: True
+    MTMSR_V0: True
+    MTSPR_V0: True
+    MTSPR_V2: True
+    RFID_V0: True
+    RFSCV_V0: True
+    SCV_V0: True
+    SLBIAG_V0: True
+    SLBIA_V0: True
+    SLBIEG_V0: True
+    SLBIE_V0: True
+    SLBMFEE_V0: True
+    SLBMFEV_V0: True
+    SLBMTE_V0: True
+    SLBSYNC_V0: True
+    STBCIX_V0: True
+    STDCIX_V0: True
+    STHCIX_V0: True
+    STOP_V0: True
+    STWCIX_V0: True
+    TLBIEL_V0: True
+    TLBIE_V0: True
+    TLBSYNC_V0: True
+    TRECHKPTx_V0: True
+    TRECLAIMx_V0: True
+    URFID_V0: True

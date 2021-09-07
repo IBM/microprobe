@@ -1,4 +1,4 @@
-# Copyright 2018 IBM Corporation
+# Copyright 2011-2021 IBM Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ class Address(object):
 
         """
 
+        assert isinstance(displacement, int)
         self._base_address = base_address
         self._displacement = displacement
 
@@ -309,7 +310,6 @@ class Address(object):
 
     def __str__(self):
         """ """
-
         return "%s(%s+0x%016x)" % (
             self.__class__.__name__, self.base_address, self.displacement
         )
