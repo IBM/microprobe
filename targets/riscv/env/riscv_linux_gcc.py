@@ -47,7 +47,6 @@ class riscv64_linux_gcc(GenericEnvironment):
             )
 
         self._default_wrapper = "CWrapper"
-        self._default_endless_wrapper = "CInfGen"
 
     @property
     def stack_pointer(self):
