@@ -927,7 +927,6 @@ def main():
     cmdline = microprobe.utils.cmdline.CLI(
         "MicroprobeTest (mpt) to ELF tool",
         mpt_options=True,
-        avp_options=True,
         default_config_file="mp_mpt2elf.cfg",
         force_required=['target'],
     )
