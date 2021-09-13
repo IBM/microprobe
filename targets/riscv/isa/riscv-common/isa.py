@@ -52,6 +52,8 @@ class RISCVISA(GenericISA):
                                     self.registers["F7"]]
         self._control_registers += [reg for reg in self.registers.values()
                                     if reg.type.name == "rm"]
+        self._control_registers += [reg for reg in self.registers.values()
+                                    if reg.type.name == "SPR"]
 
     def set_register(self, register, value, context):
 
