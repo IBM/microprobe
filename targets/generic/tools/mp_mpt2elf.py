@@ -371,7 +371,7 @@ def generate(test_definition, output_file, target, **kwargs):
         # 'endless': 'endless' in kwargs
     }
 
-    wrapper_name = "PpcAsmLd"
+    wrapper_name = "AsmLd"
 
     if test_definition.default_data_address is not None:
         ckwargs['init_data_address'] = \
