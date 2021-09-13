@@ -35,7 +35,7 @@ from microprobe.exceptions import MicroprobeCodeGenerationError
 LOG = get_logger(__name__)
 __all__ = [
         "AssemblyLd",
-        "PpcAsmLd"
+        "AsmLd"
 ]
 
 # Functions
@@ -244,7 +244,7 @@ class AssemblyLd(microprobe.code.wrapper.Wrapper):
         return []
 
 
-class PpcAsmLd(microprobe.code.wrapper.Wrapper):
+class AsmLd(microprobe.code.wrapper.Wrapper):
     """:class:`Wrapper` to generate assembly (.s) files."""
 
     def __init__(
@@ -253,7 +253,7 @@ class PpcAsmLd(microprobe.code.wrapper.Wrapper):
             init_data_address=0x0010000000,
             ):
         """Initialization abstract method."""
-        super(PpcAsmLd, self).__init__()
+        super(AsmLd, self).__init__()
         self._current_address = None
         self._instr_ant = None
         self._init_code_address = init_code_address
@@ -469,7 +469,6 @@ class PpcAsmLd(microprobe.code.wrapper.Wrapper):
                        (section_name, section_address, section_name))
             ins.append(".section %s" % section_name)
 
-        # if self._current_address == self._init_code_address:
         if len(self.benchmark.init) > 0:
             if instr == self.benchmark.init[0]:
                 ins.append(".global main")
@@ -508,6 +507,18 @@ class PpcAsmLd(microprobe.code.wrapper.Wrapper):
             ins.append(asm)
         else:
             ins.append(asm)
+
+        if (self.target.isa.name == "riscv_v22" and
+                self.target.environment.name == "riscv64_linux_gcc"):
+            # GCC will sometimes translate regular instructions to compressed
+            # instructions. Because we want to reproduce the instruction
+            # sequence verbatim, put a rv/norvc directive before each
+            # instruction to prevent GCC from using the wrong instruction.
+
+            if instr.architecture_type.mnemonic.startswith("C."):
+                ins.insert(0, ".option rvc")
+            else:
+                ins.insert(0, ".option norvc")
 
         self._instr_ant = instr
 
