@@ -615,14 +615,22 @@ def _compile(filename, target, **kwargs):
 def _compute_reset_code(target, test_def, args):
     instructions = interpret_asm(
         test_def.code, target, [var.name for var in test_def.variables],
+        show_progress=True,
     )
+
+    # TODO: This can be done in parallel or look for speed up the process
     instructions = [
         instruction_from_definition(instr) for instr in instructions
     ]
 
     instruction_dict = {}
     address = test_def.default_code_address
+    progress = Progress(
+        len(test_def.roi_memory_access_trace),
+        msg="Building instruction dictionary",
+    )
     for instr in instructions:
+        progress()
         if instr.address is not None:
             if instr.address.base_address == "code":
                 address = test_def.default_code_address + \
@@ -678,6 +686,10 @@ def _compute_reset_code(target, test_def, args):
                     (instr.operands()[2].value == 0)):
                 level -= 1
 
+        # TODO: this should include Z and RISCV instructions for call
+        # and return, but currently we do not have memory access traces
+        # for such platforms
+
         for reg in uses:
             if reg not in read_regs:
                 read_regs.append(reg)
@@ -699,8 +711,13 @@ def _compute_reset_code(target, test_def, args):
     assert len(free_regs) == len(set(free_regs))
     assert len(set(free_regs).intersection(set(reset_regs))) == 0
 
+    if len(test_def.roi_memory_access_trace) == 0:
+        # We do not have memory access trace, assume calling conventions
+        reset_regs = target.volatile_registers
+
     reset_regs = [
         reg for reg in reset_regs if reg in target.volatile_registers]
+
     unused_regs = sorted(
         (reg for reg in target.registers.values() if reg not in read_regs),
     )
