@@ -90,3 +90,17 @@ class riscv64_linux_gcc(GenericEnvironment):
                               return_address_reg,
                               self.target.isa.registers["X0"]])
         return [ret_ins]
+
+    @property
+    def volatile_registers(self):
+
+        rlist = []
+        for idx in [1, 5, 6, 7 ] + list(range(10, 18)) + [28, 29, 30, 31]:
+            rlist += [self.target.registers['X%d' % idx]]
+
+        for idx in list(
+                list(range(0, 8)) + list(range(10, 18)) + list(range(28, 32))
+                ):
+            rlist += [self.target.registers['F%d' % idx]]
+
+        return rlist
