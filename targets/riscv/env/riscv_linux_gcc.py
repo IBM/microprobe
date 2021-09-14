@@ -95,7 +95,7 @@ class riscv64_linux_gcc(GenericEnvironment):
     def volatile_registers(self):
 
         rlist = []
-        for idx in [1, 5, 6, 7 ] + list(range(10, 18)) + [28, 29, 30, 31]:
+        for idx in [1, 5, 6, 7] + list(range(10, 18)) + [28, 29, 30, 31]:
             rlist += [self.target.registers['X%d' % idx]]
 
         for idx in list(
