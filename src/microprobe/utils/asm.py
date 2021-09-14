@@ -66,7 +66,7 @@ LOG = get_logger(__name__)
 _ASM_CACHE_ENABLED = True
 _ASM_CACHE_FILE = __file__ + ".asm"
 _ASM_CACHE = None
-_ASM_CACHE_SIZE = 128*1024
+_ASM_CACHE_SIZE = 512*1024
 _ASM_CACHE_USED = False
 
 _DECORATOR_CACHE = RejectingDict()
@@ -280,7 +280,6 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
         operands = operands[:]
 
     elif instr_def.assembly.upper().startswith("0X"):
-
         binary_def = interpret_bin(
             instr_def.assembly[2:], target, fmt="hex", single=True, safe=safe
         )
@@ -300,7 +299,6 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
                 _ASM_CACHE_USED = True
 
     elif instr_def.assembly.upper().startswith("0B"):
-
         binary_def = interpret_bin(instr_def.assembly[2:], target, fmt="bin")
         if len(binary_def) > 1:
             raise MicroprobeAsmError("More than one instruction parsed.")
