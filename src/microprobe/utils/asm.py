@@ -187,7 +187,14 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
 
         for instr_def in code:
 
+            if show_progress:
+                progress()
+
             if isinstance(instr_def, six.string_types):
+
+                if instr_def.strip() == "":
+                    # empty, string, continue
+                    continue
                 instr_def = _str_to_asmdef(instr_def)
 
             safe = None
@@ -201,9 +208,6 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
             instructions_and_params.append(intr_asm)
 
             LOG.debug("Instruction: '%s' interpreted", instr_def.assembly)
-
-            if show_progress:
-                progress()
 
     except MicroprobeAsmError as exc:
 

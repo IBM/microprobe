@@ -247,12 +247,16 @@ class ResolveSymbolicReferencesPass(microprobe.passes.Pass):
 
                     raise NotImplementedError
 
-            elif isinstance(address.base_address, Variable):
+            elif isinstance(address.base_address, Variable) or \
+                    address.base_address == "data":
 
-                target_address = Address(
-                    base_address=address.base_address.address,
-                    displacement=address.displacement
-                )
+                if address.base_address == "data":
+                    target_address = address
+                else:
+                    target_address = Address(
+                        base_address=address.base_address.address,
+                        displacement=address.displacement
+                    )
 
                 if operand.type.address_relative:
 
@@ -292,8 +296,12 @@ class ResolveSymbolicReferencesPass(microprobe.passes.Pass):
                                  data_address.displacement)
                             )
 
-                        comment = "Reference to var '%s' at" \
-                            % address.base_address.name
+                        if isinstance(address.base_address, Variable):
+                            comment = "Reference to var '%s' at" \
+                                % address.base_address.name
+                        else:
+                            comment = "Reference to data at"
+
                         instruction.add_comment(
                             "%s %s" % (
                                 comment, hex(
@@ -319,6 +327,7 @@ class ResolveSymbolicReferencesPass(microprobe.passes.Pass):
 
                 else:
                     raise NotImplementedError
+
             else:
                 LOG.critical(
                     "Instr: %s Instr.Address: %s, Address: %s",
