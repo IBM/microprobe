@@ -306,7 +306,7 @@ class Synthesizer(object):
                 )
             self._passes[thread_idx].append(synth_pass)
 
-    def save(self, name, bench=None):
+    def save(self, name, bench=None, pad=None):
         """Save a benchmark to disk.
 
         Save a synthesized benchmark to disk. If bench is not specified a
@@ -341,6 +341,15 @@ class Synthesizer(object):
             if isinstance(elem, six.string_types) and six.PY3:
                 elem = elem.encode()
             fdx.write(elem)
+
+        fdx.flush()
+
+        if pad is not None:
+            file_size = os.path.getsize(outputname)
+            while (file_size % pad) != 0:
+                fdx.write(bytes(pad - (file_size % pad)))
+                fdx.flush()
+                file_size = os.path.getsize(outputname)
         fdx.close()
 
     def synthesize(self):
@@ -373,6 +382,7 @@ class Synthesizer(object):
                 bench.register_var(var, bench.context)
 
             if not self._no_scratch:
+                self._target.scratch_var.set_address(None)
                 bench.register_var(self._target.scratch_var, bench.context)
 
             # Basic context

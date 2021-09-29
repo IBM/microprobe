@@ -343,35 +343,45 @@ def int_range(min_val, max_val):
         """
 
         rangedef = []
-
-        for argument in argumentall.split("-"):
-
-            try:
-                if argument.upper().startswith("0X"):
-                    argument = int(argument, base=0)
+        if argumentall.startswith("m"):
+            value = int(argumentall[1:])
+            rval = []
+            for i in range(0, 2**32):
+                val = 2**i
+                if val <= value:
+                    rval.append(val)
                 else:
-                    argument = int(argument)
-            except ValueError:
-                msg = "'%s' is not a valid integer range." % argument
-                raise argparse.ArgumentTypeError(msg)
+                    break
+            return(rval)
+        else:
+            for argument in argumentall.split("-"):
 
-            if argument < min_val or argument > max_val:
-                msg = "'%s' is not within the [%d, %d] range" % (
-                    argument, min_val, max_val
-                )
-                raise argparse.ArgumentTypeError(msg)
+                try:
+                    if argument.upper().startswith("0X"):
+                        argument = int(argument, base=0)
+                    else:
+                        argument = int(argument)
+                except ValueError:
+                    msg = "'%s' is not a valid integer range." % argument
+                    raise argparse.ArgumentTypeError(msg)
 
-            rangedef.append(argument)
-
-        if len(rangedef) > 1:
-            if rangedef[0] > rangedef[1]:
-                msg = "'%s' range is reversed. Change it to " \
-                    "low to high value." % (
-                        argumentall
+                if argument < min_val or argument > max_val:
+                    msg = "'%s' is not within the [%d, %d] range" % (
+                        argument, min_val, max_val
                     )
-                raise argparse.ArgumentTypeError(msg)
+                    raise argparse.ArgumentTypeError(msg)
 
-        return range_to_sequence(rangedef[0], *rangedef[1:])
+                rangedef.append(argument)
+
+            if len(rangedef) > 1:
+                if rangedef[0] > rangedef[1]:
+                    msg = "'%s' range is reversed. Change it to " \
+                        "low to high value." % (
+                            argumentall
+                        )
+                    raise argparse.ArgumentTypeError(msg)
+
+            return range_to_sequence(rangedef[0], *rangedef[1:])
 
     return function
 

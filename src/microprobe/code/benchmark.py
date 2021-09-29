@@ -219,6 +219,11 @@ class Benchmark(BuildingBlock):
         """Returns the list of registered global variables."""
         return list(self._global_vars.values())
 
+    def set_var_displacement(self, displacement):
+        # Displacement only can increase
+        assert displacement > self._vardisplacement
+        self._vardisplacement = displacement
+
     def register_var(self, var, context):
         """Registers the given variable as a global variable.
 
@@ -280,9 +285,12 @@ class Benchmark(BuildingBlock):
                 LOG.debug("Variable alignment: %s", align)
                 LOG.debug("Current address: %s", var_address)
 
-                if var_address.displacement % align != 0:
+                if (var_address.displacement +
+                        context.data_segment) % align != 0:
                     # alignment needed
-                    var_address += align - (var_address.displacement % align)
+                    var_address += align - ((
+                        var_address.displacement+context.data_segment) % align
+                    )
 
                 LOG.debug("Address after alignment: %s", var_address)
                 LOG.debug(
