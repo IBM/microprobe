@@ -48,6 +48,7 @@ from microprobe.exceptions import MicroprobeCodeGenerationError, \
     MicroprobeException, MicroprobeMPTFormatError, MicroprobeValueError, \
     MicroprobeRunCmdError
 from microprobe.target import import_definition
+from microprobe.passes.instruction import SetInstructionOperandsByOpcodePass
 from microprobe.utils.asm import MicroprobeAsmInstructionDefinition,\
     interpret_asm, instruction_to_asm_definition
 from microprobe.utils.bin import interpret_bin
@@ -446,30 +447,28 @@ def generate(test_definition, output_file, target, **kwargs):
         microprobe.passes.instruction.ReproduceSequencePass(sequence),
     )
 
-    for new, orig in [(20, 21), (16, 17), (18, 19)]:
-        synthesizer.add_pass(
-            microprobe.passes.instruction.SetInstructionOperandsByOpcodePass(
-                "BCLR_V0", 0, new, force=True, ifval=orig
-            )
-        )
+    if target.name.startswith("power"):
+        fix_branches = [instr.name for instr in target.instructions.values()
+                        if instr.branch_conditional]
 
-        synthesizer.add_pass(
-            microprobe.passes.instruction.SetInstructionOperandsByOpcodePass(
-                "BCCTRL_V0", 0, new, force=True, ifval=orig
-            )
-        )
-
-        synthesizer.add_pass(
-            microprobe.passes.instruction.SetInstructionOperandsByOpcodePass(
-                "BCCTR_V0", 0, new, force=True, ifval=orig
-            )
-        )
-
-        synthesizer.add_pass(
-            microprobe.passes.instruction.SetInstructionOperandsByOpcodePass(
-                "BC_V0", 0, new, force=True, ifval=orig
-            )
-        )
+        if 'raw_bin' in kwargs:
+            # We do not know what is code and what is data, so we safely
+            # disable the asm generation and keep the values
+            for orig in [21, 17, 19]:
+                synthesizer.add_pass(
+                    microprobe.passes.instruction.DisableAsmByOpcodePass(
+                        fix_branches, 0, ifval=orig
+                    )
+                )
+        else:
+            # We know what is code and what is data, so we can safely
+            # fix the branch instructions
+            for new, orig in [(20, 21), (16, 17), (18, 19)]:
+                synthesizer.add_pass(
+                    SetInstructionOperandsByOpcodePass(
+                        fix_branches, 0, new, force=True, ifval=orig
+                    )
+                )
 
     if kwargs.get("fix_memory_registers", False):
         kwargs["fix_memory_references"] = True
@@ -554,7 +553,7 @@ def _compile(filename, target, **kwargs):
     if "compiler" not in kwargs:
         print_info("Compiler not provided")
         print_info("To compiler the code, first extract the custom")
-        print_info("ld script embedded in the assmebly as comments to do")
+        print_info("ld script embedded in the assembly as comments to do")
         print_info("so execute:")
         print_info("grep 'MICROPROBE LD' %s | cut -d '@' -f 2" % filename)
         print_info("then compile using gcc and providing the ld script")

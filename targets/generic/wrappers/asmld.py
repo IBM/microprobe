@@ -276,7 +276,7 @@ class PpcAsmLd(microprobe.code.wrapper.Wrapper):
                 ins.append(".type   main, @function")
                 ins.append("main:")
 
-        if instr.name == "raw" or instr.disable_asm:
+        if instr.name == "raw" or instr.disable_asm or instr.unsupported:
             asm = []
             if instr.label is not None:
                 asm.append(instr.label + ":")
