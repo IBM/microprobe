@@ -275,6 +275,14 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                       key=lambda x: self._priolist.index(x.name)
                       if x.name in self._priolist else 314159)
 
+        #
+        # Make sure scratch registers are set last
+        #
+        for reg in target.scratch_registers:
+            if reg in regs:
+                regs.remove(reg)
+                regs.append(reg)
+
         for reg in regs:
 
             value = None

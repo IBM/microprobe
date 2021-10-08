@@ -1696,9 +1696,6 @@ class GenericInstructionType(InstructionType):
         mask = int(mask_str, 2)
 
         assert mask != 0
-        # assert mask_val != 0
-
-        # print("{:032b}".format(mask), "{:032b}".format(mask_val), self.name)
 
         self._mask = (mask, mask_val)
 

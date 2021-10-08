@@ -610,11 +610,16 @@ def parse_instruction_list(target, sequence):
         instructions = []
         for instr in sequence.split(","):
             if (instr.upper().startswith("0X")):
-                instr = interpret_bin(
+                pinstr = interpret_bin(
                     instr[2:], target, safe=True, single=True
                 )
-                assert len(instr) == 1
-                instr = instr[0].instruction_type
+                if len(pinstr) > 1:
+                    print_error(
+                        "Binary '%s' decoded to more than one"
+                        " instruction." % instr
+                    )
+                    exit(-1)
+                instr = pinstr[0].instruction_type
             else:
                 instr = target.instructions[instr]
             instructions.append(instr)

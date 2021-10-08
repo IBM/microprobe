@@ -233,19 +233,37 @@ def generate(test_definition, output_file, target, **kwargs):
         print_info("Wrapping function...")
         start_symbol = "START_TEST"
 
-        displacement = None
-        for elem in test_definition.code:
-            if elem.address is not None:
-                if displacement is None:
-                    displacement = elem.address
-                displacement = min(displacement, elem.address)
-
         init_address = test_definition.default_code_address
         for register in test_definition.registers:
             if register.name == "PC":
                 init_address = register.value
             if register.name == "PSW_ADDR":
                 init_address = register.value
+
+        displacements = []
+        for elem in test_definition.code:
+            if elem.address is not None:
+                if len(displacements) == 0:
+                    displacements.append(
+                        (elem.address, 4*1024, elem.address - init_address)
+                    )
+                else:
+                    displacements.append(
+                        (elem.address, elem.address - displacements[-1][0],
+                         elem.address - init_address)
+                    )
+
+        # Get ranges with enough space to put init code
+        # Assuming 4K space is enough
+        displacements = [
+            displ for displ in displacements
+            if displ[1] >= 4*1024 and displ[2] < 0
+        ]
+
+        if 'fix_long_jump' in kwargs:
+            displacement = sorted(displacements, key=lambda x: x[0])[0][0]
+        else:
+            displacement = sorted(displacements, key=lambda x: x[2])[-1][0]
 
         start_symbol = None
         init_found = False
@@ -258,7 +276,10 @@ def generate(test_definition, output_file, target, **kwargs):
                 break
 
         if not init_found:
-            print_error("Initial instruction address not found")
+            print_error(
+                "Initial instruction address (%s) not found" %
+                hex(init_address)
+            )
             exit(-1)
 
         if start_symbol is None:
@@ -285,10 +306,15 @@ def generate(test_definition, output_file, target, **kwargs):
         #     (start_symbol, (-1) * displacement)).replace("+0x-", "-0x"),
         # )
 
-        instructions += target.function_call(
-            ("%s+0x%x" %
-             (start_symbol, (-1) * 0)).replace("+0x-", "-0x"),
-        )
+        if 'fix_long_jump' in kwargs:
+            instructions += target.function_call(
+                init_address,
+                long_jump=True
+            )
+        else:
+            instructions += target.function_call(
+                ("%s" % start_symbol).replace("+0x-", "-0x"),
+            )
 
         if 'wrap_endless' not in kwargs:
             instructions += [target.nop()]
@@ -427,7 +453,7 @@ def generate(test_definition, output_file, target, **kwargs):
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
                 registers, skip_unknown=True, warn_unknown=True,
-                skip_control=True,
+                skip_control=True, force_reserved=True
             ),
         )
 
@@ -700,9 +726,23 @@ def _compute_reset_code(target, test_def, args):
 
     reset_regs = [
         reg for reg in reset_regs if reg in target.volatile_registers]
+    if len(reset_regs) == 0 and len(test_def.roi_memory_access_trace) == 0:
+        print_info(
+            "No memory access trace found. Resetting volatile registers."
+        )
+        reset_regs = target.volatile_registers
+
     unused_regs = sorted(
         (reg for reg in target.registers.values() if reg not in read_regs),
     )
+
+    #
+    # Make sure scratch registers are reset last
+    #
+    for reg in target.scratch_registers:
+        if reg in reset_regs:
+            reset_regs.remove(reg)
+            reset_regs.append(reg)
 
     free_regs = unused_regs + free_regs
 
@@ -1009,6 +1049,12 @@ def main():
                          "non-code stuff)",
         group_name,
     )
+    cmdline.add_flag(
+        "fix-long-jump", None,
+        "Sometimes the generated code is unable compile due a long jump "
+        "displacement required to jump to the start insturction.",
+        group_name,
+    )
 
     group_name = "Wrapping options"
     cmdline.add_group(
@@ -1067,15 +1113,15 @@ def _main(arguments):
     if 'safe-bin' in arguments:
         microprobe.MICROPROBE_RC['safe_bin'] = True
 
-    target = import_definition(arguments.pop('target'))
-    test_definition = arguments['mpt_definition']
-    output_file = arguments['elf_output_file']
-
     if "no_wrap_test" in arguments and "wrap_endless" in arguments:
         print_error(
             "--no-wrap-test specified and --wrap-endless specified. "
             "Incompatible options."
         )
+
+    target = import_definition(arguments.pop('target'))
+    test_definition = arguments['mpt_definition']
+    output_file = arguments['elf_output_file']
 
     print_info("Start generating '%s'" % output_file)
     generate(

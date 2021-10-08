@@ -153,7 +153,7 @@ def write_cache_data(filename, data, data_reload=False):
             if isinstance(base_data, dict):
                 # TODO: Control cache size of dictionary caches
                 data.update(base_data)
-            elif isinstance(base_data, cachetools.lru.LRUCache):
+            elif isinstance(base_data, cachetools.LRUCache):
                 pass
             else:
                 raise NotImplementedError
