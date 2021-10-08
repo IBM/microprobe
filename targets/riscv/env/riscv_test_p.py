@@ -90,3 +90,19 @@ class riscv64_test_p(GenericEnvironment):
                               return_address_reg,
                               self.target.isa.registers["X0"]])
         return [ret_ins]
+
+    @property
+    def volatile_registers(self):
+
+        rlist = []
+        for idx in [
+                1, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
+                28, 29, 30, 31]:
+            rlist += [self.target.registers['X%d' % idx]]
+
+        for idx in [
+                0, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
+                28, 29, 30, 31]:
+            rlist += [self.target.registers['F%d' % idx]]
+
+        return rlist
