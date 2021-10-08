@@ -70,6 +70,7 @@ __all__ = [
     'AddAssemblyByIndexPass',
     'ReplaceLoadInstructionsPass',
     'AddOnePass',
+    'DisableAsmByOpcodePass',
 ]
 
 # Functions
@@ -1200,6 +1201,67 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
             for instr in bbl.instrs:
                 if instr.opcode in self._opcodes:
                     if instr.operands()[self._pos].value != self._value():
+                        return False
+
+        return True
+
+
+class DisableAsmByOpcodePass(microprobe.passes.Pass):
+    """DisableAsmByOpcodePass pass.
+
+    """
+
+    def __init__(self, opcodes, operand_pos, ifval=None):
+        """
+
+        :param opcodes:
+        :param operand_pos:
+        :param value:
+
+        """
+        super(DisableAsmByOpcodePass, self).__init__()
+
+        self._description = "Disable ASM %d of instructions with opcode " \
+                            "'%s' if value: '%s'" % (operand_pos, opcodes,
+                                                     ifval)
+        if isinstance(opcodes, str):
+            self._opcodes = [opcodes]
+        else:
+            self._opcodes = opcodes
+
+        self._pos = operand_pos
+        self._ifval = ifval
+
+    def __call__(self, building_block, dummy_target):
+        """
+
+        :param building_block:
+        :param dummy_target:
+
+        """
+        for bbl in building_block.cfg.bbls:
+            for instr in bbl.instrs:
+                if instr.name in self._opcodes:
+                    if (self._ifval is not None and
+                            instr.operands()[self._pos].value != self._ifval):
+                        continue
+                    instr.disable_asm = True
+
+    def check(self, building_block, dummy_target):
+        """
+
+        :param building_block:
+        :param dummy_target:
+
+        """
+
+        for bbl in building_block.cfg.bbls:
+            for instr in bbl.instrs:
+                if instr.opcode in self._opcodes:
+                    if self._ifval is None and not instr.disable_asm:
+                        return False
+                    elif (instr.operands()[self._pos].value == self._ifval and
+                            not instr.disable_asm):
                         return False
 
         return True
