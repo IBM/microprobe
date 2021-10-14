@@ -231,7 +231,7 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def function_call(self, target, return_address_reg=None):
+    def function_call(self, target, return_address_reg=None, long_jump=False):
         """ """
         raise NotImplementedError
 
@@ -400,7 +400,7 @@ class GenericEnvironment(Environment):
 
         return [stack], instructions
 
-    def function_call(self, target, return_address_reg=None):
+    def function_call(self, target, return_address_reg=None, long_jump=False):
         """ """
         raise NotImplementedError
 

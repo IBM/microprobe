@@ -61,7 +61,8 @@ class ppc64_common(GenericEnvironment):
                                                  **kwargs)
 
     def function_call(self, target,
-                      return_address_reg=None):
+                      return_address_reg=None,
+                      long_jump=False):
 
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["LR"]

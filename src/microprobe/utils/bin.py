@@ -62,12 +62,12 @@ _BIN_CACHE_ENABLED = True
 _BIN_CACHE_FILE = __file__ + ".bin"
 _BIN_CACHE = None
 _BIN_CACHE_USED = False
-_BIN_CACHE_SIZE = 512*1024
+_BIN_CACHE_SIZE = 96*1024
 _CODE_CACHE_ENABLED = True
 _CODE_CACHE_FILE = __file__ + ".code"
 _CODE_CACHE = None
 _CODE_CACHE_USED = False
-_CODE_CACHE_SIZE = 128*1024
+_CODE_CACHE_SIZE = 64
 _DATA_CACHE = RejectingDict()
 _DATA_CACHE_LENGTHS = []
 _DATA_CACHE_ENABLED = True
@@ -237,7 +237,7 @@ def _interpret_bin_code_safe(
             )
             instructions_and_params.append(instr_def)
 
-            if _BIN_CACHE_ENABLED:
+            if _BIN_CACHE_ENABLED and instr_type.name != "raw":
                 key = (fmt % int(skip, 16)).lower()
                 _BIN_CACHE[target.name+target.isa.path+key] = (
                     fmt %
@@ -773,7 +773,8 @@ class MicroprobeBinInstructionStream(object):
 
         self._index = 0
         self._data_cache = _data_cache
-        self._lenghts = list(sorted(_compute_target_lengths(target)))
+        self._lenghts = list(sorted(_compute_target_lengths(target),
+                                    reverse=True))
         self._progress = Progress(len(self._code), msg="Bytes parsed:")
 
     def empty(self):
@@ -817,12 +818,16 @@ class MicroprobeBinInstructionStream(object):
                 if bin_str in _DATA_CACHE:
                     self._index += length
                     self._progress(increment=length)
+                    LOG.debug("%s in data cache" % bin_str)
                     return bin_str, None, None
+
+        LOG.debug("Not found in data cache")
 
         matches = []
         max_size = max(self._lenghts) * 2
         for length in self._lenghts:
 
+            LOG.debug("Trying length: %d", length)
             if self._index == 0 and len(self._code) < (length * 2):
                 LOG.debug("Short bin string without leading zeros")
             elif self._index + length * 2 > len(self._code):
@@ -846,6 +851,10 @@ class MicroprobeBinInstructionStream(object):
                                  bin_str][1].format.length * 2
                 self._index += add
                 self._progress(increment=add)
+                LOG.debug("%s in code cache" % bin_str)
+                #
+                # Return always the largest match in cache
+                #
                 return _BIN_CACHE[
                     self._target.name + self._target.isa.path + bin_str
                 ]
@@ -874,10 +883,11 @@ class MicroprobeBinInstructionStream(object):
 
         possible_match_operands = []
         for instr_type, bin_int in matches:
+            LOG.debug("Instruction type: %s", instr_type)
             operands = _interpret_bin_instr(instr_type, bin_int)
+            LOG.debug("Operands: %s", operands)
 
             if operands is not None:
-
                 for elem in itertools.product(*operands):
                     possible_match_operands.append((bin_int, instr_type, elem))
 
@@ -921,7 +931,7 @@ class MicroprobeBinInstructionStream(object):
                         bin_int, 16) == bin_int, (hex(bin_int),
                                                   fmt)
 
-                    if _BIN_CACHE_ENABLED:
+                    if _BIN_CACHE_ENABLED and instr_type.name != "raw":
                         key = (fmt % bin_int).lower()
                         _BIN_CACHE[
                             self._target.name + self._target.isa.path + key

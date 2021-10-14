@@ -26,9 +26,8 @@ from microprobe.target.env import GenericEnvironment
 
 # Functions
 
+
 # Classes
-
-
 class riscv64_linux_gcc(GenericEnvironment):
 
     _elf_code = ""\
@@ -66,7 +65,8 @@ class riscv64_linux_gcc(GenericEnvironment):
                                                       **kwargs)
 
     def function_call(self, target,
-                      return_address_reg=None):
+                      return_address_reg=None,
+                      long_jump=False):
 
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["X1"]
@@ -95,12 +95,16 @@ class riscv64_linux_gcc(GenericEnvironment):
     def volatile_registers(self):
 
         rlist = []
-        for idx in [1, 5, 6, 7] + list(range(10, 18)) + [28, 29, 30, 31]:
+
+        for idx in [
+                1, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
+                28, 29, 30, 31]:
             rlist += [self.target.registers['X%d' % idx]]
 
-        for idx in list(
-                list(range(0, 8)) + list(range(10, 18)) + list(range(28, 32))
-                ):
+        for idx in [
+                0, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
+                28, 29, 30, 31]:
+
             rlist += [self.target.registers['F%d' % idx]]
 
         return rlist
