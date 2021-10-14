@@ -257,11 +257,13 @@ def generate(test_definition, output_file, target, **kwargs):
         # Assuming 4K space is enough
         displacements = [
             displ for displ in displacements
-            if displ[1] >= 4*1024 and displ[2] < 0
+            if displ[1] >= 4*1024 and displ[2] <= 0
         ]
 
         if 'fix_long_jump' in kwargs:
             displacement = sorted(displacements, key=lambda x: x[0])[0][0]
+            if displacement > 2**32:
+                displacement = 0x1000000
         else:
             displacement = sorted(displacements, key=lambda x: x[2])[-1][0]
 
