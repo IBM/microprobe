@@ -251,5 +251,7 @@
     STXVRDX_V0: True
     STXVRHX_V0: True
     STXVRWX_V0: True
+    LXVX_V0: True
+    STXVX_V0: True
 
 

@@ -48,6 +48,7 @@ from microprobe.utils.misc import RejectingDict, closest_divisor
 LOG = get_logger(__name__)
 __all__ = [
     'UpdateInstructionAddressesPass',
+    'SetInitAddressPass',
 ]
 
 # Functions
@@ -184,3 +185,69 @@ class UpdateInstructionAddressesPass(microprobe.passes.Pass):
         #    pass_ok = variable.address == daddress
 
         return pass_ok
+
+
+class SetInitAddressPass(microprobe.passes.Pass):
+    """SetInitAddressPass pass.
+
+    """
+
+    def __init__(self, address):
+        """ """
+        super(SetInitAddressPass, self).__init__()
+
+        self._address = address
+        self._description = "Set initial address to 0x%X" % address
+
+    def __call__(self, building_block, target):
+        """
+
+        :param building_block:
+        :param target:
+
+        """
+
+        address = InstructionAddress(
+            base_address="code",
+            displacement=building_block.context.code_segment - self._address
+        )
+
+        for instr in building_block.init:
+            instr.set_address(address.copy())
+            return []
+
+        for bbl in building_block.cfg.bbls:
+            for instr in bbl.instrs:
+                instr.set_address(address.copy())
+                return []
+
+        for instr in building_block.fini:
+            instr.set_address(address.copy())
+            return []
+
+        return []
+
+    def check(self, building_block, dummy_target):
+        """
+
+        :param building_block:
+        :param dummy_target:
+
+        """
+
+        address = InstructionAddress(
+            base_address="code",
+            displacement=building_block.context.code_segment - self._address
+        )
+
+        for instr in building_block.init:
+            return instr.address == address
+
+        for bbl in building_block.cfg.bbls:
+            for instr in bbl.instrs:
+                return instr.address == address
+
+        for instr in building_block.fini:
+            return instr.address == address
+
+        return False

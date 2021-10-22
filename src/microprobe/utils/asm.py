@@ -66,7 +66,7 @@ LOG = get_logger(__name__)
 _ASM_CACHE_ENABLED = True
 _ASM_CACHE_FILE = __file__ + ".asm"
 _ASM_CACHE = None
-_ASM_CACHE_SIZE = 64*1024
+_ASM_CACHE_SIZE = 1024*1024
 _ASM_CACHE_USED = False
 
 _DECORATOR_CACHE = RejectingDict()
