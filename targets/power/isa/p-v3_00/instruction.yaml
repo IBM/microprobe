@@ -379,6 +379,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["0", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
 - Name: "BCCTRL_V0"
@@ -536,6 +537,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["1", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
   ImplicitOperands:
@@ -613,6 +615,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["1", "LK", "I"]
+    LI: ["DImm24swordshift2Abs", "LI", "I"]
   MemoryOperands:
     MEM1: [["LI"], [0], 0, "B"]
   ImplicitOperands:

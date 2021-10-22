@@ -485,6 +485,12 @@
   MinDisplacement: -8192
   MaxDisplacement: 8191
   Shift: 2
+- Name: DImm14swordshift2Abs
+  Description: Absolute Displacement Immediate (bit size 14) - Single word aligned - Shifted 2
+  Relative: False
+  MinDisplacement: -8192
+  MaxDisplacement: 8191
+  Shift: 2
 - Name: SImm16
   Description: Signed Immediate (bit size 16)
   Min: -32768
