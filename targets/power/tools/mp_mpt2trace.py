@@ -115,24 +115,34 @@ def generate(test_definition, outputfile, target, **kwargs):
             (wrapper_name, str(exc))
         )
 
-    wrapper_kwargs = {}
-    wrapper_kwargs["init_code_address"] = test_definition.default_code_address
-    wrapper_kwargs["init_data_address"] = test_definition.default_data_address
-    wrapper = cwrapper(**wrapper_kwargs)
-
     start_addr = [
         reg.value for reg in test_definition.registers
-        if reg.name == "PC"
+        if reg.name in ["PC", "IAR"]
     ]
 
     if start_addr:
         start_addr = start_addr[0]
     else:
-        start_addr = None
+        start_addr = test_definition.default_code_address
+
+    if start_addr != test_definition.default_code_address:
+        print_error(
+            "Default code address does not match register state "
+            "PC/IAR value. Check MPT consistency."
+        )
+        exit(-1)
+
+    wrapper_kwargs = {}
+    wrapper_kwargs["init_code_address"] = start_addr
+    wrapper_kwargs["init_data_address"] = test_definition.default_data_address
+    wrapper = cwrapper(**wrapper_kwargs)
 
     synth = microprobe.code.TraceSynthesizer(
         target, wrapper, show_trace=kwargs.get(
-            "show_trace", False), maxins=max_ins, start_addr=start_addr
+            "show_trace", False),
+        maxins=max_ins,
+        start_addr=start_addr,
+        no_scratch=True
     )
 
     # if len(registers) >= 0:

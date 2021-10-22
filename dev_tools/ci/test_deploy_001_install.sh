@@ -66,6 +66,9 @@ python "$(command -v virtualenv)" --python="python$VERSION" "$tmpdir"
 
 cd "$VIRTUAL_ENV"
 
+# Update pip within virtual environment (always to latest version)
+python -m pip install --upgrade pip
+
 # No user packages within the virtual env
 export PYTHONNOUSERSITE=True
 

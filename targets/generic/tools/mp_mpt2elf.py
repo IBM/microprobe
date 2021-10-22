@@ -260,10 +260,25 @@ def generate(test_definition, output_file, target, **kwargs):
             if displ[1] >= 4*1024 and displ[2] <= 0
         ]
 
-        if 'fix_long_jump' in kwargs:
+        if len(displacements) == 0:
+            print_error(
+                "Unable to find space for the initialization code. "
+                "Check the mpt initial code address or state of PC "
+                "for correctness."
+            )
+            exit(-1)
+
+        displ_fixed = False
+        if kwargs['fix_start_address']:
+            displacement = kwargs['fix_start_address']
+            print_info("Start point set to 0x%X" % displacement)
+            displ_fixed = True
+        elif 'fix_long_jump' in kwargs:
             displacement = sorted(displacements, key=lambda x: x[0])[0][0]
             if displacement > 2**32:
                 displacement = 0x1000000
+                print_info("Start point set to 0x%X" % displacement)
+                displ_fixed = True
         else:
             displacement = sorted(displacements, key=lambda x: x[2])[-1][0]
 
@@ -292,21 +307,22 @@ def generate(test_definition, output_file, target, **kwargs):
         if displacement is None:
             displacement = 0
 
-        displacement_end = displacement
         instructions = []
         reset_steps = []
         if 'wrap_endless' in kwargs and 'reset' in kwargs:
+
+            target.scratch_var.set_address(
+                Address(
+                    base_address=target.scratch_var.name
+                )
+            )
+
             new_ins, overhead, reset_steps = _compute_reset_code(
                 target,
                 test_definition,
                 kwargs,
             )
             instructions += new_ins
-
-        # instructions += target.function_call(
-        #    ("%s+0x%x" %
-        #     (start_symbol, (-1) * displacement)).replace("+0x-", "-0x"),
-        # )
 
         if 'fix_long_jump' in kwargs:
             instructions += target.function_call(
@@ -326,8 +342,11 @@ def generate(test_definition, output_file, target, **kwargs):
         instructions_definitions = []
         for instruction in instructions:
             instruction.set_label(None)
-            displacement = (displacement -
-                            instruction.architecture_type.format.length)
+
+            if not displ_fixed:
+                displacement = (displacement -
+                                instruction.architecture_type.format.length)
+
             current_instruction = MicroprobeAsmInstructionDefinition(
                 instruction.assembly(), None, None, None, instruction.comments,
             )
@@ -335,12 +354,15 @@ def generate(test_definition, output_file, target, **kwargs):
 
         instruction = target.nop()
         instruction.set_label(None)
-        displacement = (displacement -
-                        instruction.architecture_type.format.length)
+
+        if not displ_fixed:
+            displacement = (displacement -
+                            instruction.architecture_type.format.length)
 
         # To avoid overlaps
-        align = 0x100
-        displacement = ((displacement // align) + 0) * align
+        if not displ_fixed:
+            align = 0x100
+            displacement = ((displacement // align) + 0) * align
 
         instructions_definitions[0].address = displacement
         assert instructions_definitions[0].address is not None
@@ -348,9 +370,9 @@ def generate(test_definition, output_file, target, **kwargs):
         # instr = MicroprobeAsmInstructionDefinition(
         #     instruction.assembly(), "ELF_ABI_EXIT", None, None, None)
 
-        end_address_orig = \
-            (test_definition.default_code_address + displacement_end -
-             instruction.architecture_type.format.length)
+        # end_address_orig = \
+        #    (test_definition.default_code_address + displacement_end -
+        #    instruction.architecture_type.format.length)
 
         instructions_definitions[0].label = "mpt2elf_endless"
 
@@ -361,13 +383,22 @@ def generate(test_definition, output_file, target, **kwargs):
 
         assert test_definition.code[0].address is not None
 
-        test_definition.set_default_code_address(
-            test_definition.default_code_address + displacement,
-        )
+        if not displ_fixed:
+            test_definition.set_default_code_address(
+                test_definition.default_code_address + displacement,
+            )
 
-        for elem in test_definition.code:
-            if elem.address is not None:
-                elem.address = elem.address - displacement
+            for elem in test_definition.code:
+                if elem.address is not None:
+                    elem.address = elem.address - displacement
+
+        else:
+            test_definition.set_default_code_address(
+                displacement
+            )
+            for elem in test_definition.code:
+                if elem.address is not None:
+                    elem.address = elem.address - displacement
 
     variables = test_definition.variables
     variables = [var for var in test_definition.variables
@@ -393,7 +424,7 @@ def generate(test_definition, output_file, target, **kwargs):
     raw['FILE_FOOTER'] = "# mp_mpt2elf: Wrapping overhead: %03.2f %%" \
                          % overhead
 
-    end_address = end_address_orig
+    # end_address = end_address_orig
     ckwargs = {
         # 'end_address': end_address,
         # 'reset': False,
@@ -545,10 +576,15 @@ def generate(test_definition, output_file, target, **kwargs):
             microprobe.passes.branch.FixIndirectBranchPass(),
         )
 
+    if displ_fixed:
+        synthesizer.add_pass(
+            microprobe.passes.address.SetInitAddressPass(displacement)
+        )
+
     synthesizer.add_pass(
         microprobe.passes.address.UpdateInstructionAddressesPass(
             noinit=True,
-            init_from_first=True,
+            init_from_first=not displ_fixed,
         ),
     )
 
@@ -618,6 +654,8 @@ def _compile(filename, target, **kwargs):
     cflags += " -T %s" % ldscriptname
     cflags += " -T %s " % baseldscriptname
     cflags += kwargs["compiler_flags"]
+    # We only support BFD linker
+    cflags += " -fuse-ld=bfd "
 
     cmd = "%s %s %s" % (cprog, cflags, filename)
 
@@ -1058,6 +1096,19 @@ def main():
         group_name,
     )
 
+    cmdline.add_option(
+        "fix-start-address",
+        "S",
+        None,
+        "Sometimes the user requires to main start point to be on specific "
+        "address to avoid compilation issues or comply with then execution "
+        "environment requirements. This flag forces the main entry point of "
+        "execution to be at the specified address. It is up to the user to "
+        "define a proper entry point that does not clash with existing code.",
+        group=group_name,
+        opt_type=int_type(0, 2**64)
+    )
+
     group_name = "Wrapping options"
     cmdline.add_group(
         group_name,
@@ -1109,11 +1160,14 @@ def _main(arguments):
     print_info("Arguments processed!")
     print_info("Importing target definition...")
 
-    if 'raw-bin' in arguments:
-        arguments['safe-bin'] = True
+    if 'raw_bin' in arguments:
+        arguments['safe_bin'] = True
 
-    if 'safe-bin' in arguments:
+    if 'safe_bin' in arguments:
         microprobe.MICROPROBE_RC['safe_bin'] = True
+
+    if 'fix_start_address' not in arguments:
+        arguments['fix_start_address'] = None
 
     if "no_wrap_test" in arguments and "wrap_endless" in arguments:
         print_error(

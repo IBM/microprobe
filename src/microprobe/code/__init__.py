@@ -685,7 +685,10 @@ class TraceSynthesizer(Synthesizer):
             else:
                 instr = instructions_dict[
                     InstructionAddress(
-                        base_address="code", displacement=self._start_addr
+                        base_address="code",
+                        displacement=(
+                            self._start_addr - bench.context.code_segment
+                        )
                     )
                 ]
 
@@ -715,11 +718,21 @@ class TraceSynthesizer(Synthesizer):
                 next_instr = instructions_dict[instr_address]
 
             except KeyError:
-                cmd.cmdline.print_info(
-                    "Jump to an unknown instruction in address "
-                    "%s found. Stoping trace generation." %
-                    instr_address)
-                break
+
+                if instr.mnemonic.upper() == "ATTN":
+                    cmd.cmdline.print_warning(
+                        "Processor ATTN instruction found. Stopping trace "
+                        "generation. "
+                    )
+                    break
+
+                cmd.cmdline.print_error(
+                    "Jump from 0x%X to an unknown instruction in address "
+                    "0x%X found. Stoping trace generation." %
+                    (instr.address.displacement + bench.context.code_segment,
+                     instr_address.displacement + bench.context.code_segment)
+                )
+                exit(-1)
 
             progress()
             wrap_ins = self.wrapper.wrap_ins(instr,
