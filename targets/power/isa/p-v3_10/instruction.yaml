@@ -386,6 +386,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["0", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
 - Name: "BCA_V1"
@@ -396,6 +397,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["0", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
 - Name: "BCA_V2"
@@ -406,6 +408,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["0", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
 - Name: "BCA_V3"
@@ -416,6 +419,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["0", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
 - Name: "BCCTRL_V0"
@@ -648,6 +652,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["1", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
   ImplicitOperands:
@@ -660,6 +665,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["1", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
   ImplicitOperands:
@@ -672,6 +678,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["1", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
   ImplicitOperands:
@@ -684,6 +691,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["1", "LK", "I"]
+    BD: ["DImm14swordshift2Abs", "BD", "I"]
   MemoryOperands:
     MEM1: [["BD"], [0], 0, "B"]
   ImplicitOperands:
@@ -936,6 +944,7 @@
   Operands:
     AA: ["1", "AA", "I"]
     LK: ["1", "LK", "I"]
+    LI: ["DImm14swordshift2Abs", "LI", "I"]
   MemoryOperands:
     MEM1: [["LI"], [0], 0, "B"]
   ImplicitOperands:
@@ -6588,6 +6597,17 @@
     XO: ["759", "XO", "?"]
   MemoryOperands:
     MEM1: [["RA_abn0", "RB_ai"], [8], 8, "O"]
+- Name: "STFDUX_V1"
+  Mnemonic: "STFDUX"
+  Description: "Store Floating-Point Double with Update Indexed (RA=0)"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO: ["759", "XO", "?"]
+    RA: ['GPR0', 'RA', '?']                                                     
+    RB: ['GPR_ab', 'RB', 'I']     
+  MemoryOperands:
+    MEM1: [["RB_ai"], [8], 8, "O"]
 - Name: "STFDU_V0"
   Mnemonic: "STFDU"
   Description: "Store Floating-Point Double with Update"
@@ -6604,6 +6624,17 @@
     XO: ["727", "XO", "?"]
   MemoryOperands:
     MEM1: [["RA_abn0", "RB_ai"], [8], 8, "O"]
+- Name: "STFDX_V1"
+  Mnemonic: "STFDX"
+  Description: "Store Floating-Point Double Indexed (RA=0)"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO_10: ["727", "XO_10", "?"]
+    RA: ['GPR0', 'RA', '?']                                                     
+    RB: ['GPR_ab', 'RB', 'I']     
+  MemoryOperands:
+    MEM1: [["RB_ai"], [8], 8, "O"]
 - Name: "STFD_V0"
   Mnemonic: "STFD"
   Description: "Store Floating-Point Double"
@@ -6647,6 +6678,17 @@
     XO: ["695", "XO", "?"]
   MemoryOperands:
     MEM1: [["RA_abn0", "RB_ai"], [4], 4, "O"]
+- Name: "STFSUX_V1"
+  Mnemonic: "STFSUX"
+  Description: "Store Floating-Point Single with Update Indexed (RA=0)"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO_10: ["695", "XO_10", "?"]
+    RA: ["GPR0", "RA", "?"]
+    RB: ["GPR_ab", "RB", "I"]
+  MemoryOperands:
+    MEM1: [["RB_ai"], [4], 4, "O"]
 - Name: "STFSU_V0"
   Mnemonic: "STFSU"
   Description: "Store Floating-Point Single with Update"
@@ -6663,6 +6705,17 @@
     XO: ["663", "XO", "?"]
   MemoryOperands:
     MEM1: [["RA_abn0", "RB_ai"], [4], 4, "O"]
+- Name: "STFSX_V1"
+  Mnemonic: "STFSX"
+  Description: "Store Floating-Point Single Indexed (RA=0)"
+  Opcode: "1F"
+  Format: "X_FORM_v06"
+  Operands:
+    XO_10: ["663", "XO_10", "?"]
+    RA: ['GPR0', 'RA', '?']                                                     
+    RB: ['GPR_ab', 'RB', 'I']
+  MemoryOperands:
+    MEM1: [["RB_ai"], [4], 4, "O"]
 - Name: "STHBRX_V0"
   Mnemonic: "STHBRX"
   Description: "Store Halfword Byte-Reverse Indexed"

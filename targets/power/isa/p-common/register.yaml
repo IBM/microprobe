@@ -459,6 +459,10 @@
   Type: SPR
   Representation: '338'
   Description: PCR Register
+- Name: PIR
+  Type: SPR32
+  Representation: '1023'
+  Description: Processor Identification Register
 - Name: PMCR
   Type: SPR
   Representation: 'N/A'

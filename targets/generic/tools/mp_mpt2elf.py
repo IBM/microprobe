@@ -1100,7 +1100,7 @@ def main():
         "fix-start-address",
         "S",
         None,
-        "Sometimes the user requires to main start point to be on specific "
+        "Sometimes the user requires the main start point to be on specific "
         "address to avoid compilation issues or comply with then execution "
         "environment requirements. This flag forces the main entry point of "
         "execution to be at the specified address. It is up to the user to "

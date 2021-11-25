@@ -53,8 +53,8 @@ _MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 class PowerISA(GenericISA):
 
     def __init__(self, name, descr, path, ins, regs, comparators, generators):
-        super(PowerISA, self).__init__(name, descr, path, ins, regs,
-                                       comparators,
+        super(PowerISA, self).__init__(name, descr, path,
+                                       ins, regs, comparators,
                                        generators)
         self._scratch_registers += [self.registers["GPR11"],
                                     self.registers["GPR12"],
@@ -579,6 +579,8 @@ class PowerISA(GenericISA):
             if abs(displacement) >= (2 ** 31):
                 value = value + displacement
                 displacement = 0
+
+            assert(value is not None)
 
             instrs += self.set_register(register, value, context)
 

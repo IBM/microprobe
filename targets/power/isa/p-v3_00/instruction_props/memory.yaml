@@ -239,3 +239,7 @@
     STXVLL_V0: True
     STXVL_V0: True
     STXV_V0: True
+    STFSX_V1: True
+    STFDX_V1: True
+    STFSUX_V1: True
+    STFDUX_V1: True

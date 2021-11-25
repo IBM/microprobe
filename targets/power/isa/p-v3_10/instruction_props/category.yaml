@@ -982,3 +982,8 @@
     XXSEL_V0: "VSX"
     XXSLDWI_V0: "VSX"
     XXSPLTW_V0: "VSX"
+    ISEL_V1: "B"
+    STFSX_V1: "FP"
+    STFDX_V1: "FP"
+    STFSUX_V1: "FP"
+    STFDUX_V1: "FP"

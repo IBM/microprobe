@@ -382,7 +382,7 @@ class Synthesizer(object):
                 bench.register_var(var, bench.context)
 
             if not self._no_scratch:
-                self._target.scratch_var.set_address(None)
+                # self._target.scratch_var.set_address(None)
                 bench.register_var(self._target.scratch_var, bench.context)
 
             # Basic context

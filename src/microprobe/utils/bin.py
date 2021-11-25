@@ -791,14 +791,20 @@ class MicroprobeBinInstructionStream(object):
         self._index += characters
         self._progress(increment=characters)
         assert self._index % 2 == 0
-        return self._code[self._index - characters:self._index]
+        bin_str = self._code[self._index - characters:self._index]
+        if self._little_endian:
+            bin_str = _swap_bytes(bin_str, self._little_endian)
+        return bin_str
 
     def skip_all(self):
         pindex = self._index
         self._index += len(self._code)
         self._progress(increment=len(self._code)-pindex)
         assert self._index % 2 == 0
-        return self._code[pindex:self._index]
+        bin_str = self._code[pindex:self._index]
+        if self._little_endian:
+            bin_str = _swap_bytes(bin_str, self._little_endian)
+        return bin_str
 
     def decode_next(self):
         """
