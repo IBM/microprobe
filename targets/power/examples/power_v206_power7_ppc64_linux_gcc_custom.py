@@ -125,10 +125,15 @@ def example_1():
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
     synth.add_pass(
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+    synth.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
             value=RNDINT))
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+        microprobe.passes.initialization.InitializeRegisterPass(
+            "GPR1", 0, force=True, reserve=True
+        )
+    )
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile)
     )

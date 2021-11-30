@@ -159,7 +159,8 @@ def write_cache_data(filename, data, data_reload=False):
                 raise NotImplementedError
 
     lock = fasteners.InterProcessReaderWriterLock(filename + ".lock")
-    with lock.write_lock():
+
+    if lock.acquire_write_lock(timeout=10):
         try:
             with open(filename, 'wb') as cache_fd:
                 pickle.dump(data, cache_fd, protocol=pickle.HIGHEST_PROTOCOL)

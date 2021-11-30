@@ -135,6 +135,12 @@ def policy(target, wrapper, **kwargs):
         )
     )
 
+    synthesizer.add_pass(
+        microprobe.passes.initialization.InitializeRegisterPass(
+            "GPR1", 0, force=True, reserve=True
+        )
+    )
+
     if vector and floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
@@ -191,7 +197,7 @@ def policy(target, wrapper, **kwargs):
         )
     else:
 
-        # Find the memory operand lenght
+        # Find the memory operand length
         mlength = 0
         if len(instruction.memory_operands()) > 0:
             mlength = max(

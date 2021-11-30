@@ -15,7 +15,7 @@
   Size: 32
   Description: Vector Status and Control Register
 - Name: MSR
-  Size: 32
+  Size: 64
   Description: Machine State Register
 - Name: VSR
   Size: 128
@@ -37,7 +37,7 @@
   Description: General Register
   AddressArithmetic: True
 - Name: CR
-  Size: 32
+  Size: 4
   Description: Condition Register
 - Name: SPR
   Size: 64

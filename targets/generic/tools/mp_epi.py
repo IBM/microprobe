@@ -83,7 +83,7 @@ def _generic_policy_wrapper(all_arguments):
 
     elif target.name.endswith("ppc64_mesa"):
 
-        wrapper_name = "Tst"
+        wrapper_name = "TstLE"
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             outputname.replace("%INSTR%", bname).replace("%EXT%",

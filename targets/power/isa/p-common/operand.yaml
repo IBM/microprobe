@@ -145,12 +145,16 @@
   Description: Branch BO operand
   Values:
   - 0
+  - 1 # Need to remove
   - 2
+  - 3 # Need to remove
   - 4
   - 6
   - 7
   - 8
+  - 9 # Need to remove
   - 10
+  - 11 # Need to remove
   - 12
   - 14
   - 15
@@ -160,10 +164,16 @@
   - 19 # Need to remove
   - 20
   - 21 # Need to remove
+  - 22 # Need to remove
+  - 23 # Need to remove
   - 24
   - 25
   - 26
   - 27
+  - 28 # Need to remove
+  - 29 # Need to remove
+  - 30 # Need to remove
+  - 31 # Need to remove
 - Name: BO_BCCTR_Values
   Description: Branch BO operand for BCCTR
   Values:
@@ -482,6 +492,12 @@
 - Name: DImm14swordshift2
   Description: Relative Displacement Immediate (bit size 14) - Single word aligned - Shifted 2
   Relative: True
+  MinDisplacement: -8192
+  MaxDisplacement: 8191
+  Shift: 2
+- Name: DImm14swordshift2Abs
+  Description: Absolute Displacement Immediate (bit size 14) - Single word aligned - Shifted 2
+  Relative: False
   MinDisplacement: -8192
   MaxDisplacement: 8191
   Shift: 2

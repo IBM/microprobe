@@ -329,8 +329,10 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                 while callable(value):
                     value = value()
 
-                if reg.used_for_float_arithmetic:
+                if isinstance(value, int):
+                    value = value & ((2**reg.size)-1)
 
+                if reg.used_for_float_arithmetic:
                     value = ieee_float_to_int64(float(value))
 
                 elif reg.used_for_vector_arithmetic:

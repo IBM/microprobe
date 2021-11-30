@@ -111,7 +111,7 @@ test6: ./source/examples_outputs/example_mpt2trace.output
 ./source/examples_outputs/example_mpt2trace.output: ../targets/power/tests/tools/mpt2trace_test001.mpt  ../targets/power/tools/mp_mpt2trace.py
 	rm -f ./source/examples_outputs/example_mpt2trace.*
 	mkdir -p ./source/examples_outputs/
-	mp_mpt2trace.py -T power_v300-power9-ppc64_linux_gcc -P ../targets/ -t ../targets/power/tests/tools/mpt2trace_test001.mpt -O ./source/examples_outputs/example_mpt2trace.qt --default-memory-access-pattern 0x200000-0x200100-8 --show-trace 2> ./source/examples_outputs/example_mpt2trace.output
+	mp_mpt2trace.py -T power_v310-power10-ppc64le_linux_gcc -P ../targets/ -t ../targets/power/tests/tools/mpt2trace_test001.mpt -O ./source/examples_outputs/example_mpt2trace.qt --default-memory-access-pattern 0x200000-0x200100-8 --show-trace 2> ./source/examples_outputs/example_mpt2trace.output
 	sed -i -n '/0x/p' ./source/examples_outputs/example_mpt2trace.output
 
 subtests:
