@@ -41,7 +41,7 @@ unset MICROPROBEWRAPPERS
 start_script "$0"
 
 if [ "$1" = "" ]; then
-    echo "I need a the python version"
+    echo "I need a python version"
 	exit_error "$0"
 fi
 

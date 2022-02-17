@@ -81,7 +81,7 @@ extra="$extra --quiet"
 # Flags for binary_wheel distribution
 bwheel="build --build-purelib $tmp --build-temp $tmp"
 bwheel="$bwheel bdist_wheel --universal --bdist-dir $tmp"
-bwheel="$bwheel --python-tag py2"
+bwheel="$bwheel --python-tag py3"
 bwheel="$bwheel --dist-dir"
 rotatewhl="rotate --keep $keep --match .whl"
 rotatewhl="$rotatewhl --dist-dir"
@@ -92,29 +92,34 @@ rotatewhl="$rotatewhl --dist-dir"
 # rotatesource="rotate --keep $keep --match .tar.bz2 --dist-dir"
 
 mdate=$(date +%Y%m%d%H%M%S)
-
 # rc release candidate
-inforc="egg_info --tag-build .rc$mdate --egg-base $tmp2"
+tagrc=".rc$mdate"
+# inforc="egg_info --tag-build .rc$mdate --egg-base $tmp2"
 
 # Official release
-infooff="egg_info --tag-build .$mdate --egg-base $tmp2"
+tagoff=".$mdate"
+# infooff="egg_info --tag-build .$mdate --egg-base $tmp2"
 
 # daily r release
-infodaily="egg_info --tag-build .$mdate --egg-base $tmp2"
+tagdaily=".$mdate"
+# infodaily="egg_info --tag-build .$mdate --egg-base $tmp2"
 
 ###############################################################################
 ############################## END BUILD FLAGS ################################
 ###############################################################################
 
 if [ "$1" = "candidate" ]; then
-     info=$inforc
+     # info="$inforc"
      finaldir="stable"
+     tag="$tagrc"
 elif [ "$1" = "stable" ]; then
-     info=$infooff
+     # info="$infooff"
      finaldir="stable"
+     tag="$tagoff"
 elif [ "$1" = "devel" ]; then
-     info=$infodaily
+     # info="$infodaily"
      finaldir="dev"
+     tag="$tagdaily"
 else
     usage
     echo "Unkown '$1' parameter"
@@ -127,11 +132,20 @@ create_wheel () {
     echo "Start wheel generation using setup file: $1"
     installdir=$packagedir/$2/$finaldir
     cp "$cdir/$1" ./setup.py
+    cp -f "$cdir/setup.cfg" ./setup.cfg
+    sed -i "s#@@TMP@@#$tmp#g" ./setup.cfg
+    sed -i "s#@@TMP2@@#$tmp2#g" ./setup.cfg
+    sed -i "s#@@INSTALLDIR@@#$installdir#g" ./setup.cfg
+    sed -i "s#@@TAG@@#$tag#g" ./setup.cfg
     echo "Launching setup script"
     # shellcheck disable=SC2086
-    python ./setup.py $extra $info check --strict $bwheel $installdir $rotatewhl $installdir
+    # python ./setup.py $extra $info check --strict $bwheel $installdir $rotatewhl $installdir
+    env | grep MICRO
+    env | grep PYTHON
+    pip wheel --no-deps . -w "$installdir" 
     echo "Cleaning temporary files"
     rm -fr ./setup.py
+    rm -fr ./setup.cfg
     rm -fr "${tmp:?}/*"
     rm -fr "${tmp2:?}/*"
     echo "Wheel installed in $installdir"
