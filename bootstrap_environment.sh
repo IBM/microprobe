@@ -30,8 +30,15 @@ virtualenv "$scriptpath/venv-$name" --prompt="(Microprobe $name) " --python="$(c
 ln -s "$scriptpath/venv-$name" "$scriptpath/venv"
 # shellcheck disable=SC1090
 . "$scriptpath/venv-$name/bin/activate"
-pip install -r requirements.txt
-pip install -r requirements_devel.txt
+pip3 install -U pip
+pip3 install -U -r requirements_devel.txt
+pip3 install -U -r requirements.txt
+# shellcheck disable=SC2046
+pip3 install -U $(pip3 list | grep "\." | cut -d " " -f 1)
+# shellcheck disable=SC2046
+pip3 install -U $(pip3 list | grep "\." | cut -d " " -f 1)
+# shellcheck disable=SC2046
+pip3 install -U $(pip3 list | grep "\." | cut -d " " -f 1)
 
 {
 

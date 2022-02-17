@@ -30,7 +30,6 @@ class GenericDistribution(Distribution):
     def is_pure(self):
         return True
 
-
 def read(fname):
     """ Read a file """
     return open(fname).read()

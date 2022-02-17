@@ -74,7 +74,7 @@ fi
 
 # Python option. Make sure we are in a controlled environment
 if [ "$PYTHON_VERSION" = "" ]; then
-    PYTHON_VERSION="$(python -V 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)"
+    PYTHON_VERSION="$(python3 -V 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)"
     echo "PYTHON_VERSION=$PYTHON_VERSION"
     export PYTHON_VERSION
 fi
@@ -190,7 +190,15 @@ exit_error() {
 # Check if we are in travis
 if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
     if [ "$NEEDINSTALL" != "False" ]; then
-        pip install -U -r requirements_devel.txt --no-cache-dir
+        pip3 install -U pip
+        pip3 install -U -r requirements_devel.txt
+        pip3 install -U -r requirements.txt
+        # shellcheck disable=SC2046
+        pip3 install -U $(pip3 list | grep "\." | cut -d " " -f 1)
+        # shellcheck disable=SC2046
+        pip3 install -U $(pip3 list | grep "\." | cut -d " " -f 1)
+        # shellcheck disable=SC2046
+        pip3 install -U $(pip3 list | grep "\." | cut -d " " -f 1)
         NEEDINSTALL=False
         export NEEDINSTALL
     fi
@@ -203,15 +211,15 @@ else
         export PYTHONPATH=""
         export PYTHONNOUSERSITE=True
 
-        NEEDINSTALL="False"
+        NEEDINSTALL="True"
         if [ ! -d "./venv-python$PYTHON_VERSION" ]; then
             NEEDINSTALL="True"
             rm -fr ./get_pip
             mkdir -p ./get_pip
             (cd ./get_pip
             wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
-            "python$PYTHON_VERSION" get-pip.py --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U --disable-pip-version-check --no-cache-dir --no-warn-script-location
-            PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/pip install --cache-dir "../.cache-python$PYTHON_VERSION" --prefix . -I -U virtualenv --no-cache-dir --no-warn-script-location
+            "python$PYTHON_VERSION" get-pip.py --prefix . -I -U --disable-pip-version-check --no-warn-script-location
+            PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/pip3 install --prefix . -I -U virtualenv --no-warn-script-location
             PYTHONPATH=$(find ./lib/ -name site-packages -type d) ./bin/virtualenv --clear --python="python$PYTHON_VERSION" "../venv-python$PYTHON_VERSION" --app-data "../.app-data-python$PYTHON_VERSION"
             )
             rm -fr ./get_pip
@@ -221,24 +229,32 @@ else
 
         if [ "$NEEDINSTALL" = "True" ] || [ "$BUILD_TYPE" = "stable" ]; then
 
-            pip=$(command -v pip)
+            pip=$(command -v pip3)
             vpython=$(head -n 1 "$pip" | sed "s/#\\!//g")
 
-            "$vpython" "$pip" install -U -I pip --no-cache-dir
-            "$vpython" "$pip" install -U -I setuptools --no-cache-dir
+            "$vpython" "$pip" install -U pip
+            "$vpython" "$pip" install -U setuptools
             set +e
-            "$vpython" "$pip" install -U -I -r requirements_devel.txt --no-cache-dir
+            "$vpython" "$pip" install -U -r requirements_devel.txt
             # shellcheck disable=SC2181
             if [ $? -ne 0 ]; then
-                "$vpython" "$pip" install -U -I -r requirements_devel.txt --no-cache-dir
+                "$vpython" "$pip" install -U -r requirements_devel.txt
                 if [ $? -ne 0 ]; then
-                    "$vpython" "$pip" install -U -I -r requirements_devel.txt --no-cache-dir
+                    "$vpython" "$pip" install -U -r requirements_devel.txt
                     if [ $? -ne 0 ]; then
                         echo "Error setting environment"
                         exit 255
                     fi
                 fi
             fi
+
+            # shellcheck disable=SC2046
+            "$pip" install -U $("$pip" list | grep "\." | cut -d " " -f 1)
+            # shellcheck disable=SC2046
+            "$pip" install -U $("$pip" list | grep "\." | cut -d " " -f 1)
+            # shellcheck disable=SC2046
+            "$pip" install -U $("$pip" list | grep "\." | cut -d " " -f 1)
+
             set -e
 
         fi
