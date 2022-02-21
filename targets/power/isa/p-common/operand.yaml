@@ -155,11 +155,8 @@
   - 14
   - 15
   - 16
-  - 17 # Need to remove
   - 18
-  - 19 # Need to remove
   - 20
-  - 21 # Need to remove
   - 24
   - 25
   - 26
@@ -174,7 +171,6 @@
   - 14
   - 15
   - 20
-  - 21 # Need to remove
 - Name: BO_BCTARl_Values
   Description: Branch BO operand for BCTARl
   Values:

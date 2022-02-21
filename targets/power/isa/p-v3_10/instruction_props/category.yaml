@@ -985,5 +985,4 @@
     ISEL_V1: "B"
     STFSX_V1: "FP"
     STFDX_V1: "FP"
-    STFSUX_V1: "FP"
-    STFDUX_V1: "FP"
+    sTFSUX_V1: "FP"
