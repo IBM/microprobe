@@ -487,11 +487,19 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
 
             fmtstr = "%%0%dx" % (len(instr.binary())/4)
             hstr = fmtstr % int(instr.binary(), 2)
-            asm.append(
-                ".byte " +
-                ",".join(["0x%s" % hstr[idx:idx + 2]
+
+            if (self.target.isa.name.startswith("power"):
+                asm.append(
+                    ".byte " +
+                    ",".join(["0x%s" % hstr[idx:idx + 2]
                           for idx in reversed(range(0, len(hstr), 2))])
-            )
+                )
+            else:
+                asm.append(
+                    ".byte " +
+                    ",".join(["0x%s" % hstr[idx:idx + 2]
+                          for idx in range(0, len(hstr), 2)])
+                )
             asm = " ".join(asm)
         else:
             asm = instr.assembly()
