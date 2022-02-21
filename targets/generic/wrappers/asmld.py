@@ -82,7 +82,7 @@ class AssemblyLd(microprobe.code.wrapper.Wrapper):
         """
 
         align = var.align
-        if align is None or align is 0:
+        if align is None or align == 0:
             align = ""
         else:
             align = ".align %d" % align
@@ -524,9 +524,9 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
             # instruction to prevent GCC from using the wrong instruction.
 
             if instr.architecture_type.mnemonic.startswith("C."):
-                ins.insert(0, ".option rvc")
+                ins.insert(len(ins)-1, ".option rvc")
             else:
-                ins.insert(0, ".option norvc")
+                ins.insert(len(ins)-1, ".option norvc")
 
         self._instr_ant = instr
 
