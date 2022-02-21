@@ -492,13 +492,13 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
                 asm.append(
                     ".byte " +
                     ",".join(["0x%s" % hstr[idx:idx + 2]
-                          for idx in reversed(range(0, len(hstr), 2))])
+                              for idx in reversed(range(2, len(hstr), 2))])
                 )
             else:
                 asm.append(
                     ".byte " +
                     ",".join(["0x%s" % hstr[idx:idx + 2]
-                          for idx in range(0, len(hstr), 2)])
+                              for idx in range(0, len(hstr), 2)])
                 )
             asm = " ".join(asm)
         else:
