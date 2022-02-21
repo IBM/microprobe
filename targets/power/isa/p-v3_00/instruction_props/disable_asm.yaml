@@ -15,5 +15,3 @@
 - Name: disable_asm
   Description: Boolean indicating if ASM generation is disabled for the instruction. If so, binary codification is used.
   Default: False
-  Values:
-    VMHADDSHS_V0: True
