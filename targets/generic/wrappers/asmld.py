@@ -313,8 +313,7 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         else:
             ins.append(asm)
 
-        if (self.target.isa.name == "riscv_v22" and
-                self.target.environment.name == "riscv64_linux_gcc"):
+        if (self.target.isa.name == "riscv_v22"):
             # GCC will sometimes translate regular instructions to compressed
             # instructions. Because we want to reproduce the instruction
             # sequence verbatim, put a rv/norvc directive before each
