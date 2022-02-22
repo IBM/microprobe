@@ -522,7 +522,7 @@ def self_assembly_function(self):
             print(operand)
 
         assembly = instruction.assembly()
-        print("Assembly: %s" % instruction.assembly())
+        print("Assembly: %s" % assembly)
 
         instr_def = interpret_asm([assembly], target, [])[0]
 
