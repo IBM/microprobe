@@ -62,7 +62,7 @@ else
         export WORKSPACE
     fi
     # export NOSEOPTS=" -d -v --with-coverage --cover-branches --cover-inclusive --cover-tests --with-xunitmp -e load_tests --exe --processes=$MAXJOBS --detailed-errors --process-timeout=$TIMEOUT --cover-xml --cover-erase "
-    export NOSEOPTS=" -d -v --with-xunitmp -e load_tests --exe --processes=$MAXJOBS --detailed-errors --process-timeout=$TIMEOUT "
+    export NOSEOPTS=" -d -v --with-xunitmp -e load_tests --exe --processes=$MAXJOBS --detailed-errors --process-timeout=$TIMEOUT -x"
     # export NOSEOPTS="-d -v -e load_tests --exe --processes=$MAXJOBS -x --detailed-errors --process-timeout=$TIMEOUT"
 
     set +e
