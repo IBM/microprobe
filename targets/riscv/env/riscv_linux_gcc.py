@@ -77,12 +77,12 @@ class riscv64_linux_gcc(GenericEnvironment):
 
         if long_jump:
             assert isinstance(target, int)
-            instrs =  self.target.set_register(
+            instrs = self.target.set_register(
                 return_address_reg, target, Context()
             )
 
             jalr_ins = self.target.new_instruction("JALR_V0")
-            jalr_ins.set_operands([0,return_address_reg,return_address_reg])
+            jalr_ins.set_operands([0, return_address_reg, return_address_reg])
             jalr_ins.add_comment("Long jump to address 0X%016X" % target)
 
             instrs.append(jalr_ins)
