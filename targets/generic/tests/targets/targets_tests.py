@@ -571,7 +571,8 @@ if MP_TESTING_ARCH in ["RISCV", None]:
                              "riscv",
                              "env",
                              "riscv_linux_gcc.py"),
-                [],
+                ["BEQ_V0", "BGEU_V0", "BGE_V0", "BLTU_V0", "BLT_V0", "BNE_V0",
+                 "C.BEQZ_V0", "C.BNEZ_V0", "C.J_V0", "JAL_V0"],
                 [])
                ]
 
