@@ -34,7 +34,10 @@ from microprobe.exceptions import MicroprobeCodeGenerationError
 
 # Constants
 LOG = get_logger(__name__)
-__all__ = ['DeclareVariablesPass']
+__all__ = [
+    'DeclareVariablesPass',
+    'UpdateVariableAddressesPass'    
+]
 
 
 # Functions
