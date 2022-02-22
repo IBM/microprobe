@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-docstring
+Docstring
 """
 # Futures
 from __future__ import absolute_import, print_function
@@ -458,20 +458,23 @@ def self_codification_function(self):
                 for idx, operand in enumerate(instruction.operands()):
                     if idx >= len(values):
                         values.append(operand.type.random_value())
-                        # if 0 in operand.type.values():
-                        #    values.append(0)
-                        # else:
-                        #    values.append(min(operand.type.values()))
                     operand.set_value(values[idx])
-                    print(values[idx])
+
+                print("Operands to set: %s" % values)
 
                 codification = int(instruction.binary(), 2)
-                print("Codification: 0x%x" % codification)
+                code_len = len(instruction.binary())
+                codefmt = "%%0%dX" % (code_len / 4)
+                codification = codefmt % codification
+
+                print("Codification: 0x%s" % codification)
                 print("Assembly: %s" % instruction.assembly())
 
-                instr_def = interpret_bin(hex(codification)[2:], target,
-                                          single=True)[0]
-
+                instr_def = interpret_bin(
+                    codification,
+                    target,
+                    single=True
+                )[0]
                 print("%s == %s ?" % (instr, instr_def.instruction_type))
 
                 self.assertEqual(instr.mnemonic,
@@ -487,13 +490,10 @@ def self_codification_function(self):
                     self.assertEqual(orig_operand.value, new_operand)
 
                 print("CODE OK")
-
                 break
 
             except (NotImplementedError, AssertionError) as exc:
-
                 print(exc)
-
                 if trial == TRIALS - 1:
                     raise exc
 
