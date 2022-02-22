@@ -27,3 +27,7 @@
   Repeat:
     From: 0
     To: 31
+- Name: PC
+  Type: SPR
+  Representation: 'N/A'
+  Description: Program Counter register

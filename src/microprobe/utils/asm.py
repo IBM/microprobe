@@ -284,7 +284,6 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
         operands = operands[:]
 
     elif instr_def.assembly.upper().startswith("0X"):
-
         binary_def = interpret_bin(
             instr_def.assembly[2:], target, fmt="hex", single=True, safe=safe
         )
@@ -304,7 +303,6 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
                 _ASM_CACHE_USED = True
 
     elif instr_def.assembly.upper().startswith("0B"):
-
         binary_def = interpret_bin(instr_def.assembly[2:], target, fmt="bin")
         if len(binary_def) > 1:
             raise MicroprobeAsmError("More than one instruction parsed.")

@@ -114,6 +114,17 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         else:
             ins.append(instr.assembly())
 
+        if (self.target.isa.name == "riscv_v22"):
+            # GCC will sometimes translate regular instructions to compressed
+            # instructions. Because we want to reproduce the instruction
+            # sequence verbatim, put a rv/norvc directive before each
+            # instruction to prevent GCC from using the wrong instruction.
+
+            if instr.architecture_type.mnemonic.startswith("C."):
+                ins[0] = ".option rvc\n" + ins[0]
+            else:
+                ins[0] = ".option norvc\n" + ins[0]
+
         return ins[0] + "\n"
 
     def end_loop(self, dummy_instr):

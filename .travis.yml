@@ -72,7 +72,7 @@ jobs:
               - . ./dev_tools/ci/travis_prolog
               - ./dev_tools/ci/code_conventions_002_pylint.sh
         - stage: tests
-          name: pylint
+          name: documentation
           script:
               - set -e
               - . ./dev_tools/ci/travis_prolog

@@ -56,8 +56,10 @@ LOG = get_logger(__name__)
 set_log_level(50)
 
 MP_TESTING_ARCH = os.environ.get("MP_TESTING_ARCH", None)
+MP_TESTING_INSTR = os.environ.get("MP_TESTING_INSTR", None)
+MP_CI = os.environ.get("TRAVIS", None)
 
-if MP_TESTING_ARCH is None:
+if MP_TESTING_ARCH is None and MP_TESTING_INSTR is None:
     SKIPGENERATION = False
     SKIPCOMPILATION = True
     SKIPCODIFICATION = True
@@ -69,7 +71,7 @@ if MP_TESTING_ARCH is None:
 else:
     SKIPGENERATION = False
     SKIPCOMPILATION = False
-    SKIPCODIFICATION = True
+    SKIPCODIFICATION = False
     SKIPSELFBINARY = False
     SKIPSELFASSEMBLY = False
     BENCH_SIZE = 50
@@ -98,7 +100,11 @@ def subins(instructions):
     :type instructions:
     """
 
-    if MP_TESTING_ARCH is not None:
+    if MP_TESTING_INSTR is not None:
+        return [ins for ins in instructions
+                if ins.name == MP_TESTING_INSTR]
+
+    if MP_TESTING_ARCH is not None and MP_CI is None:
         return instructions
 
     myins = []
@@ -278,6 +284,8 @@ def binary_benchmark(self, function):
 
     # Strip
     stripper = os.environ[self.compiler_bin].replace("gcc", "strip")
+    while not stripper.endswith("strip"):
+        stripper = stripper[0:-1]
 
     flags = []
     flags.append(self.filename[1])
@@ -299,6 +307,8 @@ def binary_benchmark(self, function):
 
     # Disassemble
     disassembler = os.environ[self.compiler_bin].replace("gcc", "objdump")
+    while not disassembler.endswith("objdump"):
+        disassembler = disassembler[0:-1]
 
     if self.dump_flags in os.environ:
         flags = os.environ[self.dump_flags].split(" ")
@@ -362,12 +372,17 @@ def self_codification_function(self):
                     operand.set_value(values[idx])
 
                 print("Operands to set: %s" % values)
+
                 codification = int(instruction.binary(), 2)
-                print("Codification: 0x%x" % codification)
+                code_len = len(instruction.binary())
+                codefmt = "%%0%dX" % (code_len / 4)
+                codification = codefmt % codification
+
+                print("Codification: 0x%s" % codification)
                 print("Assembly: %s" % instruction.assembly())
 
                 instr_def = interpret_bin(
-                    hex(codification)[2:],
+                    codification,
                     target,
                     single=True
                 )[0]
@@ -381,12 +396,15 @@ def self_codification_function(self):
                         ):
 
                     print("%s == %s ?" % (orig_operand.value, new_operand))
+                    print("%s == %s ?" % (type(orig_operand.value),
+                                          type(new_operand)))
                     self.assertEqual(orig_operand.value, new_operand)
 
+                print("CODE OK")
                 break
 
             except (NotImplementedError, AssertionError) as exc:
-
+                print(exc)
                 if trial == TRIALS - 1:
                     raise exc
 
@@ -415,7 +433,7 @@ def self_assembly_function(self):
             print(operand)
 
         assembly = instruction.assembly()
-        print("Assembly: %s" % instruction.assembly())
+        print("Assembly: %s" % assembly)
 
         instr_def = interpret_asm([assembly], target, [])[0]
 
@@ -553,7 +571,8 @@ if MP_TESTING_ARCH in ["RISCV", None]:
                              "riscv",
                              "env",
                              "riscv_linux_gcc.py"),
-                [],
+                ["BEQ_V0", "BGEU_V0", "BGE_V0", "BLTU_V0", "BLT_V0", "BNE_V0",
+                 "C.BEQZ_V0", "C.BNEZ_V0", "C.J_V0", "JAL_V0"],
                 [])
                ]
 

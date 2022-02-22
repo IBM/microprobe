@@ -34,7 +34,10 @@ from microprobe.exceptions import MicroprobeCodeGenerationError
 
 # Constants
 LOG = get_logger(__name__)
-__all__ = ['DeclareVariablesPass']
+__all__ = [
+    'DeclareVariablesPass',
+    'UpdateVariableAddressesPass'
+]
 
 
 # Functions
@@ -183,14 +186,24 @@ class UpdateVariableAddressesPass(microprobe.passes.Pass):
                     maxdispl = caddress.displacement
 
         code_region = (context.code_segment, ((maxdispl // 0x100) + 1) * 0x100)
+        max_code = code_region[0] + code_region[1]
 
         for var in ivars:
             ranges = sorted([code_region] +
-                            [(var.address.displacement, var.size)
+                            [(context.data_segment +
+                              var.address.displacement, var.size)
                              for var in building_block.registered_global_vars()
                              if var.address is not None
-                             and var.address.base_address == "data"],
+                             and var.address.base_address == "data" and
+                             (context.data_segment +
+                              var.address.displacement) > max_code],
                             key=lambda x: x[0])
+
+            # Check overlaps in ranges
+            for idx in range(0, len(ranges)-1):
+                mrange1 = ranges[idx]
+                mrange2 = ranges[idx+1]
+                assert mrange1[0] + mrange1[1] <= mrange2[0]
 
             align = var.align
             if align is None:
@@ -200,9 +213,9 @@ class UpdateVariableAddressesPass(microprobe.passes.Pass):
                 var.set_address(
                     Address(
                         base_address="data",
-                        displacement=(
+                        displacement=((
                             ((ranges[0][0] + ranges[0][1]) // align) + 1
-                            ) * align
+                            ) * align) - context.data_segment
                         )
                 )
                 continue
@@ -215,7 +228,7 @@ class UpdateVariableAddressesPass(microprobe.passes.Pass):
                 var.set_address(
                    Address(
                        base_address="data",
-                       displacement=ndisp
+                       displacement=(ndisp - context.data_segment)
                        )
                 )
                 break

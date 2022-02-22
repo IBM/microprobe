@@ -210,7 +210,7 @@ Command::
    
 Input file ``input.c``:
 
-.. literalinclude:: ../../targets/z/tests/tools/c2mpt_test003.c
+.. literalinclude:: ../../targets/riscv/tests/tools/c2mpt_test003.c
     :linenos:
     :language: c
  

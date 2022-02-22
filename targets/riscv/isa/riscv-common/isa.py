@@ -30,7 +30,7 @@ from microprobe.code.ins import Instruction
 from microprobe.code.var import Variable, VariableArray
 from microprobe.target.isa import GenericISA
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import twocs_to_int
+from microprobe.utils.misc import twocs_to_int, int_to_twocs
 from microprobe.exceptions import MicroprobeCodeGenerationError
 
 # Constants
@@ -52,8 +52,10 @@ class RISCVISA(GenericISA):
                                     self.registers["F7"]]
         self._control_registers += [reg for reg in self.registers.values()
                                     if reg.type.name == "rm"]
+        self._control_registers += [reg for reg in self.registers.values()
+                                    if reg.type.name == "SPR"]
 
-    def set_register(self, register, value, context):
+    def set_register(self, register, value, context, opt=False):
 
         LOG.debug("Setting register: %s to value %d",
                   register.name, value)
@@ -61,6 +63,7 @@ class RISCVISA(GenericISA):
         instrs = []
 
         current_value = context.get_register_value(register)
+        closest_value = context.get_closest_value(value)
 
         if value == 0:
             present_reg = self.registers["X0"]
@@ -105,11 +108,6 @@ class RISCVISA(GenericISA):
 
             LOG.debug("Integer register")
 
-            value_highest = int((value & 0xFFFFF00000000000) >> 44)
-            value_high = int((value & 0x00000FFF00000000) >> 32)
-            value_low = int((value & 0x00000000FFFFF000) >> 12)
-            value_lowest = int((value & 0x0000000000000FFF))
-
             if value == 0:
 
                 LOG.debug("Zero value")
@@ -126,123 +124,188 @@ class RISCVISA(GenericISA):
                 addi.set_operands([0, present_reg, register])
                 instrs.append(addi)
 
-            elif (current_value is not None and
-                  abs(value - current_value) < (2 ** 12)):
+            elif (closest_value is not None and
+                  abs(value - closest_value[1]) < (2 ** 12)):
 
                 addi = self.new_instruction("ADDI_V0")
-                addi.set_operands([value - current_value, register, register])
+                addi.set_operands(
+                    [value - closest_value[1], closest_value[0], register]
+                )
                 instrs.append(addi)
 
-            elif register == self._scratch_registers[0]:
+            else:
 
-                LOG.debug("This is the scratch register.")
+                if value <= 0:
+                    value = int_to_twocs(value, 64)
 
-                if (value < -2147483648 or value >= 2147483647):
+                register = self._scratch_registers[0]
 
-                    LOG.debug("This is the scratch register. Long path")
+                value_highest = int((value & 0xFFFFF00000000000) >> 44)
+                value_high = int((value & 0x00000FFF00000000) >> 32)
+                value_low = int((value & 0x00000000FFFFF000) >> 12)
+                value_lowest = int((value & 0x0000000000000FFF))
 
-                    if value_high > 2047:
-                        value_highest = value_highest + 1
-                        value_high = value_high - (4096)
+                if register == self._scratch_registers[0] and \
+                   (value_highest != 0 or value_high != 0):
 
+                    binstr = "{0:>064b}".format(value)
+                    size = 11
+
+                    sidx = binstr.find('1')
+                    fidx = min(sidx+size, 64)
+
+                    val = int(binstr[sidx:fidx], 2)
+                    if val != 0:
+                        addi = self.new_instruction("ADDI_V0")
+                        addi.set_operands(
+                            [val, self.registers["X0"], register]
+                        )
+                        instrs.append(addi)
+
+                    sidx2 = binstr.find('1', fidx)
+                    fidx2 = min(sidx2+size, 64)
+
+                    tshift = fidx2
+
+                    while fidx2-fidx > 0:
+                        slli = self.new_instruction("SLLI_V0")
+                        slli.set_operands([fidx2-fidx, register, register])
+                        instrs.append(slli)
+
+                        tshift = fidx2-fidx - tshift
+
+                        val = int(binstr[sidx2:fidx2], 2)
+                        if val != 0:
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands([val, register, register])
+                            instrs.append(addi)
+
+                        sidx = sidx2
+                        fidx = fidx2
+                        sidx2 = binstr.find('1', fidx)
+                        fidx2 = min(sidx2+size, 64)
+
+                    if fidx < 64:
+                        slli = self.new_instruction("SLLI_V0")
+                        slli.set_operands([64-fidx, register, register])
+                        instrs.append(slli)
+
+                    LOG.debug(
+                        "Register: %s set to value %d", register.name, value
+                    )
+
+                    return instrs
+
+                if value_highest != 0:
                     lui = self.new_instruction("LUI_V0")
                     lui.set_operands([value_highest, register])
                     instrs.append(lui)
 
-                    addiw = self.new_instruction("ADDIW_V0")
-                    addiw.set_operands([value_high, register, register])
-                    instrs.append(addiw)
+                if value_highest == 0 and value_high != 0:
+                    if value_high > 2047:
+                        addi = self.new_instruction("ADDI_V0")
+                        addi.set_operands(
+                            [2047, self.registers["X0"], register]
+                        )
+                        instrs.append(addi)
+                        cvalue = value_high
+                        while (cvalue > 2047):
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands([2047, register, register])
+                            instrs.append(addi)
+                            cvalue = cvalue - 2047
+                        addi = self.new_instruction("ADDI_V0")
+                        addi.set_operands([cvalue, register, register])
+                        instrs.append(addi)
+                    else:
+                        addi = self.new_instruction("ADDI_V0")
+                        addi.set_operands(
+                            [value_high, self.registers["X0"], register]
+                        )
+                        instrs.append(addi)
 
+                elif value_highest != 0 and value_high != 0:
+                    if value_high > 2047:
+                        cvalue = value_high
+                        while (cvalue > 2047):
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands([2047, register, register])
+                            instrs.append(addi)
+                            cvalue = cvalue - 2047
+                        addi = self.new_instruction("ADDI_V0")
+                        addi.set_operands([cvalue, register, register])
+                        instrs.append(addi)
+                    else:
+                        addi = self.new_instruction("ADDI_V0")
+                        addi.set_operands([value_high, register, register])
+                        instrs.append(addi)
+
+                if value_highest != 0 or value_high != 0:
                     slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
+                    slli.set_operands([32, register, register])
                     instrs.append(slli)
-                    nvalue = int((value & 0x00000000FF000000) >> 24)
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
 
-                    slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
-                    instrs.append(slli)
-                    nvalue = int((value & 0x0000000000FF0000) >> 16)
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
+                if value_highest == 0 or value_high == 0:
 
-                    slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
-                    instrs.append(slli)
-                    nvalue = int((value & 0x000000000000FF00) >> 8)
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
+                    if value_low != 0:
+                        lui = self.new_instruction("LUI_V0")
+                        lui.set_operands([value_low, register])
+                        instrs.append(lui)
 
-                    slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
-                    instrs.append(slli)
-                    nvalue = int((value & 0x00000000000000FF))
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
-
+                    if value_low == 0 and value_lowest != 0:
+                        if value_lowest > 2047:
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands(
+                                [2047, self.registers["X0"], register]
+                            )
+                            instrs.append(addi)
+                            cvalue = value_lowest
+                            while (cvalue > 2047):
+                                addi = self.new_instruction("ADDI_V0")
+                                addi.set_operands([2047, register, register])
+                                instrs.append(addi)
+                                cvalue = cvalue - 2047
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands([cvalue, register, register])
+                            instrs.append(addi)
+                        else:
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands(
+                                [value_lowest, self.registers["X0"], register]
+                            )
+                            instrs.append(addi)
+                    elif value_low != 0 and value_lowest != 0:
+                        if value_lowest > 2047:
+                            cvalue = value_lowest
+                            while (cvalue > 2047):
+                                addi = self.new_instruction("ADDI_V0")
+                                addi.set_operands([2047, register, register])
+                                instrs.append(addi)
+                                cvalue = cvalue - 2047
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands([cvalue, register, register])
+                            instrs.append(addi)
+                        else:
+                            addi = self.new_instruction("ADDI_V0")
+                            addi.set_operands(
+                                [value_lowest, register, register]
+                            )
+                            instrs.append(addi)
                 else:
-
-                    LOG.debug("This is the scratch register. Short path")
-
-                    if value_lowest > 2047:
-                        value_low = value_low + 1
-                        value_lowest = value - (value_low << 12)
-
-                    lui = self.new_instruction("LUI_V0")
-                    lui.set_operands([value_low, register])
-
-                    addiw = self.new_instruction("ADDIW_V0")
-                    addiw.set_operands([value_lowest, register, register])
-                    instrs.append(lui)
-                    instrs.append(addiw)
-
-            elif (value < -2147483648 or value >= 2147483647):
-
-                LOG.debug("Use scratch register. Long path")
-
-                instrs.extend(self.set_register(register,
-                                                (value >> 32),
-                                                context))
-
-                slli = self.new_instruction("SLLI_V0")
-                slli.set_operands([32, register, register])
-                instrs.append(slli)
-
-                instrs.extend(self.set_register(self._scratch_registers[0],
-                                                (value & 0x00000000FFFFFFFF),
-                                                context))
-
-                and_inst = self.new_instruction("OR_V0")
-                and_inst.set_operands(
-                    [register, self._scratch_registers[0], register])
-                instrs.append(and_inst)
-
-            elif (value >= -2147483648 and value < 2147483647):
-
-                LOG.debug("Short path")
-
-                if value_lowest > 2047:
-                    value_low = value_low + 1
-                    value_lowest = value - (value_low << 12)
-
-                lui = self.new_instruction("LUI_V0")
-                lui.set_operands([value_low, register])
-
-                addiw = self.new_instruction("ADDIW_V0")
-                addiw.set_operands([value_lowest, register, register])
-                instrs.append(lui)
-                instrs.append(addiw)
-
-            else:
+                    instrs.extend(
+                        self.set_register(
+                            self._scratch_registers[0],
+                            (value & 0x00000000FFFFFFFF),
+                            context
+                        )
+                    )
+                    add_inst = self.new_instruction("ADD_V0")
+                    add_inst.set_operands(
+                        [register, self._scratch_registers[0], register])
+                    instrs.append(add_inst)
 
                 LOG.debug("Register: %s set to value %d",
                           register.name, value)
-                raise NotImplementedError
 
         else:
             LOG.debug("Register: %s set to value %d",

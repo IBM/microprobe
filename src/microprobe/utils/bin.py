@@ -835,7 +835,8 @@ class MicroprobeBinInstructionStream(object):
 
             LOG.debug("Trying length: %d", length)
             if self._index == 0 and len(self._code) < (length * 2):
-                LOG.debug("Short bin string without leading zeros")
+                LOG.debug("Short bin string without leading zeros, skipping.")
+                continue
             elif self._index + length * 2 > len(self._code):
                 LOG.debug("Skipping length %s ...", length)
                 continue
