@@ -20,6 +20,7 @@ from __future__ import absolute_import
 
 # Own modules
 from microprobe.code.address import InstructionAddress
+from microprobe.code.context import Context
 from microprobe.target.env import GenericEnvironment
 
 # Constants
@@ -74,10 +75,23 @@ class riscv64_linux_gcc(GenericEnvironment):
         if isinstance(target, str):
             target = InstructionAddress(base_address=target)
 
-        jal_ins = self.target.new_instruction("JAL_V0")
-        jal_ins.set_operands([target, return_address_reg])
+        if long_jump:
+            assert isinstance(target, int)
+            instrs =  self.target.set_register(
+                return_address_reg, target, Context()
+            )
 
-        return [jal_ins]
+            jalr_ins = self.target.new_instruction("JALR_V0")
+            jalr_ins.set_operands([0,return_address_reg,return_address_reg])
+            jalr_ins.add_comment("Long jump to address 0X%016X" % target)
+
+            instrs.append(jalr_ins)
+            return instrs
+
+        else:
+            jal_ins = self.target.new_instruction("JAL_V0")
+            jal_ins.set_operands([target, return_address_reg])
+            return [jal_ins]
 
     def function_return(self,
                         return_address_reg=None):
