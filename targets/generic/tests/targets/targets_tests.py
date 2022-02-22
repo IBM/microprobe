@@ -284,6 +284,8 @@ def binary_benchmark(self, function):
 
     # Strip
     stripper = os.environ[self.compiler_bin].replace("gcc", "strip")
+    while not stripper.endswith("strip"):
+        stripper = stripper[0:-1]
 
     flags = []
     flags.append(self.filename[1])
@@ -305,6 +307,8 @@ def binary_benchmark(self, function):
 
     # Disassemble
     disassembler = os.environ[self.compiler_bin].replace("gcc", "objdump")
+    while not disassembler.endswith("objdump"):
+        disassembler = disassembler[0:-1]
 
     if self.dump_flags in os.environ:
         flags = os.environ[self.dump_flags].split(" ")

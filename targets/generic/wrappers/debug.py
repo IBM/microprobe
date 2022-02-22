@@ -164,6 +164,17 @@ class DebugBinaryDouble(DebugBinary):
         if not instr.disable_asm:
             ins.append(instr.assembly())
 
+        if (self.target.isa.name == "riscv_v22"):
+            # GCC will sometimes translate regular instructions to compressed
+            # instructions. Because we want to reproduce the instruction
+            # sequence verbatim, put a rv/norvc directive before each
+            # instruction to prevent GCC from using the wrong instruction.
+
+            if instr.architecture_type.mnemonic.startswith("C."):
+                ins.insert(0, ".option rvc")
+            else:
+                ins.insert(0, ".option norvc")
+
         ins2 = []
         binary = instr.binary()
 
