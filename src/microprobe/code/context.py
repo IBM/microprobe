@@ -161,6 +161,34 @@ class Context(object):  # pylint: disable=too-many-public-methods
         # assert value in self._register_values[1].keys()
         # assert self._register_values[0][register] == value
 
+    def get_closest_value(self, value):
+        """Returns the closest value to the given value.
+
+        Returns the closest value to the given value. If there are
+        not values registered, `None` is returned.
+
+        :param value: value to look for
+        :type value: :class:`~.int`, :class:`~.float`, :class:`~.long`,
+             :class:`~.Address` or :class:`~.str`
+
+        """
+
+        possible_regs = []
+
+        for reg, val in self._register_values[0].items():
+
+            if not isinstance(val, type(value)):
+                continue
+
+            possible_regs.append((reg, val))
+
+        possible_regs = sorted(possible_regs,
+                               key=lambda x: abs(x[1] - value))
+        if possible_regs:
+            return possible_regs[0]
+
+        return None
+
     def get_closest_address_value(self, address):
         """Returns the closest address to the given address.
 
