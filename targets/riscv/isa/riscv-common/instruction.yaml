@@ -2066,3 +2066,15 @@
   Format: "sys"
   Operands:
     funct25: ['8192', 'funct25', '?']
+- Name: "CSRRS_V0"
+  Mnemonic: "CSRRS"
+  Opcode: "73"
+  Format: "csr"
+  Operands:
+    funct3: ['2', 'funct3', '?']
+- Name: "CSRRW_V0"
+  Mnemonic: "CSRRS"
+  Opcode: "73"
+  Format: "csr"
+  Operands:
+    funct3: ['1', 'funct3', '?']

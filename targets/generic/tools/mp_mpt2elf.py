@@ -309,6 +309,9 @@ def generate(test_definition, output_file, target, **kwargs):
 
         instructions = []
         reset_steps = []
+
+        instructions += target.test_start_instructions()
+
         if 'wrap_endless' in kwargs and 'reset' in kwargs:
 
             target.scratch_var.set_address(
@@ -335,7 +338,7 @@ def generate(test_definition, output_file, target, **kwargs):
             )
 
         if 'wrap_endless' not in kwargs:
-            instructions += [target.nop()]
+            instructions += target.test_end_instructions()
         else:
             instructions += _compute_reset_jump(target, instructions)
 
@@ -456,7 +459,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
     print_info("Setup synthesizer ...")
     synthesizer = microprobe.code.Synthesizer(
-        target, wrapper, no_scratch=False,
+        target, wrapper, no_scratch=True,
         extra_raw=raw,
     )
 

@@ -264,6 +264,16 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         """ """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def test_start_instructions(self):
+        """ """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def test_end_instructions(self):
+        """ """
+        raise NotImplementedError
+
 
 class GenericEnvironment(Environment):
     """ """
@@ -490,3 +500,11 @@ class GenericEnvironment(Environment):
             else:
                 return False
         return True
+
+    def test_start_instructions(self):
+        """ """
+        return []
+
+    def test_end_instructions(self):
+        """ """
+        return [self._target.nop()]

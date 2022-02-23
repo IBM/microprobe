@@ -598,3 +598,11 @@
   - funct25
   - opcode
   Assembly: OPC
+- Name: "csr"
+  Fields:
+  - u_imm12
+  - rs1
+  - funct3
+  - rd
+  - opcode
+  Assembly: OPC rd, u_imm12, rs1
