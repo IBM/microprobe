@@ -349,7 +349,6 @@ def generate(test_definition, output_file, target, **kwargs):
         instructions = []
         reset_steps = []
 
-        instructions += target.test_start_instructions()
 
         if 'wrap_endless' in kwargs and 'reset' in kwargs:
 
@@ -505,6 +504,12 @@ def generate(test_definition, output_file, target, **kwargs):
     variables = test_definition.variables
     registers = test_definition.registers
     sequence = sequence_orig
+
+    synthesizer.add_pass(
+        microprobe.passes.initialization.AddInitializationInstructionsPass(
+            target.test_start_instructions()
+        ),
+    )
 
     if len(registers) >= 0:
 
