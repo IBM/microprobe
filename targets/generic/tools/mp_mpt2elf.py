@@ -1246,6 +1246,9 @@ def _main(arguments):
     if 'fix_start_address' not in arguments:
         arguments['fix_start_address'] = None
 
+    if 'fix_32bit_address' not in arguments:
+        arguments['fix_32bit_address'] = None
+
     if "no_wrap_test" in arguments and "wrap_endless" in arguments:
         print_error(
             "--no-wrap-test specified and --wrap-endless specified. "
