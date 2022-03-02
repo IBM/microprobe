@@ -2073,7 +2073,7 @@
   Operands:
     funct3: ['2', 'funct3', '?']
 - Name: "CSRRW_V0"
-  Mnemonic: "CSRRS"
+  Mnemonic: "CSRRW"
   Opcode: "73"
   Format: "csr"
   Operands:

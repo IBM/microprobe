@@ -121,7 +121,7 @@ class riscv64_riscy_sim(GenericEnvironment):
         instructions = self.target.set_register(self.target.isa.registers["X5"], self._MSTATUS_FS | self._MSTATUS_XS, context)
 
         ins = self.target.new_instruction("CSRRW_V0")
-        ins.set_operands([self._CSR_MSTATUS, self.target.isa.registers["X0"], self.target.isa.registers["X5"]])
+        ins.set_operands([self._CSR_MSTATUS, self.target.isa.registers["X5"], self.target.isa.registers["X0"]])
         instructions.append(ins)
 
         return instructions
