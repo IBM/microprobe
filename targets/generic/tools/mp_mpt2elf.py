@@ -240,6 +240,45 @@ def generate(test_definition, output_file, target, **kwargs):
             if register.name == "PSW_ADDR":
                 init_address = register.value
 
+        if kwargs['fix_32bit_address']:
+            base = kwargs['fix_32bit_address']
+            print_info("Shifting addresses to belong to 32bit address space.")
+
+            lowest_code = min([elem.address for elem in test_definition.code if elem.address is not None and elem.address >= 2**32])
+            lowest_data = min([elem.address for elem in test_definition.variables if elem.address is not None and elem.address >= 2**32])
+            lowest = min(lowest_code, lowest_data)
+
+            print_info("Shifting from 0x%X to 0x%X" % (lowest, base))
+
+            fix_pages = [elem.address & ~0xFF for elem in test_definition.code if elem.address is not None and elem.address >= 2**32]
+            fix_pages += [elem.address & ~0xFF for elem in test_definition.variables if elem.address is not None and elem.address >= 2**32]
+
+            displacement = lowest - base
+
+            for elem in test_definition.code:
+                if elem.address >= 2**32:
+                    elem.address = elem.address - displacement
+
+            prog = Progress(len(test_definition.variables))
+
+            for elem in test_definition.variables:
+                if elem.address >= 2**32:
+                    elem.address = elem.address - displacement
+
+                for index in range(0, elem.num_elements, 8):
+                    value = int.from_bytes(elem.init_value[index:index+8], "little")
+                    if (value & ~0xFFF in fix_pages):
+                        value = value - displacement
+                        bytes_ = int.to_bytes(value, 8, "little")
+                        for i, byte in enumerate(bytes_):
+                            elem.init_value[index + i] = byte
+
+                prog()
+
+            for register in test_definition.registers:
+                if register.value >= 2**32:
+                    register.value = register.value - displacement
+
         displacements = []
         for elem in test_definition.code:
             if elem.address is not None:
@@ -1126,6 +1165,20 @@ def main():
         "define a proper entry point that does not clash with existing code.",
         group=group_name,
         opt_type=int_type(0, 2**64)
+    )
+
+    cmdline.add_option(
+        "fix-32bit-address",
+        "X",
+        None,
+        "Sometimes the user requires the addresses of the content to be "
+        "within a 32bit address space. However, a test may incorporate "
+        "content outside of that address space. This flag forces the "
+        "variables to be shifted to fit within this limit, starting at the "
+        "specified address. It is up to the user to define a proper starting "
+        "address that does not clash with the existing code.",
+        group=group_name,
+        opt_type=int_type(0, 2**32)
     )
 
     group_name = "Wrapping options"
