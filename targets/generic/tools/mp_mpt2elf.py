@@ -365,6 +365,8 @@ def generate(test_definition, output_file, target, **kwargs):
             )
             instructions += new_ins
 
+        instructions += target.test_start_instructions()
+
         if 'fix_long_jump' in kwargs:
             instructions += target.function_call(
                 init_address,
@@ -375,9 +377,9 @@ def generate(test_definition, output_file, target, **kwargs):
                 ("%s" % start_symbol).replace("+0x-", "-0x"),
             )
 
-        if 'wrap_endless' not in kwargs:
-            instructions += target.test_end_instructions()
-        else:
+        instructions += target.test_end_instructions()
+
+        if 'wrap_endless' in kwargs:
             instructions += _compute_reset_jump(target, instructions)
 
         instructions_definitions = []
@@ -507,7 +509,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.initialization.AddInitializationInstructionsPass(
-            target.test_start_instructions()
+            target.test_init_instructions()
         ),
     )
 
