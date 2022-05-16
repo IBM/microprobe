@@ -71,6 +71,7 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
 
         shutil.rmtree(self.tdirname, True)
 
+    @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_001(self):
         """
         test_001 on riscv_v22-riscv_generic-riscv64_test_p
@@ -82,6 +83,7 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
             "-seq ADD_V0,ADDI_V0,FMUL.S_V0,MULW_V0,LD_V0,SD_V0"
         )
 
+    @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_002(self):
         """
         test_001 on riscv_v22-riscv_generic-riscv64_linux_gcc

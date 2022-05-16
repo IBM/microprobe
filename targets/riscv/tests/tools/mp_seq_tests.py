@@ -70,6 +70,7 @@ class seq(TestCase):  # pylint: disable=invalid-name
 
         shutil.rmtree(self.tdirname, True)
 
+    @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_001(self):
         """
         mp_seq_test001 on riscv_v22-riscv_generic-riscv64_linux_gcc
@@ -82,6 +83,7 @@ class seq(TestCase):  # pylint: disable=invalid-name
             "-B 12 -p"
         )
 
+    @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_002(self):
         """
         mp_seq_test001 on riscv_v22-riscv_generic-riscv64_test_p
@@ -94,6 +96,7 @@ class seq(TestCase):  # pylint: disable=invalid-name
             "-B 12 -p"
         )
 
+    @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_003(self):
         """
         mp_seq_test001 on riscv_v22-riscv_generic-riscv64_linux_gcc
@@ -106,6 +109,7 @@ class seq(TestCase):  # pylint: disable=invalid-name
             "-B 12 -p"
         )
 
+    @skipIf(MP_TESTING_ARCH not in [None, "RISCV"], "Long testing")
     def test_004(self):
         """
         mp_seq_test001 on riscv_v22-riscv_generic-riscv64_test_p
