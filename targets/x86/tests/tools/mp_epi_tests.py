@@ -72,33 +72,25 @@ def subins(instructions):
     :type instructions:
     """
 
-    if MP_TESTING_ARCH is not None:
-        return instructions
+    # if MP_TESTING_ARCH is not None:
+    #    return instructions
 
     myins = []
+    mnemonics = []
+    formats = []
 
     for instr in instructions:
 
-        if instr.format not in [ins.format for ins in myins]:
+        if instr.mnemonic not in mnemonics:
             myins.append(instr)
+            formats.append(instr.format)
+            mnemonics.append(instr.mnemonic)
             continue
 
-    #    if str(instr.instruction_checks) not in [
-    #            str(ins.instruction_checks) for ins in myins]:
-
+    #    if instr.format not in formats:
     #        myins.append(instr)
-    #        continue
-
-    #    if str(instr.target_checks) not in [
-    #            str(ins.target_checks) for ins in myins]:
-
-    #        myins.append(instr)
-    #        continue
-
-    #    if str(instr.operands) not in [
-    #            str(ins.operands) for ins in myins]:
-
-    #        myins.append(instr)
+    #        formats.append(instr.format)
+    #        mnemonics.append(instr.mnemonic)
     #        continue
 
     return myins
@@ -207,9 +199,11 @@ if MP_TESTING_ARCH is None:
 
     TEST_TARGETS.append(("intel64-x86generic-x86_64_linux_gcc", "c"))
 else:
-    _PARAM1 = ['', '-dd 1', '-dd 5.5']
-    _PARAM2 = ['', '-R']
-    _PARAM3 = ['', '-B 10']
+    _PARAM1 = ['']
+    _PARAM2 = ['']
+    # _PARAM1 = ['', '-dd 1', '-dd 5.5']
+    # _PARAM2 = ['', '-R']
+    _PARAM3 = ['-B 10']
 
     if MP_TESTING_ARCH == "INTEL":
         TEST_TARGETS.append(("intel64-x86generic-x86_64_linux_gcc", "c"))
