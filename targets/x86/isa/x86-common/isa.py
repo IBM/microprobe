@@ -178,6 +178,7 @@ class X86ISA(GenericISA):
                     instrs.append(aghik)
                     return instrs
 
+                lgr_load = None
                 lgr = self.new_instruction(lgr_load)
                 lgr.set_operands([register, present_reg])
                 instrs.append(lgr)
@@ -643,7 +644,6 @@ class X86ISA(GenericISA):
 
         raise NotImplementedError("Function not ported to x86")
         # TODO: Code below is from another back-end. Use it as reference.
-
 
     def negate_register(self, dummy_register, dummy_context):
 
