@@ -485,7 +485,7 @@ class Target(Pickable):
 
                 prop_map[value].append(instr)
 
-        for key in prop_map:
+        for key in prop_map.keys():
             prop_map[key] = set(prop_map[key])
 
         return prop_map
