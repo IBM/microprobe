@@ -1,0 +1,335 @@
+# Copyright 2022 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# Author: Haifeng Qian, Ramon Bertran
+# Email: qianhaifeng@us.ibm.com, rbertra@us.ibm.com"
+#
+# Version: 0.5
+#
+- Name: R_8
+  Description: Byte registers
+  Registers:
+    AL : [ AL, AX, EAX, RAX ]
+    BL : [ BL, BX, EBX, RBX ]
+    CL : [ CL, CX, ECX, RCX ]
+    DL : [ DL, DX, EDX, RDX ]
+    AH : [ AH, AX, EAX, RAX ]
+    BH : [ BH, BX, EBX, RBX ]
+    CH : [ CH, CX, ECX, RCX ]
+    DH : [ DH, DX, EDX, RDX ]
+- Name: R_8_ALL
+  Description: All byte registers
+  Registers:
+    AL : [ AL, AX, EAX, RAX ]
+    BL : [ BL, BX, EBX, RBX ]
+    CL : [ CL, CX, ECX, RCX ]
+    DL : [ DL, DX, EDX, RDX ]
+    AH : [ AH, AX, EAX, RAX ]
+    BH : [ BH, BX, EBX, RBX ]
+    CH : [ CH, CX, ECX, RCX ]
+    DH : [ DH, DX, EDX, RDX ]
+    BPL : [ BPL, BP, EBP, RBP ]
+    SIL : [ SIL, SI, ESI, RSI ]
+    DIL : [ DIL, DI, EDI, RDI ]
+    SPL : [ SPL, SP, ESP, RSP ]
+    R8B : [ R8B, R8W, R8D, R8 ]
+    R9B : [ R9B, R9W, R9D, R9 ]
+    R10B : [ R10B, R10W, R10D, R10 ]
+    R11B : [ R11B, R11W, R11D, R11 ]
+    R12B : [ R12B, R12W, R12D, R12 ]
+    R13B : [ R13B, R13W, R13D, R13 ]
+    R14B : [ R14B, R14W, R14D, R14 ]
+    R15B : [ R15B, R15W, R15D, R15 ]
+- Name: R_AL
+  Description: Byte register AL
+  Registers:
+    AL : [ AL, AX, EAX, RAX ]
+- Name: R_16
+  Description: Word registers
+  Registers:
+    AX : [ AL, AH, AX, EAX, RAX ]
+    BX : [ BL, BH, BX, EBX, RBX ]
+    CX : [ CL, CH, CX, ECX, RCX ]
+    DX : [ DL, DH, DX, EDX, RDX ]
+    BP : [ BPL, BP, EBP, RBP ]
+    SI : [ SIL, SI, ESI, RSI ]
+    DI : [ DIL, DI, EDI, RDI ]
+    SP : [ SPL, SP, ESP, RSP ]
+- Name: R_16_ALL
+  Description: Word registers
+  Registers:
+    AX : [ AL, AH, AX, EAX, RAX ]
+    BX : [ BL, BH, BX, EBX, RBX ]
+    CX : [ CL, CH, CX, ECX, RCX ]
+    DX : [ DL, DH, DX, EDX, RDX ]
+    BP : [ BPL, BP, EBP, RBP ]
+    SI : [ SIL, SI, ESI, RSI ]
+    DI : [ DIL, DI, EDI, RDI ]
+    SP : [ SPL, SP, ESP, RSP ]
+    R8W : [ R8B, R8W, R8D, R8 ]
+    R9W : [ R9B, R9W, R9D, R9 ]
+    R10W : [ R10B, R10W, R10D, R10 ]
+    R11W : [ R11B, R11W, R11D, R11 ]
+    R12W : [ R12B, R12W, R12D, R12 ]
+    R13W : [ R13B, R13W, R13D, R13 ]
+    R14W : [ R14B, R14W, R14D, R14 ]
+    R15W : [ R15B, R15W, R15D, R15 ]
+- Name: R_32
+  Description: Double word registers
+  Registers:
+    EAX : [ AL, AH, AX, EAX, RAX ]
+    EBX : [ BL, BH, BX, EBX, RBX ]
+    ECX : [ CL, CH, CX, ECX, RCX ]
+    EDX : [ DL, DH, DX, EDX, RDX ]
+    EBP : [ BPL, BP, EBP, RBP ]
+    ESI : [ SIL, SI, ESI, RSI ]
+    EDI : [ DIL, DI, EDI, RDI ]
+    ESP : [ SPL, SP, ESP, RSP ]
+- Name: R_32_ALL
+  Description: Double word registers
+  Registers:
+    EAX : [ AL, AH, AX, EAX, RAX ]
+    EBX : [ BL, BH, BX, EBX, RBX ]
+    ECX : [ CL, CH, CX, ECX, RCX ]
+    EDX : [ DL, DH, DX, EDX, RDX ]
+    EBP : [ BPL, BP, EBP, RBP ]
+    ESI : [ SIL, SI, ESI, RSI ]
+    EDI : [ DIL, DI, EDI, RDI ]
+    ESP : [ SPL, SP, ESP, RSP ]
+    R8D : [ R8B, R8W, R8D, R8 ]
+    R9D : [ R9B, R9W, R9D, R9 ]
+    R10D : [ R10B, R10W, R10D, R10 ]
+    R11D : [ R11B, R11W, R11D, R11 ]
+    R12D : [ R12B, R12W, R12D, R12 ]
+    R13D : [ R13B, R13W, R13D, R13 ]
+    R14D : [ R14B, R14W, R14D, R14 ]
+    R15D : [ R15B, R15W, R15D, R15 ]
+- Name: R_64
+  Description: Quad word registers
+  Registers:
+    RAX : [ AL, AH, AX, EAX, RAX ]
+    RBX : [ BL, BH, BX, EBX, RBX ]
+    RCX : [ CL, CH, CX, ECX, RCX ]
+    RDX : [ DL, DH, DX, EDX, RDX ]
+    RBP : [ BPL, BP, EBP, RBP ]
+    RSI : [ SIL, SI, ESI, RSI ]
+    RDI : [ DIL, DI, EDI, RDI ]
+    RSP : [ SPL, SP, ESP, RSP ]
+- Name: R_64_REX
+  Description: Quad word registers
+  Registers:
+    RAX : [ AL, AH, AX, EAX, RAX ]
+    RBX : [ BL, BH, BX, EBX, RBX ]
+    RCX : [ CL, CH, CX, ECX, RCX ]
+    RDX : [ DL, DH, DX, EDX, RDX ]
+    RBP : [ BPL, BP, EBP, RBP ]
+    RSI : [ SIL, SI, ESI, RSI ]
+    RDI : [ DIL, DI, EDI, RDI ]
+    RSP : [ SPL, SP, ESP, RSP ]
+    R8 :  [ R8B, R8W, R8D, R8 ]
+    R9 :  [ R9B, R9W, R9D, R9 ]
+    R10 : [ R10B, R10W, R10D, R10 ]
+    R11 : [ R11B, R11W, R11D, R11 ]
+    R12 : [ R12B, R12W, R12D, R12 ]
+    R13 : [ R13B, R13W, R13D, R13 ]
+    R14 : [ R14B, R14W, R14D, R14 ]
+    R15 : [ R15B, R15W, R15D, R15 ]
+- Name: ABR_64
+  Description: Address base registers
+  Registers:
+    RAX : [ AL, AH, AX, EAX, RAX ]
+    RBX : [ BL, BH, BX, EBX, RBX ]
+    RCX : [ CL, CH, CX, ECX, RCX ]
+    RDX : [ DL, DH, DX, EDX, RDX ]
+    RBP : [ BPL, BP, EBP, RBP ]
+    RSI : [ SIL, SI, ESI, RSI ]
+    RDI : [ DIL, DI, EDI, RDI ]
+    RSP : [ SPL, SP, ESP, RSP ]
+  AddressBase: True
+- Name: ABR_64_REX
+  Description: Address base registers
+  Registers:
+    RAX : [ AL, AH, AX, EAX, RAX ]
+    RBX : [ BL, BH, BX, EBX, RBX ]
+    RCX : [ CL, CH, CX, ECX, RCX ]
+    RDX : [ DL, DH, DX, EDX, RDX ]
+    RBP : [ BPL, BP, EBP, RBP ]
+    RSI : [ SIL, SI, ESI, RSI ]
+    RDI : [ DIL, DI, EDI, RDI ]
+    RSP : [ SPL, SP, ESP, RSP ]
+    R8 :  [ R8B, R8W, R8D, R8 ]
+    R9 :  [ R9B, R9W, R9D, R9 ]
+    R10 : [ R10B, R10W, R10D, R10 ]
+    R11 : [ R11B, R11W, R11D, R11 ]
+    R12 : [ R12B, R12W, R12D, R12 ]
+    R13 : [ R13B, R13W, R13D, R13 ]
+    R14 : [ R14B, R14W, R14D, R14 ]
+    R15 : [ R15B, R15W, R15D, R15 ]
+  AddressBase: True
+- Name: FPR
+  Description: All floating-point registers
+  Registers:
+  - FPR80
+  FloatingPoint: True
+- Name: ZMM
+  Description: All 512-bit vector registers
+  Registers:
+    ZMM0 : [ ZMM0, YMM0, XMM0 ]
+    ZMM1 : [ ZMM1, YMM1, XMM1 ]
+    ZMM2 : [ ZMM2, YMM2, XMM2 ]
+    ZMM3 : [ ZMM3, YMM3, XMM3 ]
+    ZMM4 : [ ZMM4, YMM4, XMM4 ]
+    ZMM5 : [ ZMM5, YMM5, XMM5 ]
+    ZMM6 : [ ZMM6, YMM6, XMM6 ]
+    ZMM7 : [ ZMM7, YMM7, XMM7 ]
+    ZMM8 : [ ZMM8, YMM8, XMM8 ]
+    ZMM9 : [ ZMM9, YMM9, XMM9 ]
+    ZMM10 : [ ZMM10, YMM10, XMM10 ]
+    ZMM11 : [ ZMM11, YMM11, XMM11 ]
+    ZMM12 : [ ZMM12, YMM12, XMM12 ]
+    ZMM13 : [ ZMM13, YMM13, XMM13 ]
+    ZMM14 : [ ZMM14, YMM14, XMM14 ]
+    ZMM15 : [ ZMM15, YMM15, XMM15 ]
+    ZMM16 : [ ZMM16 ]
+    ZMM17 : [ ZMM17 ] 
+    ZMM18 : [ ZMM18 ] 
+    ZMM19 : [ ZMM19 ] 
+    ZMM20 : [ ZMM20 ] 
+    ZMM21 : [ ZMM21 ] 
+    ZMM22 : [ ZMM22 ] 
+    ZMM23 : [ ZMM23 ] 
+    ZMM24 : [ ZMM24 ] 
+    ZMM25 : [ ZMM25 ] 
+    ZMM26 : [ ZMM26 ] 
+    ZMM27 : [ ZMM27 ] 
+    ZMM28 : [ ZMM28 ] 
+    ZMM29 : [ ZMM29 ] 
+    ZMM30 : [ ZMM30 ] 
+    ZMM31 : [ ZMM31 ] 
+- Name: YMM
+  Description: All 256-bit vector registers
+  Registers:
+    YMM0 : [ ZMM0, YMM0, XMM0 ]
+    YMM1 : [ ZMM1, YMM1, XMM1 ]
+    YMM2 : [ ZMM2, YMM2, XMM2 ]
+    YMM3 : [ ZMM3, YMM3, XMM3 ]
+    YMM4 : [ ZMM4, YMM4, XMM4 ]
+    YMM5 : [ ZMM5, YMM5, XMM5 ]
+    YMM6 : [ ZMM6, YMM6, XMM6 ]
+    YMM7 : [ ZMM7, YMM7, XMM7 ]
+    YMM8 : [ ZMM8, YMM8, XMM8 ]
+    YMM9 : [ ZMM9, YMM9, XMM9 ]
+    YMM10 : [ ZMM10, YMM10, XMM10 ]
+    YMM11 : [ ZMM11, YMM11, XMM11 ]
+    YMM12 : [ ZMM12, YMM12, XMM12 ]
+    YMM13 : [ ZMM13, YMM13, XMM13 ]
+    YMM14 : [ ZMM14, YMM14, XMM14 ]
+    YMM15 : [ ZMM15, YMM15, XMM15 ]
+- Name: XMM
+  Description: 128-bit vector registers
+  Registers:
+    XMM0 : [ ZMM0, YMM0, XMM0 ]
+    XMM1 : [ ZMM1, YMM1, XMM1 ]
+    XMM2 : [ ZMM2, YMM2, XMM2 ]
+    XMM3 : [ ZMM3, YMM3, XMM3 ]
+    XMM4 : [ ZMM4, YMM4, XMM4 ]
+    XMM5 : [ ZMM5, YMM5, XMM5 ]
+    XMM6 : [ ZMM6, YMM6, XMM6 ]
+    XMM7 : [ ZMM7, YMM7, XMM7 ]
+- Name: XMM_REX
+  Description: All 128-bit vector registers
+  Registers:
+    XMM0 : [ ZMM0, YMM0, XMM0 ]
+    XMM1 : [ ZMM1, YMM1, XMM1 ]
+    XMM2 : [ ZMM2, YMM2, XMM2 ]
+    XMM3 : [ ZMM3, YMM3, XMM3 ]
+    XMM4 : [ ZMM4, YMM4, XMM4 ]
+    XMM5 : [ ZMM5, YMM5, XMM5 ]
+    XMM6 : [ ZMM6, YMM6, XMM6 ]
+    XMM7 : [ ZMM7, YMM7, XMM7 ]
+    XMM8 : [ ZMM8, YMM8, XMM8 ]
+    XMM9 : [ ZMM9, YMM9, XMM9 ]
+    XMM10 : [ ZMM10, YMM10, XMM10 ]
+    XMM11 : [ ZMM11, YMM11, XMM11 ]
+    XMM12 : [ ZMM12, YMM12, XMM12 ]
+    XMM13 : [ ZMM13, YMM13, XMM13 ]
+    XMM14 : [ ZMM14, YMM14, XMM14 ]
+    XMM15 : [ ZMM15, YMM15, XMM15 ]
+- Name: MM
+  Description: 64-bit MMX registers
+  Registers:
+    MM0 : [ ST(0), MM0 ]
+    MM1 : [ ST(1), MM1 ]
+    MM2 : [ ST(2), MM2 ]
+    MM3 : [ ST(3), MM3 ]
+    MM4 : [ ST(4), MM4 ]
+    MM5 : [ ST(5), MM5 ]
+    MM6 : [ ST(6), MM6 ]
+    MM7 : [ ST(7), MM7 ]
+- Name: UImm1
+  Description: Unsigned immediate (bit size 1)
+  Min: 0
+  Max: 1
+- Name: UImm2
+  Description: Unsigned immediate (bit size 2)
+  Min: 0
+  Max: 3
+- Name: UImm3
+  Description: Unsigned immediate (bit size 3)
+  Min: 0
+  Max: 7
+- Name: UImm4
+  Description: Unsigned immediate (bit size 4)
+  Min: 0
+  Max: 15
+- Name: UImm4_0100
+  Description: Unsigned immediate (bit size 4) fixed value
+  Min: 4
+  Max: 4
+- Name: UImm8
+  Description: Unsigned immediate (bit size 8)
+  Min: 0
+  Max: 255
+- Name: UImm16
+  Description: Unsigned immediate (bit size 16)
+  Min: 0
+  Max: 65535
+- Name: UImm24
+  Description: Unsigned immediate (bit size 24)
+  Min: 0
+  Max: 16777216
+- Name: UImm32
+  Description: Unsigned immediate (bit size 32)
+  Min: 0
+  Max: 4294967295
+- Name: UImm64
+  Description: Unsigned immediate (bit size 64)
+  Min: 0
+  Max: 8589934591
+- Name: SImm8
+  Description: Signed immediate (bit size 8)
+  Min: -128
+  Max: 127
+- Name: SImm16
+  Description: Signed immediate (bit size 16)
+  Min: -32768
+  Max: 32767
+- Name: SImm32
+  Description: Signed immediate (bit size 32)
+  Min: -2147483648
+  Max: 2147483647
+- Name: SImm64
+  Description: Signed immediate (bit size 64)
+  Min: -4294967296
+  Max: 4294967295
+

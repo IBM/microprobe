@@ -1,0 +1,345 @@
+# Copyright 2022 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# Author: Haifeng Qian, Ramon Bertran
+# Email: qianhaifeng@us.ibm.com, rbertra@us.ibm.com"
+#
+# Version: 0.5
+#
+- Name: R8
+  Type: GR64
+  Representation: '%r8'
+  Description: General Register 8
+  Repeat:
+    From: 8
+    To: 15
+- Name: R8D
+  Type: GR32
+  Representation: '%r8d'
+  Description: DWord General Register 8
+  Repeat:
+    From: 8
+    To: 15
+- Name: R8W
+  Type: GR16
+  Representation: '%r8w'
+  Description: Word General Register 8
+  Repeat:
+    From: 8
+    To: 15
+- Name: R8B
+  Type: GR8
+  Representation: '%r8b'
+  Description: Byte General Register 8
+  Repeat:
+    From: 8
+    To: 15
+- Name: RAX
+  Type: GR64
+  Representation: '%rax'
+  Description: General Register RAX
+- Name: EAX
+  Type: GR32
+  Representation: '%eax'
+  Description: DWord General Register EAX
+- Name: AX
+  Type: GR16
+  Representation: '%ax'
+  Description: Word General Register AX
+- Name: AL
+  Type: GR8
+  Representation: '%al'
+  Description: General Register Low Byte AL
+- Name: AH
+  Type: GR8
+  Representation: '%ah'
+  Description: General Register High Byte AH
+- Name: RBX
+  Type: GR64
+  Representation: '%rbx'
+  Description: General Register RBX
+- Name: EBX
+  Type: GR32
+  Representation: '%ebx'
+  Description: DWord General Register EBX
+- Name: BX
+  Type: GR16
+  Representation: '%bx'
+  Description: Word General Register BX
+- Name: BL
+  Type: GR8
+  Representation: '%bl'
+  Description: General Register Low Byte BL
+- Name: BH
+  Type: GR8
+  Representation: '%bh'
+  Description: General Register High Byte BH
+- Name: RCX
+  Type: GR64
+  Representation: '%rcx'
+  Description: General Register RCX
+- Name: ECX
+  Type: GR32
+  Representation: '%ecx'
+  Description: DWord General Register ECX
+- Name: CX
+  Type: GR16
+  Representation: '%cx'
+  Description: Word General Register CX
+- Name: CL
+  Type: GR8
+  Representation: '%cl'
+  Description: General Register Low Byte CL
+- Name: CH
+  Type: GR8
+  Representation: '%ch'
+  Description: General Register High Byte CH
+- Name: RDX
+  Type: GR64
+  Representation: '%rdx'
+  Description: General Register RDX
+- Name: EDX
+  Type: GR32
+  Representation: '%edx'
+  Description: DWord General Register EDX
+- Name: DX
+  Type: GR16
+  Representation: '%dx'
+  Description: Word General Register DX
+- Name: DL
+  Type: GR8
+  Representation: '%dl'
+  Description: General Register Low Byte DL
+- Name: DH
+  Type: GR8
+  Representation: '%dh'
+  Description: General Register High Byte DH
+- Name: RBP
+  Type: GR64
+  Representation: '%rbp'
+  Description: General Register RBP
+- Name: EBP
+  Type: GR32
+  Representation: '%ebp'
+  Description: DWord General Register EBP
+- Name: BP
+  Type: GR16
+  Representation: '%bp'
+  Description: Word General Register BP
+- Name: BPL
+  Type: GR8
+  Representation: '%bpl'
+  Description: General Register Low Byte BPL
+- Name: RSP
+  Type: GR64
+  Representation: '%rsp'
+  Description: General Register RSP
+- Name: ESP
+  Type: GR32
+  Representation: '%esp'
+  Description: DWord General Register ESP
+- Name: SP
+  Type: GR16
+  Representation: '%sp'
+  Description: Word General Register SP
+- Name: SPL
+  Type: GR8
+  Representation: '%spl'
+  Description: General Register Low Byte SPL
+- Name: RDI
+  Type: GR64
+  Representation: '%rdi'
+  Description: General Register RDI
+- Name: EDI
+  Type: GR32
+  Representation: '%edi'
+  Description: DWord General Register EDI
+- Name: DI
+  Type: GR16
+  Representation: '%di'
+  Description: Word General Register DI
+- Name: DIL
+  Type: GR8
+  Representation: '%dil'
+  Description: General Register Low Byte DIL
+- Name: RSI
+  Type: GR64
+  Representation: '%rsi'
+  Description: General Register RSI
+- Name: ESI
+  Type: GR32
+  Representation: '%esi'
+  Description: DWord General Register ESI
+- Name: SI
+  Type: GR16
+  Representation: '%si'
+  Description: Word General Register SI
+- Name: SIL
+  Type: GR8
+  Representation: '%sil'
+  Description: General Register Low Byte SIL
+- Name: RIP
+  Type: GR64
+  Representation: '%rip'
+  Description: Instruction Pointer Register
+- Name: EIP
+  Type: GR32
+  Representation: '%eip'
+  Description: DWord Instruction Pointer Register
+- Name: IP
+  Type: GR16
+  Representation: '%ip'
+  Description: Word Instruction Pointer Register
+- Name: RFLAGS
+  Type: GR64
+  Representation: 'N/A'
+  Description: Flags Register
+- Name: EFLAGS
+  Type: GR32
+  Representation: 'N/A'
+  Description: DWord Flags Register
+- Name: FLAGS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Word Flags Register
+- Name: ST(0)
+  Type: FPR80
+  Representation: '%st0'
+  Description: Floating-Point Register 0
+  Repeat:
+    From: 0
+    To: 7
+- Name: MM0
+  Type: GR64
+  Representation: '%mm0'
+  Description: Integer Register 0
+  Repeat:
+    From: 0
+    To: 7
+- Name: ZMM0
+  Type: VR512
+  Representation: '%zmm0'
+  Description: 512-bit SIMD Register 0
+  Repeat:
+    From: 0
+    To: 31
+- Name: YMM0
+  Type: VR256
+  Representation: '%ymm0'
+  Description: 256-bit SIMD Register 0
+  Repeat:
+    From: 0
+    To: 15
+- Name: XMM0
+  Type: VR128
+  Representation: '%xmm0'
+  Description: 128-bit SIMD Register 0
+  Repeat:
+    From: 0
+    To: 15
+- Name: CR0
+  Type: GR64
+  Representation: 'N/A'
+  Description: Control Register 0
+  Repeat:
+    From: 0
+    To: 15
+- Name: DR0
+  Type: GR64
+  Representation: 'N/A'
+  Description: Debug Register 0
+  Repeat:
+    From: 0
+    To: 15
+- Name: MSW
+  Type: GR64
+  Representation: 'N/A'
+  Description: Machine Status Word Register
+- Name: MXCSR
+  Type: GR32
+  Representation: 'N/A'
+  Description: Streaming SIMD Extensions (SSE) Control/Status Register
+- Name: FP_DP
+  Type: GR32
+  Representation: 'N/A'
+  Description: Floating-Point Data Pointer ?
+- Name: FP_IP
+  Type: GR32
+  Representation: 'N/A'
+  Description: Floating-Point Instruction Pointer ?
+- Name: FP_CS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Floating-Point Code Segment
+- Name: FP_DS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Floating-Point Data Segment
+- Name: FP_OPC
+  Type: GR16
+  Representation: 'N/A'
+  Description: Floating-Point Opcode
+- Name: CW
+  Type: GR16
+  Representation: 'N/A'
+  Description: Control Word
+- Name: SW
+  Type: GR16
+  Representation: 'N/A'
+  Description: Status Word
+- Name: TW
+  Type: GR16
+  Representation: 'N/A'
+  Description: '?'
+- Name: CS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Code Segment Register
+- Name: DS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Data Segment Register
+- Name: SS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Stack Segment Register
+- Name: ES
+  Type: GR16
+  Representation: 'N/A'
+  Description: Extra Data Segment Register
+- Name: FS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Extra Data #2 Segment Register
+- Name: GS
+  Type: GR16
+  Representation: 'N/A'
+  Description: Extra Data #2 Segment Register
+- Name: GDTR
+  Type: GR16
+  Representation: 'N/A'
+  Description: Global Descriptor Table Register
+- Name: LDTR
+  Type: GR16
+  Representation: 'N/A'
+  Description: Local Descriptor Table Register
+- Name: IDTR
+  Type: GR16
+  Representation: 'N/A'
+  Description: Interrupt Descriptor Table Register
+- Name: TR
+  Type: GR16
+  Representation: 'N/A'
+  Description: Task Register
+
+

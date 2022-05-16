@@ -1,0 +1,9 @@
+# Copyright 2011-2021 IBM Corporation
+# All rights reserved
+#
+# Author: Ramon Bertran Monfort <rbertra@us.ibm.com>
+#
+# Version: 0.5
+Name: x86generic
+Description: Generic x86 microarchitecture
+Extends: ../x86-common

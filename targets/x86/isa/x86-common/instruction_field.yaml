@@ -1,0 +1,169 @@
+# Copyright 2022 IBM Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# Author: Haifeng Qian, Ramon Bertran
+# Email: qianhaifeng@us.ibm.com, rbertra@us.ibm.com"
+#
+# Version: 0.5
+#
+- Name: "REX_header"
+  Description: First 4 bit of REX byte with fixed value
+  Size: 4
+  Show: False
+  IO: I
+  Operand: UImm4_0100
+- Name: "REX_W"
+  Description: Fifth bit of REX byte, 1 means wide
+  Size: 1
+  Show: False
+  IO: I
+  Operand: UImm1
+- Name: "REX_R"
+  Description: Sixth bit of REX byte, to prepend ModRM_RegOpc
+  Size: 1
+  Show: False
+  IO: I
+  Operand: UImm1
+- Name: "REX_X"
+  Description: Seventh bit of REX byte, to prepend SIB_index
+  Size: 1
+  Show: False
+  IO: I
+  Operand: UImm1
+- Name: "REX_B"
+  Description: Last bit of REX byte, to prepend ModRM_RM or SIB_base
+  Size: 1
+  Show: False
+  IO: I
+  Operand: UImm1
+- Name: "opcode_8"
+  Description: Opcode size 8
+  Size: 8
+  Show: False
+  IO: '?'
+  Operand: UImm8
+- Name: "opcode_16"
+  Description: Opcode size 16
+  Size: 8
+  Show: False
+  IO: '?'
+  Operand: UImm16
+- Name: "opcode_24"
+  Description: Opcode size 24
+  Size: 8
+  Show: False
+  IO: '?'
+  Operand: UImm24
+- Name: "ModRM_Mod"
+  Description: Mod bits of ModRM byte
+  Size: 2
+  Show: False
+  IO: '?'
+  Operand: UImm2
+- Name: "ModRM_RegOpc"
+  Description: Register field in ModRM byte
+  Size: 3
+  Show: True
+  IO: 'I'
+  Operand: UImm3
+- Name: "ModRM_RM"
+  Description: Register/memory field in ModRM byte
+  Size: 3
+  Show: True
+  IO: 'I'
+  Operand: UImm3
+- Name: "SIB_Scale"
+  Description: Scale bits of SIB byte
+  Size: 2
+  Show: False
+  IO: '?'
+  Operand: UImm2
+- Name: "SIB_Index"
+  Description: Index field in SIB byte
+  Size: 3
+  Show: True
+  IO: 'I'
+  Operand: UImm3
+- Name: "SIB_base"
+  Description: Base field in SIB byte
+  Size: 3
+  Show: True
+  IO: 'I'
+  Operand: UImm3
+- Name: "D2_8"
+  Description: Displacement of instruction operand 2
+  Size: 8
+  Show: True
+  IO: I
+  Operand: UImm8
+- Name: "D2_16"
+  Description: Displacement of instruction operand 2
+  Size: 16
+  Show: True
+  IO: I
+  Operand: UImm16
+- Name: "D2_32"
+  Description: Displacement of instruction operand 2
+  Size: 32
+  Show: True
+  IO: I
+  Operand: UImm32
+- Name: "I2_8"
+  Description: 8 bit immediate operand 2 signed
+  Size: 8
+  Show: True
+  IO: I
+  Operand: SImm8
+- Name: "I2_U8"
+  Description: 8 bit immediate operand 2 unsigned
+  Size: 8
+  Show: True
+  IO: I
+  Operand: UImm8
+- Name: "I2_16"
+  Description: 16 bit immediate operand 2 signed
+  Size: 16
+  Show: True
+  IO: I
+  Operand: SImm16
+- Name: "I2_U16"
+  Description: 16 bit immediate operand 2 unsigned
+  Size: 16
+  Show: True
+  IO: I
+  Operand: UImm16
+- Name: "I2_32"
+  Description: 32 bit immediate operand 2 signed
+  Size: 32
+  Show: True
+  IO: I
+  Operand: SImm32
+- Name: "I2_U32"
+  Description: 32 bit immediate operand 2 unsigned
+  Size: 32
+  Show: True
+  IO: I
+  Operand: UImm32
+- Name: "I2_64"
+  Description: 64 bit immediate operand 2 signed
+  Size: 64
+  Show: True
+  IO: I
+  Operand: SImm64
+- Name: "I2_U64"
+  Description: 64 bit immediate operand 2 unsigned
+  Size: 64
+  Show: True
+  IO: I
+  Operand: UImm64
+
