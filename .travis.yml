@@ -82,7 +82,7 @@ jobs:
           script:
               - set -e
               - . ./dev_tools/ci/travis_prolog
-              - MP_TESTING_ARCH=RISCV ./dev_tools/ci/test_001_end2end_tools.sh INTEL
+              - MP_TESTING_ARCH=INTEL ./dev_tools/ci/test_001_end2end_tools.sh INTEL
         - stage: tests
           name: tools RISCV
           script:
