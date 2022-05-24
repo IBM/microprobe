@@ -108,11 +108,6 @@ class RISCVISA(GenericISA):
 
             LOG.debug("Integer register")
 
-            value_highest = int((value & 0xFFFFF00000000000) >> 44)
-            value_high = int((value & 0x00000FFF00000000) >> 32)
-            value_low = int((value & 0x00000000FFFFF000) >> 12)
-            value_lowest = int((value & 0x0000000000000FFF))
-
             if value == 0:
 
                 LOG.debug("Zero value")
@@ -130,14 +125,14 @@ class RISCVISA(GenericISA):
                 instrs.append(addi)
 
             elif (current_value is not None and
-                  abs(value - current_value) < (2 ** 12)):
+                  abs(value - current_value) < (2 ** 11)):
 
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands([value - current_value, register, register])
                 instrs.append(addi)
 
             elif (closest_value is not None and
-                  abs(value - closest_value[1]) < (2 ** 12)):
+                  abs(value - closest_value[1]) < (2 ** 11)):
 
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands(
@@ -145,121 +140,67 @@ class RISCVISA(GenericISA):
                 )
                 instrs.append(addi)
 
-            elif register == self._scratch_registers[0]:
-
-                LOG.debug("This is the scratch register.")
-
-                if (value < -2147483648 or value >= 2147483647):
-
-                    LOG.debug("This is the scratch register. Long path")
-
-                    if value_high > 2047:
-                        value_highest = value_highest + 1
-                        if value_highest == 0xFFFFF:
-                            value_highest = 0
-                        else:
-                            value_highest = value_highest + 1
-
-                        value_high = value_high - (4096)
-
-                    lui = self.new_instruction("LUI_V0")
-                    lui.set_operands([value_highest, register])
-                    instrs.append(lui)
-
-                    addiw = self.new_instruction("ADDIW_V0")
-                    addiw.set_operands([value_high, register, register])
-                    instrs.append(addiw)
-
-                    slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
-                    instrs.append(slli)
-                    nvalue = int((value & 0x00000000FF000000) >> 24)
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
-
-                    slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
-                    instrs.append(slli)
-                    nvalue = int((value & 0x0000000000FF0000) >> 16)
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
-
-                    slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
-                    instrs.append(slli)
-                    nvalue = int((value & 0x000000000000FF00) >> 8)
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
-
-                    slli = self.new_instruction("SLLI_V0")
-                    slli.set_operands([8, register, register])
-                    instrs.append(slli)
-                    nvalue = int((value & 0x00000000000000FF))
-                    addi = self.new_instruction("ADDI_V0")
-                    addi.set_operands([nvalue, register, register])
-                    instrs.append(addi)
-
-                else:
-
-                    LOG.debug("This is the scratch register. Short path")
-
-                    if value_lowest > 2047:
-                        value_low = value_low + 1
-                        value_lowest = value - (value_low << 12)
-
-                    lui = self.new_instruction("LUI_V0")
-                    lui.set_operands([value_low, register])
-
-                    addiw = self.new_instruction("ADDIW_V0")
-                    addiw.set_operands([value_lowest, register, register])
-                    instrs.append(lui)
-                    instrs.append(addiw)
-
-            elif (value < -2147483648 or value >= 2147483647):
-
-                LOG.debug("Use scratch register. Long path")
-
-                instrs.extend(self.set_register(register,
-                                                (value >> 32),
-                                                context))
-
-                slli = self.new_instruction("SLLI_V0")
-                slli.set_operands([32, register, register])
-                instrs.append(slli)
-
-                instrs.extend(self.set_register(self._scratch_registers[0],
-                                                (value & 0x00000000FFFFFFFF),
-                                                context))
-
-                and_inst = self.new_instruction("OR_V0")
-                and_inst.set_operands(
-                    [register, self._scratch_registers[0], register])
-                instrs.append(and_inst)
-
-            elif (value >= -2147483648 and value < 2147483647):
+            elif (value >= -(2 ** 31) and value < (2 ** 31)):
 
                 LOG.debug("Short path")
 
-                if value_lowest > 2047:
-                    value_low = value_low + 1
-                    value_lowest = value - (value_low << 12)
+                lui_val = (value >> 12) & 0xFFFFF
+                addi_val = value & 0xFFF;
+
+                if (addi_val >= 2048):
+                    lui_val = (lui_val + 1) & 0xFFFFF
+                    addi_val -= 4096
 
                 lui = self.new_instruction("LUI_V0")
-                lui.set_operands([value_low, register])
-
-                addiw = self.new_instruction("ADDIW_V0")
-                addiw.set_operands([value_lowest, register, register])
+                lui.set_operands([lui_val, register])
                 instrs.append(lui)
-                instrs.append(addiw)
+
+                addi = self.new_instruction("ADDI_V0")
+                addi.set_operands([addi_val, register, register])
+                instrs.append(addi)
 
             else:
 
-                LOG.debug("Register: %s set to value %d",
-                          register.name, value)
-                raise NotImplementedError
+                LOG.debug("Long path")
+
+                lui_val = (value >> 44) & 0xFFFFF
+                addi_val = (value >> 32) & 0xFFF;
+
+                if (addi_val >= 2048):
+                    lui_val = (lui_val + 1) & 0xFFFFF
+                    addi_val -= 4096
+
+                lui = self.new_instruction("LUI_V0")
+                lui.set_operands([int(lui_val), register])
+                instrs.append(lui)
+
+                addi = self.new_instruction("ADDI_V0")
+                addi.set_operands([int(addi_val), register, register])
+                instrs.append(addi)
+
+                instr = self.new_instruction("SLLI_V0")
+                instr.set_operands([11, register, register])
+                instrs.append(instr)
+
+                instr = self.new_instruction("ORI_V0")
+                instr.set_operands([int((value >> 21) & 0x7FF), register, register])
+                instrs.append(instr)
+
+                instr = self.new_instruction("SLLI_V0")
+                instr.set_operands([11, register, register])
+                instrs.append(instr)
+
+                instr = self.new_instruction("ORI_V0")
+                instr.set_operands([int((value >> 10) & 0x7FF), register, register])
+                instrs.append(instr)
+
+                instr = self.new_instruction("SLLI_V0")
+                instr.set_operands([10, register, register])
+                instrs.append(instr)
+
+                instr = self.new_instruction("ORI_V0")
+                instr.set_operands([int(value & 0x3FF), register, register])
+                instrs.append(instr)
 
         else:
             LOG.debug("Register: %s set to value %d",
