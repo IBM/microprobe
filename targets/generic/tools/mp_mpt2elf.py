@@ -886,7 +886,7 @@ def _compute_reset_code(target, test_def, args):
                 else:
                     raise NotImplementedError
                 end_address = var.address + var.num_elements * elem_size
-                if var.address <= address <= end_address:
+                if var.address <= address < end_address:
                     offset = int((address - var.address) / elem_size)
                     svalue = var.init_value[
                         offset:offset + int(value[0] / elem_size)
