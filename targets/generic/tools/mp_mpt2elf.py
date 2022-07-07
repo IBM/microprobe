@@ -333,8 +333,9 @@ def generate(test_definition, output_file, target, **kwargs):
 
         if not init_found:
             print_error(
-                "Initial instruction address (%s) not found" %
-                hex(init_address)
+                "Initial instruction address (%s) not found. This can "
+                "be related to wrong MPT format or decoding missmatch "
+                "during raw bin interpretation." % hex(init_address)
             )
             exit(-1)
 

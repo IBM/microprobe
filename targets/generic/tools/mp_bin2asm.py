@@ -57,7 +57,12 @@ def dump_bin(target, arguments):
             continue
         bintext.append("".join(line.split(' ')[1:]))
 
-    instrs = interpret_bin("".join(bintext), target)
+    instrs = interpret_bin(
+        "".join(bintext),
+        target,
+        safe=arguments['safe']
+    )
+
     for instr in instrs:
         print(instruction_from_definition(instr).assembly())
 
@@ -99,6 +104,13 @@ def main():
         opt_type=existing_file
     )
 
+    cmdline.add_flag(
+        "safe",
+        "S",
+        "Do not fail on unknown decoded binaries",
+        group=groupname
+    )
+
     print_info("Processing input arguments...")
     cmdline.main(args, _main)
 
@@ -121,6 +133,9 @@ def _main(arguments):
             " the --od-bin parameter"
         )
         exit(-1)
+
+    if 'safe' not in arguments:
+        arguments['safe'] = False
 
     dump_bin(target, arguments)
 

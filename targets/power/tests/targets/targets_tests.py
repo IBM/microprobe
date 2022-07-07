@@ -332,7 +332,6 @@ def compile_benchmark(self, function):
     flags.append(self.filename[0].replace(".s", ".o"))
 
     cmd = [assembler] + flags
-    print(" ".join(cmd))
 
     error_code = 0
     try:
