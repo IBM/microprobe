@@ -217,7 +217,7 @@ class riscv64_sargantana_sim(GenericEnvironment):
 
         return instructions
 
-    def test_start_instructions(self):
+    def _reset_perf_counters(self):
         instructions = []
 
         # Reset cycle count
@@ -234,7 +234,7 @@ class riscv64_sargantana_sim(GenericEnvironment):
 
         return instructions
 
-    def test_end_instructions(self):
+    def _print_perf_counters(self):
         instructions = []
         context = Context()
 
@@ -271,3 +271,12 @@ class riscv64_sargantana_sim(GenericEnvironment):
         instructions += self._print_char(context, value=10)
 
         return instructions
+
+    def test_start_instructions(self):
+        return self._reset_perf_counters()
+
+    def test_end_instructions(self):
+        return self._print_perf_counters()
+
+    def test_reset_instructions(self):
+        return self._print_perf_counters()

@@ -381,6 +381,8 @@ def generate(test_definition, output_file, target, **kwargs):
 
         if 'wrap_endless' in kwargs:
             instructions += _compute_reset_jump(target, instructions)
+            instructions += target.test_reset_instructions()
+
 
         instructions_definitions = []
         for instruction in instructions:
