@@ -125,6 +125,7 @@ class RISCVISA(GenericISA):
                 instrs.append(addi)
 
             elif (current_value is not None and
+                  not isinstance(current_value, Address) and
                   abs(value - current_value) < (2 ** 11)):
 
                 addi = self.new_instruction("ADDI_V0")
@@ -380,12 +381,26 @@ class RISCVISA(GenericISA):
 
         if length == 64:
             stg = self.new_instruction("SD_V0")
-            stg.operands()[2].set_value(register)
+            stg.operands()[1].set_value(register)
+            stg.operands()[3].set_value(0)
             stg.memory_operands()[0].set_address(address, context)
             return [stg]
         elif length == 32:
             stg = self.new_instruction("SW_V0")
-            stg.operands()[2].set_value(register)
+            stg.operands()[1].set_value(register)
+            stg.operands()[3].set_value(0)
+            stg.memory_operands()[0].set_address(address, context)
+            return [stg]
+        elif length == 16:
+            stg = self.new_instruction("SH_V0")
+            stg.operands()[1].set_value(register)
+            stg.operands()[3].set_value(0)
+            stg.memory_operands()[0].set_address(address, context)
+            return [stg]
+        elif length == 8:
+            stg = self.new_instruction("SB_V0")
+            stg.operands()[1].set_value(register)
+            stg.operands()[3].set_value(0)
             stg.memory_operands()[0].set_address(address, context)
             return [stg]
         else:
