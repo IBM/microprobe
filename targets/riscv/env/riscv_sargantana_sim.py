@@ -148,31 +148,31 @@ class riscv64_sargantana_sim(GenericEnvironment):
         instructions = []
 
         instructions += \
-            self.target.set_register(self.target.isa.registers['X12'], 10,
+            self.target.set_register(self.target.isa.registers['X7'], 10,
                                      context)
 
         instructions += \
-            self.target.set_register(self.target.isa.registers['X13'], 9,
+            self.target.set_register(self.target.isa.registers['X28'], 9,
                                      context)
 
         ins = self.target.new_instruction("REM_V0")
-        ins.set_operands([self.target.isa.registers['X12'], register,
-                          self.target.isa.registers['X14']])
+        ins.set_operands([self.target.isa.registers['X7'], register,
+                          self.target.isa.registers['X29']])
         instructions.append(ins)
 
         ins = self.target.new_instruction("ADDI_V0")
-        ins.set_operands([48, self.target.isa.registers['X14'],
-                          self.target.isa.registers['X14']])
+        ins.set_operands([48, self.target.isa.registers['X29'],
+                          self.target.isa.registers['X29']])
         instructions.append(ins)
 
-        instructions += self._print_char(context, register=self.target.isa.registers['X14'])
+        instructions += self._print_char(context, register=self.target.isa.registers['X29'])
 
         ins = self.target.new_instruction("BGE_V0")
-        ins.set_operands([12, register, self.target.isa.registers['X13'], 0])
+        ins.set_operands([12, register, self.target.isa.registers['X28'], 0])
         instructions.append(ins)
 
         ins = self.target.new_instruction("DIV_V0")
-        ins.set_operands([self.target.isa.registers['X12'], register, register])
+        ins.set_operands([self.target.isa.registers['X7'], register, register])
         instructions.append(ins)
 
         ins = self.target.new_instruction("JAL_V0")
@@ -184,7 +184,7 @@ class riscv64_sargantana_sim(GenericEnvironment):
     def _print_char(self, context, value=None, register=None):
         instructions = []
 
-        source_register = self.target.isa.registers['X15']
+        source_register = self.target.isa.registers['X30']
 
         assert (value is not None) or (register is not None)
 
@@ -197,21 +197,21 @@ class riscv64_sargantana_sim(GenericEnvironment):
             source_register = register
 
         ins = self.target.new_instruction("LUI_V0")
-        ins.set_operands([0x00400, self.target.isa.registers['X16']])
+        ins.set_operands([0x00400, self.target.isa.registers['X31']])
         instructions.append(ins)
 
         ins = self.target.new_instruction("ADD_V0")
-        ins.set_operands([self.target.isa.registers['X16'], source_register,
-                          self.target.isa.registers['X16']])
+        ins.set_operands([self.target.isa.registers['X31'], source_register,
+                          self.target.isa.registers['X31']])
         instructions.append(ins)
 
         ins = self.target.new_instruction("SLLI_V0")
-        ins.set_operands([8, self.target.isa.registers['X16'],
-                          self.target.isa.registers['X16']])
+        ins.set_operands([8, self.target.isa.registers['X31'],
+                          self.target.isa.registers['X31']])
         instructions.append(ins)
 
         ins = self.target.new_instruction("CSRRW_V0")
-        ins.set_operands([self._CSR_WRITE, self.target.isa.registers['X16'],
+        ins.set_operands([self._CSR_WRITE, self.target.isa.registers['X31'],
                           self.target.isa.registers['X0']])
         instructions.append(ins)
 
@@ -234,38 +234,38 @@ class riscv64_sargantana_sim(GenericEnvironment):
 
         return instructions
 
-    def _print_perf_counters(self):
+    def _print_perf_counters(self, sentinel1, sentinel2):
         instructions = []
         context = Context()
 
         # Read cycles
         ins = self.target.new_instruction("CSRRS_V0")
         ins.set_operands([self._CSR_MCYCLE, self.target.isa.registers["X0"],
-                          self.target.isa.registers["X10"]])
+                          self.target.isa.registers["X5"]])
         instructions.append(ins)
 
         # Read instructions
         ins = self.target.new_instruction("CSRRS_V0")
         ins.set_operands([self._CSR_MINSTRET, self.target.isa.registers["X0"],
-                          self.target.isa.registers["X11"]])
+                          self.target.isa.registers["X6"]])
         instructions.append(ins)
 
         # Send cycle count
-        instructions += self._print_reg(self.target.isa.registers["X10"],
+        instructions += self._print_reg(self.target.isa.registers["X5"],
                                         context)
 
         # Send ","
         instructions += self._print_char(context, value=44)
 
         # Send instruction count
-        instructions += self._print_reg(self.target.isa.registers["X11"],
+        instructions += self._print_reg(self.target.isa.registers["X6"],
                                         context)
 
         # Send "~"
-        instructions += self._print_char(context, value=126)
+        instructions += self._print_char(context, value=sentinel1)
 
         # Send "@"
-        instructions += self._print_char(context, value=64)
+        instructions += self._print_char(context, value=sentinel2)
 
         # Send "\n"
         instructions += self._print_char(context, value=10)
@@ -276,7 +276,7 @@ class riscv64_sargantana_sim(GenericEnvironment):
         return self._reset_perf_counters()
 
     def test_end_instructions(self):
-        return self._print_perf_counters()
+        return self._print_perf_counters(126, 64)  # ~@
 
     def test_reset_instructions(self):
-        return self._print_perf_counters()
+        return self._print_perf_counters(36, 37)  # $%
