@@ -141,8 +141,15 @@ def generate(test_definition, output_file, target, **kwargs):
         displ = test_definition.default_code_address
         test_definition.set_default_code_address(0)
 
-        for entry in test_definition.code:
+        executed_code = []
+        align = 32
+        for access in test_definition.roi_memory_access_trace:
+            if access.data_type == "D":
+                continue
+            if ((access.address//align)*align) not in executed_code:
+                executed_code.append((access.address//align)*align)
 
+        for entry in test_definition.code:
             if (not entry.assembly.upper().startswith("0X") and
                     not entry.assembly.upper().startswith("0B")):
                 raise MicroprobeMPTFormatError(
@@ -170,6 +177,10 @@ def generate(test_definition, output_file, target, **kwargs):
 
             if entry.address is not None:
                 current_address = entry.address + displ
+
+            if (len(executed_code) > 0 and
+                    ((current_address//align)*align) not in executed_code):
+                continue
 
             if current_address not in raw_dict:
                 raw_dict[current_address] = ""
@@ -820,7 +831,7 @@ def _compute_reset_code(target, test_def, args):
             )
             exit(1)
 
-        # Calls
+        # POWER Calls
         if instr.mnemonic == "BL":
             level += 1
         elif instr.mnemonic == "BCL":
@@ -829,13 +840,27 @@ def _compute_reset_code(target, test_def, args):
             if instr.operands()[2].value in [0, 3]:
                 level += 1
 
-        # Returns
+        # POWER Returns
         if instr.mnemonic == "BCLR":
             if (((instr.operands()[0].value & 0b10100) == 20) and
                     (instr.operands()[2].value == 0)):
                 level -= 1
 
-        # TODO: this should include Z and RISCV instructions for call
+        # Z Calls
+        if instr.mnemonic == "BRASL":
+            if (instr.operands()[0].value == target.registers["GR14"]):
+                level += 1
+        if instr.mnemonic == "BASR":
+            if (instr.operands()[0].value == target.registers["GR14"]):
+                level += 1
+
+        # Z Returns
+        if instr.mnemonic == "BCR":
+            if ((instr.operands()[1].value == target.registers["GR14"]) and
+                    (instr.operands()[0].value == 15)):
+                level -= 1
+
+        # TODO: this should include RISCV instructions for call
         # and return, but currently we do not have memory access traces
         # for such platforms
 
@@ -964,12 +989,38 @@ def _compute_reset_code(target, test_def, args):
         # needed
         #
         print_info("Adding instructions to reset memory state")
-        reset_register = [
+        reset_registers = [
             reg
             for reg in free_regs
             if reg.type.used_for_address_arithmetic and
             reg.name != "GPR0"
-        ][0]
+        ]
+
+        if len(reset_registers) == 0:
+            print_error(
+                "No free register available for resetting memory"
+                " contentents."
+            )
+            exit(1)
+
+        reset_register = reset_registers[0]
+        zero_register = None
+
+        if len(reset_registers) > 1:
+            # Set a register to zero, which is always useful for
+            # address computation
+            zero_register = reset_registers[1]
+            new_instructions = target.set_register(
+                zero_register, 0, context, opt=False,
+            )
+            for ins in new_instructions:
+                ins.add_comment(
+                    "Reset code. Setting %s to 0X%016X" %
+                    (zero_register.name, 0),
+                )
+            reset_steps.append([new_instructions[:], zero_register, 0])
+            context.set_register_value(zero_register, 0)
+            new_ins.extend(new_instructions)
 
         for address, length, value in fix_addresses:
 
@@ -1000,8 +1051,8 @@ def _compute_reset_code(target, test_def, args):
                 areg = [
                     reg for reg in free_regs
                     if reg.type.used_for_address_arithmetic and reg.name !=
-                    "GPR0"
-                ][1]
+                    "GPR0" and reg != reset_register and reg != zero_register
+                ][0]
 
                 set_ins = target.set_register(
                     areg, address, context, opt=False,

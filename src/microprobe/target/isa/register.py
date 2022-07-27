@@ -20,6 +20,7 @@ from __future__ import absolute_import
 
 # Built-in modules
 import abc
+import hashlib
 import os
 
 # Third party modules
@@ -175,12 +176,11 @@ class GenericRegister(Register, Pickable):
         self._descr = descr
         self._rrepr = rrepr
         self._rcodi = rcodi
-        self._hash = hash(
+        self._hash = int(hashlib.sha512(
             (
-                self.name, self.description,
-                self.representation, str(hash(self.type))
-            )
-        )
+                self.name + self.description +
+                self.representation + str(hash(self.type))
+            ).encode()).hexdigest(), 16)
 
     @property
     def type(self):
@@ -195,7 +195,7 @@ class GenericRegister(Register, Pickable):
     @property
     def description(self):
         """ """
-        return self._rtype
+        return self._descr
 
     @property
     def representation(self):

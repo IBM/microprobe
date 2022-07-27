@@ -20,6 +20,7 @@ from __future__ import absolute_import
 
 # Built-in modules
 import abc
+import hashlib
 import os
 
 # Third party modules
@@ -189,14 +190,12 @@ class GenericRegisterType(RegisterType):
         self._used_for_address_arithmetic = u4aa
         self._used_for_float_arithmetic = u4fa
         self._used_for_vector_arithmetic = u4va
-        self._hash = hash(
-            (
-                str(self.name), str(self.description), str(self.size),
-                str(self.used_for_address_arithmetic),
-                str(self.used_for_float_arithmetic),
-                str(self.used_for_vector_arithmetic)
-            )
-        )
+        self._hash = int(hashlib.sha512((
+                str(self.name) + str(self.description) + str(self.size) +
+                str(self.used_for_address_arithmetic) +
+                str(self.used_for_float_arithmetic) +
+                str(self.used_for_vector_arithmetic)).encode()).hexdigest(),
+                16)
 
     @property
     def name(self):

@@ -20,6 +20,7 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import abc
+import hashlib
 import math
 
 # Third party modules
@@ -99,6 +100,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
     def __init__(self):
         """ """
         self._address = None
+        self._hash = None
 
     @abc.abstractproperty
     def type(self):
@@ -226,8 +228,11 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
 
     def __hash__(self):
         """ """
-
-        return hash(str(self))
+        if self._hash is None:
+            self._hash = int(
+                hashlib.sha512(str(self).encode()).hexdigest(), 16
+            )
+        return self._hash
 
 
 class VariableSingle(Variable):
