@@ -31,6 +31,7 @@ from __future__ import absolute_import, division, print_function
 
 # Built-in modules
 import atexit
+import collections
 import itertools
 import math
 import string
@@ -62,15 +63,19 @@ _BIN_CACHE_ENABLED = True
 _BIN_CACHE_FILE = __file__ + ".bin"
 _BIN_CACHE = None
 _BIN_CACHE_USED = False
+_BIN_CACHE_SAVED = False
 _BIN_CACHE_SIZE = 16*1024
+_BIN_CACHE_STATS = {'hit': 0, 'access': 0}
 _CODE_CACHE_ENABLED = True
 _CODE_CACHE_FILE = __file__ + ".code"
 _CODE_CACHE = None
 _CODE_CACHE_USED = False
+_CODE_CACHE_SAVED = False
 _CODE_CACHE_SIZE = 16*1024
+_CODE_CACHE_STATS = {'hit': 0, 'access': 0}
 _DATA_CACHE = RejectingDict()
 _DATA_CACHE_LENGTHS = []
-_DATA_CACHE_ENABLED = True
+_DATA_CACHE_ENABLED = False
 
 __all__ = ["interpret_bin",
            "MicroprobeBinInstructionStream", ]
@@ -103,6 +108,9 @@ def interpret_bin(
 
     global _BIN_CACHE_USED
     global _CODE_CACHE_USED
+
+    global _BIN_CACHE_SAVED
+    global _CODE_CACHE_SAVED
 
     global _BIN_CACHE_SIZE
     global _CODE_CACHE_SIZE
@@ -137,45 +145,53 @@ def interpret_bin(
 
     key = "%s-%s-%s-%s" % (code, target.name + target.isa.path, fmt, safe)
 
-    updated_code = False
-    bin_cache_len = len(_BIN_CACHE)
-
     if key in _CODE_CACHE and _CODE_CACHE_ENABLED:
+        progress = Progress(len(code), msg="Bytes parsed:")
         code = [instrdef.copy() for instrdef in _CODE_CACHE[key]]
+        _CODE_CACHE_STATS['access'] += 1
+        _CODE_CACHE_STATS['hit'] += 1
+        progress(increment=len(code))
+        del progress
     elif safe:
         code = _interpret_bin_code_safe(
             code, target, single, fmt=fmt, little_endian=little_endian,
             word_length=word_length
         )
         if _CODE_CACHE_ENABLED:
+            _CODE_CACHE_STATS['access'] += 1
             _CODE_CACHE[key] = code[:]
-            updated_code = True
+            _CODE_CACHE_USED = True
     else:
         code = _interpret_bin_code(
             code, target, single, fmt=fmt, little_endian=little_endian,
             word_length=word_length
         )
         if _CODE_CACHE_ENABLED:
+            _CODE_CACHE_STATS['access'] += 1
             _CODE_CACHE[key] = code[:]
-            updated_code = True
+            _CODE_CACHE_USED = True
 
-    if (_BIN_CACHE_ENABLED and len(_BIN_CACHE) > bin_cache_len and
-            not _BIN_CACHE_USED):
+    if (_BIN_CACHE_ENABLED and _BIN_CACHE_USED and not _BIN_CACHE_SAVED):
         atexit.register(
             write_default_cache_data,
             _BIN_CACHE_FILE, _BIN_CACHE,
             data_reload=True
         )
-        _BIN_CACHE_USED = True
+        atexit.register(
+            _show_cache_stats, _BIN_CACHE_FILE, _BIN_CACHE_STATS
+        )
+        _BIN_CACHE_SAVED = True
 
-    if (_CODE_CACHE_ENABLED and updated_code and
-            len(_BIN_CACHE) > bin_cache_len and not _CODE_CACHE_USED):
+    if (_CODE_CACHE_ENABLED and _CODE_CACHE_USED and not _CODE_CACHE_SAVED):
         atexit.register(
             write_default_cache_data,
             _CODE_CACHE_FILE, _CODE_CACHE,
             data_reload=True
         )
-        _CODE_CACHE_USED = True
+        atexit.register(
+            _show_cache_stats, _CODE_CACHE_FILE, _CODE_CACHE_STATS
+        )
+        _CODE_CACHE_SAVED = True
 
     return code
 
@@ -184,12 +200,12 @@ def _interpret_bin_code(
         code, target, single, fmt="hex", little_endian=True, word_length=None
         ):
 
-    instructions_and_params = []
+    instructions_and_params = collections.deque()
 
     binstream = MicroprobeBinInstructionStream(
         code, target, fmt=fmt, little_endian=little_endian,
         word_length=word_length
-    )
+     )
 
     while not binstream.empty():
         bins, instr_type, operands = binstream.decode_next()
@@ -198,14 +214,14 @@ def _interpret_bin_code(
         )
         instructions_and_params.append(instr_def)
 
-    return instructions_and_params
+    return list(instructions_and_params)
 
 
 def _interpret_bin_code_safe(
         code, target, single, fmt="hex", little_endian=None, word_length=None
         ):
 
-    instructions_and_params = []
+    instructions_and_params = collections.deque()
 
     binstream = MicroprobeBinInstructionStream(
         code, target, fmt=fmt,
@@ -237,13 +253,14 @@ def _interpret_bin_code_safe(
             )
             instructions_and_params.append(instr_def)
 
-            if _BIN_CACHE_ENABLED and instr_type.name != "raw":
+            if (_BIN_CACHE_ENABLED and
+                    (instr_type.name != "raw" or len(binstream.lengths) == 1)):
                 key = (fmt % int(skip, 16)).lower()
                 _BIN_CACHE[target.name+target.isa.path+key] = (
                     fmt %
                     int(skip, 16), instr_type, ())
 
-    return instructions_and_params
+    return list(instructions_and_params)
 
 
 def _compute_target_lengths(target):
@@ -773,7 +790,7 @@ class MicroprobeBinInstructionStream(object):
 
         self._index = 0
         self._data_cache = _data_cache
-        self._lenghts = list(sorted(_compute_target_lengths(target),
+        self._lengths = list(sorted(_compute_target_lengths(target),
                                     reverse=True))
         self._progress = Progress(len(self._code), msg="Bytes parsed:")
 
@@ -785,7 +802,7 @@ class MicroprobeBinInstructionStream(object):
 
     @property
     def lengths(self):
-        return self._lenghts
+        return self._lengths
 
     def skip(self, characters=2):
         self._index += characters
@@ -810,6 +827,10 @@ class MicroprobeBinInstructionStream(object):
         """
 
         """
+
+        global _BIN_CACHE
+        global _BIN_CACHE_USED
+
         if self.empty():
             raise MicroprobeBinaryError("Binary stream finished")
 
@@ -830,8 +851,8 @@ class MicroprobeBinInstructionStream(object):
         LOG.debug("Not found in data cache")
 
         matches = []
-        max_size = max(self._lenghts) * 2
-        for length in self._lenghts:
+        max_size = max(self._lengths) * 2
+        for length in self._lengths:
 
             LOG.debug("Trying length: %d", length)
             if self._index == 0 and len(self._code) < (length * 2):
@@ -859,6 +880,10 @@ class MicroprobeBinInstructionStream(object):
                 self._index += add
                 self._progress(increment=add)
                 LOG.debug("%s in code cache" % bin_str)
+
+                _BIN_CACHE_STATS['access'] += 1
+                _BIN_CACHE_STATS['hit'] += 1
+
                 #
                 # Return always the largest match in cache
                 #
@@ -945,6 +970,8 @@ class MicroprobeBinInstructionStream(object):
                         ] = (
                             fmt % bin_int, instr_type, operand_values
                         )
+                        _BIN_CACHE_STATS['access'] += 1
+                        _BIN_CACHE_USED = True
 
                     return (fmt % bin_int, instr_type, operand_values)
 
@@ -956,3 +983,11 @@ class MicroprobeBinInstructionStream(object):
                 continue
 
         raise MicroprobeBinaryError("No candidates found for %s", hex(bin_int))
+
+
+def _show_cache_stats(cache_file, cache_stats):
+    ratio = (1.0 * cache_stats['hit'] / cache_stats['access']) * 100
+    LOG.debug(
+        "Cache %s stats: %d / %d (%2.2f%%)",
+        cache_file, cache_stats['hit'], cache_stats['access'], ratio
+    )

@@ -18,6 +18,9 @@
 # Futures
 from __future__ import absolute_import, print_function
 
+# Built in modules
+import hashlib
+
 # Third party modules
 import six
 
@@ -59,6 +62,8 @@ class Address(object):
         if self._base_address is not None:
             assert isinstance(self._base_address,
                               tuple(list(six.string_types) + [Variable]))
+
+        self._hash = None
 
     @property
     def base_address(self):
@@ -191,8 +196,11 @@ class Address(object):
 
     def __hash__(self):
         """ """
-
-        return hash(str(self))
+        if self._hash is None:
+            self._hash = int(
+                hashlib.sha512(str(self).encode()).hexdigest(), 16
+            )
+        return self._hash
 
     def __iadd__(self, other):
         """

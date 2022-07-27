@@ -225,6 +225,9 @@ class UpdateVariableAddressesPass(microprobe.passes.Pass):
                 ndisp = (((mrange[0] + mrange[1]) // align) + 1) * align
                 if ndisp + var.size >= ranges[idx+1][0]:
                     continue
+                if (ndisp - context.data_segment) <= 0:
+                    continue
+
                 var.set_address(
                    Address(
                        base_address="data",

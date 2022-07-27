@@ -32,11 +32,13 @@ from __future__ import absolute_import, division, print_function
 # Built-in modules
 import atexit
 import copy
+import collections
 import itertools
 import multiprocessing as mp
 import os
 import re
 import string
+
 
 # Third party modules
 import cachetools
@@ -68,6 +70,7 @@ _ASM_CACHE_FILE = __file__ + ".asm"
 _ASM_CACHE = None
 _ASM_CACHE_SIZE = 16*1024
 _ASM_CACHE_USED = False
+_ASM_CACHE_SAVED = False
 
 _DECORATOR_CACHE = RejectingDict()
 _DECORATOR_CACHE_ENABLED = True
@@ -114,13 +117,16 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
             _ASM_CACHE = cachetools.LRUCache(_ASM_CACHE_SIZE, getsizeof=None)
 
     LOG.debug("Start interpret_asm")
-    instructions_and_params = []
+    instructions_and_params = collections.deque()
 
     LOG.debug("Extract defined labels")
-    def_labels = labels
 
-    if def_labels is None:
-        def_labels = []
+    def_labels = collections.deque()
+    def_labels_dict = {}
+    if labels is not None:
+        for label in labels:
+            def_labels.append(label)
+            def_labels_dict[label] = None
 
     if isinstance(code, str):
         code = [code]
@@ -171,16 +177,23 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
             if isinstance(instr_def, six.string_types):
                 instr_def = _str_to_asmdef(instr_def)
 
-            if instr_def.label in def_labels:
-                raise MicroprobeAsmError(
-                    "Label '%s' defined twice!" % instr_def.label
-                )
+            # if instr_def.label.upper() in def_labels:
+            #    raise MicroprobeAsmError(
+            #        "Label '%s' defined twice!" % instr_def.label
+            #    )
 
             if instr_def.label is not None:
+                if instr_def.label.upper() in def_labels_dict:
+                    raise MicroprobeAsmError(
+                        "Label '%s' defined twice!" % instr_def.label
+                    )
                 def_labels.append(instr_def.label.upper())
+                def_labels_dict[instr_def.label.upper()] = None
 
             if show_progress:
                 progress()
+
+        del def_labels_dict
 
         if show_progress:
             progress = Progress(len(code), msg="Instructions parsed:")
@@ -248,6 +261,8 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
 
     LOG.debug("End interpret_asm")
 
+    instructions_and_params = list(instructions_and_params)
+
     if queue is not None:
         queue.put(instructions_and_params)
 
@@ -275,14 +290,13 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
     :type labels:
     """
     global _ASM_CACHE_USED
+    global _ASM_CACHE_SAVED
 
     LOG.debug("Start interpret_asm: '%s'", instr_def)
     key = (target.name, target.isa.path, instr_def.assembly)
     if key in _ASM_CACHE and _ASM_CACHE_ENABLED:
-
         instruction_type, operands = _ASM_CACHE[key]
         operands = operands[:]
-
     elif instr_def.assembly.upper().startswith("0X"):
         binary_def = interpret_bin(
             instr_def.assembly[2:], target, fmt="hex", single=True, safe=safe
@@ -294,28 +308,31 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
         operands = binary_def[0].operands
         if _ASM_CACHE_ENABLED:
             _ASM_CACHE[key] = (instruction_type, operands)
-            if not _ASM_CACHE_USED:
+            _ASM_CACHE_USED = True
+            if _ASM_CACHE_USED and not _ASM_CACHE_SAVED:
                 atexit.register(
                     write_default_cache_data,
                     _ASM_CACHE_FILE, _ASM_CACHE,
                     data_reload=True
                 )
-                _ASM_CACHE_USED = True
+                _ASM_CACHE_SAVED = True
 
     elif instr_def.assembly.upper().startswith("0B"):
         binary_def = interpret_bin(instr_def.assembly[2:], target, fmt="bin")
         if len(binary_def) > 1:
             raise MicroprobeAsmError("More than one instruction parsed.")
+
         instruction_type = binary_def[0].instruction_type
         operands = binary_def[0].operands
         if _ASM_CACHE_ENABLED:
             _ASM_CACHE[key] = (instruction_type, operands)
-            if not _ASM_CACHE_USED:
+            _ASM_CACHE_USED = True
+            if _ASM_CACHE_USED and not _ASM_CACHE_SAVED:
                 atexit.register(
                     write_default_cache_data,
                     _ASM_CACHE_FILE, _ASM_CACHE
                 )
-                _ASM_CACHE_USED = True
+                _ASM_CACHE_SAVED = True
 
     else:
 
@@ -364,12 +381,13 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
 
         if _ASM_CACHE_ENABLED:
             _ASM_CACHE[key] = (instruction_type, operands)
-            if not _ASM_CACHE_USED:
+            _ASM_CACHE_USED = True
+            if _ASM_CACHE_USED and not _ASM_CACHE_SAVED:
                 atexit.register(
                     write_default_cache_data,
                     _ASM_CACHE_FILE, _ASM_CACHE
                 )
-                _ASM_CACHE_USED = True
+                _ASM_CACHE_SAVED = True
 
     address = _extract_address(instr_def.address)
 

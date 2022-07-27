@@ -20,6 +20,7 @@ from __future__ import absolute_import
 
 # Built-in modules
 import abc
+import hashlib
 import os
 
 # Third party modules
@@ -312,6 +313,11 @@ class GenericMicroarchitectureElement(MicroarchitectureElement):
 
         self._parent = None
         self._subelements = {}
+        self._hash = int(hashlib.sha512(
+            (
+                self.name + self.description +
+                self.full_name + str(self.type) + str(self.depth)
+            ).encode()).hexdigest(), 16)
 
     @property
     def name(self):
@@ -399,12 +405,7 @@ class GenericMicroarchitectureElement(MicroarchitectureElement):
 
     def __hash__(self):
         """ """
-        return hash(
-            (
-                self.name, self.description,
-                self.full_name, self.type, self.depth
-            )
-        )
+        return self._hash
 
     def __str__(self):
         """Return the string representation of this element"""

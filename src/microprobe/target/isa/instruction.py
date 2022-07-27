@@ -20,6 +20,7 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import abc
+import hashlib
 import os
 import random
 import sys
@@ -1656,6 +1657,8 @@ class GenericInstructionType(InstructionType):
             # Assume the back-end will take care of multiple operands
             pass
 
+        self._hash = int(hashlib.sha512(str(self).encode()).hexdigest(), 16)
+
     def _compute_mask(self):
 
         mask_val_str = "0b"
@@ -2077,7 +2080,7 @@ class GenericInstructionType(InstructionType):
         return "%s('%s')" % (self.__class__.__name__, self._name)
 
     def __hash__(self):
-        return hash(str(self))
+        return self._hash
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):

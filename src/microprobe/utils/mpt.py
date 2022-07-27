@@ -22,6 +22,7 @@ from __future__ import absolute_import
 import abc
 import ast
 import copy
+import collections
 import io
 import os
 import re
@@ -1410,7 +1411,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         if base_address is None:
             base_address = 0
 
-        instruction_definitions = []
+        instruction_definitions = collections.deque()
         content_lines = contents.split("\n")
 
         current_label = None
@@ -1634,6 +1635,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                     (line, self._filename)
                 )
 
+        instruction_definitions = list(instruction_definitions)
         instruction_definitions = self._sort_by_instructions(
             instruction_definitions)
 
