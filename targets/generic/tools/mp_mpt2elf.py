@@ -244,31 +244,58 @@ def generate(test_definition, output_file, target, **kwargs):
             base = kwargs['fix_32bit_address']
             print_info("Shifting addresses to belong to 32bit address space.")
 
-            lowest_code = min([elem.address for elem in test_definition.code if elem.address is not None and elem.address >= 2**32])
-            lowest_data = min([elem.address for elem in test_definition.variables if elem.address is not None and elem.address >= 2**32])
-            lowest = min(lowest_code, lowest_data)
+            elements_outside_range = []
+            for conj in [test_definition.code, test_definition.variables]:
+                for elem in conj:
+                    if elem.address is not None and elem.address >= 2**32:
+                        elements_outside_range.append(elem)
 
-            print_info("Shifting from 0x%X to 0x%X" % (lowest, base))
+            elements_outside_range = \
+                sorted(elements_outside_range, key=lambda el: el.address)
 
-            fix_pages = [elem.address & ~0xFF for elem in test_definition.code if elem.address is not None and elem.address >= 2**32]
-            fix_pages += [elem.address & ~0xFF for elem in test_definition.variables if elem.address is not None and elem.address >= 2**32]
+            print(len(elements_outside_range))
 
-            displacement = lowest - base
+            print_info("Generating new mapping...")
+
+            mapping = {}
+            prev_mapped_address = None
+            prev_address = None
+            for elem in elements_outside_range:
+                if prev_address is None:
+                    next_address = base
+                else:
+                    offset = elem.address - prev_address
+                    if offset <= 4:
+                        next_address = prev_mapped_address + offset
+                    else:
+                        next_address = (prev_mapped_address & ~0xFFF) + 0x1000
+
+                mapping[elem.address] = next_address
+
+                prev_mapped_address = next_address
+                prev_address = elem.address
+
+            print_info("Address of last section: 0x%X " % (mapping[elements_outside_range[-1].address]))
+
+            #print(mapping)  # TODO: Remove
+
+            print_info("Shifting %d elements " % (len(mapping)))
 
             for elem in test_definition.code:
-                if elem.address >= 2**32:
-                    elem.address = elem.address - displacement
+                if elem.address in mapping:
+                    elem.address = mapping[elem.address]
 
             prog = Progress(len(test_definition.variables))
 
             for elem in test_definition.variables:
-                if elem.address >= 2**32:
-                    elem.address = elem.address - displacement
+                if elem.address in mapping:
+                    elem.address = mapping[elem.address]
 
                 for index in range(0, elem.num_elements, 8):
                     value = int.from_bytes(elem.init_value[index:index+8], "little")
-                    if (value & ~0xFFF in fix_pages):
-                        value = value - displacement
+                    page_addr = value & ~0xFFF
+                    if (page_addr in mapping):
+                        value = mapping[page_addr] + value & 0xFFF
                         bytes_ = int.to_bytes(value, 8, "little")
                         for i, byte in enumerate(bytes_):
                             elem.init_value[index + i] = byte
@@ -277,7 +304,12 @@ def generate(test_definition, output_file, target, **kwargs):
 
             for register in test_definition.registers:
                 if register.value >= 2**32:
-                    register.value = register.value - displacement
+                    if register.value in mapping:
+                        register.value = mapping[register.value]
+                    elif register.value & ~0xFFF in mapping:
+                        register.value = mapping[register.value & ~0xFFF]
+                    else:
+                        print("Register value is more than 32 bits but is not in mapping: %X" % register.value)
 
         displacements = []
         for elem in test_definition.code:
