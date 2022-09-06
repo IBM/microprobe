@@ -50,7 +50,7 @@ from microprobe.exceptions import MicroprobeBinaryError, \
     MicroprobeCacheError
 from microprobe.target.isa.instruction import instruction_type_from_bin
 from microprobe.utils.cache import read_default_cache_data, \
-    write_default_cache_data
+    write_default_cache_data_silent
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress, \
     RejectingDict, int_to_twocs, twocs_to_int
@@ -173,7 +173,7 @@ def interpret_bin(
 
     if (_BIN_CACHE_ENABLED and _BIN_CACHE_USED and not _BIN_CACHE_SAVED):
         atexit.register(
-            write_default_cache_data,
+            write_default_cache_data_silent,
             _BIN_CACHE_FILE, _BIN_CACHE,
             data_reload=True
         )
@@ -184,7 +184,7 @@ def interpret_bin(
 
     if (_CODE_CACHE_ENABLED and _CODE_CACHE_USED and not _CODE_CACHE_SAVED):
         atexit.register(
-            write_default_cache_data,
+            write_default_cache_data_silent,
             _CODE_CACHE_FILE, _CODE_CACHE,
             data_reload=True
         )
@@ -682,10 +682,10 @@ def _swap_bytes(original, little_endian=False):
         return original
 
     # Pad with 0s on the left until having an even number of digits
-    if(len(original) % 2 != 0):
+    if (len(original) % 2 != 0):
         original = "0" + original
 
-    while(len(original) > 0):
+    while (len(original) > 0):
         original, result = original[:-2], result + original[-2:]
 
     return result

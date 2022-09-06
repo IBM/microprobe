@@ -1631,7 +1631,7 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                         elif base_operand.value not in fix_base_registers:
                             raise NotImplementedError(
                                 "Base operand not none and not in base "
-                                " registers. "
+                                "registers. "
                             )
 
                     elif (

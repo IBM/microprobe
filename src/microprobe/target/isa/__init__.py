@@ -927,7 +927,7 @@ class GenericISA(ISA):
         """ """
         return GenericDynamicAddressTranslation(self, **kwargs)
 
-    def set_context(self, variable=None, tmpl_path=None):
+    def set_context(self, variable=None, tmpl_path=None, complete=False):
         """ """
 
         if variable is None:
@@ -939,17 +939,26 @@ class GenericISA(ISA):
             )
 
         asm = open(os.path.join(tmpl_path, "setcontext.S")).readlines()
+        for idx, line in enumerate(asm):
+            asm[idx] = line.replace("@@SCRATCH@@", variable.name)
 
         if len(asm) == 0:
             return []
 
-        reg = self._scratch_registers[0]
-        instrs = self.set_register_to_address(reg, variable.address, Context())
+        if complete:
+            return microprobe.code.ins.instructions_from_asm(
+                asm, self.target, labels=[variable.name]
+            )
+        else:
+            reg = self._scratch_registers[0]
+            instrs = self.set_register_to_address(
+                reg, variable.address, Context()
+            )
+            return instrs + microprobe.code.ins.instructions_from_asm(
+                asm, self.target, labels=[variable.name]
+            )
 
-        return instrs + \
-            microprobe.code.ins.instructions_from_asm(asm, self.target)
-
-    def get_context(self, variable=None, tmpl_path=None):
+    def get_context(self, variable=None, tmpl_path=None, complete=False):
         """ """
 
         if variable is None:
@@ -961,15 +970,25 @@ class GenericISA(ISA):
             )
 
         asm = open(os.path.join(tmpl_path, "getcontext.S")).readlines()
+        for idx, line in enumerate(asm):
+            asm[idx] = line.replace("@@SCRATCH@@", variable.name)
 
         if len(asm) == 0:
             return []
 
-        reg = self._scratch_registers[0]
-        instrs = self.set_register_to_address(reg, variable.address, Context())
-
-        return instrs + \
-            microprobe.code.ins.instructions_from_asm(asm, self.target)
+        if complete:
+            return microprobe.code.ins.instructions_from_asm(
+                asm, self.target, labels=[variable.name]
+            )
+        else:
+            reg = self._scratch_registers[0]
+            instrs = self.set_register_to_address(
+                reg, variable.address, Context()
+            )
+            return instrs + \
+                microprobe.code.ins.instructions_from_asm(
+                    asm, self.target, labels=[variable.name]
+                )
 
     def register_value_comparator(self, comp):
         """ """

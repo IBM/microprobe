@@ -352,7 +352,7 @@ def int_range(min_val, max_val):
                     rval.append(val)
                 else:
                     break
-            return(rval)
+            return (rval)
         else:
             for argument in argumentall.split("-"):
 

@@ -263,12 +263,17 @@ class BranchNextPass(Pass):
                 else:
                     assert first_label is not None
 
-                    taddress = InstructionAddress(base_address=first_label)
-                    taddress.set_target_instruction(
-                        label_instruction_map[first_label]
-                    )
-
+                    if bbl.instrs[-1].label is not None:
+                        taddress = InstructionAddress(
+                            base_address=bbl.instrs[-1].label
+                        ) + bbl.instrs[-1].architecture_type.format.length
+                    else:
+                        taddress = InstructionAddress(base_address=first_label)
+                        taddress.set_target_instruction(
+                            label_instruction_map[first_label]
+                        )
                 try:
+
                     memoperand.set_address(
                         taddress, building_block.context
                     )

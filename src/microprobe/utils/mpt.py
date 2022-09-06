@@ -1681,7 +1681,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                                if elem is not None]):
             new_list.extend(block_dict[address])
 
-        assert(len(instr_list) == (len(new_list) + extra))
+        assert (len(instr_list) == (len(new_list) + extra))
 
         if extra:
             LOG.warning(
