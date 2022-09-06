@@ -56,7 +56,7 @@ from microprobe.target.isa.operand import InstructionAddressRelativeOperand, \
     OperandConst, OperandImmRange, OperandValueSet
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.cache import read_default_cache_data, \
-    write_default_cache_data
+    write_default_cache_data_silent
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress, RejectingDict, twocs_to_int, \
     range_to_sequence
@@ -311,7 +311,7 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
             _ASM_CACHE_USED = True
             if _ASM_CACHE_USED and not _ASM_CACHE_SAVED:
                 atexit.register(
-                    write_default_cache_data,
+                    write_default_cache_data_silent,
                     _ASM_CACHE_FILE, _ASM_CACHE,
                     data_reload=True
                 )
@@ -329,7 +329,7 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
             _ASM_CACHE_USED = True
             if _ASM_CACHE_USED and not _ASM_CACHE_SAVED:
                 atexit.register(
-                    write_default_cache_data,
+                    write_default_cache_data_silent,
                     _ASM_CACHE_FILE, _ASM_CACHE
                 )
                 _ASM_CACHE_SAVED = True
@@ -384,7 +384,7 @@ def _interpret_instr_def(instr_def, target, labels, safe=None):
             _ASM_CACHE_USED = True
             if _ASM_CACHE_USED and not _ASM_CACHE_SAVED:
                 atexit.register(
-                    write_default_cache_data,
+                    write_default_cache_data_silent,
                     _ASM_CACHE_FILE, _ASM_CACHE
                 )
                 _ASM_CACHE_SAVED = True

@@ -99,7 +99,7 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         ins = []
 
         if isinstance(instr, str):
-            return(instr)
+            return (instr)
 
         if instr.comments:
             asm = instr.assembly()

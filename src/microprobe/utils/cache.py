@@ -95,28 +95,35 @@ def read_cache_data(cachename):
     """
 
     lock = fasteners.InterProcessReaderWriterLock(cachename + ".lock")
-    with lock.read_lock():
-        LOG.debug("Reading cache file: %s", cachename)
-        try:
-            with open(cachename, 'rb') as cache_fd:
-                try:
-                    data = pickle.load(cache_fd)
-                except pickle.PickleError as exc:
-                    raise MicroprobeCacheError(exc)
-                except EOFError as exc:
-                    raise MicroprobeCacheError(exc)
-                except AttributeError as exc:
-                    raise MicroprobeCacheError(exc)
-                except TypeError as exc:
-                    raise MicroprobeCacheError(exc)
-                except ValueError as exc:
-                    raise MicroprobeCacheError(exc)
-                except ModuleNotFoundError as exc:
-                    raise MicroprobeCacheError(exc)
-        except FileNotFoundError as exc:
-            raise MicroprobeCacheError(exc)
-        except IOError as exc:
-            raise MicroprobeCacheError(exc)
+    try:
+        with lock.read_lock():
+            LOG.debug("Reading cache file: %s", cachename)
+            try:
+                with open(cachename, 'rb') as cache_fd:
+                    try:
+                        data = pickle.load(cache_fd)
+                    except pickle.PickleError as exc:
+                        raise MicroprobeCacheError(exc)
+                    except EOFError as exc:
+                        raise MicroprobeCacheError(exc)
+                    except AttributeError as exc:
+                        raise MicroprobeCacheError(exc)
+                    except TypeError as exc:
+                        raise MicroprobeCacheError(exc)
+                    except ValueError as exc:
+                        raise MicroprobeCacheError(exc)
+                    except ModuleNotFoundError as exc:
+                        raise MicroprobeCacheError(exc)
+            except FileNotFoundError as exc:
+                raise MicroprobeCacheError(exc)
+            except IOError as exc:
+                raise MicroprobeCacheError(exc)
+    except PermissionError as exc:
+        raise MicroprobeCacheError(exc)
+    except FileNotFoundError as exc:
+        raise MicroprobeCacheError(exc)
+    except IOError as exc:
+        raise MicroprobeCacheError(exc)
 
     return data
 
@@ -130,6 +137,19 @@ def write_default_cache_data(filename, data, data_reload=False):
     """
     cachename = cache_file(filename)
     write_cache_data(cachename, data, data_reload=data_reload)
+
+
+def write_default_cache_data_silent(filename, data, data_reload=False):
+    """Writes data to a cache file.
+
+    :param filename:
+    :param data:
+
+    """
+    try:
+        write_default_cache_data(filename, data, data_reload=data_reload)
+    except MicroprobeCacheError:
+        pass
 
 
 def write_cache_data(filename, data, data_reload=False):
@@ -160,17 +180,26 @@ def write_cache_data(filename, data, data_reload=False):
 
     lock = fasteners.InterProcessReaderWriterLock(filename + ".lock")
 
-    if lock.acquire_write_lock(timeout=10):
-        try:
-            with open(filename, 'wb') as cache_fd:
-                pickle.dump(data, cache_fd, protocol=pickle.HIGHEST_PROTOCOL)
-        except IOError:
-            # Unable to create cache files, disabling cache
-            MICROPROBE_RC['no_cache'] = True
-        except pickle.PickleError as exc:
-            raise MicroprobeCacheError(exc)
-        except EOFError as exc:
-            raise MicroprobeCacheError(exc)
+    try:
+        if lock.acquire_write_lock(timeout=10):
+            try:
+                with open(filename, 'wb') as cache_fd:
+                    pickle.dump(
+                        data, cache_fd, protocol=pickle.HIGHEST_PROTOCOL
+                    )
+            except IOError:
+                # Unable to create cache files, disabling cache
+                MICROPROBE_RC['no_cache'] = True
+            except pickle.PickleError as exc:
+                raise MicroprobeCacheError(exc)
+            except EOFError as exc:
+                raise MicroprobeCacheError(exc)
+    except PermissionError as exc:
+        raise MicroprobeCacheError(exc)
+    except FileNotFoundError as exc:
+        raise MicroprobeCacheError(exc)
+    except IOError as exc:
+        raise MicroprobeCacheError(exc)
 
 
 def cache_file(filename):

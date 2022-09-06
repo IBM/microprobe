@@ -227,7 +227,7 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         ins = []
 
         if isinstance(instr, str):
-            return(instr)
+            return (instr)
 
         section_address = None
         if instr.address is not None and self._current_address is None:

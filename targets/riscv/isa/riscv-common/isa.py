@@ -572,13 +572,13 @@ class RISCVISA(GenericISA):
                                                        six.integer_types):
 
             if value > 0:
-                while(value) > 0x7FF:
+                while (value) > 0x7FF:
                     addi = self.new_instruction("ADDI_V0")
                     addi.set_operands([0x7FF, register, register])
                     instrs.append(addi)
                     value = value - 0x7FF
             elif value < 0:
-                while(value) < -0x7FF:
+                while (value) < -0x7FF:
                     addi = self.new_instruction("ADDI_V0")
                     addi.set_operands([-0x7FF, register, register])
                     instrs.append(addi)
@@ -651,8 +651,9 @@ class RISCVISA(GenericISA):
     @property
     def context_var(self):
         if self._context_var is None:
-            self._context_var = VariableArray("%s_context_var" % self._name,
-                                              "uint8_t", 600)
+            self._context_var = VariableArray(
+                "%s_CONTEXT_VAR" % self._name.upper(), "uint8_t", 600
+            )
         return self._context_var
 
     def set_context(self, variable=None, tmpl_path=None):

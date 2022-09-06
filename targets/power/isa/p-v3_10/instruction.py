@@ -74,7 +74,7 @@ def check_acc_overlap(instruction, condition):
             else:
                 raise NotImplementedError
 
-        assert(len(acc_operands.keys()) == 1)
+        assert (len(acc_operands.keys()) == 1)
         return acc_operands, vsr_operands
 
     orig_acc_operands, orig_vsr_operands = get_latest_operands()

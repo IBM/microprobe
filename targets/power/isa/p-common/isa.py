@@ -580,7 +580,7 @@ class PowerISA(GenericISA):
                 value = value + displacement
                 displacement = 0
 
-            assert(value is not None)
+            assert (value is not None)
 
             instrs += self.set_register(register, value, context)
 
@@ -913,8 +913,9 @@ class PowerISA(GenericISA):
     @property
     def context_var(self):
         if self._context_var is None:
-            self._context_var = VariableArray("%s_context_var" % self._name,
-                                              "uint8_t", 1600)
+            self._context_var = VariableArray(
+                "%s_CONTEXT_VAR" % self._name.upper(), "uint8_t", 600
+            )
         return self._context_var
 
     def set_context(self, variable=None, tmpl_path=None):
