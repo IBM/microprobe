@@ -272,11 +272,11 @@ def generate(test_definition, output_file, target, **kwargs):
             prev_mapped_address = None
             prev_address = None
             for elem in elements_outside_range:
-                if prev_address is None:
+                if prev_address is None:    
                     next_address = base
                 else:
                     offset = elem.address - prev_address
-                    if offset <= 4:
+                    if offset <= 8 * 4096: # Respect offsets of nearby pages to respect non-consecutive page accesses
                         next_address = prev_mapped_address + offset
                     else:
                         next_address = (prev_mapped_address & ~0xFFF) + 0x1000
@@ -306,8 +306,8 @@ def generate(test_definition, output_file, target, **kwargs):
                     value = int.from_bytes(elem.init_value[index:index+8], "little")
                     page_addr = value & ~0xFFF
                     if (page_addr in mapping):
-                        value = mapping[page_addr] + value & 0xFFF
-                        bytes_ = int.to_bytes(value, 8, "little")
+                        new_value = mapping[page_addr] + (value & 0xFFF)
+                        bytes_ = int.to_bytes(new_value, 8, "little")
                         for i, byte in enumerate(bytes_):
                             elem.init_value[index + i] = byte
 
@@ -318,7 +318,7 @@ def generate(test_definition, output_file, target, **kwargs):
                     if register.value in mapping:
                         register.value = mapping[register.value]
                     elif register.value & ~0xFFF in mapping:
-                        register.value = mapping[register.value & ~0xFFF]
+                        register.value = mapping[register.value & ~0xFFF] + (register.value & 0xFFF)
                     else:
                         print("Register value is more than 32 bits but is not in mapping: %X" % register.value)
 
