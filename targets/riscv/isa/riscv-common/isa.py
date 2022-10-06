@@ -133,6 +133,7 @@ class RISCVISA(GenericISA):
                 instrs.append(addi)
 
             elif (closest_value is not None and
+                  closest_value[0].type.name == "ireg" and
                   abs(value - closest_value[1]) < (2 ** 11)):
 
                 addi = self.new_instruction("ADDI_V0")
