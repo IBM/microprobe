@@ -265,22 +265,27 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def test_start_instructions(self):
+    def hook_before_test_instructions(self):
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def test_end_instructions(self):
+    def hook_after_test_instructions(self):
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def test_init_instructions(self):
+    def hook_test_init_instructions(self):
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def test_reset_instructions(self):
+    def hook_after_reset_instructions(self):
+        """ """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def hook_test_end_instructions(self):
         """ """
         raise NotImplementedError
 
@@ -511,18 +516,22 @@ class GenericEnvironment(Environment):
                 return False
         return True
 
-    def test_start_instructions(self):
+    def hook_before_test_instructions(self):
         """ """
         return []
 
-    def test_end_instructions(self):
+    def hook_after_test_instructions(self):
         """ """
         return [self._target.nop()]
 
-    def test_init_instructions(self):
+    def hook_test_init_instructions(self):
         """ """
         return []
 
-    def test_reset_instructions(self):
+    def hook_after_reset_instructions(self):
+        """ """
+        return []
+
+    def hook_test_end_instructions(self):
         """ """
         return []

@@ -409,7 +409,7 @@ def generate(test_definition, output_file, target, **kwargs):
             )
             instructions += new_ins
 
-        instructions += target.test_start_instructions()
+        instructions += target.hook_before_test_instructions()
 
         if 'fix_long_jump' in kwargs:
             instructions += target.function_call(
@@ -421,11 +421,13 @@ def generate(test_definition, output_file, target, **kwargs):
                 ("%s" % start_symbol).replace("+0x-", "-0x"),
             )
 
-        instructions += target.test_end_instructions()
+        instructions += target.hook_after_test_instructions()
 
         if 'wrap_endless' in kwargs:
+            instructions += target.hook_after_reset_instructions() # TODO fix this
             instructions += _compute_reset_jump(target, instructions)
-            instructions += target.test_reset_instructions()
+
+        instructions += target.hook_test_end_instructions()
 
 
         instructions_definitions = []
@@ -555,7 +557,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.initialization.AddInitializationInstructionsPass(
-            target.test_init_instructions()
+            target.hook_test_init_instructions()
         ),
     )
 
@@ -743,6 +745,16 @@ def _compile(filename, target, **kwargs):
                     target.name)
         exit(-1)
 
+    routines_name = None
+
+    try:
+        routines_name = findfiles(
+            MICROPROBE_RC['template_paths'],
+            "%s_routines.s" % target.name
+        )[0]
+    except IndexError:
+        pass
+
     cprog = kwargs["compiler"]
 
     cflags = " -o %s" % outputname
@@ -751,6 +763,9 @@ def _compile(filename, target, **kwargs):
     cflags += kwargs["compiler_flags"]
     # We only support BFD linker
     cflags += " -fuse-ld=bfd "
+
+    if routines_name is not None:
+        cflags += " " + routines_name
 
     cmd = "%s %s %s" % (cprog, cflags, filename)
 

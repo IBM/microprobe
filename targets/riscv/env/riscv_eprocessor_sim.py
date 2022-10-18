@@ -134,7 +134,7 @@ class riscv64_eprocessor_sim(GenericEnvironment):
         return rlist
 
     # Uses registers: X5, X6
-    def test_init_instructions(self):
+    def hook_test_init_instructions(self):
         context = Context()
 
         # Init CSRs
@@ -325,7 +325,7 @@ class riscv64_eprocessor_sim(GenericEnvironment):
 
         return instructions
 
-    def test_start_instructions(self):
+    def hook_before_test_instructions(self):
         instructions = []
         context = Context()
 
@@ -360,7 +360,7 @@ class riscv64_eprocessor_sim(GenericEnvironment):
 
         return instructions
 
-    def test_end_instructions(self):
+    def hook_after_test_instructions(self):
         instructions = []
         context = Context()
 
@@ -375,5 +375,5 @@ class riscv64_eprocessor_sim(GenericEnvironment):
 
         return instructions
 
-    def test_reset_instructions(self):
+    def hook_after_reset_instructions(self):
         return self._print_perf_counters(36, 37)  # $%

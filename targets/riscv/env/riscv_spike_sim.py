@@ -52,6 +52,7 @@ class riscv64_spike_sim(GenericEnvironment):
         self._CSR_MSTATUS = 0x300
         self._MSTATUS_FS = 0x00006000
         self._MSTATUS_XS = 0x00018000
+        self._CSR_MTVEC = 0x305
 
     @property
     def stack_pointer(self):
@@ -128,10 +129,14 @@ class riscv64_spike_sim(GenericEnvironment):
 
         return rlist
 
-    def test_init_instructions(self):
+    def hook_test_init_instructions(self):
         context = Context()
+        instructions = []
+
+        # Setup MSTATUS CSR
+
         status = self._MSTATUS_FS | self._MSTATUS_XS
-        instructions = self.target.set_register(self.target.isa.registers["X5"],
+        instructions += self.target.set_register(self.target.isa.registers["X5"],
                                                 status, context)
 
         ins = self.target.new_instruction("CSRRW_V0")
@@ -139,13 +144,93 @@ class riscv64_spike_sim(GenericEnvironment):
                           self.target.isa.registers["X0"]])
         instructions.append(ins)
 
+        # Setup trap handler CSR
+
+        tvec = 0x10000
+        instructions += self.target.set_register(self.target.isa.registers["X5"],
+                                                tvec, context)
+
+        ins = self.target.new_instruction("CSRRW_V0")
+        ins.set_operands([self._CSR_MTVEC, self.target.isa.registers["X5"],
+                          self.target.isa.registers["X0"]])
+        instructions.append(ins)
+
+        # tohost address
+        instructions += self.target.set_register(self.target.isa.registers["X1"],
+                                                0x11000, context)
+
+        # Init itercount to 10                                                
+        instructions += self.target.set_register(self.target.isa.registers["X2"],
+                                                10, context)
+
+        # Save itercount (2 long word offset from tohost)
+        ins = self.target.new_instruction("SD_V0")
+        ins.set_operands([16, self.target.isa.registers['X2'], self.target.isa.registers['X1'], 0])
+        instructions.append(ins)
+
         return instructions
 
-    def test_start_instructions(self):
+    def hook_before_test_instructions(self):
         return []
 
-    def test_end_instructions(self):
+    def hook_after_test_instructions(self):
         return []
 
-    def test_reset_instructions(self):
-        return []
+    def hook_after_reset_instructions(self):
+        context = Context()
+        instructions = []
+
+        # tohost address
+        instructions += self.target.set_register(self.target.isa.registers["X5"],
+                                                0x11000, context)
+
+        # load itercount (2 long word offset from tohost)
+        ins = self.target.new_instruction("LD_V0")
+        ins.set_operands([16, self.target.isa.registers['X5'], self.target.isa.registers['X6']])
+        instructions.append(ins)
+
+        # We performed one iteration, subtract by 1
+        ins = self.target.new_instruction("ADDI_V0")
+        ins.set_operands([-1, self.target.isa.registers["X6"], self.target.isa.registers["X6"]])
+        instructions.append(ins)
+
+        # Save itercount
+        ins = self.target.new_instruction("SD_V0")
+        ins.set_operands([16, self.target.isa.registers['X6'], self.target.isa.registers['X5'], 0])
+        instructions.append(ins)
+
+        # Skip tohost write if counter != 0
+        ins = self.target.new_instruction("BNE_V0")
+        ins.set_operands([16, self.target.isa.registers["X0"], self.target.isa.registers['X6'], 0])
+        instructions.append(ins)
+
+        # exit code = 0
+        instructions += self.target.set_register(self.target.isa.registers["X6"],
+                                                1, context)
+
+        # write tohost
+        ins = self.target.new_instruction("SD_V0")
+        ins.set_operands([0, self.target.isa.registers['X6'], self.target.isa.registers['X5'], 0])
+        instructions.append(ins)
+
+        return instructions
+
+    def hook_test_end_instructions(self):
+        context = Context()
+        instructions = []
+
+        # tohost address
+        instructions += self.target.set_register(self.target.isa.registers["X1"],
+                                                0x11000, context)
+
+        # exit code = 0
+        instructions += self.target.set_register(self.target.isa.registers["X2"],
+                                                1, context)
+
+        # write tohost
+        ins = self.target.new_instruction("SD_V0")
+        ins.set_operands([0, self.target.isa.registers['X2'], self.target.isa.registers['X1'], 0])
+        instructions.append(ins)
+
+        return instructions
+        

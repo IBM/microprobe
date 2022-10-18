@@ -131,7 +131,7 @@ class riscv64_sargantana_sim(GenericEnvironment):
 
         return rlist
 
-    def test_init_instructions(self):
+    def hook_test_init_instructions(self):
         context = Context()
         status = self._MSTATUS_FS | self._MSTATUS_XS
         instructions = self.target.set_register(self.target.isa.registers["X5"],
@@ -272,11 +272,11 @@ class riscv64_sargantana_sim(GenericEnvironment):
 
         return instructions
 
-    def test_start_instructions(self):
+    def hook_before_test_instructions(self):
         return self._reset_perf_counters()
 
-    def test_end_instructions(self):
+    def hook_after_test_instructions(self):
         return self._print_perf_counters(126, 64)  # ~@
 
-    def test_reset_instructions(self):
+    def hook_after_reset_instructions(self):
         return self._print_perf_counters(36, 37)  # $%

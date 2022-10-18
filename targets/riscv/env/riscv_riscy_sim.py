@@ -129,7 +129,7 @@ class riscv64_riscy_sim(GenericEnvironment):
 
         return rlist
 
-    def test_init_instructions(self):
+    def hook_test_init_instructions(self):
         context = Context()
         instructions = self.target.set_register(self.target.isa.registers["X5"], self._MSTATUS_FS | self._MSTATUS_XS, context)
 
@@ -209,7 +209,7 @@ class riscv64_riscy_sim(GenericEnvironment):
 
         return instructions
 
-    def test_start_instructions(self):
+    def hook_before_test_instructions(self):
         instructions = []
 
         # Reset cycle count
@@ -224,7 +224,7 @@ class riscv64_riscy_sim(GenericEnvironment):
 
         return instructions
 
-    def test_end_instructions(self):
+    def hook_after_test_instructions(self):
         instructions = []
         context = Context()
 
