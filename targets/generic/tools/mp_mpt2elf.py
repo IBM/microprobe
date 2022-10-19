@@ -144,8 +144,8 @@ def generate(test_definition, output_file, target, **kwargs):
         executed_code = []
         align = 32
         for access in test_definition.roi_memory_access_trace:
-            if access.data_type == "D":
-                continue
+            # if access.data_type == "D":
+            #    continue
             if ((access.address//align)*align) not in executed_code:
                 executed_code.append((access.address//align)*align)
 
@@ -966,7 +966,7 @@ def _compute_reset_code(target, test_def, args):
                     svalue = var.init_value[
                         offset:offset + int(value[0] / elem_size)
                     ]
-                    svalue = "".join(["%02X" % tval for tval in svalue])
+                    svalue = "".join(reversed(["%02X" % tval for tval in svalue])) # TODO: Reverse ONLY on little endian archs
                     wvalue = int(svalue, 16)
                     break
 
