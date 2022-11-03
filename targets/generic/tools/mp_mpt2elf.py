@@ -321,6 +321,11 @@ def generate(test_definition, output_file, target, **kwargs):
                         register.value = mapping[register.value & ~0xFFF] + (register.value & 0xFFF)
                     else:
                         print("Register value is more than 32 bits but is not in mapping: %X" % register.value)
+            
+            for access in test_definition.roi_memory_access_trace:
+                page_addr = access.address & ~0xFFF
+                if page_addr in mapping:
+                    access.address = mapping[page_addr] + (access.address & 0xFFF)
 
         displacements = []
         for elem in test_definition.code:
