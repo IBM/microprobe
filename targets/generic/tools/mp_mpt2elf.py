@@ -276,7 +276,7 @@ def generate(test_definition, output_file, target, **kwargs):
                     next_address = base
                 else:
                     offset = elem.address - prev_address
-                    if offset <= 8 * 4096: # Respect offsets of nearby pages to respect non-consecutive page accesses
+                    if offset <= 256 * 4096: # Respect offsets of nearby pages to respect non-consecutive and pc-relative page accesses
                         next_address = prev_mapped_address + offset
                     else:
                         next_address = (prev_mapped_address & ~0xFFF) + 0x1000
