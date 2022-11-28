@@ -310,6 +310,12 @@ def generate(test_definition, output_file, target, **kwargs):
                         bytes_ = int.to_bytes(new_value, 8, "little")
                         for i, byte in enumerate(bytes_):
                             elem.init_value[index + i] = byte
+                    elif (value in mapping):
+                        new_value = mapping[value]
+                        bytes_ = int.to_bytes(new_value, 8, "little")
+                        for i, byte in enumerate(bytes_):
+                            elem.init_value[index + i] = byte
+
 
                 prog()
 
@@ -323,6 +329,9 @@ def generate(test_definition, output_file, target, **kwargs):
                         print("Register value is more than 32 bits but is not in mapping: %X" % register.value)
             
             for access in test_definition.roi_memory_access_trace:
+                if access.address in mapping:
+                    access.address = mapping[access.address]
+                else:
                 page_addr = access.address & ~0xFFF
                 if page_addr in mapping:
                     access.address = mapping[page_addr] + (access.address & 0xFFF)
