@@ -1,4 +1,5 @@
 .section .text.trap_handler
+.option norvc
 la x1, tohost
 li x2, 3 # fail
 sw x2, 0(x1)
