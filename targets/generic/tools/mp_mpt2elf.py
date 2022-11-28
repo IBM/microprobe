@@ -332,9 +332,9 @@ def generate(test_definition, output_file, target, **kwargs):
                 if access.address in mapping:
                     access.address = mapping[access.address]
                 else:
-                page_addr = access.address & ~0xFFF
-                if page_addr in mapping:
-                    access.address = mapping[page_addr] + (access.address & 0xFFF)
+                    page_addr = access.address & ~0xFFF
+                    if page_addr in mapping:
+                        access.address = mapping[page_addr] + (access.address & 0xFFF)
 
         displacements = []
         for elem in test_definition.code:
@@ -1173,11 +1173,10 @@ def _compute_reset_jump(target, instrs):
     target_instruction = InstructionAddress(
         base_address="code", displacement=displacement,
     )
-    return [
-        target.branch_unconditional_relative(
+    
+    return target.branch_unconditional_relative2(
             source_instruction, target_instruction,
-        ),
-    ]
+        )
 
 
 # Main

@@ -476,6 +476,85 @@ class RISCVISA(GenericISA):
 
         return instruction
 
+    def branch_unconditional_relative2(self, source, target):
+
+        LOG.debug("Source: %s", source)
+        LOG.debug("Target: %s", target)
+
+        if isinstance(target, InstructionAddress):
+            target_address = target
+        elif isinstance(target, Instruction):
+            target_address = target.address
+        else:
+            print(("Target:", target))
+            raise NotImplementedError
+
+        if target.base_address != source.base_address:
+            # Assume symbolic generation
+            instruction = self.new_instruction("JAL_V0")
+            source_address = source
+            instruction.set_address(source_address)
+            instruction.operands()[1].set_value(self.target.registers['X0'])
+            instruction.memory_operands()[0].set_address(target_address, None)
+            return [instruction]
+
+        elif isinstance(source, InstructionAddress):
+            source_address = source
+
+            relative_offset = target_address - source_address
+
+            instruction = self.new_instruction("JAL_V0")
+            instruction.set_address(source_address)
+            instruction.operands()[1].set_value(self.target.registers['X0'])
+
+            LOG.debug("Source address: %s", source_address)
+            LOG.debug("Target address: %s", target_address)
+            LOG.debug("Relative offset: %s", relative_offset)
+
+        elif isinstance(source, Instruction):
+            source_address = source.address
+            relative_offset = target_address - source_address
+            instruction = source
+        else:
+            print(("Source:", source))
+            raise NotImplementedError
+
+        if (relative_offset < -524288 or relative_offset > 524287):
+            instructions = []
+
+            relative_offset_high = (relative_offset >> 12) & 0xFFFFF
+            relative_offset_low = relative_offset & 0xFFF
+
+            # Because immediate values are sign-extended, we need to
+            # pre-increment the upper immediate bits to counteract the case
+            # in which the lower immediate forms a negative number (MSB is 1)
+            if (relative_offset_low & (1 << 11)):
+                relative_offset_high = (relative_offset_high + 1) & 0xFFFFF
+
+                # While we're at it, convert the lower immediate to negative
+                # using 2's complement
+                relative_offset_low = relative_offset_low - 2**12
+
+
+            ins = self.new_instruction("AUIPC_V0")
+            ins.set_operands([relative_offset_high, self.target.registers['X1']])
+            instructions.append(ins)
+
+            ins = self.new_instruction("JALR_V0")
+            ins.set_operands([relative_offset_low, self.target.registers['X1'], self.target.registers['X0']])
+            instructions.append(ins)
+
+            return instructions
+
+        else:
+            for operand in instruction.operands():
+                if not operand.type.address_relative:
+                    continue
+
+                operand.set_value(relative_offset)
+
+            return [instruction]
+
     def add_to_register(self, register, value):
 
         instrs = []
