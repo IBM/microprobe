@@ -326,7 +326,18 @@ def generate(test_definition, output_file, target, **kwargs):
                     elif register.value & ~0xFFF in mapping:
                         register.value = mapping[register.value & ~0xFFF] + (register.value & 0xFFF)
                     else:
-                        print("Register value is more than 32 bits but is not in mapping: %X" % register.value)
+                        print_warning("Register %s's value is more than 32 bits but is not in mapping: %X" % (register.name, register.value))
+                        closest_addr = None
+                        closest_dist = 8 * 1024 # Only consider mappings 16kb apart
+                        for map_addr in mapping:
+                            dist = register.value - map_addr
+                            if abs(dist) < abs(closest_dist):
+                                closest_addr = map_addr
+                                closest_dist = dist
+                        if closest_addr != None:
+                            print_warning("  Closest mapped address: %X (distance: %d bytes). Applying shift. Final address: %X" % (closest_addr, closest_dist, mapping[closest_addr] + closest_dist))
+                            register.value = mapping[closest_addr] + closest_dist
+
             
             for access in test_definition.roi_memory_access_trace:
                 if access.address in mapping:
@@ -335,6 +346,8 @@ def generate(test_definition, output_file, target, **kwargs):
                     page_addr = access.address & ~0xFFF
                     if page_addr in mapping:
                         access.address = mapping[page_addr] + (access.address & 0xFFF)
+                    elif page_addr > 2**32:
+                        print_warning("Access is more than 32 bits but is not in mapping: %x" % access.address)
 
         displacements = []
         for elem in test_definition.code:
