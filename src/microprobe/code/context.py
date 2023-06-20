@@ -16,7 +16,10 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, annotations
+
+# Built-in modules
+from typing import TYPE_CHECKING, Tuple, Dict, List
 
 # Third party modules
 import six
@@ -26,6 +29,11 @@ from microprobe.code.address import Address, InstructionAddress
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, smart_copy_dict
 
+# Type hints
+if TYPE_CHECKING:
+    from microprobe.target.isa.register import Register
+    from microprobe.code.address import MemoryValue
+    from microprobe.target.isa.dat import DynamicAddressTranslation
 
 # Constants
 LOG = get_logger(__name__)
@@ -44,11 +52,11 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
     def __init__(
             self,
-            default_context=None,
-            code_segment=None,
-            data_segment=None,
-            symbolic=True,
-            absolute=False
+            default_context: Context | None = None,
+            code_segment: int | None = None,
+            data_segment: int | None = None,
+            symbolic: bool = True,
+            absolute: bool = False
     ):
         """
 
@@ -59,7 +67,8 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        self._reserved_registers = RejectingDict()
+        self._reserved_registers: Dict[str, Register] = RejectingDict()
+
         self._register_values = [{}, {}]
         self._memory_values = [{}, {}]
 
@@ -82,16 +91,10 @@ class Context(object):  # pylint: disable=too-many-public-methods
         newcontext._reserved_registers = smart_copy_dict(
             self._reserved_registers
         )
-        newcontext._register_values[0] = smart_copy_dict(
-            self._register_values[0]
-        )
-        newcontext._register_values[1] = smart_copy_dict(
-            self._register_values[1]
-        )
+        newcontext._register_values[0] = smart_copy_dict(self._register_values[0])
+        newcontext._register_values[1] = smart_copy_dict(self._register_values[1])
         newcontext._memory_values[0] = smart_copy_dict(self._memory_values[0])
-        newcontext._memory_values[1] = smart_copy_dict(
-            self._memory_values[1]
-        )
+        newcontext._memory_values[1] = smart_copy_dict(self._memory_values[1])
 
         if self._dat is not None:
             newcontext.set_dat(self._dat.copy())
@@ -103,7 +106,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return newcontext
 
-    def add_reserved_registers(self, rregs):
+    def add_reserved_registers(self, rregs: List[Register]):
         """Add the provided registers into the reserved register list.
 
         :param rregs: Registers to reserve
@@ -114,7 +117,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         for reg in rregs:
             self._reserved_registers[reg.name] = reg
 
-    def remove_reserved_registers(self, rregs):
+    def remove_reserved_registers(self, rregs: List[Register]):
         """Remove the provided registers from the reserved register list.
 
         :param rregs: Registers to un-reserve
@@ -125,7 +128,10 @@ class Context(object):  # pylint: disable=too-many-public-methods
         for reg in rregs:
             del self._reserved_registers[reg.name]
 
-    def set_register_value(self, register, value):
+    def set_register_value(
+            self,
+            register: Register, value: int | float | Address | str
+    ):
         """Set the provided register to the specified value.
 
         :param register: Register to set
@@ -161,7 +167,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         # assert value in self._register_values[1].keys()
         # assert self._register_values[0][register] == value
 
-    def get_closest_value(self, value):
+    def get_closest_value(self, value: int | float | Address | str):
         """Returns the closest value to the given value.
 
         Returns the closest value to the given value. If there are
@@ -173,7 +179,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        possible_regs = []
+        possible_regs: List[Tuple[Register, int | float | Address | str]] = []
 
         for reg, val in self._register_values[0].items():
 
@@ -189,7 +195,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return None
 
-    def get_closest_address_value(self, address):
+    def get_closest_address_value(self, address: Address):
         """Returns the closest address to the given address.
 
         Returns the closest address to the given address. If there are
@@ -200,7 +206,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        possible_regs = []
+        possible_regs: List[Tuple[Register, Address]] = []
 
         for reg, value in self._register_values[0].items():
 
@@ -219,7 +225,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return None
 
-    def get_register_closest_value(self, value):
+    def get_register_closest_value(self, value: int | float | str):
         """Returns the register with the closest value to the given value.
 
         Returns the register with the closest value to the given value.
@@ -232,7 +238,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        possible_regs = []
+        possible_regs: List[Tuple[Register, int | float | str]] = []
 
         for reg, reg_value in self._register_values[0].items():
 
@@ -260,7 +266,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return None
 
-    def get_register_value(self, register):
+    def get_register_value(self, register: Register):
         """Returns the register value. `None` if not found.
 
         :param register: Register to get its value
@@ -274,7 +280,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return value
 
-    def get_registername_value(self, register_name):
+    def get_registername_value(self, register_name: str):
         """Returns the register value. `None` if not found.
 
         :param register: Register name to get its value
@@ -295,7 +301,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return self._register_values[0].get(register, None)
 
-    def unset_registers(self, registers):
+    def unset_registers(self, registers: List[Register]):
         """Removes the values from registers.
 
         :param registers: List of registers
@@ -305,7 +311,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         for reg in registers:
             self.unset_register(reg)
 
-    def unset_register(self, register):
+    def unset_register(self, register: Register):
         """Remove the value from a register.
 
         :param register: Registers
@@ -323,7 +329,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         self._register_values[0][register] = None
 
-    def set_memory_value(self, mem_value):
+    def set_memory_value(self, mem_value: MemoryValue):
         """Sets a memory value.
 
         :param mem_value: Memory value to set.
@@ -359,7 +365,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         LOG.debug("End set memory value: %s", mem_value)
 
-    def get_memory_value(self, address):
+    def get_memory_value(self, address: Address):
         """Gets a memory value.
 
         :param address: Address to look for
@@ -372,7 +378,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return None
 
-    def unset_memory(self, address, length):
+    def unset_memory(self, address: Address, length: int):
         """Unsets a memory region.
 
         :param address: Start address of the region
@@ -413,7 +419,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         LOG.debug("Finish unset address: %s (length: %s)", address, length)
 
-    def register_has_value(self, value):
+    def register_has_value(self, value: int | float | Address | str):
         """Returns if a value is in a register.
 
         :param value: Value to look for
@@ -423,7 +429,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         return value in list([elem for elem in self._register_values[1].keys()
                              if type(elem) == type(value)])
 
-    def registers_get_value(self, value):
+    def registers_get_value(self, value: int | float | Address | str):
         """Gets a list of registers containing the specified value.
 
         :param value: Value to look for
@@ -453,7 +459,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """Address starting the data segment (::class:`~.int`)"""
         return self._data_segment
 
-    def set_data_segment(self, value):
+    def set_data_segment(self, value: int):
         """Sets the data segment start address.
 
         :param value: Start address.
@@ -467,7 +473,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """DAT object (:class:`~.DynamicAddressTranslation`"""
         return self._dat
 
-    def set_dat(self, dat):
+    def set_dat(self, dat: DynamicAddressTranslation):
         """Sets the dynamic address translation object.
 
         :param dat: DAT object.
@@ -481,7 +487,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """Address starting the code segment (::class:`~.int`)"""
         return self._code_segment
 
-    def set_code_segment(self, value):
+    def set_code_segment(self, value: int):
         """Sets the code segment start address.
 
         :param value: Start address.
@@ -499,7 +505,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """
         return self._symbolic
 
-    def set_symbolic(self, value):
+    def set_symbolic(self, value: bool):
         """Sets the symbolic property.
 
         :param value: Boolean indicating if the context allows symbol labels
@@ -517,7 +523,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """
         return self._fabsolute
 
-    def set_absolute(self, value):
+    def set_absolute(self, value: bool):
         """Sets the force_absolute property.
 
         :param value: Boolean indicating if absolute addresses are needed
@@ -541,7 +547,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        mstr = []
+        mstr: List[str] = []
         mstr.append("-" * 80)
         mstr.append("Context status:")
         mstr.append("Reserved Registers:")
