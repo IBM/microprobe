@@ -125,7 +125,7 @@ class RISCVISA(GenericISA):
                 instrs.append(addi)
 
             elif (closest_value is not None and
-                  abs(value - closest_value[1]) < (2 ** 12)):
+                  abs(value - closest_value[1]) < (2 ** 11)):
 
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands(
