@@ -1,0 +1,5 @@
+SECTIONS
+{
+    .text.trap_handler 0x10000 : { *(.text.trap_handler) } 
+    .tohost 0x11000 : { *(.tohost) } 
+}

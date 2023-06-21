@@ -261,6 +261,10 @@
   Min: -2048
   Max: 2047
   AddressIndex: True 
+- Name: u.imm12
+  Description: unsigned 12-bit immediate
+  Min: 0
+  Max: 4096
 - Name: s.imm20
   Description: signed 20-bit immediate
   Min: -524288

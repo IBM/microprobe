@@ -470,7 +470,7 @@ class AddInitializationInstructionsPass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, instr, operands):
+    def __init__(self, instr, operands=None):
         """
 
         :param instr:
@@ -493,14 +493,18 @@ class AddInitializationInstructionsPass(microprobe.passes.Pass):
 
         """
 
-        for instr, operands in zip(self._instr, self._operands):
-            newinstr = microprobe.code.ins.Instruction()
-            # print instr
-            # print self._instr
-            newinstr.set_arch_type(instr)
-            newinstr.set_operands(operands)
-            # print operands
-            building_block.add_init([newinstr])
+        if self._operands is not None:
+            for instr, operands in zip(self._instr, self._operands):
+                newinstr = microprobe.code.ins.Instruction()
+                # print instr
+                # print self._instr
+                newinstr.set_arch_type(instr)
+                newinstr.set_operands(operands)
+                # print operands
+                building_block.add_init([newinstr])
+        else:
+            for instr in self._instr:
+                building_block.add_init([instr])
 
 
 class AutoAlignPass(microprobe.passes.Pass):

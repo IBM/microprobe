@@ -95,6 +95,12 @@
   Show: True
   IO: "I"
   Operand: "s.imm12"
+- Name: "u_imm12"
+  Size: 12
+  Description: "u_imm12"
+  Show: True
+  IO: "I"
+  Operand: "u.imm12"
 - Name: "i_imm6"
   Size: 6
   Description: "i_imm6"
