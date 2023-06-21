@@ -90,7 +90,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         )
         newcontext._memory_values[0] = smart_copy_dict(self._memory_values[0])
         newcontext._memory_values[1] = smart_copy_dict(
-            self._register_values[1]
+            self._memory_values[1]
         )
 
         if self._dat is not None:
