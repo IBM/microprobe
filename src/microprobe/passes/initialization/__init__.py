@@ -493,7 +493,7 @@ class AddInitializationInstructionsPass(microprobe.passes.Pass):
 
         """
 
-        if self._operands != None:
+        if self._operands is not None:
             for instr, operands in zip(self._instr, self._operands):
                 newinstr = microprobe.code.ins.Instruction()
                 # print instr

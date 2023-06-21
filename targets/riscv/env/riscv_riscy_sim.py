@@ -28,12 +28,10 @@ from microprobe.code.context import Context
 
 # Functions
 
+
 # Classes
 class riscv64_riscy_sim(GenericEnvironment):
-
-    _elf_code = ""\
-                ""\
-                ""
+    _elf_code = "" "" ""
 
     def __init__(self, isa):
         super().__init__(
@@ -41,15 +39,15 @@ class riscv64_riscy_sim(GenericEnvironment):
             "RISC-V architecture (64bit addressing mode), "
             "Linux operating system, GCC compiler",
             isa,
-            little_endian=True
-            )
+            little_endian=True,
+        )
 
         self._default_wrapper = "CWrapper"
 
         # TODO: should define this ISA-wide, maybe as a new operand?
 
-        self._CSR_MCYCLE = 0xb00
-        self._CSR_MINSTRET = 0xb02
+        self._CSR_MCYCLE = 0xB00
+        self._CSR_MINSTRET = 0xB02
         self._CSR_MSTATUS = 0x300
         self._MSTATUS_FS = 0x00006000
         self._MSTATUS_XS = 0x00018000
@@ -65,16 +63,11 @@ class riscv64_riscy_sim(GenericEnvironment):
         return "increase"
 
     def elf_abi(self, stack_size, start_symbol, **kwargs):
+        return super(riscv64_riscy_sim, self).elf_abi(
+            stack_size, start_symbol, stack_alignment=16, **kwargs
+        )
 
-        return super(riscv64_linux_gcc, self).elf_abi(stack_size,
-                                                      start_symbol,
-                                                      stack_alignment=16,
-                                                      **kwargs)
-
-    def function_call(self, target,
-                      return_address_reg=None,
-                      long_jump=False):
-
+    def function_call(self, target, return_address_reg=None, long_jump=False):
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["X1"]
 
@@ -99,42 +92,84 @@ class riscv64_riscy_sim(GenericEnvironment):
             jal_ins.set_operands([target, return_address_reg])
             return [jal_ins]
 
-    def function_return(self,
-                        return_address_reg=None):
-
+    def function_return(self, return_address_reg=None):
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["X1"]
 
         ret_ins = self.target.new_instruction("JALR_V0")
-        ret_ins.set_operands([0,
-                              return_address_reg,
-                              self.target.isa.registers["X0"]])
+        ret_ins.set_operands(
+            [0, return_address_reg, self.target.isa.registers["X0"]]
+        )
         return [ret_ins]
 
     @property
     def volatile_registers(self):
-
         rlist = []
 
         for idx in [
-                1, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
-                28, 29, 30, 31]:
-            rlist += [self.target.registers['X%d' % idx]]
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            28,
+            29,
+            30,
+            31,
+        ]:
+            rlist += [self.target.registers["X%d" % idx]]
 
         for idx in [
-                0, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
-                28, 29, 30, 31]:
-
-            rlist += [self.target.registers['F%d' % idx]]
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            28,
+            29,
+            30,
+            31,
+        ]:
+            rlist += [self.target.registers["F%d" % idx]]
 
         return rlist
 
     def hook_test_init_instructions(self):
         context = Context()
-        instructions = self.target.set_register(self.target.isa.registers["X5"], self._MSTATUS_FS | self._MSTATUS_XS, context)
+        instructions = self.target.set_register(
+            self.target.isa.registers["X5"],
+            self._MSTATUS_FS | self._MSTATUS_XS,
+            context,
+        )
 
         ins = self.target.new_instruction("CSRRW_V0")
-        ins.set_operands([self._CSR_MSTATUS, self.target.isa.registers["X5"], self.target.isa.registers["X0"]])
+        ins.set_operands(
+            [
+                self._CSR_MSTATUS,
+                self.target.isa.registers["X5"],
+                self.target.isa.registers["X0"],
+            ]
+        )
         instructions.append(ins)
 
         return instructions
@@ -143,15 +178,34 @@ class riscv64_riscy_sim(GenericEnvironment):
         instructions = []
 
         ins = self.target.new_instruction("LW_V0")
-        ins.set_operands([0, self.target.isa.registers['X14'], self.target.isa.registers['X15']])
+        ins.set_operands(
+            [
+                0,
+                self.target.isa.registers["X14"],
+                self.target.isa.registers["X15"],
+            ]
+        )
         instructions.append(ins)
 
         ins = self.target.new_instruction("ADDIW_V0")
-        ins.set_operands([0, self.target.isa.registers['X15'], self.target.isa.registers['X15']])
+        ins.set_operands(
+            [
+                0,
+                self.target.isa.registers["X15"],
+                self.target.isa.registers["X15"],
+            ]
+        )
         instructions.append(ins)
 
         ins = self.target.new_instruction("BLT_V0")
-        ins.set_operands([-8, self.target.isa.registers['X0'], self.target.isa.registers['X15'], 0])
+        ins.set_operands(
+            [
+                -8,
+                self.target.isa.registers["X0"],
+                self.target.isa.registers["X15"],
+                0,
+            ]
+        )
         instructions.append(ins)
 
         return instructions
@@ -159,26 +213,48 @@ class riscv64_riscy_sim(GenericEnvironment):
     def _print_reg(self, register, context):
         instructions = []
 
-        instructions += self.target.set_register(self.target.isa.registers['X11'], 10, context)
-        instructions += self.target.set_register(self.target.isa.registers['X14'], 805306368, context)
-        instructions += self.target.set_register(self.target.isa.registers['X10'], 9, context)
+        instructions += self.target.set_register(
+            self.target.isa.registers["X11"], 10, context
+        )
+        instructions += self.target.set_register(
+            self.target.isa.registers["X14"], 805306368, context
+        )
+        instructions += self.target.set_register(
+            self.target.isa.registers["X10"], 9, context
+        )
 
         ins = self.target.new_instruction("REM_V0")
-        ins.set_operands([self.target.isa.registers['X11'], register, self.target.isa.registers['X12']])
+        ins.set_operands(
+            [
+                self.target.isa.registers["X11"],
+                register,
+                self.target.isa.registers["X12"],
+            ]
+        )
         instructions.append(ins)
 
         ins = self.target.new_instruction("ADDI_V0")
-        ins.set_operands([48, self.target.isa.registers['X12'], self.target.isa.registers['X12']])
+        ins.set_operands(
+            [
+                48,
+                self.target.isa.registers["X12"],
+                self.target.isa.registers["X12"],
+            ]
+        )
         instructions.append(ins)
 
-        instructions += self._send_char_uart(context, register=self.target.isa.registers['X12'])
+        instructions += self._send_char_uart(
+            context, register=self.target.isa.registers["X12"]
+        )
 
         ins = self.target.new_instruction("BGE_V0")
-        ins.set_operands([12, register, self.target.isa.registers['X10'], 0])
+        ins.set_operands([12, register, self.target.isa.registers["X10"], 0])
         instructions.append(ins)
 
         ins = self.target.new_instruction("DIV_V0")
-        ins.set_operands([self.target.isa.registers['X11'], register, register])
+        ins.set_operands(
+            [self.target.isa.registers["X11"], register, register]
+        )
         instructions.append(ins)
 
         ins = self.target.new_instruction("JAL_V0")
@@ -192,19 +268,23 @@ class riscv64_riscy_sim(GenericEnvironment):
 
         instructions += self._wait_uart_free()
 
-        source_register = self.target.isa.registers['X15']
+        source_register = self.target.isa.registers["X15"]
 
         assert (value is not None) or (register is not None)
 
         if value is not None:
             assert register is None
-            instructions += self.target.set_register(source_register, value, context)
+            instructions += self.target.set_register(
+                source_register, value, context
+            )
         elif register is not None:
             assert value is None
             source_register = register
 
         ins = self.target.new_instruction("SW_V0")
-        ins.set_operands([0, source_register, self.target.isa.registers['X14'], 0])
+        ins.set_operands(
+            [0, source_register, self.target.isa.registers["X14"], 0]
+        )
         instructions.append(ins)
 
         return instructions
@@ -214,12 +294,24 @@ class riscv64_riscy_sim(GenericEnvironment):
 
         # Reset cycle count
         ins = self.target.new_instruction("CSRRW_V0")
-        ins.set_operands([self._CSR_MCYCLE, self.target.isa.registers["X0"], self.target.isa.registers["X0"]])
+        ins.set_operands(
+            [
+                self._CSR_MCYCLE,
+                self.target.isa.registers["X0"],
+                self.target.isa.registers["X0"],
+            ]
+        )
         instructions.append(ins)
 
         # Reset instruction count
         ins = self.target.new_instruction("CSRRW_V0")
-        ins.set_operands([self._CSR_MINSTRET, self.target.isa.registers["X0"], self.target.isa.registers["X0"]])
+        ins.set_operands(
+            [
+                self._CSR_MINSTRET,
+                self.target.isa.registers["X0"],
+                self.target.isa.registers["X0"],
+            ]
+        )
         instructions.append(ins)
 
         return instructions
@@ -230,22 +322,38 @@ class riscv64_riscy_sim(GenericEnvironment):
 
         # Read cycles
         ins = self.target.new_instruction("CSRRS_V0")
-        ins.set_operands([self._CSR_MCYCLE, self.target.isa.registers["X0"], self.target.isa.registers["X13"]])
+        ins.set_operands(
+            [
+                self._CSR_MCYCLE,
+                self.target.isa.registers["X0"],
+                self.target.isa.registers["X13"],
+            ]
+        )
         instructions.append(ins)
 
         # Read instructions
         ins = self.target.new_instruction("CSRRS_V0")
-        ins.set_operands([self._CSR_MINSTRET, self.target.isa.registers["X0"], self.target.isa.registers["X16"]])
+        ins.set_operands(
+            [
+                self._CSR_MINSTRET,
+                self.target.isa.registers["X0"],
+                self.target.isa.registers["X16"],
+            ]
+        )
         instructions.append(ins)
 
         # Send cycle count
-        instructions += self._print_reg(self.target.isa.registers["X13"], context)
+        instructions += self._print_reg(
+            self.target.isa.registers["X13"], context
+        )
 
         # Send ","
         instructions += self._send_char_uart(context, value=44)
 
         # Send instruction count
-        instructions += self._print_reg(self.target.isa.registers["X16"], context)
+        instructions += self._print_reg(
+            self.target.isa.registers["X16"], context
+        )
 
         # Send "~"
         instructions += self._send_char_uart(context, value=126)

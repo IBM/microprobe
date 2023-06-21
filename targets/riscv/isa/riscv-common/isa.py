@@ -51,37 +51,38 @@ _RISCV_PCREL_LABEL = 0
 
 # Classes
 class RISCVISA(GenericISA):
-
     def __init__(
-            self,
-            name: str,
-            descr: str,
-            path: str,
-            ins: Dict[str, InstructionType],
-            regs: Dict[str, Register],
-            comparators,
-            generators
+        self,
+        name: str,
+        descr: str,
+        path: str,
+        ins: Dict[str, InstructionType],
+        regs: Dict[str, Register],
+        comparators,
+        generators,
     ):
-        super(RISCVISA, self).__init__(name, descr, path, ins, regs,
-                                       comparators,
-                                       generators)
-        self._scratch_registers += [self.registers["X31"],
-                                    self.registers["F7"]]
-        self._control_registers += [reg for reg in self.registers.values()
-                                    if reg.type.name == "rm"]
-        self._control_registers += [reg for reg in self.registers.values()
-                                    if reg.type.name == "SPR"]
+        super(RISCVISA, self).__init__(
+            name, descr, path, ins, regs, comparators, generators
+        )
+        self._scratch_registers += [
+            self.registers["X31"],
+            self.registers["F7"],
+        ]
+        self._control_registers += [
+            reg for reg in self.registers.values() if reg.type.name == "rm"
+        ]
+        self._control_registers += [
+            reg for reg in self.registers.values() if reg.type.name == "SPR"
+        ]
 
     def set_register(
-            self,
-            register: Register,
-            value: int,
-            context: Context,
-            opt: bool = False
+        self,
+        register: Register,
+        value: int,
+        context: Context,
+        opt: bool = False,
     ):
-
-        LOG.debug("Setting register: %s to value %d",
-                  register.name, value)
+        LOG.debug("Setting register: %s to value %d", register.name, value)
 
         instrs: List[Instruction] = []
 
@@ -104,11 +105,9 @@ class RISCVISA(GenericISA):
             present_reg = None
 
         if register.type.name == "freg":
-
             LOG.debug("FP register")
 
             if present_reg is not None:
-
                 LOG.debug("Value already present")
 
                 instr = self.new_instruction("FSGNJ.S_V0")
@@ -116,23 +115,22 @@ class RISCVISA(GenericISA):
                 instrs.append(instr)
 
             else:
+                LOG.debug(
+                    "Setting value to scratch and " "then move to FP register"
+                )
 
-                LOG.debug("Setting value to scratch and "
-                          "then move to FP register")
-
-                instrs += self.set_register(self._scratch_registers[0], value,
-                                            context)
+                instrs += self.set_register(
+                    self._scratch_registers[0], value, context
+                )
 
                 instr = self.new_instruction("FMV.D.X_V0")
                 instr.set_operands([self._scratch_registers[0], register])
                 instrs.append(instr)
 
         elif register.type.name == "ireg":
-
             LOG.debug("Integer register")
 
             if value == 0:
-
                 LOG.debug("Zero value")
 
                 addi = self.new_instruction("ADDI_V0")
@@ -140,39 +138,39 @@ class RISCVISA(GenericISA):
                 instrs.append(addi)
 
             elif present_reg is not None:
-
                 LOG.debug("Value already present")
 
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands([0, present_reg, register])
                 instrs.append(addi)
 
-            elif (current_value is not None and
-                  not isinstance(current_value, Address) and
-                  abs(value - current_value) < (2 ** 11)):
-
+            elif (
+                current_value is not None
+                and not isinstance(current_value, Address)
+                and abs(value - current_value) < (2**11)
+            ):
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands([value - current_value, register, register])
                 instrs.append(addi)
 
-            elif (closest_value is not None and
-                  closest_value[0].type.name == "ireg" and
-                  abs(value - closest_value[1]) < (2 ** 11)):
-
+            elif (
+                closest_value is not None
+                and closest_value[0].type.name == "ireg"
+                and abs(value - closest_value[1]) < (2**11)
+            ):
                 addi = self.new_instruction("ADDI_V0")
                 addi.set_operands(
                     [value - closest_value[1], closest_value[0], register]
                 )
                 instrs.append(addi)
 
-            elif (value >= -(2 ** 31) and value < (2 ** 31)):
-
+            elif value >= -(2**31) and value < (2**31):
                 LOG.debug("Short path")
 
                 lui_val = (value >> 12) & 0xFFFFF
-                addi_val = value & 0xFFF;
+                addi_val = value & 0xFFF
 
-                if (addi_val >= 2048):
+                if addi_val >= 2048:
                     lui_val = (lui_val + 1) & 0xFFFFF
                     addi_val -= 4096
 
@@ -185,13 +183,12 @@ class RISCVISA(GenericISA):
                 instrs.append(addi)
 
             else:
-
                 LOG.debug("Long path")
 
                 lui_val = (value >> 44) & 0xFFFFF
-                addi_val = (value >> 32) & 0xFFF;
+                addi_val = (value >> 32) & 0xFFF
 
-                if (addi_val >= 2048):
+                if addi_val >= 2048:
                     lui_val = (lui_val + 1) & 0xFFFFF
                     addi_val -= 4096
 
@@ -208,7 +205,9 @@ class RISCVISA(GenericISA):
                 instrs.append(instr)
 
                 instr = self.new_instruction("ORI_V0")
-                instr.set_operands([int((value >> 21) & 0x7FF), register, register])
+                instr.set_operands(
+                    [int((value >> 21) & 0x7FF), register, register]
+                )
                 instrs.append(instr)
 
                 instr = self.new_instruction("SLLI_V0")
@@ -216,7 +215,9 @@ class RISCVISA(GenericISA):
                 instrs.append(instr)
 
                 instr = self.new_instruction("ORI_V0")
-                instr.set_operands([int((value >> 10) & 0x7FF), register, register])
+                instr.set_operands(
+                    [int((value >> 10) & 0x7FF), register, register]
+                )
                 instrs.append(instr)
 
                 instr = self.new_instruction("SLLI_V0")
@@ -228,8 +229,7 @@ class RISCVISA(GenericISA):
                 instrs.append(instr)
 
         else:
-            LOG.debug("Register: %s set to value %d",
-                      register.name, value)
+            LOG.debug("Register: %s set to value %d", register.name, value)
             raise NotImplementedError
 
         if len(instrs) > 0:
@@ -238,14 +238,13 @@ class RISCVISA(GenericISA):
         return super(RISCVISA, self).set_register(register, value, context)
 
     def set_register_to_address(
-            self,
-            register: Register,
-            address: Address,
-            context: Context,
-            force_absolute: bool = False,
-            force_relative: bool = False
+        self,
+        register: Register,
+        address: Address,
+        context: Context,
+        force_absolute: bool = False,
+        force_relative: bool = False,
     ):
-
         instrs: List[Instruction] = []
 
         LOG.debug("Begin setting '%s' to address '%s'", register, address)
@@ -254,38 +253,35 @@ class RISCVISA(GenericISA):
         option_label = None
 
         if isinstance(address.base_address, Variable):
-
             LOG.debug("Base address is a Variable: %s", address.base_address)
             closest = context.get_closest_address_value(address)
 
             if context.register_has_value(address):
-
                 present_reg = context.registers_get_value(address)[0]
                 displacement = 0
                 LOG.debug("Address already in register '%s'", present_reg)
 
             elif closest is not None:
-
                 present_reg, taddress = closest
                 displacement = address.displacement - taddress.displacement
-                LOG.debug("Closest value '%s' found in '%s'",
-                          taddress,
-                          present_reg)
+                LOG.debug(
+                    "Closest value '%s' found in '%s'", taddress, present_reg
+                )
                 LOG.debug("Displacement needed: %s", displacement)
 
             elif context.register_has_value(
-                    Address(base_address=address.base_address)):
-
+                Address(base_address=address.base_address)
+            ):
                 present_reg = context.registers_get_value(
-                    Address(base_address=address.base_address))[0]
+                    Address(base_address=address.base_address)
+                )[0]
                 displacement = address.displacement
-                LOG.debug("Base address '%s' found in '%s'",
-                          taddress,
-                          present_reg)
+                LOG.debug(
+                    "Base address '%s' found in '%s'", taddress, present_reg
+                )
                 LOG.debug("Displacement needed: %s", displacement)
 
             else:
-
                 present_reg = None
                 displacement = None
 
@@ -293,12 +289,11 @@ class RISCVISA(GenericISA):
             LOG.debug("Displacement: %s", displacement)
 
             if present_reg is not None:
-
-                if displacement != 0 and abs(displacement) < (2 ** 11):
-
+                if displacement != 0 and abs(displacement) < (2**11):
                     addi_ins = self.new_instruction("ADDI_V0")
-                    addi_ins.set_operands([displacement, present_reg,
-                                           register])
+                    addi_ins.set_operands(
+                        [displacement, present_reg, register]
+                    )
                     instrs.append(addi_ins)
 
                     LOG.debug("Computing directly from context (short)")
@@ -320,7 +315,6 @@ class RISCVISA(GenericISA):
                     instrs = []
 
         if context.symbolic and not force_absolute and not force_relative:
-
             instrs = []
 
             # TODO: This should be a call to the environment object because
@@ -344,12 +338,9 @@ class RISCVISA(GenericISA):
             auipc_ins = self.new_instruction("AUIPC_V0")
             auipc_ins.operands()[1].set_value(register)
             auipc_ins.operands()[0].set_value(
-                "%%pcrel_hi(%s)" % basename + basedisp,
-                check=False
+                "%%pcrel_hi(%s)" % basename + basedisp, check=False
             )
-            auipc_ins.set_label(
-                "%s_pcrel_%d" % (basename, lnum)
-            )
+            auipc_ins.set_label("%s_pcrel_%d" % (basename, lnum))
 
             instrs.append(auipc_ins)
 
@@ -357,8 +348,7 @@ class RISCVISA(GenericISA):
             addi_ins.operands()[1].set_value(register)
             addi_ins.operands()[2].set_value(register)
             addi_ins.operands()[0].set_value(
-                "%%pcrel_lo(%s_pcrel_%d)" % (basename, lnum),
-                check=False
+                "%%pcrel_lo(%s_pcrel_%d)" % (basename, lnum), check=False
             )
             instrs.append(addi_ins)
 
@@ -382,44 +372,34 @@ class RISCVISA(GenericISA):
             return option_displacement
 
     def load(self, register: Register, address: Address, context: Context):
-
         ldi = self.new_instruction("LD_V0")
         ldi.operands()[2].set_value(register)
         ldi.memory_operands()[0].set_address(address, context)
         return [ldi]
 
     def load_float(
-            self,
-            register: Register,
-            address: Address,
-            context: Context
+        self, register: Register, address: Address, context: Context
     ):
-
         ldi = self.new_instruction("FLD_V0")
         ldi.operands()[2].set_value(register)
         ldi.memory_operands()[0].set_address(address, context)
         return [ldi]
 
     def store_float(
-            self,
-            register: Register,
-            address: Address,
-            context: Context
+        self, register: Register, address: Address, context: Context
     ):
-
         std = self.new_instruction("FSD_V0")
         std.operands()[2].set_value(register)
         std.memory_operands()[0].set_address(address, context)
         return [std]
 
     def store_integer(
-            self,
-            register: Register,
-            address: Address,
-            length: int,
-            context: Context
+        self,
+        register: Register,
+        address: Address,
+        length: int,
+        context: Context,
     ):
-
         if length == 64:
             stg = self.new_instruction("SD_V0")
             stg.operands()[1].set_value(register)
@@ -448,24 +428,22 @@ class RISCVISA(GenericISA):
             raise NotImplementedError
 
     def set_register_bits(
-            self,
-            dummy_register: Register,
-            dummy_value: int,
-            dummy_mask: int,
-            dummy_shift: int,
-            dummy_context: Context
+        self,
+        dummy_register: Register,
+        dummy_value: int,
+        dummy_mask: int,
+        dummy_shift: int,
+        dummy_context: Context,
     ):
-
         raise NotImplementedError
 
     def store_decimal(
-            self,
-            dummy_address: Address,
-            dummy_length: int,
-            dummy_value: int,
-            dummy_context: Context
+        self,
+        dummy_address: Address,
+        dummy_length: int,
+        dummy_value: int,
+        dummy_context: Context,
     ):
-
         raise NotImplementedError
 
     @property
@@ -473,11 +451,10 @@ class RISCVISA(GenericISA):
         raise NotImplementedError
 
     def branch_unconditional_relative(
-            self,
-            source: InstructionAddress | Address,
-            target: InstructionAddress | Address
+        self,
+        source: InstructionAddress | Address,
+        target: InstructionAddress | Address,
     ):
-
         LOG.debug("Source: %s", source)
         LOG.debug("Target: %s", target)
 
@@ -494,7 +471,7 @@ class RISCVISA(GenericISA):
             instruction = self.new_instruction("JAL_V0")
             source_address = source
             instruction.set_address(source_address)
-            instruction.operands()[1].set_value(self.target.registers['X0'])
+            instruction.operands()[1].set_value(self.target.registers["X0"])
             instruction.memory_operands()[0].set_address(target_address, None)
             return instruction
 
@@ -505,7 +482,7 @@ class RISCVISA(GenericISA):
 
             instruction = self.new_instruction("JAL_V0")
             instruction.set_address(source_address)
-            instruction.operands()[1].set_value(self.target.registers['X0'])
+            instruction.operands()[1].set_value(self.target.registers["X0"])
 
             LOG.debug("Source address: %s", source_address)
             LOG.debug("Target address: %s", target_address)
@@ -528,7 +505,6 @@ class RISCVISA(GenericISA):
         return instruction
 
     def branch_unconditional_relative2(self, source, target):
-
         LOG.debug("Source: %s", source)
         LOG.debug("Target: %s", target)
 
@@ -545,7 +521,7 @@ class RISCVISA(GenericISA):
             instruction = self.new_instruction("JAL_V0")
             source_address = source
             instruction.set_address(source_address)
-            instruction.operands()[1].set_value(self.target.registers['X0'])
+            instruction.operands()[1].set_value(self.target.registers["X0"])
             instruction.memory_operands()[0].set_address(target_address, None)
             return [instruction]
 
@@ -556,7 +532,7 @@ class RISCVISA(GenericISA):
 
             instruction = self.new_instruction("JAL_V0")
             instruction.set_address(source_address)
-            instruction.operands()[1].set_value(self.target.registers['X0'])
+            instruction.operands()[1].set_value(self.target.registers["X0"])
 
             LOG.debug("Source address: %s", source_address)
             LOG.debug("Target address: %s", target_address)
@@ -570,7 +546,7 @@ class RISCVISA(GenericISA):
             print(("Source:", source))
             raise NotImplementedError
 
-        if (relative_offset < -524288 or relative_offset > 524287):
+        if relative_offset < -524288 or relative_offset > 524287:
             instructions = []
 
             relative_offset_high = (relative_offset >> 12) & 0xFFFFF
@@ -579,20 +555,27 @@ class RISCVISA(GenericISA):
             # Because immediate values are sign-extended, we need to
             # pre-increment the upper immediate bits to counteract the case
             # in which the lower immediate forms a negative number (MSB is 1)
-            if (relative_offset_low & (1 << 11)):
+            if relative_offset_low & (1 << 11):
                 relative_offset_high = (relative_offset_high + 1) & 0xFFFFF
 
                 # While we're at it, convert the lower immediate to negative
                 # using 2's complement
                 relative_offset_low = relative_offset_low - 2**12
 
-
             ins = self.new_instruction("AUIPC_V0")
-            ins.set_operands([relative_offset_high, self.target.registers['X1']])
+            ins.set_operands(
+                [relative_offset_high, self.target.registers["X1"]]
+            )
             instructions.append(ins)
 
             ins = self.new_instruction("JALR_V0")
-            ins.set_operands([relative_offset_low, self.target.registers['X1'], self.target.registers['X0']])
+            ins.set_operands(
+                [
+                    relative_offset_low,
+                    self.target.registers["X1"],
+                    self.target.registers["X0"],
+                ]
+            )
             instructions.append(ins)
 
             return instructions
@@ -607,11 +590,10 @@ class RISCVISA(GenericISA):
             return [instruction]
 
     def add_to_register(self, register: Register, value: int):
-
         instrs: List[Instruction] = []
-        if register.type.name == "ireg" and isinstance(value,
-                                                       six.integer_types):
-
+        if register.type.name == "ireg" and isinstance(
+            value, six.integer_types
+        ):
             if value > 0:
                 while (value) > 0x7FF:
                     addi = self.new_instruction("ADDI_V0")
@@ -635,14 +617,13 @@ class RISCVISA(GenericISA):
         return instrs
 
     def compare_and_branch(
-            self,
-            val1: Register,
-            val2: Register,
-            cond: str,
-            target: Target | str,
-            context: Context
+        self,
+        val1: Register,
+        val2: Register,
+        cond: str,
+        target: Target | str,
+        context: Context,
     ):
-
         assert cond in ["<", ">", "!=", "=", ">=", "<="]
         instrs: List[Instruction] = []
 
@@ -687,17 +668,14 @@ class RISCVISA(GenericISA):
 
     def nop(self):
         instr = self.new_instruction("ADDI_V0")
-        instr.set_operands([0,
-                            self.target.registers['X0'],
-                            self.target.registers['X0']])
+        instr.set_operands(
+            [0, self.target.registers["X0"], self.target.registers["X0"]]
+        )
         return instr
 
     def negate_register(
-            self,
-            dummy_register: Register,
-            dummy_context: Context
+        self, dummy_register: Register, dummy_context: Context
     ):
-
         raise NotImplementedError
 
     @property
@@ -713,11 +691,9 @@ class RISCVISA(GenericISA):
         if tmpl_path is None:
             tmpl_path = _MODULE_DIR
 
-        return super(
-            RISCVISA,
-            self).set_context(
-            variable=variable,
-            tmpl_path=tmpl_path)
+        return super(RISCVISA, self).set_context(
+            variable=variable, tmpl_path=tmpl_path
+        )
 
     def get_context(self, variable=None, tmpl_path=None):
         """ """
@@ -725,11 +701,9 @@ class RISCVISA(GenericISA):
         if tmpl_path is None:
             tmpl_path = _MODULE_DIR
 
-        return super(
-            RISCVISA,
-            self).get_context(
-            variable=variable,
-            tmpl_path=tmpl_path)
+        return super(RISCVISA, self).get_context(
+            variable=variable, tmpl_path=tmpl_path
+        )
 
     def normalize_asm(self, mnemonic: str, operands: List[str]):
         """ """
@@ -738,18 +712,18 @@ class RISCVISA(GenericISA):
             new_operands: List[str] = []
             for operand in operands:
                 value = 0
-                if 'I' in operand:
+                if "I" in operand:
                     value += 8
-                if 'O' in operand:
+                if "O" in operand:
                     value += 4
-                if 'R' in operand:
+                if "R" in operand:
                     value += 2
-                if 'W' in operand:
+                if "W" in operand:
                     value += 1
                 new_operands.append(str(value))
             return mnemonic, new_operands
         elif mnemonic == "C.JR" or mnemonic == "C.JALR":
-            operands.append('X0')
+            operands.append("X0")
             return mnemonic, operands
         else:
             # Remove the implicit stack pointer operand from all instructions
@@ -758,7 +732,6 @@ class RISCVISA(GenericISA):
             return mnemonic, new_operands
 
     def randomize_register(self, register: Register, seed: int | None = None):
-
         instrs: List[Instruction] = []
 
         ins = self.new_instruction("MUL_V0")
@@ -794,20 +767,21 @@ class RISCVISA(GenericISA):
             reg
             for reg in self._address_registers
             if reg not in context.reserved_registers
-            and int(reg.codification) >= 8 and int(reg.codification) <= 15
+            and int(reg.codification) >= 8
+            and int(reg.codification) <= 15
         ]
 
         reg += [
             reg
             for reg in self._address_registers
             if reg not in context.reserved_registers
-            and int(reg.codification) < 8 and int(reg.codification) > 15
+            and int(reg.codification) < 8
+            and int(reg.codification) > 15
         ]
 
         if len(reg) == 0:
             raise MicroprobeCodeGenerationError(
-                "No free registers available. "
-                "Change your policy."
+                "No free registers available. " "Change your policy."
             )
 
         return reg[0]
