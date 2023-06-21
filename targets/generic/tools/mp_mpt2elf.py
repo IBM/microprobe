@@ -144,8 +144,10 @@ def generate(test_definition, output_file, target, **kwargs):
         executed_code = []
         align = 32
         for access in test_definition.roi_memory_access_trace:
-            # if access.data_type == "D":
-            #    continue
+
+            if access.data_type == "D":
+                continue
+
             if ((access.address//align)*align) not in executed_code:
                 executed_code.append((access.address//align)*align)
 
