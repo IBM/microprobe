@@ -454,17 +454,28 @@ class InstructionOperandValue(Pickable):
 
         return self._operand_descriptor.type.access(self.value)
 
-    def __getattr__(self, name):
+    @property
+    def type(self):
+        """Type of the operand descriptor (:class:`~.Operand`)"""
+        return self._operand_descriptor._type
+
+    @property
+    def is_input(self):
+        """Is input flag (:class:`~.bool`) """
+        return self._operand_descriptor._is_input
+
+    @property
+    def is_output(self):
+        """Is output flag (:class:`~.bool`) """
+        return self._operand_descriptor._is_output
+
+    def set_type(self, new_type):
         """
 
-        :param name:
+        :param new_type:
 
         """
-        try:
-            return self._operand_descriptor.__getattribute__(name)
-        except AttributeError:
-            raise AttributeError("'%s' object has no attribute '%s'" %
-                                 (self.__class__.__name__, name))
+        self._operand_descriptor._type = new_type
 
     def __repr__(self):
         """ """
