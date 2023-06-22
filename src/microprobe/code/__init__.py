@@ -38,14 +38,14 @@ the set of passes (:class:`~.Pass`) to apply to generate a benchmark
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import copy
 import datetime
 import os
-import warnings
 from time import time
+from typing import TYPE_CHECKING, Dict, List
 
 # Third party modules
 import six
@@ -57,16 +57,20 @@ import microprobe.utils as cmd
 from microprobe import MICROPROBE_RC
 from microprobe.code.address import InstructionAddress
 from microprobe.code.benchmark import benchmark_factory
-from microprobe.code.context import Context
-from microprobe.code.ins import Instruction
 from microprobe.exceptions import MicroprobeCodeGenerationError, \
     MicroprobeError, MicroprobeValueError
 from microprobe.utils.imp import get_all_subclasses, load_source
 from microprobe.utils.logger import DEBUG, get_logger, set_log_level
-from microprobe.utils.misc import OrderedDict, findfiles, Progress, \
-    open_generic_fd
+from microprobe.utils.misc import Progress, findfiles, open_generic_fd
 
-# Local modules
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.address import Address
+    from microprobe.code.benchmark import Benchmark
+    from microprobe.code.ins import Instruction
+    from microprobe.code.wrapper import Wrapper
+    from microprobe.passes import Pass
+    from microprobe.target import Target
 
 # Constants
 
@@ -78,7 +82,7 @@ __all__ = ['get_wrapper', 'Synthesizer']
 
 
 # Functions
-def get_wrapper(name):
+def get_wrapper(name: str):
     """Return a wrapper object with name *name*.
 
     Look for the registered :class:`~.Wrapper` objects and return and instance
@@ -110,7 +114,7 @@ def get_wrapper(name):
 
 
 def _import_default_wrappers():
-    modules = []
+    modules: List[str] = []
     LOG.debug('Wrapper paths: %s', MICROPROBE_RC['wrapper_paths'])
     for path in MICROPROBE_RC['wrapper_paths']:
         for module in findfiles([path], r"wrappers/.+\.py$", full=True):
@@ -156,7 +160,7 @@ def _import_default_wrappers():
 
 
 # Classes
-class Synthesizer(object):
+class Synthesizer:
     """Benchmark synthesizer.
 
     The Synthesizer objects are in charge of creating :class:`~.Benchmark`
@@ -219,7 +223,13 @@ class Synthesizer(object):
           it does not make sense ;).
     """
 
-    def __init__(self, target, wrapper, **kwargs):
+    def __init__(self,
+                 target: Target,
+                 wrapper: Wrapper | List[Wrapper],
+                 no_scratch: bool = False,
+                 extra_raw: Dict[str, str] = {},
+                 value="random",
+                 threads: int = 1):
         """Create a Synthesizer object.
 
         :param target: Benchmark target
@@ -243,12 +253,12 @@ class Synthesizer(object):
         self._target = target
 
         # Extra arguments
-        self._no_scratch = kwargs.get("no_scratch", False)
-        self._raw = kwargs.get("extra_raw", {})
-        self._immediate = kwargs.get("value", "random")
-        self._threads = kwargs.get("threads", 1)
+        self._no_scratch = no_scratch
+        self._raw = extra_raw
+        self._immediate = value
+        self._threads = threads
 
-        self._passes = {}
+        self._passes: Dict[int, List[Pass]] = {}
         for idx in range(1, self._threads + 1):
             self._passes[idx] = []
 
@@ -263,7 +273,7 @@ class Synthesizer(object):
             self._wrappers = wrapper
         else:
             self._wrappers = [wrapper]
-            for dummy in range(1, self._threads):
+            for _ in range(1, self._threads):
                 new_wrapper = copy.deepcopy(wrapper)
                 self._wrappers.append(new_wrapper)
 
@@ -280,7 +290,7 @@ class Synthesizer(object):
         """Wrapper attribute (:class:`~.Wrapper`)."""
         return self._wrappers[self._current_thread - 1]
 
-    def add_pass(self, synth_pass, thread_idx=None):
+    def add_pass(self, synth_pass: Pass, thread_idx: int | None = None):
         """Add a pass to the benchmark synthesizer.
 
         :param synth_pass: New pass to add.
@@ -296,7 +306,10 @@ class Synthesizer(object):
                     (thread_idx, self._threads + 1))
             self._passes[thread_idx].append(synth_pass)
 
-    def save(self, name, bench=None, pad=None):
+    def save(self,
+             name: str,
+             bench: Benchmark | None = None,
+             pad: int | None = None):
         """Save a benchmark to disk.
 
         Save a synthesized benchmark to disk. If bench is not specified a
@@ -437,7 +450,7 @@ class Synthesizer(object):
 
         return bench
 
-    def _wrap_thread(self, bench, thread_id):
+    def _wrap_thread(self, bench: Benchmark, thread_id: int):
         """Wrap a thread in benchmark.
 
         This function wraps a thread using the synthesizer wrapper. The
@@ -457,7 +470,7 @@ class Synthesizer(object):
         bench.set_current_thread(thread_id)
         self.set_current_thread(thread_id)
 
-        thread_str = []
+        thread_str: List[str] = []
         thread_str.append(self.wrapper.start_main())
 
         if 'CODE_HEADER' in self._raw:
@@ -477,7 +490,7 @@ class Synthesizer(object):
         for instr in bench.init:
             thread_str.append(self.wrapper.wrap_ins(instr))
 
-        code_str = []
+        code_str: List[str] = []
         first = True
         instr = None
         for bbl in bench.cfg.bbls:
@@ -510,7 +523,7 @@ class Synthesizer(object):
 
         return thread_str
 
-    def _wrap(self, bench):
+    def _wrap(self, bench: Benchmark):
         """Wrap a benchmark.
 
         This function wraps a benchmark using the synthesizer wrapper. The
@@ -530,7 +543,7 @@ class Synthesizer(object):
 
         self.set_current_thread(1)
 
-        bench_str = []
+        bench_str: List[str] = []
 
         if 'FILE_HEADER' in self._raw:
             bench_str.append(self._raw['FILE_HEADER'] + "\n")
@@ -556,7 +569,7 @@ class Synthesizer(object):
         bench_str = [elem for elem in bench_str if elem != ""]
         return bench_str
 
-    def set_current_thread(self, idx):
+    def set_current_thread(self, idx: int):
         """ """
         self._current_thread = idx
         if not 1 <= idx <= self._threads + 1:
@@ -585,14 +598,24 @@ class TraceSynthesizer(Synthesizer):
       -  **<benchmark finalization code>**
     """
 
-    def __init__(self, target, wrapper, **kwargs):
-        super(TraceSynthesizer, self).__init__(target, wrapper, **kwargs)
+    def __init__(self,
+                 target: Target,
+                 wrapper: Wrapper,
+                 show_trace: bool = False,
+                 maxins: int = 10000,
+                 start_addr: Address | None = None,
+                 no_scratch: bool = False,
+                 extra_raw: Dict[str, str] = {},
+                 value="random",
+                 threads: int = 1):
+        super(TraceSynthesizer, self).__init__(target, wrapper, no_scratch,
+                                               extra_raw, value, threads)
 
-        self._show_trace = kwargs.get("show_trace", False)
-        self._maxins = kwargs.get("maxins", 10000)
-        self._start_addr = kwargs.get("start_addr", None)
+        self._show_trace = show_trace
+        self._maxins = maxins
+        self._start_addr = start_addr
 
-    def _wrap(self, bench):
+    def _wrap(self, bench: Benchmark):
         """Wrap a benchmark.
 
         This function wraps a benchmark using the synthesizer wrapper. The
@@ -608,12 +631,13 @@ class TraceSynthesizer(Synthesizer):
         """
         self.wrapper.set_benchmark(bench)
 
-        bench_str = []
+        bench_str: List[str] = []
         bench_str.append(self.wrapper.headers())
 
-        instructions = []
-        instructions_dict = {}
-        instructions_next_dict = {}
+        instructions: List[Instruction] = []
+        instructions_dict: Dict[InstructionAddress, Instruction] = {}
+        instructions_next_dict: Dict[InstructionAddress,
+                                     InstructionAddress] = {}
 
         for instr in bench.init:
             instructions.append(instr)

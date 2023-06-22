@@ -16,11 +16,12 @@
 """
 
 # Futures
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, division, print_function, annotations
 
 # Built-in modules
 import copy
 from itertools import product
+from typing import TYPE_CHECKING, Callable
 
 # Third party modules
 import six
@@ -38,6 +39,12 @@ from microprobe.utils.asm import interpret_asm
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, \
     Pickable, RejectingDict, RejectingOrderedDict
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.isa.instruction import InstructionType
+    from microprobe.code.context import Context
+    from microprobe.target import Target
 
 # Constants
 LOG = get_logger(__name__)
@@ -58,7 +65,7 @@ _LABEL_COUNTER = 0
 
 
 # Functions
-def instruction_to_definition(instr):
+def instruction_to_definition(instr: Instruction):
     """
     Return the definition of an instruction.
 
@@ -86,7 +93,8 @@ def instruction_to_definition(instr):
         asm, instr.decorators, comments)
 
 
-def instruction_from_definition(definition, fix_relative=True):
+def instruction_from_definition(definition: MicroprobeInstructionDefinition,
+                                fix_relative: bool = True):
     """
     Return the instruction from a definition.
 
@@ -106,11 +114,11 @@ def instruction_from_definition(definition, fix_relative=True):
 
 
 def instruction_set_def_properties(instr,
-                                   definition,
+                                   definition: MicroprobeInstructionDefinition,
                                    building_block=None,
-                                   target=None,
+                                   target: Target | None = None,
                                    allowed_registers=None,
-                                   fix_relative=True,
+                                   fix_relative: bool = True,
                                    label_displ=None):
     """
     Set instruction properties from an intruction definition.
@@ -339,7 +347,7 @@ def instructions_from_asm(asm, target, labels=None, fix_relative=True):
     return instrs
 
 
-def instruction_factory(ins_type):
+def instruction_factory(ins_type: InstructionType):
     """Return a instruction of the given instruction type.
 
     :param ins_type: Instruction type of the new instruction
@@ -356,7 +364,7 @@ def instruction_factory(ins_type):
 class InstructionOperandValue(Pickable):
     """Class to represent an instruction operand value"""
 
-    def __init__(self, operand_descriptor):
+    def __init__(self, operand_descriptor: OperandDescriptor):
         """
 
         :param operand_descriptor:
@@ -389,7 +397,7 @@ class InstructionOperandValue(Pickable):
                                           self._unset_function)
         return newobj
 
-    def set_descriptor(self, descriptor):
+    def set_descriptor(self, descriptor: OperandDescriptor):
         """
 
         :param descriptor:
@@ -397,7 +405,7 @@ class InstructionOperandValue(Pickable):
         """
         self._operand_descriptor = descriptor
 
-    def set_value(self, value, check=True):
+    def set_value(self, value, check: bool = True):
         """
 
         :param value:
@@ -463,7 +471,8 @@ class InstructionOperandValue(Pickable):
         return "%s(Type: %s, Value: %s)" % (self.__class__.__name__, self.type,
                                             self.value)
 
-    def register_operand_callbacks(self, set_function, unset_function):
+    def register_operand_callbacks(self, set_function,
+                                   unset_function: Callable[[], None]):
         """
 
         :param set_function:
@@ -512,7 +521,8 @@ class InstructionMemoryOperandValue(Pickable):
             self._length = self._compute_length()
 
     def register_mem_operand_callback(self, set_address, set_length,
-                                      unset_address, unset_length):
+                                      unset_address: Callable[[], None],
+                                      unset_length: Callable[[], None]):
         """
 
         :param set_address:
@@ -592,7 +602,7 @@ class InstructionMemoryOperandValue(Pickable):
 
         return length
 
-    def _compute_possible_lengths(self, context):
+    def _compute_possible_lengths(self, context: Context):
         """Compute the possible lengths that can be generated.
 
         Compute the possible lengths that can be generated from the context
@@ -963,7 +973,7 @@ class InstructionMemoryOperandValue(Pickable):
 
         self._possible_lengths = lengths
 
-    def possible_lengths(self, context):
+    def possible_lengths(self, context: Context):
         """
 
         :param context:
@@ -980,7 +990,7 @@ class InstructionMemoryOperandValue(Pickable):
         else:
             return list(self._possible_lengths.values())
 
-    def possible_addresses(self, dummy_context):
+    def possible_addresses(self, dummy_context: Context):
         """
 
         :param dummy_context:
@@ -988,7 +998,7 @@ class InstructionMemoryOperandValue(Pickable):
         """
         return self._possible_addresses
 
-    def set_possible_addresses(self, addreses, dummy_context):
+    def set_possible_addresses(self, addreses, dummy_context: Context):
         """Set the possible addresses for the memory operand.
 
         :param addreses:
@@ -1015,7 +1025,7 @@ class InstructionMemoryOperandValue(Pickable):
         """Required alignment of the memory operand (::class:`~.int`)."""
         return self._alignment
 
-    def set_possible_lengths(self, lengths, dummy_context):
+    def set_possible_lengths(self, lengths, dummy_context: Context):
         """
 
         :param lengths:
@@ -1030,7 +1040,7 @@ class InstructionMemoryOperandValue(Pickable):
         self._possible_lengths_set = None
 
     def set_forbidden_address_range(self, min_address, max_address,
-                                    dummy_context):
+                                    dummy_context: Context):
         """
 
         :param min_address:
@@ -1041,7 +1051,7 @@ class InstructionMemoryOperandValue(Pickable):
         self._forbidden_min = min_address
         self._forbidden_max = max_address
 
-    def set_length(self, length, context):
+    def set_length(self, length: int, context: Context):
         """
 
         :param length:
@@ -1182,7 +1192,7 @@ class InstructionMemoryOperandValue(Pickable):
 
         LOG.debug("End set length: %s", length)
 
-    def update_address(self, address):
+    def update_address(self, address: Address):
         """
 
         :param address:
@@ -1191,7 +1201,7 @@ class InstructionMemoryOperandValue(Pickable):
         """
         self._address = address
 
-    def set_address(self, address, context):
+    def set_address(self, address: Address, context: Context):
         """
 
         :param address:
@@ -1575,7 +1585,7 @@ class Instruction(Pickable):
         self._mem_operands = []
         self._operands = RejectingOrderedDict()
 
-    def set_arch_type(self, instrtype):
+    def set_arch_type(self, instrtype: InstructionType):
         """
 
         :param instrtype:
@@ -1704,7 +1714,7 @@ class Instruction(Pickable):
                  self._context_callback_fix[key])
                 for key in self._context_callback_check.keys()]
 
-    def check_context(self, context):
+    def check_context(self, context: Context):
         """
 
         :param context:
@@ -1935,7 +1945,7 @@ class Instruction(Pickable):
         """List of allowed registers of the instructon. """
         return self._allowed_regs
 
-    def set_label(self, label):
+    def set_label(self, label: str):
         """
 
         :param label:
@@ -1992,7 +2002,7 @@ class Instruction(Pickable):
         """Instruction address (:class:`~.InstructionAddress`)"""
         return self._address
 
-    def set_address(self, address):
+    def set_address(self, address: Address):
         """
 
         :param address:
@@ -2053,7 +2063,8 @@ class Instruction(Pickable):
         return state
 
 
-def create_dependency_between_ins(output_ins, input_ins, context):
+def create_dependency_between_ins(output_ins: Instruction,
+                                  input_ins: Instruction, context: Context):
     """
 
     :param output_ins:
@@ -2129,8 +2140,8 @@ def create_dependency_between_ins(output_ins, input_ins, context):
 
 class MicroprobeInstructionDefinition(object):
 
-    def __init__(self, instruction_type, operands, label, address, asm,
-                 decorators, comments):
+    def __init__(self, instruction_type: InstructionType, operands, label,
+                 address: Address, asm, decorators, comments):
 
         self._type = instruction_type
         self._operands = operands

@@ -15,18 +15,24 @@
 This is the wrapper module documentation
 """
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
-
-# Third party modules
-import six
+from typing import TYPE_CHECKING, Callable, List
 
 # Own modules
 from microprobe.code.context import Context
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.benchmark import Benchmark
+    from microprobe.code.ins import Instruction
+    from microprobe.code.var import Variable
+    from microprobe.target import Target
+    from microprobe.target.isa.register import Register
 
 # Constants
 LOG = get_logger(__name__)
@@ -36,7 +42,7 @@ __all__ = ["Wrapper"]
 
 
 # Classes
-class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
+class Wrapper(abc.ABC):
     """
     Abstract class to represent a language wrapper.
     """
@@ -51,7 +57,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         self._direct_init_dict = None
 
     @abc.abstractmethod
-    def outputname(self, name):
+    def outputname(self, name: str) -> str:
         """
 
         :param name:
@@ -60,7 +66,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def headers(self):
+    def headers(self) -> str:
         """ """
         raise NotImplementedError
 
@@ -69,7 +75,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
     #    raise NotImplementedError
 
     @abc.abstractmethod
-    def declare_global_var(self, var):
+    def declare_global_var(self, var: Variable) -> str:
         """
 
         :param var:
@@ -78,7 +84,8 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def init_global_var(self, var, value):
+    def init_global_var(self, var: Variable,
+                        value: int | str | Callable[[], int | str]) -> str:
         """
 
         :param var:
@@ -88,22 +95,25 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def required_global_vars(self):
+    def required_global_vars(self) -> List[Variable]:
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def start_main(self):
+    def start_main(self) -> str:
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def post_var(self):
+    def post_var(self) -> str:
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def start_loop(self, instr, instr_reset, aligned=True):
+    def start_loop(self,
+                   instr: Instruction,
+                   instr_reset: Instruction,
+                   aligned: bool = True) -> str:
         """
 
         :param instr:
@@ -114,7 +124,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def wrap_ins(self, instr):
+    def wrap_ins(self, instr: Instruction) -> str:
         """
 
         :param instr:
@@ -123,7 +133,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def end_loop(self, instr):
+    def end_loop(self, instr: Instruction) -> str:
         """
 
         :param instr:
@@ -132,22 +142,23 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def end_main(self):
+    def end_main(self) -> str:
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def footer(self):
+    def footer(self) -> str:
         """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def infinite(self):
+    def infinite(self) -> bool:
         """Returns a :class:`~.bool` indicating if the loop is infinite. """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def reserved_registers(self, registers, target):
+    def reserved_registers(self, registers: List[Register],
+                           target: Target) -> List[Register]:
         """
 
         :param registers:
@@ -156,7 +167,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         """
         raise NotImplementedError
 
-    def set_benchmark(self, bench):
+    def set_benchmark(self, bench: Benchmark):
         """
 
         :param bench:
@@ -174,7 +185,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
         """ """
         return self._reset_state
 
-    def set_target(self, target):
+    def set_target(self, target: Target):
         """
 
         :param target:

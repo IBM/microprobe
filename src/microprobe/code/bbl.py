@@ -16,18 +16,24 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
+
+from typing import TYPE_CHECKING, List
 
 # Third party modules
 from six.moves import range
 
 # Own modules
-import microprobe.code.ins
+from microprobe.code.ins import Instruction
 from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeCodeGenerationError, \
     MicroprobeValueError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.address import Address
 
 # Constants
 LOG = get_logger(__name__)
@@ -35,7 +41,7 @@ __all__ = ["Bbl", "replicate_bbls"]
 
 
 # Functions
-def replicate_bbls(bbl_list, displacement=None):
+def replicate_bbls(bbl_list: List[Bbl], displacement: int | None = None):
     """Returns a copy the given basic block list at the specified displacement.
 
     :param bbl_list: List of basic blocks to copy
@@ -45,7 +51,7 @@ def replicate_bbls(bbl_list, displacement=None):
     :type displacement: :class:`~.int`
 
     """
-    bbls_replicated = []
+    bbls_replicated: List[Bbl] = []
 
     for bbl in bbl_list:
         bbls_replicated.append(bbl.replicate(displacement=displacement))
@@ -54,10 +60,10 @@ def replicate_bbls(bbl_list, displacement=None):
 
 
 # Classes
-class Bbl(object):
+class Bbl:
     """Class to represent a basic block."""
 
-    def __init__(self, size, instructions=None):
+    def __init__(self, size: int, instructions: List[Instruction] = []):
         """
 
         :param size:
@@ -67,13 +73,11 @@ class Bbl(object):
             raise MicroprobeValueError("I can not create a Bbl with %d size" %
                                        size)
 
-        if instructions is None:
-            instructions = []
-
         self._copy_id = 0
 
         self._incstep = 10000
-        self._instrs = [None] * max(self._incstep, (size + 1) * 10)
+        self._instrs: List[Instruction | None] = \
+            [None] * max(self._incstep, (size + 1) * 10)
         self._pointer = 10
 
         self._instdic = {}
@@ -87,7 +91,7 @@ class Bbl(object):
         if not instructions:
             for idx in range(0, size):
                 # self._check_size()
-                instr = microprobe.code.ins.Instruction()
+                instr = Instruction()
                 self._instrs[self._pointer] = instr
                 self._instdic[instr] = self._pointer
                 self._pointer += 10
@@ -99,8 +103,7 @@ class Bbl(object):
                 if idx < len(instructions):
                     self._instrs[self._pointer] = instructions[idx]
                 else:
-                    self._instrs[self._pointer] = \
-                        microprobe.code.ins.Instruction()
+                    self._instrs[self._pointer] = Instruction()
                 self._instdic[self._instrs[self._pointer]] = self._pointer
                 self._pointer += 10
                 if MICROPROBE_RC["verbose"]:
@@ -122,7 +125,7 @@ class Bbl(object):
         """Basic block address (:class:`~.Address`)"""
         return self._address
 
-    def set_address(self, address):
+    def set_address(self, address: Address):
         """Set the basic block address.
 
         :param address: Address for the basic block
@@ -136,7 +139,7 @@ class Bbl(object):
         """Displacement of the basic block (::class:`~.int`)"""
         return self._displacement
 
-    def set_displacement(self, displacement):
+    def set_displacement(self, displacement: int | None):
         """Set the displacement of the basic block.
 
         :param displacement: Displacement for the basic block
@@ -150,7 +153,7 @@ class Bbl(object):
         """Size of the basic block, number of instructions (::class:`~.int`)"""
         return len(self.instrs)
 
-    def _index(self, instr):
+    def _index(self, instr: Instruction):
         """Returns the index of the given instruction within the basic block.
 
         Returns the index of the given instruction within the basic block.
@@ -162,7 +165,7 @@ class Bbl(object):
         """
         return self._instdic.get(instr, -1)
 
-    def get_instruction_index(self, instr):
+    def get_instruction_index(self, instr: Instruction):
         """Returns the index of the given instruction within the basic block.
 
         Returns the index of the given instruction within the basic block.
@@ -174,7 +177,7 @@ class Bbl(object):
         """
         return self._index(instr)
 
-    def reset_instruction(self, instr, new_instr):
+    def reset_instruction(self, instr: Instruction, new_instr: Instruction):
         """Resets the instruction within a basic block by another instruction.
 
         Resets the instruction within a basic block by another instruction.
@@ -195,7 +198,7 @@ class Bbl(object):
                                                 "in the basic block")
         self._instrs[idx] = new_instr
 
-    def remove_instructions_from(self, instr):
+    def remove_instructions_from(self, instr: Instruction):
         """Removes the given instruction from the basic block.
 
         Removes the given instruction from the basic block. If the instruction
@@ -220,7 +223,10 @@ class Bbl(object):
         self._pointer = idx
         self._check_size()
 
-    def insert_instr(self, instrs, before=None, after=None):
+    def insert_instr(self,
+                     instrs: List[Instruction],
+                     before: Instruction | None = None,
+                     after: Instruction | None = None):
         """Inserts a list of instruction in the basic block.
 
         Inserts a list of instruction in the basic block. Before/After
@@ -278,7 +284,7 @@ class Bbl(object):
                                       for idx, v in enumerate(self._instrs)
                                       if v is not None])
 
-    def _increase(self, num):
+    def _increase(self, num: int):
         """Increases the basic block size by the number specified.
 
         :param num: Number of instructions to increase
@@ -286,13 +292,13 @@ class Bbl(object):
 
         """
 
-        instrs = []
-        for dummy_idx in range(0, num):
-            instrs.append(microprobe.code.ins.Instruction())
+        instrs: List[Instruction] = []
+        for _ in range(0, num):
+            instrs.append(Instruction())
 
         self.insert_instr(instrs)
 
-    def _check_size(self, extra=0):
+    def _check_size(self, extra: int = 0):
         """Checks and fixes basic block size.
 
         :param extra:  (Default value = 0)
@@ -302,7 +308,7 @@ class Bbl(object):
         if self._pointer + extra >= len(self._instrs):
             self._instrs = self._instrs + [None] * self._incstep
 
-    def replicate(self, displacement=0):
+    def replicate(self, displacement: int | None = 0):
         """Replicates current basic block.
 
         Replicates current basic block with the given extra displacement.
@@ -329,7 +335,7 @@ class Bbl(object):
         self._copy_id += 1
         return new_bbl
 
-    def distance(self, instr1, instr2):
+    def distance(self, instr1: Instruction, instr2: Instruction):
         i1 = self.get_instruction_index(instr1)
         i2 = self.get_instruction_index(instr2)
         idxs = list(sorted([i1, i2]))
@@ -339,7 +345,7 @@ class Bbl(object):
         ]
         return len(distance)
 
-    def get_instruction_by_distance(self, instr, distance):
+    def get_instruction_by_distance(self, instr: Instruction, distance: int):
         i1 = self.get_instruction_index(instr)
         idx = sorted(self._instdic.values()).index(i1)
         if idx - distance >= 0:

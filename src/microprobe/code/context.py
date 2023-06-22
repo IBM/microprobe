@@ -29,7 +29,7 @@ from microprobe.code.address import Address, InstructionAddress
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, smart_copy_dict
 
-# Type hints
+# Type hinting
 if TYPE_CHECKING:
     from microprobe.target.isa.register import Register
     from microprobe.code.address import MemoryValue
