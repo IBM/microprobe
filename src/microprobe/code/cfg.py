@@ -22,7 +22,6 @@ from __future__ import absolute_import
 import microprobe.code.bbl
 from microprobe.utils.logger import get_logger
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["Cfg"]
@@ -58,10 +57,8 @@ class Cfg(object):
         if bbl is None:
 
             if instructions is not None:
-                bbl = microprobe.code.bbl.Bbl(
-                    len(instructions),
-                    instructions=instructions
-                )
+                bbl = microprobe.code.bbl.Bbl(len(instructions),
+                                              instructions=instructions)
             else:
                 bbl = microprobe.code.bbl.Bbl(size)
 
@@ -99,8 +96,7 @@ class Cfg(object):
 
         """
         rlist = [
-            idx
-            for idx, bbl in enumerate(self.bbls)
+            idx for idx, bbl in enumerate(self.bbls)
             if bbl.get_instruction_index(instr) >= 0
         ]
 

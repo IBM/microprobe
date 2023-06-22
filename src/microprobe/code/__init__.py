@@ -68,7 +68,6 @@ from microprobe.utils.misc import OrderedDict, findfiles, Progress, \
 
 # Local modules
 
-
 # Constants
 
 #: Package logger (:class:`~.logging.Logger`).
@@ -104,15 +103,10 @@ def get_wrapper(name):
             return elem
 
     raise MicroprobeValueError(
-        "Unknown wrapper '%s'. Available wrappers are: %s. " % (
-            name, [
-                elem.__name__
-                for elem in get_all_subclasses(
-                    microprobe.code.wrapper.Wrapper
-                )
-            ]
-        )
-    )
+        "Unknown wrapper '%s'. Available wrappers are: %s. " % (name, [
+            elem.__name__
+            for elem in get_all_subclasses(microprobe.code.wrapper.Wrapper)
+        ]))
 
 
 def _import_default_wrappers():
@@ -137,8 +131,7 @@ def _import_default_wrappers():
             if name in microprobe.code.wrapper.__dict__:
                 raise MicroprobeError(
                     "Wrapper module name '%s' in '%s' already loaded. " %
-                    (name, module_file)
-                )
+                    (name, module_file))
 
             try:
                 module = load_source(name, module_file)
@@ -159,8 +152,7 @@ def _import_default_wrappers():
                 overwrapper = list(set(current_wrappers))[0]
                 raise MicroprobeError(
                     "Module name '%s' in '%s' overrides an existing wrapper "
-                    "with name '%s'" % (name, module_file, overwrapper)
-                )
+                    "with name '%s'" % (name, module_file, overwrapper))
 
 
 # Classes
@@ -267,8 +259,7 @@ class Synthesizer(object):
                 raise MicroprobeCodeGenerationError(
                     "Number of wrappers provided (%d) is different from "
                     "number of threads (%d) specified in the Synthesizer" %
-                    (len(wrapper), self._threads)
-                )
+                    (len(wrapper), self._threads))
             self._wrappers = wrapper
         else:
             self._wrappers = [wrapper]
@@ -301,9 +292,8 @@ class Synthesizer(object):
         else:
             if not 1 <= thread_idx <= self._threads + 1:
                 raise MicroprobeCodeGenerationError(
-                    "Unknown thread id: %d (min: 1, max: %d)"
-                    % (thread_idx, self._threads + 1)
-                )
+                    "Unknown thread id: %d (min: 1, max: %d)" %
+                    (thread_idx, self._threads + 1))
             self._passes[thread_idx].append(synth_pass)
 
     def save(self, name, bench=None, pad=None):
@@ -324,13 +314,8 @@ class Synthesizer(object):
         starttime = time()
         program_str = self._wrap(bench)
         endtime = time()
-        LOG.info(
-            "Pass wrap: %s", (
-                datetime.timedelta(
-                    seconds=endtime - starttime
-                )
-            )
-        )
+        LOG.info("Pass wrap: %s",
+                 (datetime.timedelta(seconds=endtime - starttime)))
 
         outputname = self._wrappers[0].outputname(name)
         fdx = open_generic_fd(outputname, 'wb')
@@ -388,8 +373,7 @@ class Synthesizer(object):
             # Basic context
             reserved_registers = self._target.reserved_registers
             reserved_registers += self.wrapper.reserved_registers(
-                reserved_registers, self._target
-            )
+                reserved_registers, self._target)
 
             bench.context.add_reserved_registers(reserved_registers)
 
@@ -412,12 +396,9 @@ class Synthesizer(object):
                 step(bench, self.target)
                 bench.add_pass_info(step.info())
                 endtime = time()
-                LOG.debug(
-                    "Applying pass %03d: %s : Execution time: %s",
-                    idx,
-                    step.__class__.__name__,
-                    datetime.timedelta(seconds=endtime - starttime)
-                )
+                LOG.debug("Applying pass %03d: %s : Execution time: %s", idx,
+                          step.__class__.__name__,
+                          datetime.timedelta(seconds=endtime - starttime))
                 starttime = endtime
 
             starttime = time()
@@ -428,36 +409,26 @@ class Synthesizer(object):
                 try:
                     pass_ok = step.check(bench, self.target)
                 except NotImplementedError:
-                    LOG.warning(
-                        "Checking pass %03d: %s. NOT IMPLEMENTED", idx,
-                        step.__class__.__name__
-                    )
+                    LOG.warning("Checking pass %03d: %s. NOT IMPLEMENTED", idx,
+                                step.__class__.__name__)
                     pass_ok = False
 
                 endtime = time()
 
                 if not pass_ok:
-                    LOG.warning(
-                        "Checking pass %03d: %s. Test result: FAIL", idx,
-                        step.__class__.__name__
-                    )
+                    LOG.warning("Checking pass %03d: %s. Test result: FAIL",
+                                idx, step.__class__.__name__)
 
                     bench.add_warning(
                         "Pass %03d: %s did not pass the check test" %
-                        (idx, step.__class__.__name__)
-                    )
+                        (idx, step.__class__.__name__))
                 else:
-                    LOG.debug(
-                        "Checking pass %03d: %s. Test result: OK", idx,
-                        step.__class__.__name__
-                    )
+                    LOG.debug("Checking pass %03d: %s. Test result: OK", idx,
+                              step.__class__.__name__)
 
-                LOG.debug(
-                    "Checking pass %03d: %s : Execution time: %s",
-                    idx,
-                    step.__class__.__name__,
-                    datetime.timedelta(seconds=endtime - starttime)
-                )
+                LOG.debug("Checking pass %03d: %s : Execution time: %s", idx,
+                          step.__class__.__name__,
+                          datetime.timedelta(seconds=endtime - starttime))
 
                 starttime = endtime
 
@@ -495,10 +466,7 @@ class Synthesizer(object):
         for var in bench.registered_global_vars():
             if var.value is None:
                 thread_str.append(
-                    self.wrapper.init_global_var(
-                        var, self._immediate
-                    )
-                )
+                    self.wrapper.init_global_var(var, self._immediate))
 
         thread_str.append(self.wrapper.post_var())
 
@@ -518,18 +486,14 @@ class Synthesizer(object):
                     first = False
                     if bench.init:
                         code_str.append(
-                            self.wrapper.start_loop(
-                                instr, bench.init[0]
-                            )
-                        )
+                            self.wrapper.start_loop(instr, bench.init[0]))
                     else:
                         code_str.append(self.wrapper.start_loop(instr, instr))
                 code_str.append(self.wrapper.wrap_ins(instr))
 
         if instr is None:
             raise MicroprobeCodeGenerationError(
-                "No instructions found in benchmark"
-            )
+                "No instructions found in benchmark")
 
         thread_str.extend(code_str)
 
@@ -576,10 +540,8 @@ class Synthesizer(object):
         for thread_id in range(1, self._threads + 1):
             self.set_current_thread(thread_id)
             bench.set_current_thread(thread_id)
-            for var in sorted(
-                    bench.registered_global_vars(),
-                    key=lambda x: x.address
-            ):
+            for var in sorted(bench.registered_global_vars(),
+                              key=lambda x: x.address):
                 bench_str.append(self.wrapper.declare_global_var(var))
 
         for thread_id in range(1, self._threads + 1):
@@ -599,9 +561,8 @@ class Synthesizer(object):
         self._current_thread = idx
         if not 1 <= idx <= self._threads + 1:
             raise MicroprobeCodeGenerationError(
-                "Unknown thread id: %d (min: 1, max: %d)" % (idx,
-                                                             self._threads + 1)
-            )
+                "Unknown thread id: %d (min: 1, max: %d)" %
+                (idx, self._threads + 1))
 
 
 class TraceSynthesizer(Synthesizer):
@@ -625,8 +586,7 @@ class TraceSynthesizer(Synthesizer):
     """
 
     def __init__(self, target, wrapper, **kwargs):
-        super(TraceSynthesizer, self).__init__(target, wrapper,
-                                               **kwargs)
+        super(TraceSynthesizer, self).__init__(target, wrapper, **kwargs)
 
         self._show_trace = kwargs.get("show_trace", False)
         self._maxins = kwargs.get("maxins", 10000)
@@ -683,20 +643,15 @@ class TraceSynthesizer(Synthesizer):
                     self._start_addr
                 ][0]
             else:
-                instr = instructions_dict[
-                    InstructionAddress(
-                        base_address="code",
-                        displacement=(
-                            self._start_addr - bench.context.code_segment
-                        )
-                    )
-                ]
+                instr = instructions_dict[InstructionAddress(
+                    base_address="code",
+                    displacement=(self._start_addr -
+                                  bench.context.code_segment))]
 
         count = 0
 
-        cmd.cmdline.print_info(
-            "Maximum trace size: %s instructions " %
-            self._maxins)
+        cmd.cmdline.print_info("Maximum trace size: %s instructions " %
+                               self._maxins)
 
         progress = Progress(self._maxins, msg="Instructions generated:")
 
@@ -722,16 +677,14 @@ class TraceSynthesizer(Synthesizer):
                 if instr.mnemonic.upper() == "ATTN":
                     cmd.cmdline.print_warning(
                         "Processor ATTN instruction found. Stopping trace "
-                        "generation. "
-                    )
+                        "generation. ")
                     break
 
                 cmd.cmdline.print_error(
                     "Jump from 0x%X to an unknown instruction in address "
                     "0x%X found. Stoping trace generation." %
                     (instr.address.displacement + bench.context.code_segment,
-                     instr_address.displacement + bench.context.code_segment)
-                )
+                     instr_address.displacement + bench.context.code_segment))
                 exit(-1)
 
             progress()
@@ -739,9 +692,7 @@ class TraceSynthesizer(Synthesizer):
                                              next_instr=next_instr,
                                              show=self._show_trace)
 
-            bench_str.append(
-                wrap_ins
-            )
+            bench_str.append(wrap_ins)
 
             instr = next_instr
 

@@ -50,14 +50,12 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
     """
 
-    def __init__(
-            self,
-            default_context: Context | None = None,
-            code_segment: int | None = None,
-            data_segment: int | None = None,
-            symbolic: bool = True,
-            absolute: bool = False
-    ):
+    def __init__(self,
+                 default_context: Context | None = None,
+                 code_segment: int | None = None,
+                 data_segment: int | None = None,
+                 symbolic: bool = True,
+                 absolute: bool = False):
         """
 
         :param default_context:  (Default value = None)
@@ -69,12 +67,10 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         self._reserved_registers: Dict[str, Register] = RejectingDict()
 
-        self._register_values: Dict[
-            Register, int | float | Address | str | None
-        ] = {}
-        self._value_registers: Dict[
-            int | float | Address | str, List[Register]
-        ] = {}
+        self._register_values: Dict[Register,
+                                    int | float | Address | str | None] = {}
+        self._value_registers: Dict[int | float | Address | str,
+                                    List[Register]] = {}
         self._memory_values: Dict[Address, MemoryValue] = {}
         self._value_memorys: Dict[MemoryValue, List[MemoryValue]] = {}
 
@@ -95,8 +91,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         # pylint: disable=protected-access
         newcontext._reserved_registers = smart_copy_dict(
-            self._reserved_registers
-        )
+            self._reserved_registers)
         newcontext._register_values = smart_copy_dict(self._register_values)
         newcontext._value_registers = smart_copy_dict(self._value_registers)
         newcontext._memory_values = smart_copy_dict(self._memory_values)
@@ -134,10 +129,8 @@ class Context(object):  # pylint: disable=too-many-public-methods
         for reg in rregs:
             del self._reserved_registers[reg.name]
 
-    def set_register_value(
-            self,
-            register: Register, value: int | float | Address | str
-    ):
+    def set_register_value(self, register: Register,
+                           value: int | float | Address | str):
         """Set the provided register to the specified value.
 
         :param register: Register to set
@@ -151,9 +144,10 @@ class Context(object):  # pylint: disable=too-many-public-methods
         LOG.debug("Setting %s to %s", register.name, value)
 
         assert isinstance(
-            value, tuple(list(six.integer_types) +
-                         [float, Address, InstructionAddress, str])
-        ), type(value)
+            value,
+            tuple(
+                list(six.integer_types) +
+                [float, Address, InstructionAddress, str])), type(value)
 
         if isinstance(value, str):
             assert len(value.split("_")) == 2
@@ -194,8 +188,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
             possible_regs.append((reg, val))
 
-        possible_regs = sorted(possible_regs,
-                               key=lambda x: abs(x[1] - value))
+        possible_regs = sorted(possible_regs, key=lambda x: abs(x[1] - value))
         if possible_regs:
             return possible_regs[0]
 
@@ -223,9 +216,9 @@ class Context(object):  # pylint: disable=too-many-public-methods
                     Address(base_address=address.base_address):
                 possible_regs.append((reg, value))
 
-        possible_regs = sorted(possible_regs,
-                               key=lambda x: abs(x[1].displacement -
-                                                 address.displacement))
+        possible_regs = sorted(
+            possible_regs,
+            key=lambda x: abs(x[1].displacement - address.displacement))
         if possible_regs:
             return possible_regs[0]
 
@@ -263,9 +256,10 @@ class Context(object):  # pylint: disable=too-many-public-methods
         if not isinstance(value, str):
             possible_regs = sorted(possible_regs, key=lambda x: abs(x - value))
         else:
-            possible_regs = sorted(possible_regs,
-                                   key=lambda x: abs(int(x.split("_")[0]) -
-                                                     int(value.split("_")[0])))
+            possible_regs = sorted(
+                possible_regs,
+                key=lambda x: abs(
+                    int(x.split("_")[0]) - int(value.split("_")[0])))
 
         if possible_regs:
             return possible_regs[0]
@@ -301,8 +295,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
             return None
 
         register = [
-            reg for reg in self._register_values
-            if reg.name == register_name
+            reg for reg in self._register_values if reg.name == register_name
         ][0]
 
         return self._register_values.get(register, None)
@@ -353,10 +346,8 @@ class Context(object):  # pylint: disable=too-many-public-methods
             if mem_value not in self._value_memorys[mem_value.value]:
 
                 self._value_memorys[mem_value.value].append(mem_value)
-                LOG.debug(
-                    "Values inv %s: %s", mem_value.value,
-                    self._value_memorys[mem_value.value]
-                )
+                LOG.debug("Values inv %s: %s", mem_value.value,
+                          self._value_memorys[mem_value.value])
 
             else:
                 LOG.debug("Already in inv dictionary")
@@ -397,8 +388,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         LOG.debug("Start unset address: %s (length: %s)", address, length)
 
         possible_addresses = [
-            addr
-            for addr in self._memory_values
+            addr for addr in self._memory_values
             if addr.base_address == address.base_address
         ]
 
@@ -410,10 +400,8 @@ class Context(object):  # pylint: disable=too-many-public-methods
             diff2 = address - paddr
             length2 = self._memory_values[paddr].length
 
-            if (
-                    (diff >= 0 and diff < length) or
-                    (diff2 >= 0 and diff2 < length2)
-            ):
+            if ((diff >= 0 and diff < length)
+                    or (diff2 >= 0 and diff2 < length2)):
 
                 LOG.debug("Address overlap: %s", paddr)
                 mem_value = self._memory_values.pop(paddr)
@@ -432,8 +420,10 @@ class Context(object):  # pylint: disable=too-many-public-methods
         :type value: :class:`~.bool`
 
         """
-        return value in list([elem for elem in self._value_registers.keys()
-                             if type(elem) == type(value)])
+        return value in list([
+            elem for elem in self._value_registers.keys()
+            if type(elem) == type(value)
+        ])
 
     def registers_get_value(self, value: int | float | Address | str):
         """Gets a list of registers containing the specified value.
@@ -566,10 +556,8 @@ class Context(object):  # pylint: disable=too-many-public-methods
             mstr.append("Idx:\t%s\tRaw Value:\t%s" % (key, value))
 
         mstr.append("Registers values inverted:")
-        for key, value in sorted([
-                    (str(k), str(v)) for k, v
-                    in self._value_registers.items()
-                ]):
+        for key, value in sorted([(str(k), str(v))
+                                  for k, v in self._value_registers.items()]):
             mstr.append("Idx:\t%s\tValue:\t%s" % (key, value))
 
         mstr.append("Memory values:")

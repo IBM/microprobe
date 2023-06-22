@@ -30,7 +30,6 @@ import six
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
 
-
 # Constants
 __all__ = ["Variable", "VariableSingle", "VariableArray"]
 LOG = get_logger(__name__)
@@ -230,8 +229,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
         """ """
         if self._hash is None:
             self._hash = int(
-                hashlib.sha512(str(self).encode()).hexdigest(), 16
-            )
+                hashlib.sha512(str(self).encode()).hexdigest(), 16)
         return self._hash
 
 

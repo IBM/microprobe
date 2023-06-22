@@ -28,8 +28,9 @@ from microprobe.utils.misc import OrderedDict
 
 # Constants
 LOG = get_logger(__name__)
-__all__ = ["BuildingBlock", "Benchmark",
-           "MultiThreadedBenchmark", "benchmark_factory"]
+__all__ = [
+    "BuildingBlock", "Benchmark", "MultiThreadedBenchmark", "benchmark_factory"
+]
 
 
 # Functions
@@ -167,10 +168,8 @@ class Benchmark(BuildingBlock):
         """
         LOG.debug("Add Init")
         for init in inits:
-            LOG.debug(
-                "NEW INIT INSTRUCTION: %s (prepend: %s)",
-                init.assembly(), prepend
-            )
+            LOG.debug("NEW INIT INSTRUCTION: %s (prepend: %s)",
+                      init.assembly(), prepend)
 
         if not prepend:
             self._init = self._init + inits
@@ -237,21 +236,17 @@ class Benchmark(BuildingBlock):
         if var.name in self._global_vars:
 
             var2 = self._global_vars[var.name]
-            if (var.value == var2.value and
-                    var.address == var2.address and
-                    var.address is not None and
-                    MICROPROBE_RC['safe_bin']):
-                LOG.warning(
-                    "Variable: '%s' registered multiple times!", var.name
-                )
+            if (var.value == var2.value and var.address == var2.address
+                    and var.address is not None and MICROPROBE_RC['safe_bin']):
+                LOG.warning("Variable: '%s' registered multiple times!",
+                            var.name)
 
                 return
 
             LOG.critical("Registered variables: %s",
                          list(self._global_vars.keys()))
             raise MicroprobeCodeGenerationError(
-                "Variable already registered: %s" % (var.name)
-            )
+                "Variable already registered: %s" % (var.name))
 
         self._global_vars[var.name] = var
 
@@ -271,10 +266,8 @@ class Benchmark(BuildingBlock):
             address_ok = False
 
             while not address_ok:
-                var_address = Address(
-                    base_address="data",
-                    displacement=self._vardisplacement
-                )
+                var_address = Address(base_address="data",
+                                      displacement=self._vardisplacement)
 
                 LOG.debug("Address before alignment: %s", var_address)
 
@@ -288,14 +281,13 @@ class Benchmark(BuildingBlock):
                 if (var_address.displacement +
                         context.data_segment) % align != 0:
                     # alignment needed
-                    var_address += align - ((
-                        var_address.displacement+context.data_segment) % align
-                    )
+                    var_address += align - (
+                        (var_address.displacement + context.data_segment) %
+                        align)
 
                 LOG.debug("Address after alignment: %s", var_address)
-                LOG.debug(
-                    "Current var displacement: %x", self._vardisplacement
-                )
+                LOG.debug("Current var displacement: %x",
+                          self._vardisplacement)
 
                 var.set_address(var_address)
                 over = self._check_variable_overlap(var)
@@ -303,8 +295,7 @@ class Benchmark(BuildingBlock):
                 if over is not None:
                     self._vardisplacement = max(
                         self._vardisplacement,
-                        over.address.displacement + over.size
-                    )
+                        over.address.displacement + over.size)
                     continue
 
                 address_ok = True
@@ -318,10 +309,8 @@ class Benchmark(BuildingBlock):
         over = self._check_variable_overlap(var)
         if over is not None:
             raise MicroprobeCodeGenerationError(
-                "Variable '%s' overlaps with variable '%s'" % (
-                    var.name, over.name
-                )
-            )
+                "Variable '%s' overlaps with variable '%s'" %
+                (var.name, over.name))
 
     def _check_variable_overlap(self, var):
 
@@ -411,8 +400,7 @@ class Benchmark(BuildingBlock):
             else:
                 raise MicroprobeCodeGenerationError(
                     "Attempt to inserst instruction in a position that it is"
-                    " not possible"
-                )
+                    " not possible")
 
     @property
     def code_size(self):
@@ -435,13 +423,13 @@ class Benchmark(BuildingBlock):
                     labels.append(instr.label.upper())
 
         labels += [
-            instr.label.upper()
-            for instr in self._fini if instr.label is not None
+            instr.label.upper() for instr in self._fini
+            if instr.label is not None
         ]
 
         labels += [
-            instr.label.upper()
-            for instr in self._init if instr.label is not None
+            instr.label.upper() for instr in self._init
+            if instr.label is not None
         ]
 
         return labels
@@ -452,8 +440,7 @@ class Benchmark(BuildingBlock):
         if not 1 <= idx <= self._num_threads + 1:
             raise MicroprobeCodeGenerationError(
                 "Unknown thread id: %d (min: 1, max: %d)" %
-                (idx, self._num_threads + 1)
-            )
+                (idx, self._num_threads + 1))
 
 
 class MultiThreadedBenchmark(Benchmark):
@@ -468,5 +455,5 @@ class MultiThreadedBenchmark(Benchmark):
         self._current_thread = 1
 
     def __getattr__(self, attribute_name):
-        return self._threads[
-            self._current_thread].__getattribute__(attribute_name)
+        return self._threads[self._current_thread].__getattribute__(
+            attribute_name)

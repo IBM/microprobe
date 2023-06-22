@@ -29,7 +29,6 @@ from microprobe.exceptions import MicroprobeCodeGenerationError, \
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["Bbl", "replicate_bbls"]
@@ -65,9 +64,8 @@ class Bbl(object):
 
         """
         if size < 1:
-            raise MicroprobeValueError(
-                "I can not create a Bbl with %d size" % size
-            )
+            raise MicroprobeValueError("I can not create a Bbl with %d size" %
+                                       size)
 
         if instructions is None:
             instructions = []
@@ -193,10 +191,8 @@ class Bbl(object):
 
         idx = self._index(instr)
         if idx < 0:
-            raise MicroprobeCodeGenerationError(
-                "Instruction not found "
-                "in the basic block"
-            )
+            raise MicroprobeCodeGenerationError("Instruction not found "
+                                                "in the basic block")
         self._instrs[idx] = new_instr
 
     def remove_instructions_from(self, instr):
@@ -264,8 +260,7 @@ class Bbl(object):
             # assert idx_before == -1 and idx_after > -1
 
             if not any(
-                    self._instrs[idx_after + 1:idx_after + 1 + len(instrs)]
-            ):
+                    self._instrs[idx_after + 1:idx_after + 1 + len(instrs)]):
 
                 self._instrs[idx_after + 1:idx_after + 1 + len(instrs)] = \
                     instrs
@@ -279,12 +274,9 @@ class Bbl(object):
                 self._check_size(extra=len(instrs))
                 self._instrs[(idx_after) + 1:len(instrs)] = instrs
                 self._pointer += len(instrs)
-                self._instdic = dict(
-                    [
-                        (v, idx)
-                        for idx, v in enumerate(self._instrs) if v is not None
-                    ]
-                )
+                self._instdic = dict([(v, idx)
+                                      for idx, v in enumerate(self._instrs)
+                                      if v is not None])
 
     def _increase(self, num):
         """Increases the basic block size by the number specified.

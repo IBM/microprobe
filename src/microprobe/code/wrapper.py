@@ -28,7 +28,6 @@ from microprobe.code.context import Context
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["Wrapper"]
@@ -217,8 +216,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
             raise NotImplementedError
         else:
             raise MicroprobeCodeGenerationError(
-                "Direct intialization function called but not supported"
-            )
+                "Direct intialization function called but not supported")
 
     def get_direct_init(self, key, defaultvalue):
         """ Get the *value* for *key* """
@@ -230,8 +228,7 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
                 if len(keys) != 1:
                     raise MicroprobeCodeGenerationError(
                         "Unable to find the direct initialization value"
-                        " name: %s" % key
-                    )
+                        " name: %s" % key)
                 key = keys[0]
 
             if key in self._direct_init_dict:
@@ -241,10 +238,8 @@ class Wrapper(six.with_metaclass(abc.ABCMeta, object)):
                 return defaultvalue
 
             raise MicroprobeCodeGenerationError(
-                "Unable to find the direct initialization value"
-            )
+                "Unable to find the direct initialization value")
 
         else:
             raise MicroprobeCodeGenerationError(
-                "Direct intialization function called but not supported"
-            )
+                "Direct intialization function called but not supported")
