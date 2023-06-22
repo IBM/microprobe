@@ -45,7 +45,7 @@ import copy
 import datetime
 import os
 from time import time
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, Dict, List, Type
 
 # Third party modules
 import six
@@ -81,6 +81,10 @@ _INIT = True
 __all__ = ['get_wrapper', 'Synthesizer']
 
 
+def _wrapper_subclasses() -> List[Type[microprobe.code.wrapper.Wrapper]]:
+    return get_all_subclasses(microprobe.code.wrapper.Wrapper)
+
+
 # Functions
 def get_wrapper(name: str):
     """Return a wrapper object with name *name*.
@@ -102,15 +106,13 @@ def get_wrapper(name: str):
     if MICROPROBE_RC['debugwrapper']:
         name = "DebugBinaryDouble"
 
-    for elem in get_all_subclasses(microprobe.code.wrapper.Wrapper):
+    for elem in _wrapper_subclasses():
         if elem.__name__ == name:
             return elem
 
     raise MicroprobeValueError(
-        "Unknown wrapper '%s'. Available wrappers are: %s. " % (name, [
-            elem.__name__
-            for elem in get_all_subclasses(microprobe.code.wrapper.Wrapper)
-        ]))
+        "Unknown wrapper '%s'. Available wrappers are: %s. " %
+        (name, [elem.__name__ for elem in _wrapper_subclasses()]))
 
 
 def _import_default_wrappers():
@@ -147,7 +149,7 @@ def _import_default_wrappers():
 
             current_wrappers = \
                 [elem.__name__ for elem in
-                 get_all_subclasses(microprobe.code.wrapper.Wrapper)
+                 _wrapper_subclasses()
                  ]
 
             if len(current_wrappers) != len(set(current_wrappers)):
