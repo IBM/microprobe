@@ -16,12 +16,10 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, annotations
 
 # Built-in modules
-import itertools
-import random
-import re
+from typing import TYPE_CHECKING
 
 # Third party modules
 
@@ -36,6 +34,9 @@ from microprobe.utils.misc import OrderedDict
 
 # Local modules
 
+# Type hinting
+if TYPE_CHECKING:
+    import random
 
 # Constants
 LOG = get_logger(__name__)
@@ -112,7 +113,7 @@ class RandomDependencyDistancePass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, maxdep):
+    def __init__(self, maxdep: int, rand: random.Random):
         """
 
         :param maxdep:
@@ -120,7 +121,7 @@ class RandomDependencyDistancePass(microprobe.passes.Pass):
         """
         super(RandomDependencyDistancePass, self).__init__()
         self._max = maxdep
-        self._func = random.randint
+        self._func = rand.randint
 
     def __call__(self, building_block, dummy_target):
         """
