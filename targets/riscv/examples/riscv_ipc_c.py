@@ -25,6 +25,7 @@ from __future__ import absolute_import
 
 # Built-in modules
 import os
+from random import Random
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
@@ -100,6 +101,8 @@ class RiscvIpcTest(object):
             str.format("{}-{}-{}",
                        self.args.isa, self.args.uarch, self.args.env)
         )
+        self._rand = Random()
+        self._rand.seed(64)  # My favorite number ;)
 
     def emit(self):
         # Do not touch pointer registers
@@ -132,7 +135,9 @@ class RiscvIpcTest(object):
                 )
                 passes = [
                     structure.SimpleBuildingBlockPass(self.args.loop_size),
-                    instruction.SetRandomInstructionTypePass([instr]),
+                    instruction.SetRandomInstructionTypePass(
+                        [instr], self._rand
+                    ),
                     initialization.ReserveRegistersPass(reserved_registers),
                     branch.BranchNextPass(),
                     memory.GenericMemoryStreamsPass(

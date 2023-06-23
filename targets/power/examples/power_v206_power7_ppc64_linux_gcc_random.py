@@ -93,17 +93,21 @@ def generate(name):
 
     print_info("Generating %d..." % name)
 
+    # Seed the randomness
+    rand = random.Random()
+    rand.seed(64)  # My favorite number ;)
+
     # Generate a random memory model (used afterwards)
     model = []
     total = 100
     for mcomp in CACHE_HIERARCHY[0:-1]:
-        weight = random.randint(0, total)
+        weight = rand.randint(0, total)
         model.append(weight)
         print_info("%s: %d%%" % (mcomp, weight))
         total = total - weight
 
     # Fix remaining
-    level = random.randint(0, len(CACHE_HIERARCHY[0:-1]) - 1)
+    level = rand.randint(0, len(CACHE_HIERARCHY[0:-1]) - 1)
     model[level] += total
 
     # Last level always zero
@@ -124,7 +128,7 @@ def generate(name):
     # Define function to return random numbers (used afterwards)
     def rnd():
         """Return a random value. """
-        return random.randrange(0, (1 << 64) - 1)
+        return rand.randrange(0, (1 << 64) - 1)
 
     # Create the benchmark synthesizer
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
@@ -182,7 +186,7 @@ def generate(name):
 
     synth.add_pass(
         microprobe.passes.instruction.SetRandomInstructionTypePass(
-            instructions
+            instructions, rand
         )
     )
 
@@ -197,7 +201,7 @@ def generate(name):
     #     distance is randomly picked
     synth.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=random.randint(1, 20)
+            dd=rand.randint(1, 20)
         )
     )
 

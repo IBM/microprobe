@@ -16,14 +16,14 @@
 """
 
 # Futures
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, division, print_function, annotations
 
 # Built-in modules
 import copy
 import itertools
 import multiprocessing as mp
-import random
 import pickle
+from typing import TYPE_CHECKING, List
 
 # Third party modules
 from six.moves import range
@@ -49,8 +49,10 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, closest_divisor, \
     Progress, iter_flatten, getnextf
 
-# Local modules
-
+# Type hinting
+if TYPE_CHECKING:
+    import random
+    from microprobe.code.ins import Instruction
 
 # Constants
 LOG = get_logger(__name__)
@@ -355,7 +357,7 @@ class SetRandomInstructionTypePass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, instructions):
+    def __init__(self, instructions: List[Instruction], rand: random.Random):
         """
 
         :param instructions:
@@ -363,9 +365,7 @@ class SetRandomInstructionTypePass(microprobe.passes.Pass):
         """
         super(SetRandomInstructionTypePass, self).__init__()
         self._instrs = instructions
-        myrandom = random.Random()
-        myrandom.seed(10)
-        self._func = myrandom.choice
+        self._func = rand.choice
 
     def __call__(self, building_block, target):
         """
