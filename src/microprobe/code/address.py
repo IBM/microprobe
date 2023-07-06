@@ -16,10 +16,11 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, annotations, print_function
 
 # Built in modules
 import hashlib
+from typing import TYPE_CHECKING
 
 # Third party modules
 import six
@@ -29,6 +30,9 @@ from microprobe.code.var import Variable
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.ins import Instruction
 
 # Constants
 LOG = get_logger(__name__)
@@ -38,12 +42,14 @@ __all__ = ["MemoryValue", "Address", "InstructionAddress"]
 
 
 # Classes
-class Address(object):
+class Address:
     """Class to represent an address."""
 
     _cmp_attributes = ["_base_address", "_displacement"]
 
-    def __init__(self, base_address=None, displacement=0):
+    def __init__(self,
+                 base_address: Variable | str | None = None,
+                 displacement: int = 0):
         """
 
         :param base_address:  (Default value = None)
@@ -66,7 +72,7 @@ class Address(object):
         self._hash = None
 
     @property
-    def base_address(self):
+    def base_address(self) -> Variable | str | None:
         """Base address of the address (:class:`~.str`)"""
         return self._base_address
 
@@ -75,18 +81,16 @@ class Address(object):
         """Displacement of the address (:class:`~.int`)"""
         return self._displacement
 
-    def check_alignment(self, align):
+    def check_alignment(self, align: int):
         """Check if the address is aligned to align"""
         return self._displacement % align == 0
 
     def copy(self):
         """Returns a copy of the address."""
-        return self.__class__(
-            base_address=self.base_address,
-            displacement=self.displacement
-        )
+        return self.__class__(base_address=self.base_address,
+                              displacement=self.displacement)
 
-    def __add__(self, other):
+    def __add__(self, other: Address | int):
         """
 
         :param other:
@@ -96,14 +100,11 @@ class Address(object):
         if isinstance(other, self.__class__):
 
             if self.base_address != other.base_address:
-                raise MicroprobeCodeGenerationError(
-                    "I can not add '%s' "
-                    "and '%s'" % (self, other)
-                )
+                raise MicroprobeCodeGenerationError("I can not add '%s' "
+                                                    "and '%s'" % (self, other))
 
-            return self.__class__(
-                self.base_address, self.displacement + other.displacement
-            )
+            return self.__class__(self.base_address,
+                                  self.displacement + other.displacement)
 
         elif isinstance(other, six.integer_types):
 
@@ -112,15 +113,12 @@ class Address(object):
         else:
             raise NotImplementedError
 
-    def _check_cmp(self, other):
+    def _check_cmp(self, other: Address):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
-    def __eq__(self, other):
+    def __eq__(self, other: object):
         """x.__eq__(y) <==> x==y"""
 
         if not isinstance(other, self.__class__):
@@ -131,7 +129,7 @@ class Address(object):
                 return False
         return True
 
-    def __ne__(self, other):
+    def __ne__(self, other: object):
         """x.__ne__(y) <==> x!=y"""
 
         if not isinstance(other, self.__class__):
@@ -142,7 +140,7 @@ class Address(object):
                 return True
         return False
 
-    def __lt__(self, other):
+    def __lt__(self, other: object):
         """x.__lt__(y) <==> x<y"""
 
         if not isinstance(other, self.__class__):
@@ -155,7 +153,7 @@ class Address(object):
                 return False
         return False
 
-    def __gt__(self, other):
+    def __gt__(self, other: object):
         """x.__gt__(y) <==> x>y"""
 
         if not isinstance(other, self.__class__):
@@ -168,7 +166,7 @@ class Address(object):
                 return False
         return False
 
-    def __le__(self, other):
+    def __le__(self, other: object):
         """x.__le__(y) <==> x<=y"""
 
         if not isinstance(other, self.__class__):
@@ -181,7 +179,7 @@ class Address(object):
                 return False
         return True
 
-    def __ge__(self, other):
+    def __ge__(self, other: object):
         """x.__ge__(y) <==> x>=y"""
 
         if not isinstance(other, self.__class__):
@@ -198,11 +196,10 @@ class Address(object):
         """ """
         if self._hash is None:
             self._hash = int(
-                hashlib.sha512(str(self).encode()).hexdigest(), 16
-            )
+                hashlib.sha512(str(self).encode()).hexdigest(), 16)
         return self._hash
 
-    def __iadd__(self, other):
+    def __iadd__(self, other: object):
         """
 
         :param other:
@@ -212,16 +209,12 @@ class Address(object):
         if isinstance(other, self.__class__):
 
             if self.base_address != other.base_address:
-                raise MicroprobeCodeGenerationError(
-                    "I can not add '%s'"
-                    " and '%s'" % (
-                        self, other
-                    )
-                )
+                raise MicroprobeCodeGenerationError("I can not add '%s'"
+                                                    " and '%s'" %
+                                                    (self, other))
 
-            return self.__class__(
-                self.base_address, self.displacement + other.displacement
-            )
+            return self.__class__(self.base_address,
+                                  self.displacement + other.displacement)
 
         elif isinstance(other, six.integer_types):
 
@@ -230,7 +223,7 @@ class Address(object):
         else:
             raise NotImplementedError
 
-    def __mod__(self, other):
+    def __mod__(self, other: object):
         """
 
         :param other:
@@ -240,14 +233,12 @@ class Address(object):
         if isinstance(other, self.__class__):
 
             if self.base_address != other.base_address:
-                raise MicroprobeCodeGenerationError(
-                    "I can not compute the "
-                    "module '%s' and '%s'" % (self, other)
-                )
+                raise MicroprobeCodeGenerationError("I can not compute the "
+                                                    "module '%s' and '%s'" %
+                                                    (self, other))
 
-            return self.__class__(
-                self.base_address, self.displacement + other.displacement
-            )
+            return self.__class__(self.base_address,
+                                  self.displacement + other.displacement)
 
         elif isinstance(other, six.integer_types):
 
@@ -259,7 +250,7 @@ class Address(object):
         else:
             raise NotImplementedError
 
-    def __radd__(self, other):
+    def __radd__(self, other: object):
         """
 
         :param other:
@@ -269,14 +260,11 @@ class Address(object):
         if isinstance(other, self.__class__):
 
             if self.base_address != other.base_address:
-                raise MicroprobeCodeGenerationError(
-                    "I can not add '%s' and "
-                    "'%s'" % (self, other)
-                )
+                raise MicroprobeCodeGenerationError("I can not add '%s' and "
+                                                    "'%s'" % (self, other))
 
-            return self.__class__(
-                self.base_address, self.displacement + other.displacement
-            )
+            return self.__class__(self.base_address,
+                                  self.displacement + other.displacement)
 
         elif isinstance(other, six.integer_types):
             return self.__class__(self.base_address, self.displacement + other)
@@ -287,11 +275,10 @@ class Address(object):
     def __repr__(self):
         """ """
 
-        return "%s(%s+0x%016x)" % (
-            self.__class__.__name__, self.base_address, self.displacement
-        )
+        return "%s(%s+0x%016x)" % (self.__class__.__name__, self.base_address,
+                                   self.displacement)
 
-    def __rsub__(self, other):
+    def __rsub__(self, other: object):
         """
 
         :param other:
@@ -301,10 +288,8 @@ class Address(object):
         if isinstance(other, (Address, InstructionAddress)):
 
             if self.base_address != other.base_address:
-                raise MicroprobeCodeGenerationError(
-                    "I can not sub '%s' "
-                    "and '%s'" % (self, other)
-                )
+                raise MicroprobeCodeGenerationError("I can not sub '%s' "
+                                                    "and '%s'" % (self, other))
 
             return other.displacement - self.displacement
 
@@ -313,16 +298,14 @@ class Address(object):
         else:
             raise NotImplementedError(
                 "Substraction not implemented for %s and %s "
-                "objects" % (self.__class__, other.__class__)
-            )
+                "objects" % (self.__class__, other.__class__))
 
     def __str__(self):
         """ """
-        return "%s(%s+0x%016x)" % (
-            self.__class__.__name__, self.base_address, self.displacement
-        )
+        return "%s(%s+0x%016x)" % (self.__class__.__name__, self.base_address,
+                                   self.displacement)
 
-    def __sub__(self, other):
+    def __sub__(self, other: object):
         """
 
         :param other:
@@ -332,10 +315,8 @@ class Address(object):
         if isinstance(other, self.__class__):
 
             if self.base_address != other.base_address:
-                raise MicroprobeCodeGenerationError(
-                    "I can not sub '%s' "
-                    "and '%s'" % (self, other)
-                )
+                raise MicroprobeCodeGenerationError("I can not sub '%s' "
+                                                    "and '%s'" % (self, other))
 
             return self.displacement - other.displacement
 
@@ -351,7 +332,10 @@ class Address(object):
 class InstructionAddress(Address):
     """Class to represent an instruction address."""
 
-    def __init__(self, base_address=None, displacement=0, instruction=None):
+    def __init__(self,
+                 base_address: Variable | str | None = None,
+                 displacement: int = 0,
+                 instruction: Instruction | None = None):
         """
 
         :param base_address:  (Default value = None)
@@ -359,10 +343,8 @@ class InstructionAddress(Address):
         :param instruction:  (Default value = None)
 
         """
-        super(InstructionAddress, self).__init__(
-            base_address=base_address,
-            displacement=displacement
-        )
+        super(InstructionAddress, self).__init__(base_address=base_address,
+                                                 displacement=displacement)
         self._instruction = instruction
 
     @property
@@ -370,7 +352,7 @@ class InstructionAddress(Address):
         """Target instruction (:class:`~.Instruction`)"""
         return self._instruction
 
-    def set_target_instruction(self, instruction):
+    def set_target_instruction(self, instruction: Instruction):
         """Sets the instruction to which this address is pointing.
 
         :param instruction: Target instruction
@@ -380,7 +362,7 @@ class InstructionAddress(Address):
 
         self._instruction = instruction
 
-    def __add__(self, other):
+    def __add__(self, other: Address | int):
         """
 
         :param other:
@@ -389,7 +371,7 @@ class InstructionAddress(Address):
         self._instruction = None
         return super(InstructionAddress, self).__add__(other)
 
-    def __iadd__(self, other):
+    def __iadd__(self, other: object):
         """
 
         :param other:
@@ -398,7 +380,7 @@ class InstructionAddress(Address):
         self._instruction = None
         return super(InstructionAddress, self).__iadd__(other)
 
-    def __mod__(self, other):
+    def __mod__(self, other: object):
         """
 
         :param other:
@@ -407,7 +389,7 @@ class InstructionAddress(Address):
         self._instruction = None
         return super(InstructionAddress, self).__mod__(other)
 
-    def __radd__(self, other):
+    def __radd__(self, other: object):
         """
 
         :param other:
@@ -416,7 +398,7 @@ class InstructionAddress(Address):
         self._instruction = None
         return super(InstructionAddress, self).__radd__(other)
 
-    def __rsub__(self, other):
+    def __rsub__(self, other: object):
         """
 
         :param other:
@@ -425,7 +407,7 @@ class InstructionAddress(Address):
         self._instruction = None
         return super(InstructionAddress, self).__rsub__(other)
 
-    def __sub__(self, other):
+    def __sub__(self, other: object):
         """
 
         :param other:
@@ -440,7 +422,7 @@ class MemoryValue(object):
 
     _cmp_attributes = ['address', 'value', 'length']
 
-    def __init__(self, address, value, length):
+    def __init__(self, address: Address, value: int, length: int):
         """
 
         :param address:
@@ -470,15 +452,12 @@ class MemoryValue(object):
         """Actual memory value (:class:`~.int`)"""
         return self._value
 
-    def _check_cmp(self, other):
+    def _check_cmp(self, other: object):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
-    def __eq__(self, other):
+    def __eq__(self, other: object):
         """x.__eq__(y) <==> x==y"""
         self._check_cmp(other)
         for attr in self._cmp_attributes:
@@ -486,7 +465,7 @@ class MemoryValue(object):
                 return False
         return True
 
-    def __ne__(self, other):
+    def __ne__(self, other: object):
         """x.__ne__(y) <==> x!=y"""
         self._check_cmp(other)
         for attr in self._cmp_attributes:
@@ -494,7 +473,7 @@ class MemoryValue(object):
                 return True
         return False
 
-    def __lt__(self, other):
+    def __lt__(self, other: object):
         """x.__lt__(y) <==> x<y"""
         self._check_cmp(other)
         for attr in self._cmp_attributes:
@@ -504,7 +483,7 @@ class MemoryValue(object):
                 return False
         return False
 
-    def __gt__(self, other):
+    def __gt__(self, other: object):
         """x.__gt__(y) <==> x>y"""
         self._check_cmp(other)
         for attr in self._cmp_attributes:
@@ -514,7 +493,7 @@ class MemoryValue(object):
                 return False
         return False
 
-    def __le__(self, other):
+    def __le__(self, other: object):
         """x.__le__(y) <==> x<=y"""
         self._check_cmp(other)
         for attr in self._cmp_attributes:
@@ -524,7 +503,7 @@ class MemoryValue(object):
                 return False
         return True
 
-    def __ge__(self, other):
+    def __ge__(self, other: object):
         """x.__ge__(y) <==> x>=y"""
         self._check_cmp(other)
         for attr in self._cmp_attributes:
@@ -536,14 +515,12 @@ class MemoryValue(object):
 
     def __repr__(self):
         """ """
-        return "%s(%s, Value:%s, Length:%d)" % (
-            self.__class__.__name__, self._address,
-            hex(self._value), self._length
-        )
+        return "%s(%s, Value:%s, Length:%d)" % (self.__class__.__name__,
+                                                self._address, hex(
+                                                    self._value), self._length)
 
     def __str__(self):
         """ """
-        return "%s(%s, Value:%s, Length:%d)" % (
-            self.__class__.__name__, self._address,
-            hex(self._value), self._length
-        )
+        return "%s(%s, Value:%s, Length:%d)" % (self.__class__.__name__,
+                                                self._address, hex(
+                                                    self._value), self._length)

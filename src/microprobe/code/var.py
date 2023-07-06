@@ -16,26 +16,27 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, annotations
 
 # Built-in modules
 import abc
 import hashlib
 import math
-
-# Third party modules
-import six
+from typing import TYPE_CHECKING, Dict, List
 
 # Own modules
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.address import Address
 
 # Constants
 __all__ = ["Variable", "VariableSingle", "VariableArray"]
 LOG = get_logger(__name__)
 
-VAR_TYPE_LEN_DICT = {}
+VAR_TYPE_LEN_DICT: Dict[str, int] = {}
 VAR_TYPE_LEN_DICT["char"] = 1
 VAR_TYPE_LEN_DICT["signed char"] = 1
 VAR_TYPE_LEN_DICT["unsigned char"] = 1
@@ -92,50 +93,54 @@ VAR_TYPE_LEN_DICT["uint_fast64_t"] = 8
 
 
 # Classes
-class Variable(six.with_metaclass(abc.ABCMeta, object)):
+class Variable(abc.ABC):
     """ """
 
-    _cmp_attributes = []
+    _cmp_attributes: List[str] = []
 
     def __init__(self):
         """ """
         self._address = None
         self._hash = None
 
-    @abc.abstractproperty
-    def type(self):
+    @property
+    @abc.abstractmethod
+    def type(self) -> str:
         """Variable type (:class:`~.str`)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def name(self):
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         """Variable name (:class:`~.str`)."""
         raise NotImplementedError
 
-    @abc.abstractmethod
-    def array(self):
+    def array(self) -> bool:
         """Return if the variable is an array.
 
         :rtype: :class:`~.bool`
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def size(self):
+    @property
+    @abc.abstractmethod
+    def size(self) -> int:
         """Variable size in bytes (::class:`~.int`)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def value(self):
         """Variable value."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def align(self):
+    @property
+    @abc.abstractmethod
+    def align(self) -> int | None:
         """Variable alignment (:class:`~.int`)."""
         raise NotImplementedError
 
-    def set_address(self, address):
+    def set_address(self, address: Address):
         """Set variable address.
 
         :param address: Address of the variable.
@@ -147,12 +152,12 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
         """Variable address (:class:`~.Address`)."""
         return self._address
 
-    @abc.abstractproperty
-    def __str__(self):
+    @abc.abstractmethod
+    def __str__(self) -> str:
         """ """
         raise NotImplementedError
 
-    def __eq__(self, other):
+    def __eq__(self, other: object):
         """x.__eq__(y) <==> x==y"""
 
         if not isinstance(other, self.__class__):
@@ -163,7 +168,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
                 return False
         return True
 
-    def __ne__(self, other):
+    def __ne__(self, other: object):
         """x.__ne__(y) <==> x!=y"""
 
         if not isinstance(other, self.__class__):
@@ -174,7 +179,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
                 return True
         return False
 
-    def __lt__(self, other):
+    def __lt__(self, other: object):
         """x.__lt__(y) <==> x<y"""
 
         if not isinstance(other, self.__class__):
@@ -187,7 +192,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
                 return False
         return False
 
-    def __gt__(self, other):
+    def __gt__(self, other: object):
         """x.__gt__(y) <==> x>y"""
 
         if not isinstance(other, self.__class__):
@@ -200,7 +205,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
                 return False
         return False
 
-    def __le__(self, other):
+    def __le__(self, other: object):
         """x.__le__(y) <==> x<=y"""
 
         if not isinstance(other, self.__class__):
@@ -213,7 +218,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
                 return False
         return True
 
-    def __ge__(self, other):
+    def __ge__(self, other: object):
         """x.__ge__(y) <==> x>=y"""
 
         if not isinstance(other, self.__class__):
@@ -230,8 +235,7 @@ class Variable(six.with_metaclass(abc.ABCMeta, object)):
         """ """
         if self._hash is None:
             self._hash = int(
-                hashlib.sha512(str(self).encode()).hexdigest(), 16
-            )
+                hashlib.sha512(str(self).encode()).hexdigest(), 16)
         return self._hash
 
 
@@ -240,7 +244,12 @@ class VariableSingle(Variable):
 
     _cmp_attributes = ["name", "type", "size"]
 
-    def __init__(self, name, vartype, align=1, value=None, address=None):
+    def __init__(self,
+                 name: str,
+                 vartype: str,
+                 align: int = 1,
+                 value=None,
+                 address: Address | None = None):
         """
 
         :param name:
@@ -323,12 +332,12 @@ class VariableArray(Variable):
     _cmp_attributes = ["name", "type", "size"]
 
     def __init__(self,
-                 name,
-                 vartype,
-                 size,
-                 align=None,
+                 name: str,
+                 vartype: str,
+                 size: int,
+                 align: int | None = None,
                  value=None,
-                 address=None):
+                 address: Address | None = None):
         """
 
         :param name:

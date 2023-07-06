@@ -16,12 +16,16 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
+from typing import TYPE_CHECKING, List, Tuple
 
 # Own modules
-import microprobe.code.bbl
+from microprobe.code.bbl import Bbl
 from microprobe.utils.logger import get_logger
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.ins import Instruction
 
 # Constants
 LOG = get_logger(__name__)
@@ -32,18 +36,21 @@ __all__ = ["Cfg"]
 # Classes
 
 
-class Cfg(object):
+class Cfg:
     """Class to represent the control flow graph of a building block."""
 
     def __init__(self):
         """ """
-        self._cfg_nodes = []
-        self._cfg_edges = []
+        self._cfg_nodes: List[Bbl] = []
+        self._cfg_edges: List[Tuple[int, int]] = []
         self._idx = 0
         self._last_bbl = None
         self._first_bbl = None
 
-    def add_bbl(self, bbl=None, size=1, instructions=None):
+    def add_bbl(self,
+                bbl: Bbl | None = None,
+                size: int = 1,
+                instructions: List[Instruction] | None = None):
         """Adds a basic block to the control flow graph of the specified size.
 
         :param bbl: Basic block to add (if none, one is created)
@@ -58,12 +65,9 @@ class Cfg(object):
         if bbl is None:
 
             if instructions is not None:
-                bbl = microprobe.code.bbl.Bbl(
-                    len(instructions),
-                    instructions=instructions
-                )
+                bbl = Bbl(len(instructions), instructions=instructions)
             else:
-                bbl = microprobe.code.bbl.Bbl(size)
+                bbl = Bbl(size)
 
         self._cfg_nodes.append(bbl)
         self._cfg_edges.append((self._idx, self._idx + 1))
@@ -75,7 +79,7 @@ class Cfg(object):
         self._idx += 1
         return bbl
 
-    def add_bbls(self, bbls):
+    def add_bbls(self, bbls: List[Bbl]):
         """Adds a list of basic blocks to the control flow graph.
 
         :param bbls: Lists of basic blocks to add.
@@ -91,7 +95,7 @@ class Cfg(object):
         (:class:`~.list` of :class:`~.Bbl`)."""
         return self._cfg_nodes[:]
 
-    def index(self, instr):
+    def index(self, instr: Instruction):
         """Returns index of the basic block containing the given instruction.
 
         :param instr: Instruction to look for
@@ -99,8 +103,7 @@ class Cfg(object):
 
         """
         rlist = [
-            idx
-            for idx, bbl in enumerate(self.bbls)
+            idx for idx, bbl in enumerate(self.bbls)
             if bbl.get_instruction_index(instr) >= 0
         ]
 
@@ -108,7 +111,7 @@ class Cfg(object):
             return -1
         return rlist[0]
 
-    def get_bbl(self, index):
+    def get_bbl(self, index: int):
         """Returns the basic block at the specified index
 
         :param index: Index of the bbl

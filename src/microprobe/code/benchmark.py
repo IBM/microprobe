@@ -16,24 +16,32 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, annotations
+from typing import TYPE_CHECKING, Dict, List
 
 # Own modules
-import microprobe.code.cfg
+from microprobe.code.cfg import Cfg
 from microprobe import MICROPROBE_RC
 from microprobe.code.address import Address
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.context import Context
+    from microprobe.code.ins import Instruction
+    from microprobe.code.var import Variable
+
 # Constants
 LOG = get_logger(__name__)
-__all__ = ["BuildingBlock", "Benchmark",
-           "MultiThreadedBenchmark", "benchmark_factory"]
+__all__ = [
+    "BuildingBlock", "Benchmark", "MultiThreadedBenchmark", "benchmark_factory"
+]
 
 
 # Functions
-def benchmark_factory(threads=1):
+def benchmark_factory(threads: int = 1):
     if threads == 1:
         return Benchmark()
     else:
@@ -53,12 +61,12 @@ class BuildingBlock(object):
 
     def __init__(self):
         """ """
-        self._warnings = {}
-        self._info = []
-        self._pass_info = []
-        self._requirements = []
+        self._warnings: Dict[str, int] = {}
+        self._info: List[str] = []
+        self._pass_info: List[str] = []
+        self._requirements: List[str] = []
 
-    def add_warning(self, message):
+    def add_warning(self, message: str):
         """Add a warning message to the building block.
 
         :param message: Warning message
@@ -80,7 +88,7 @@ class BuildingBlock(object):
         """
         return self._warnings
 
-    def add_pass_info(self, message):
+    def add_pass_info(self, message: str):
         """Add an pass information message to the building block.
 
         :param message: Information pass message
@@ -89,7 +97,7 @@ class BuildingBlock(object):
         """
         self._pass_info.append(message)
 
-    def add_info(self, message):
+    def add_info(self, message: str):
         """Add an information message to the building block.
 
         :param message: Information message
@@ -116,7 +124,7 @@ class BuildingBlock(object):
         """
         return self._pass_info
 
-    def add_requirement(self, message):
+    def add_requirement(self, message: str):
         """Add an requirement message to the building block.
 
         :param message: Requirement message
@@ -142,10 +150,10 @@ class Benchmark(BuildingBlock):
         """ """
 
         super(Benchmark, self).__init__()
-        self._cfg = microprobe.code.cfg.Cfg()
-        self._global_vars = OrderedDict()
-        self._init = []
-        self._fini = []
+        self._cfg = Cfg()
+        self._global_vars: Dict[str, Variable] = OrderedDict()
+        self._init: List[Instruction] = []
+        self._fini: List[Instruction] = []
         self._vardisplacement = 0
         self._context = None
         self._num_threads = 1
@@ -158,7 +166,7 @@ class Benchmark(BuildingBlock):
         """
         return self._init
 
-    def add_init(self, inits, prepend=False):
+    def add_init(self, inits: List[Instruction], prepend: bool = False):
         """Appends the specified list of instructions to initialization list
 
         :param inits: List of instructions to be added
@@ -167,17 +175,15 @@ class Benchmark(BuildingBlock):
         """
         LOG.debug("Add Init")
         for init in inits:
-            LOG.debug(
-                "NEW INIT INSTRUCTION: %s (prepend: %s)",
-                init.assembly(), prepend
-            )
+            LOG.debug("NEW INIT INSTRUCTION: %s (prepend: %s)",
+                      init.assembly(), prepend)
 
         if not prepend:
             self._init = self._init + inits
         else:
             self._init = inits + self._init
 
-    def rm_init(self, inits):
+    def rm_init(self, inits: List[Instruction]):
         """Removes from the initialization list the specified instructions.
 
         :param inits: List of instructions to be removed
@@ -186,7 +192,7 @@ class Benchmark(BuildingBlock):
         """
         self._init = self._init[0:-len(inits)]
 
-    def add_fini(self, finis):
+    def add_fini(self, finis: List[Instruction]):
         """Appends the specified list of instructions to the finalization list
 
         :param finis: List of instructions to be added
@@ -206,7 +212,7 @@ class Benchmark(BuildingBlock):
         """Returns the benchmark control flow graph."""
         return self._cfg
 
-    def set_cfg(self, cfg):
+    def set_cfg(self, cfg: Cfg):
         """Sets the benchmarks control flow graph.
 
         :param cfg: Control flow graph
@@ -219,12 +225,12 @@ class Benchmark(BuildingBlock):
         """Returns the list of registered global variables."""
         return list(self._global_vars.values())
 
-    def set_var_displacement(self, displacement):
+    def set_var_displacement(self, displacement: int):
         # Displacement only can increase
         assert displacement > self._vardisplacement
         self._vardisplacement = displacement
 
-    def register_var(self, var, context):
+    def register_var(self, var: Variable, context: Context):
         """Registers the given variable as a global variable.
 
         :param var: Variable to register
@@ -237,21 +243,17 @@ class Benchmark(BuildingBlock):
         if var.name in self._global_vars:
 
             var2 = self._global_vars[var.name]
-            if (var.value == var2.value and
-                    var.address == var2.address and
-                    var.address is not None and
-                    MICROPROBE_RC['safe_bin']):
-                LOG.warning(
-                    "Variable: '%s' registered multiple times!", var.name
-                )
+            if (var.value == var2.value and var.address == var2.address
+                    and var.address is not None and MICROPROBE_RC['safe_bin']):
+                LOG.warning("Variable: '%s' registered multiple times!",
+                            var.name)
 
                 return
 
             LOG.critical("Registered variables: %s",
                          list(self._global_vars.keys()))
             raise MicroprobeCodeGenerationError(
-                "Variable already registered: %s" % (var.name)
-            )
+                "Variable already registered: %s" % (var.name))
 
         self._global_vars[var.name] = var
 
@@ -271,10 +273,8 @@ class Benchmark(BuildingBlock):
             address_ok = False
 
             while not address_ok:
-                var_address = Address(
-                    base_address="data",
-                    displacement=self._vardisplacement
-                )
+                var_address = Address(base_address="data",
+                                      displacement=self._vardisplacement)
 
                 LOG.debug("Address before alignment: %s", var_address)
 
@@ -288,14 +288,13 @@ class Benchmark(BuildingBlock):
                 if (var_address.displacement +
                         context.data_segment) % align != 0:
                     # alignment needed
-                    var_address += align - ((
-                        var_address.displacement+context.data_segment) % align
-                    )
+                    var_address += align - (
+                        (var_address.displacement + context.data_segment) %
+                        align)
 
                 LOG.debug("Address after alignment: %s", var_address)
-                LOG.debug(
-                    "Current var displacement: %x", self._vardisplacement
-                )
+                LOG.debug("Current var displacement: %x",
+                          self._vardisplacement)
 
                 var.set_address(var_address)
                 over = self._check_variable_overlap(var)
@@ -303,8 +302,7 @@ class Benchmark(BuildingBlock):
                 if over is not None:
                     self._vardisplacement = max(
                         self._vardisplacement,
-                        over.address.displacement + over.size
-                    )
+                        over.address.displacement + over.size)
                     continue
 
                 address_ok = True
@@ -318,12 +316,10 @@ class Benchmark(BuildingBlock):
         over = self._check_variable_overlap(var)
         if over is not None:
             raise MicroprobeCodeGenerationError(
-                "Variable '%s' overlaps with variable '%s'" % (
-                    var.name, over.name
-                )
-            )
+                "Variable '%s' overlaps with variable '%s'" %
+                (var.name, over.name))
 
-    def _check_variable_overlap(self, var):
+    def _check_variable_overlap(self, var: Variable):
 
         return None
 
@@ -352,7 +348,7 @@ class Benchmark(BuildingBlock):
 
         return None
 
-    def set_context(self, context):
+    def set_context(self, context: Context):
         """Set the execution context of the building block.
 
         :param context: Execution context
@@ -366,7 +362,10 @@ class Benchmark(BuildingBlock):
         """Return benchmark's context"""
         return self._context
 
-    def add_instructions(self, instrs, after=None, before=None):
+    def add_instructions(self,
+                         instrs: List[Instruction],
+                         after: Instruction | None = None,
+                         before: Instruction | None = None):
         """Adds the given instruction to the building block.
 
         Adds the given instructions right after the specified instruction and
@@ -411,8 +410,7 @@ class Benchmark(BuildingBlock):
             else:
                 raise MicroprobeCodeGenerationError(
                     "Attempt to inserst instruction in a position that it is"
-                    " not possible"
-                )
+                    " not possible")
 
     @property
     def code_size(self):
@@ -435,38 +433,37 @@ class Benchmark(BuildingBlock):
                     labels.append(instr.label.upper())
 
         labels += [
-            instr.label.upper()
-            for instr in self._fini if instr.label is not None
+            instr.label.upper() for instr in self._fini
+            if instr.label is not None
         ]
 
         labels += [
-            instr.label.upper()
-            for instr in self._init if instr.label is not None
+            instr.label.upper() for instr in self._init
+            if instr.label is not None
         ]
 
         return labels
 
-    def set_current_thread(self, idx):
+    def set_current_thread(self, idx: int):
         """ """
         self._current_thread = idx
         if not 1 <= idx <= self._num_threads + 1:
             raise MicroprobeCodeGenerationError(
                 "Unknown thread id: %d (min: 1, max: %d)" %
-                (idx, self._num_threads + 1)
-            )
+                (idx, self._num_threads + 1))
 
 
 class MultiThreadedBenchmark(Benchmark):
     """ """
 
-    def __init__(self, num_threads=1):
+    def __init__(self, num_threads: int = 1):
         """ """
         self._num_threads = num_threads
-        self._threads = {}
+        self._threads: Dict[int, Benchmark] = {}
         for idx in range(1, num_threads + 1):
             self._threads[idx] = Benchmark()
         self._current_thread = 1
 
-    def __getattr__(self, attribute_name):
-        return self._threads[
-            self._current_thread].__getattribute__(attribute_name)
+    def __getattr__(self, attribute_name: str):
+        return self._threads[self._current_thread].__getattribute__(
+            attribute_name)
