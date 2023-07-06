@@ -25,6 +25,7 @@ from __future__ import absolute_import
 
 # Built-in modules
 import os
+from random import Random
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
@@ -131,6 +132,8 @@ class RiscvIpcTest(object):
             str.format("{}-{}-{}",
                        self.args.isa, self.args.uarch, self.args.env)
         )
+        self._rand = Random()
+        self._rand.seed(64)  # My favorite number ;)
 
     def emit(self):
 
@@ -194,8 +197,9 @@ class RiscvIpcTest(object):
             )
         else:
             p = instruction.SetRandomInstructionTypePass(
-                   [self.target.isa.instructions[elem]
-                    for elem in valid_instrs_names + branch_instrs_names]
+                [self.target.isa.instructions[elem]
+                    for elem in valid_instrs_names + branch_instrs_names],
+                self._rand
             )
 
         synth.add_pass(p)
