@@ -59,7 +59,6 @@ from microprobe.utils.misc import Pickable, RejectingDict, findfiles
 
 # Local modules
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = [
@@ -94,19 +93,15 @@ def import_definition(definition_tuple):
 
     isa_def, uarch_def, env_def = definition_tuple
     isa = import_isa_definition(os.path.dirname(isa_def.filename))
-    env = import_env_definition(
-        env_def.filename, isa,
-        definition_name=env_def.name
-    )
+    env = import_env_definition(env_def.filename,
+                                isa,
+                                definition_name=env_def.name)
     uarch = import_microarchitecture_definition(
-        os.path.dirname(uarch_def.filename)
-    )
+        os.path.dirname(uarch_def.filename))
 
     target = Target(isa, uarch=uarch, env=env)
-    LOG.info(
-        "Target '%s-%s-%s' imported", isa_def.name, uarch_def.name,
-        env_def.name
-    )
+    LOG.info("Target '%s-%s-%s' imported", isa_def.name, uarch_def.name,
+             env_def.name)
     LOG.debug("End importing definition tuple")
     return target
 
@@ -133,44 +128,40 @@ def _parse_definition_tuple(definition_tuple):
         isa_def, architecture_def, env_def = definition_tuple.split("-")
     except ValueError:
         raise MicroprobeTargetDefinitionError(
-            "Invalid format of '%s' target tuple" % definition_tuple
-        )
+            "Invalid format of '%s' target tuple" % definition_tuple)
 
     definitions = find_isa_definitions()
     if isa_def not in [definition.name for definition in definitions]:
-        raise MicroprobeTargetDefinitionError(
-            "ISA '%s' not available" % isa_def
-        )
+        raise MicroprobeTargetDefinitionError("ISA '%s' not available" %
+                                              isa_def)
     else:
         isa_def = [
-            definition
-            for definition in definitions if definition.name == isa_def
+            definition for definition in definitions
+            if definition.name == isa_def
         ][-1]
 
     definitions = find_microarchitecture_definitions()
     if architecture_def not in [definition.name for definition in definitions]:
         raise MicroprobeTargetDefinitionError(
-            "Microarchitecture '%s' not available" % architecture_def
-        )
+            "Microarchitecture '%s' not available" % architecture_def)
     else:
         architecture_def = [
-            definition
-            for definition in definitions
+            definition for definition in definitions
             if definition.name == architecture_def
         ][-1]
 
     definitions = find_env_definitions()
     if env_def not in [definition.name for definition in definitions]:
         raise MicroprobeTargetDefinitionError(
-            "Environment '%s' not available. " % env_def
-        )
+            "Environment '%s' not available. " % env_def)
     else:
         env_def = [
-            definition
-            for definition in definitions if definition.name == env_def
+            definition for definition in definitions
+            if definition.name == env_def
         ][-1]
 
     return (isa_def, architecture_def, env_def)
+
 
 # def import_policies(target_name):
 #    """Return the dictionary of policies for the *target_name*."""
@@ -225,8 +216,7 @@ class Definition(object):
     _field2 = 25
     _field3 = 78 - _field1 - _field2
     _fmt_str_ = "Name:'%%%ds', Description:'%%%ds', File:'%%%ds'" % (
-        _field1, _field2, _field3
-    )
+        _field1, _field2, _field3)
     _cmp_attributes = ["name", "description", "filename"]
 
     def __init__(self, filename, name, description):
@@ -266,11 +256,8 @@ class Definition(object):
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""
@@ -364,18 +351,13 @@ class Target(Pickable):
 
         if uarch is not None:
             self.set_uarch(uarch)
-            self.microarchitecture.add_properties_to_isa(
-                self.isa.instructions
-            )
+            self.microarchitecture.add_properties_to_isa(self.isa.instructions)
 
         if env is not None:
             self.set_env(env)
         else:
             self.set_env(
-                GenericEnvironment(
-                    "Default", "Empty environment", self.isa
-                )
-            )
+                GenericEnvironment("Default", "Empty environment", self.isa))
 
     @property
     def name(self):
@@ -394,20 +376,16 @@ class Target(Pickable):
         description.append("Target ISA: %s" % self.isa.name)
         description.append("ISA Description: %s" % self.isa.description)
         if self.microarchitecture is not None:
-            description.append(
-                "Target Micro-architecture: %s" % self.microarchitecture.name
-            )
-            description.append(
-                "Micro-architecture Description: %s" %
-                self.microarchitecture.description
-            )
+            description.append("Target Micro-architecture: %s" %
+                               self.microarchitecture.name)
+            description.append("Micro-architecture Description: %s" %
+                               self.microarchitecture.description)
         else:
             description.append("Target Micro-architecture: Not defined")
             description.append("Micro-architecture Description: Not defined")
         description.append("Target Environment: %s" % self.environment.name)
-        description.append(
-            "Environment description: %s" % self.environment.description
-        )
+        description.append("Environment description: %s" %
+                           self.environment.description)
         return "\n".join(description)
 
     @property
@@ -470,8 +448,7 @@ class Target(Pickable):
                 value = getattr(instr, prop_name)
             except AttributeError:
                 raise MicroprobeTargetDefinitionError(
-                    "Property '%s' for instruction not found" % prop_name
-                )
+                    "Property '%s' for instruction not found" % prop_name)
 
             if not isinstance(value, list):
                 values = [value]
@@ -572,7 +549,5 @@ class Target(Pickable):
             else:
                 raise MicroprobeError("Attribute defined in multiple objects")
         else:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'" %
-                (self.__class__.__name__, name)
-            )
+            raise AttributeError("'%s' object has no attribute '%s'" %
+                                 (self.__class__.__name__, name))

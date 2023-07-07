@@ -30,12 +30,9 @@ from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas",
-    "instruction_field.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "instruction_field.yaml")
 
 LOG = get_logger(__name__)
 __all__ = ["import_definition", "InstructionField", "GenericInstructionField"]
@@ -74,8 +71,7 @@ def import_definition(cls, filenames, operands):
                 LOG.warning(
                     "Similar definition of instruction field: '%s' and"
                     " '%s'. Check if definition needed.", name,
-                    ifields_duplicated[key]
-                )
+                    ifields_duplicated[key])
             else:
                 ifields_duplicated[key] = name
 
@@ -85,8 +81,7 @@ def import_definition(cls, filenames, operands):
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown operand "
                     "defined in instruction"
-                    " field '%s' in '%s'." % (name, filename)
-                )
+                    " field '%s' in '%s'." % (name, filename))
             ifield = cls(name, descr, size, show, fio, operand)
 
             if name in ifields:
@@ -94,8 +89,7 @@ def import_definition(cls, filenames, operands):
                     "Duplicated "
                     "definition "
                     "of instruction field"
-                    " '%s' found in '%s'" % (name, filename)
-                )
+                    " '%s' found in '%s'" % (name, filename))
 
             LOG.debug(ifield)
             ifields[name] = ifield
@@ -188,11 +182,9 @@ class GenericInstructionField(InstructionField):
         self._foperand = foperand
 
         if fio not in self._valid_fio_values:
-            raise MicroprobeArchitectureDefinitionError(
-                "Invalid default IO "
-                "definition for field "
-                "%s" % fname
-            )
+            raise MicroprobeArchitectureDefinitionError("Invalid default IO "
+                                                        "definition for field "
+                                                        "%s" % fname)
 
     @property
     def name(self):

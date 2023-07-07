@@ -30,11 +30,9 @@ from microprobe.property import PropertyHolder, import_properties
 from microprobe.utils.logger import get_logger
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "element_type.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "element_type.yaml")
 
 LOG = get_logger(__name__)
 __all__ = [
@@ -83,9 +81,7 @@ def import_definition(cls, filenames, dummy):
 
 # Classes
 class MicroarchitectureElementType(
-    six.with_metaclass(
-        abc.ABCMeta,
-        PropertyHolder)):
+        six.with_metaclass(abc.ABCMeta, PropertyHolder)):
     """Abstract class to represent a microarchitecture element type."""
 
     @abc.abstractmethod
@@ -115,9 +111,7 @@ class MicroarchitectureElementType(
 
 
 class GenericMicroarchitectureElementType(
-    six.with_metaclass(
-        abc.ABCMeta,
-        MicroarchitectureElementType)):
+        six.with_metaclass(abc.ABCMeta, MicroarchitectureElementType)):
     """Class to represent a generic microarchitecture element type."""
 
     def __init__(self, name, description):
@@ -147,9 +141,8 @@ class GenericMicroarchitectureElementType(
     def __str__(self):
         """Return the string representation of this element type
         (:class:`~.str`)."""
-        return "%s('%s','%s')" % (
-            self.__class__.__name__, self.name, self.description
-        )
+        return "%s('%s','%s')" % (self.__class__.__name__, self.name,
+                                  self.description)
 
     def __lt__(self, other):
 

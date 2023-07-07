@@ -42,16 +42,14 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, getnextf
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "instruction.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "instruction.yaml")
 LOG = get_logger(__name__)
-__all__ = ["import_definition",
-           "InstructionType",
-           "GenericInstructionType",
-           "instruction_type_from_bin"]
+__all__ = [
+    "import_definition", "InstructionType", "GenericInstructionType",
+    "instruction_type_from_bin"
+]
 
 
 # Functions
@@ -96,46 +94,36 @@ def import_definition(cls, filenames, args):
                     "instruction "
                     "definition "
                     "'%s' found "
-                    "in '%s'" % (
-                        elem["Format"], name, filename
-                    )
-                )
+                    "in '%s'" % (elem["Format"], name, filename))
 
-            operands = _merge_operands(
-                name, filename, operands, iformat, defined_operands
-            )
+            operands = _merge_operands(name, filename, operands, iformat,
+                                       defined_operands)
 
-            ioperands = _translate_ioperands(
-                name, filename, ioperands, defined_operands
-            )
+            ioperands = _translate_ioperands(name, filename, ioperands,
+                                             defined_operands)
 
-            moperands = _translate_moperands(
-                name, filename, operands, ioperands, moperands,
-                defined_memory_operands, iformat
-            )
+            moperands = _translate_moperands(name, filename, operands,
+                                             ioperands, moperands,
+                                             defined_memory_operands, iformat)
 
             # target_checks = _translate_callbacks(name, filename,
             #                                                target_checks)
 
-            instruction_checks = _translate_checks(
-                name, filename, cls, instruction_checks, operands
-            )
+            instruction_checks = _translate_checks(name, filename, cls,
+                                                   instruction_checks,
+                                                   operands)
 
-            instruction = cls(
-                name, mnemonic, opcode, descr, iformat, operands, ioperands,
-                moperands, instruction_checks, target_checks
-            )
+            instruction = cls(name, mnemonic, opcode, descr, iformat, operands,
+                              ioperands, moperands, instruction_checks,
+                              target_checks)
 
             if name in instructions:
-                raise MicroprobeArchitectureDefinitionError(
-                    "Duplicated "
-                    "definition "
-                    "of instruction "
-                    " '%s' found "
-                    "in '%s'" % (
-                        name, filename
-                    )
-                )
+                raise MicroprobeArchitectureDefinitionError("Duplicated "
+                                                            "definition "
+                                                            "of instruction "
+                                                            " '%s' found "
+                                                            "in '%s'" %
+                                                            (name, filename))
 
             LOG.debug(instruction)
             instructions[name] = instruction
@@ -158,26 +146,15 @@ def instruction_type_from_bin(binstr, target):
     """
 
     foperand = OperandConst("raw", "raw", int(binstr, 16))
-    fields = [GenericInstructionField(
-        "raw", "raw", len(binstr) * 4, False, '?', foperand)]
-    iformat = GenericInstructionFormat(
-        "raw",
-        "raw",
-        fields,
-        "raw: 0x%s" %
-        binstr)
-    instr_type = GenericInstructionType(
-        "raw",
-        "raw",
-        "0",
-        "Unknown raw code",
-        iformat,
-        {'raw': [foperand, '?']},
-        {},
-        [],
-        {},
-        {}
-    )
+    fields = [
+        GenericInstructionField("raw", "raw",
+                                len(binstr) * 4, False, '?', foperand)
+    ]
+    iformat = GenericInstructionFormat("raw", "raw", fields,
+                                       "raw: 0x%s" % binstr)
+    instr_type = GenericInstructionType("raw", "raw", "0", "Unknown raw code",
+                                        iformat, {'raw': [foperand, '?']}, {},
+                                        [], {}, {})
 
     for prop in target.nop().properties.values():
 
@@ -224,18 +201,14 @@ def _translate_checks(name, filename, cls, checks, dummy_operands):
                 "requires the "
                 "definition of '%s' "
                 "in '%s' module with "
-                "operands '%s'." % (
-                    name, filename, fname, module_filename, fargs
-                )
-            )
+                "operands '%s'." %
+                (name, filename, fname, module_filename, fargs))
 
     return dict(translated_checks)
 
 
-def _translate_moperands(
-    name, filename, operands, ioperands, moperands, defined_memory_operands,
-    iformat
-):
+def _translate_moperands(name, filename, operands, ioperands, moperands,
+                         defined_memory_operands, iformat):
     """
 
     :param name:
@@ -267,8 +240,8 @@ def _translate_moperands(
                 ]
 
                 vfield = [
-                    tfield.name
-                    for tfield in iformat.fields if tfield.name.startswith("D")
+                    tfield.name for tfield in iformat.fields
+                    if tfield.name.startswith("D")
                 ]
 
                 assert sorted(voperands) == sorted(vfield)
@@ -291,20 +264,14 @@ def _translate_moperands(
                     else:
 
                         number = set(
-                            [
-                                elem[-1] for elem in formula if elem != "D?"
-                            ]
-                        )
+                            [elem[-1] for elem in formula if elem != "D?"])
 
                         if len(number) != 1:
                             raise MicroprobeArchitectureDefinitionError(
                                 "Bad formula in name '%s' in memory operand"
                                 " '%s' of instruction '%s' (%s) in filename "
-                                "'%s'" % (
-                                    field, memoperand, name, iformat.name,
-                                    filename
-                                )
-                            )
+                                "'%s'" % (field, memoperand, name,
+                                          iformat.name, filename))
                         number = number.pop()
                         sformula.append("D%s" % number)
 
@@ -319,8 +286,7 @@ def _translate_moperands(
             if field.startswith('@'):
                 try:
                     field = [
-                        elem
-                        for elem in operands.keys()
+                        elem for elem in operands.keys()
                         if elem[0] == field[1] and elem[-3:] == field[-3:]
                     ][0]
                 except IndexError:
@@ -339,19 +305,16 @@ def _translate_moperands(
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown field name '%s' in memory operand"
                     " '%s' of instruction '%s' (%s) in filename '%s'" %
-                    (field, memoperand, name, iformat.name, filename)
-                )
+                    (field, memoperand, name, iformat.name, filename))
 
         for idx, field in enumerate(length):
             fname = "no_field_%s" % idx
             if isinstance(field, six.integer_types):
                 tlength.append((fname, field))
-            elif (
-                field.startswith("#") or field.startswith("min") or
-                field.startswith("max") or field.startswith("*") or
-                field.startswith("CEIL") or field == "Unknown" or
-                field.startswith("+") or field.startswith("-")
-            ):
+            elif (field.startswith("#") or field.startswith("min")
+                  or field.startswith("max") or field.startswith("*")
+                  or field.startswith("CEIL") or field == "Unknown"
+                  or field.startswith("+") or field.startswith("-")):
                 tlength.append((fname, field))
             else:
 
@@ -374,18 +337,15 @@ def _translate_moperands(
                         raise MicroprobeArchitectureDefinitionError(
                             "Unknown field name '%s' in length of "
                             "memory operand '%s' of instruction '%s' in"
-                            " filename '%s'" % (
-                                field, memoperand, name, filename
-                            )
-                        )
+                            " filename '%s'" %
+                            (field, memoperand, name, filename))
 
-        memory_operand = MemoryOperand(
-            OrderedDict(tformula), OrderedDict(tlength)
-        )
+        memory_operand = MemoryOperand(OrderedDict(tformula),
+                                       OrderedDict(tlength))
 
         is_defined = [
-            operand
-            for operand in defined_memory_operands if operand == memory_operand
+            operand for operand in defined_memory_operands
+            if operand == memory_operand
         ]
 
         if len(is_defined) > 0:
@@ -394,10 +354,7 @@ def _translate_moperands(
             defined_memory_operands.append(memory_operand)
 
         roperands.append(
-            MemoryOperandDescriptor(
-                memory_operand, io_flags, rate
-            )
-        )
+            MemoryOperandDescriptor(memory_operand, io_flags, rate))
 
     return roperands
 
@@ -421,10 +378,8 @@ def _translate_ioperands(name, filename, ioperands, defined_operands):
         except KeyError:
             raise MicroprobeArchitectureDefinitionError(
                 "Unknown operand name '%s' in definition "
-                "of instruction '%s' in filename '%s'" % (
-                    operand_name, name, filename
-                )
-            )
+                "of instruction '%s' in filename '%s'" %
+                (operand_name, name, filename))
 
         try:
             if operand.constant:
@@ -437,18 +392,15 @@ def _translate_ioperands(name, filename, ioperands, defined_operands):
         except IndexError:
             raise MicroprobeArchitectureDefinitionError(
                 "Unknown constant register value '%s' in definition "
-                "of instruction '%s' in filename '%s'" % (
-                    regname, name, filename
-                )
-            )
+                "of instruction '%s' in filename '%s'" %
+                (regname, name, filename))
 
         try:
             operand = defined_operands[reg.name]
         except KeyError:
-            operand = OperandConstReg(
-                "ConstantReg-%s" % reg.name, "Constant register %s" % reg.name,
-                reg, False, False, False, False
-            )
+            operand = OperandConstReg("ConstantReg-%s" % reg.name,
+                                      "Constant register %s" % reg.name, reg,
+                                      False, False, False, False)
             LOG.debug("Operand added: %s", operand)
             defined_operands[reg.name] = operand
 
@@ -456,14 +408,12 @@ def _translate_ioperands(name, filename, ioperands, defined_operands):
             raise MicroprobeArchitectureDefinitionError(
                 "Implicit operand defined but it is not constant in"
                 " definition of instruction '%s' in filename '%s'" %
-                (name, filename)
-            )
+                (name, filename))
 
         # TODO: This can be improved, we can recycle operand
         # descriptors if operand and I/O are the same
-        roperands[regname] = OperandDescriptor(
-            operand, "I" in io_def, "O" in io_def
-        )
+        roperands[regname] = OperandDescriptor(operand, "I" in io_def, "O"
+                                               in io_def)
 
     return roperands
 
@@ -495,8 +445,7 @@ def _merge_operands(name, filename, loperands, iformat, defined_operands):
         if field_name not in roperands:
 
             field_names = [
-                field
-                for field in roperands.keys()
+                field for field in roperands.keys()
                 if field.split("_")[0] == field_name
                 # if field.startswith(field_name)
             ]
@@ -505,8 +454,7 @@ def _merge_operands(name, filename, loperands, iformat, defined_operands):
                 LOG.debug("Fields: %s", roperands.keys())
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown instruction field '%s' in instruction definition"
-                    " '%s' found in '%s'" % (field_name, name, filename)
-                )
+                    " '%s' found in '%s'" % (field_name, name, filename))
             elif len(field_names) > 1:
                 raise MicroprobeArchitectureDefinitionError(
                     "Multiple matches for instruction field '%s' in "
@@ -518,9 +466,8 @@ def _merge_operands(name, filename, loperands, iformat, defined_operands):
 
         # Fix names referring to original operands
         if operand_name.startswith("@ORIG@"):
-            operand_name = operand_name.replace(
-                "@ORIG@", roperands[field_name][0].name
-            )
+            operand_name = operand_name.replace("@ORIG@",
+                                                roperands[field_name][0].name)
 
         try:
             operand = defined_operands[operand_name]
@@ -536,26 +483,22 @@ def _merge_operands(name, filename, loperands, iformat, defined_operands):
                 constant_value = None
 
             if constant_value is not None:
-                operand = OperandConst(
-                    "Constant-%s" % operand_name,
-                    "Constant value %s" % operand_name, constant_value
-                )
+                operand = OperandConst("Constant-%s" % operand_name,
+                                       "Constant value %s" % operand_name,
+                                       constant_value)
                 defined_operands[operand_name] = operand
                 LOG.debug("Operand added: %s", operand)
             else:
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown instruction operand '%s' in "
                     "instruction definition '%s' found in '%s'" %
-                    (operand_name, name, filename)
-                )
+                    (operand_name, name, filename))
 
         if field_name in fields_processed:
             raise MicroprobeArchitectureDefinitionError(
                 "Field '%s' processed twice. Check definition"
-                " instruction '%s' in file '%s'" % (
-                    field_name, name, filename
-                )
-            )
+                " instruction '%s' in file '%s'" %
+                (field_name, name, filename))
 
         roperands[field_name] = [operand, field_io]
         fields_processed.append(field_name)
@@ -588,8 +531,7 @@ def _check_reg_value(instruction, register_name, value, condition):
         if context.register_has_value(value):
 
             registers = [
-                register
-                for register in context.registers_get_value(value)
+                register for register in context.registers_get_value(value)
                 if register in context.reserved_registers
             ]
 
@@ -630,17 +572,15 @@ def _check_reg_value(instruction, register_name, value, condition):
         assert operand.is_input and not operand.is_output
 
         registers = [
-            reg
-            for reg in valid_values
-            if reg in building_block.context.reserved_registers and
-            building_block.context.get_register_value(reg) != value
+            reg for reg in valid_values
+            if reg in building_block.context.reserved_registers
+            and building_block.context.get_register_value(reg) != value
         ]
 
         if len(registers) == 0:
 
             valid_registers = [
-                reg
-                for reg in valid_values
+                reg for reg in valid_values
                 if reg not in building_block.context.reserved_registers
             ]
 
@@ -651,9 +591,8 @@ def _check_reg_value(instruction, register_name, value, condition):
             while random_value == value:
                 random_value = random.randint(0, (2**(register.type.size - 1)))
 
-            instructions = target.set_register(
-                register, random_value, building_block.context
-            )
+            instructions = target.set_register(register, random_value,
+                                               building_block.context)
 
             building_block.context.add_reserved_registers([register])
             building_block.context.set_register_value(register, random_value)
@@ -679,17 +618,15 @@ def _check_reg_value(instruction, register_name, value, condition):
         if not building_block.context.register_has_value(value):
 
             valid_registers = [
-                reg
-                for reg in valid_values
+                reg for reg in valid_values
                 if reg not in building_block.context.reserved_registers
             ]
 
             assert len(valid_registers) > 0
             register = valid_registers[0]
 
-            instructions = target.set_register(
-                register, value, building_block.context
-            )
+            instructions = target.set_register(register, value,
+                                               building_block.context)
 
             building_block.context.add_reserved_registers([register])
             building_block.context.set_register_value(register, value)
@@ -711,14 +648,12 @@ def _check_reg_value(instruction, register_name, value, condition):
 
     if condition is False:
 
-        instruction.register_context_callback(
-            key, checking_function_false, fixing_function_false
-        )
+        instruction.register_context_callback(key, checking_function_false,
+                                              fixing_function_false)
     else:
 
-        instruction.register_context_callback(
-            key, checking_function_true, fixing_function_true
-        )
+        instruction.register_context_callback(key, checking_function_true,
+                                              fixing_function_true)
 
 
 def _check_reg_bit_value(instruction, register_name, bit, value, condition):
@@ -778,9 +713,8 @@ def _check_reg_bit_value(instruction, register_name, bit, value, condition):
         """
 
         register = target.registers[register_name]
-        instructions = target.set_register_bits(
-            register, value, mask, shift, building_block.context
-        )
+        instructions = target.set_register_bits(register, value, mask, shift,
+                                                building_block.context)
 
         if register not in building_block.context.reserved_registers:
             building_block.context.add_reserved_registers([register])
@@ -788,14 +722,12 @@ def _check_reg_bit_value(instruction, register_name, bit, value, condition):
         building_block.context.set_register_value(register, cannary_value)
         building_block.add_init(instructions)
 
-    instruction.register_context_callback(
-        key, checking_function, fixing_function
-    )
+    instruction.register_context_callback(key, checking_function,
+                                          fixing_function)
 
 
-def _check_operands(
-    instruction, operand1_name, operand2_name, check_type, condition
-):
+def _check_operands(instruction, operand1_name, operand2_name, check_type,
+                    condition):
     """
 
     :param instruction:
@@ -847,13 +779,10 @@ def _check_operands(
                 new_type_operand2.set_valid_values([value])
                 assert list(new_type_operand2.values()) == [value]
             else:
-                new_type_operand2.set_valid_values(
-                    [
-                        elem
-                        for elem in orig_descriptor_operand2.type.values(
-                        ) if elem != value
-                    ]
-                )
+                new_type_operand2.set_valid_values([
+                    elem for elem in orig_descriptor_operand2.type.values()
+                    if elem != value
+                ])
 
             # LOG.debug("Orig operand 2 values: %s",
             #          orig_descriptor_operand2.type.values())
@@ -862,19 +791,14 @@ def _check_operands(
             LOG.debug(
                 "Removed from orig: %s",
                 set(orig_descriptor_operand2.type.values()) -
-                set(new_type_operand2.values())
-            )
+                set(new_type_operand2.values()))
 
-            LOG.debug(
-                "Removed from previous: %s",
-                set(previous_values) - set(new_type_operand2.values())
-            )
+            LOG.debug("Removed from previous: %s",
+                      set(previous_values) - set(new_type_operand2.values()))
 
             assert len(
-                set(new_type_operand2.values()) - set(
-                    orig_descriptor_operand2.type.values()
-                )
-            ) == 0
+                set(new_type_operand2.values()) -
+                set(orig_descriptor_operand2.type.values())) == 0
 
         def function_set_operand2(value):
             """
@@ -899,13 +823,10 @@ def _check_operands(
             if condition:
                 new_type_operand1.set_valid_values([value])
             else:
-                new_type_operand1.set_valid_values(
-                    [
-                        elem
-                        for elem in orig_descriptor_operand1.type.values(
-                        ) if elem != value
-                    ]
-                )
+                new_type_operand1.set_valid_values([
+                    elem for elem in orig_descriptor_operand1.type.values()
+                    if elem != value
+                ])
 
             # LOG.debug("Orig operand 1 values: %s",
             #          orig_descriptor_operand1.type.values())
@@ -914,19 +835,14 @@ def _check_operands(
             LOG.debug(
                 "Removed from orig: %s",
                 set(orig_descriptor_operand1.type.values()) -
-                set(new_type_operand1.values())
-            )
+                set(new_type_operand1.values()))
 
-            LOG.debug(
-                "Removed from previous: %s",
-                set(previous_values) - set(new_type_operand1.values())
-            )
+            LOG.debug("Removed from previous: %s",
+                      set(previous_values) - set(new_type_operand1.values()))
 
             assert len(
-                set(new_type_operand1.values()) - set(
-                    orig_descriptor_operand1.type.values()
-                )
-            ) == 0
+                set(new_type_operand1.values()) -
+                set(orig_descriptor_operand1.type.values())) == 0
 
         def function_unset_operand1():
             """ """
@@ -936,13 +852,11 @@ def _check_operands(
             """ """
             operand1.set_descriptor(orig_descriptor_operand1)
 
-        operand1.register_operand_callbacks(
-            function_set_operand1, function_unset_operand1
-        )
+        operand1.register_operand_callbacks(function_set_operand1,
+                                            function_unset_operand1)
 
-        operand2.register_operand_callbacks(
-            function_set_operand2, function_unset_operand2
-        )
+        operand2.register_operand_callbacks(function_set_operand2,
+                                            function_unset_operand2)
     elif check_type == "less":
 
         new_base_descriptor_operand1 = operand1.descriptor.copy()
@@ -956,35 +870,23 @@ def _check_operands(
         # used
         operand1.set_descriptor(new_base_descriptor_operand1)
         new_base_descriptor_operand1.set_type(new_base_type_operand1)
-        new_base_type_operand1.set_valid_values(
-            [
-                elem
-                for elem in orig_descriptor_operand1.type.values()
-                if len(
-                    [
-                        value for value in
-                        orig_descriptor_operand2.type.values() if value > elem
-                    ]
-                ) > 0
-            ]
-        )
+        new_base_type_operand1.set_valid_values([
+            elem for elem in orig_descriptor_operand1.type.values() if len([
+                value for value in orig_descriptor_operand2.type.values()
+                if value > elem
+            ]) > 0
+        ])
 
         orig_descriptor_operand1 = operand1.descriptor
 
         operand2.set_descriptor(new_base_descriptor_operand2)
         new_base_descriptor_operand2.set_type(new_base_type_operand2)
-        new_base_type_operand2.set_valid_values(
-            [
-                elem
-                for elem in orig_descriptor_operand2.type.values()
-                if len(
-                    [
-                        value for value in
-                        orig_descriptor_operand1.type.values() if value < elem
-                    ]
-                ) > 0
-            ]
-        )
+        new_base_type_operand2.set_valid_values([
+            elem for elem in orig_descriptor_operand2.type.values() if len([
+                value for value in orig_descriptor_operand1.type.values()
+                if value < elem
+            ]) > 0
+        ])
 
         orig_descriptor_operand2 = operand2.descriptor
 
@@ -1016,19 +918,15 @@ def _check_operands(
 
             previous_values = set(new_type_operand2.values())
 
-            new_type_operand2.set_valid_values(
-                [
-                    elem
-                    for elem in orig_descriptor_operand2.type.values(
-                    ) if elem > value
-                ]
-            )
+            new_type_operand2.set_valid_values([
+                elem for elem in orig_descriptor_operand2.type.values()
+                if elem > value
+            ])
 
             new_values = set(new_type_operand2.values())
 
-            LOG.debug(
-                "Operand '%s' values: %s", operand2_name, previous_values
-            )
+            LOG.debug("Operand '%s' values: %s", operand2_name,
+                      previous_values)
             LOG.debug("Operand '%s' new values: %s", operand2_name, new_values)
             LOG.debug("Operand differences: %s", previous_values - new_values)
 
@@ -1054,19 +952,15 @@ def _check_operands(
 
             previous_values = set(new_type_operand1.values())
 
-            new_type_operand1.set_valid_values(
-                [
-                    elem
-                    for elem in orig_descriptor_operand1.type.values(
-                    ) if elem < value
-                ]
-            )
+            new_type_operand1.set_valid_values([
+                elem for elem in orig_descriptor_operand1.type.values()
+                if elem < value
+            ])
 
             new_values = set(new_type_operand1.values())
 
-            LOG.debug(
-                "Operand '%s' values: %s", operand1_name, previous_values
-            )
+            LOG.debug("Operand '%s' values: %s", operand1_name,
+                      previous_values)
             LOG.debug("Operand '%s' new values: %s", operand1_name, new_values)
             LOG.debug("Operand differences: %s", previous_values - new_values)
 
@@ -1078,19 +972,16 @@ def _check_operands(
             """ """
             operand1.set_descriptor(orig_descriptor_operand1)
 
-        operand1.register_operand_callbacks(
-            function_set_operand1, function_unset_operand1
-        )
+        operand1.register_operand_callbacks(function_set_operand1,
+                                            function_unset_operand1)
 
-        operand2.register_operand_callbacks(
-            function_set_operand2, function_unset_operand2
-        )
+        operand2.register_operand_callbacks(function_set_operand2,
+                                            function_unset_operand2)
 
     else:
 
-        raise NotImplementedError(
-            "Condition '%s' not implemented" % check_type
-        )
+        raise NotImplementedError("Condition '%s' not implemented" %
+                                  check_type)
 
 
 def _check_memops_overlap(instruction, overlap_type, condition):
@@ -1178,16 +1069,12 @@ def _check_memops_overlap(instruction, overlap_type, condition):
 
             if condition is True:
                 operand2.set_possible_addresses(
-                    [
-                        possible_address1, possible_address2
-                    ], context
-                )
+                    [possible_address1, possible_address2], context)
                 operand2.set_possible_lengths([operand1.length], context)
             else:
-                operand2.set_forbidden_address_range(
-                    possible_address1,
-                    possible_address2,
-                    context)
+                operand2.set_forbidden_address_range(possible_address1,
+                                                     possible_address2,
+                                                     context)
 
         def function_set_operand2(context):
             """
@@ -1201,26 +1088,22 @@ def _check_memops_overlap(instruction, overlap_type, condition):
 
             if condition is True:
                 operand1.set_possible_addresses(
-                    [
-                        possible_address1, possible_address2
-                    ], context
-                )
+                    [possible_address1, possible_address2], context)
                 operand1.set_possible_lengths([operand2.length], context)
             else:
-                operand1.set_forbidden_address_range(
-                    possible_address1,
-                    possible_address2,
-                    context)
+                operand1.set_forbidden_address_range(possible_address1,
+                                                     possible_address2,
+                                                     context)
 
-        operand1.register_mem_operand_callback(
-            function_set_operand1_address, function_set_operand1_length,
-            function_unset_operand1, function_unset_operand1
-        )
+        operand1.register_mem_operand_callback(function_set_operand1_address,
+                                               function_set_operand1_length,
+                                               function_unset_operand1,
+                                               function_unset_operand1)
 
-        operand2.register_mem_operand_callback(
-            function_set_operand2_address, function_set_operand2_length,
-            function_unset_operand2, function_unset_operand2
-        )
+        operand2.register_mem_operand_callback(function_set_operand2_address,
+                                               function_set_operand2_length,
+                                               function_unset_operand2,
+                                               function_unset_operand2)
 
     elif overlap_type == "8_bytes_destructive":
 
@@ -1236,10 +1119,7 @@ def _check_memops_overlap(instruction, overlap_type, condition):
 
             if condition is True:
                 operand2.set_possible_addresses(
-                    [
-                        possible_address1, possible_address2
-                    ], context
-                )
+                    [possible_address1, possible_address2], context)
                 operand2.set_possible_lengths([operand1.length], context)
             else:
                 raise NotImplementedError
@@ -1256,23 +1136,20 @@ def _check_memops_overlap(instruction, overlap_type, condition):
 
             if condition is True:
                 operand1.set_possible_addresses(
-                    [
-                        possible_address1, possible_address2
-                    ], context
-                )
+                    [possible_address1, possible_address2], context)
                 operand1.set_possible_lengths([operand2.length], context)
             else:
                 raise NotImplementedError
 
-        operand1.register_mem_operand_callback(
-            function_set_operand1_address, function_set_operand1_length,
-            function_unset_operand1, function_unset_operand1
-        )
+        operand1.register_mem_operand_callback(function_set_operand1_address,
+                                               function_set_operand1_length,
+                                               function_unset_operand1,
+                                               function_unset_operand1)
 
-        operand2.register_mem_operand_callback(
-            function_set_operand2_address, function_set_operand2_length,
-            function_unset_operand2, function_unset_operand2
-        )
+        operand2.register_mem_operand_callback(function_set_operand2_address,
+                                               function_set_operand2_length,
+                                               function_unset_operand2,
+                                               function_unset_operand2)
 
     elif overlap_type == "destructive_any" or \
             overlap_type == "destructive_any_or_exact" or \
@@ -1290,9 +1167,8 @@ def _check_memops_overlap(instruction, overlap_type, condition):
             assert max_address >= min_address
 
             if condition is False:
-                operand2.set_forbidden_address_range(
-                    min_address, max_address, context
-                )
+                operand2.set_forbidden_address_range(min_address, max_address,
+                                                     context)
             else:
 
                 alignment = operand2.alignment()
@@ -1300,14 +1176,10 @@ def _check_memops_overlap(instruction, overlap_type, condition):
                     alignment = 1
 
                 addresses = [
-                    operand1.address +
-                    index for index in range(
-                        max_address -
-                        min_address +
-                        1) if (
-                        operand1.address +
-                        index).displacement %
-                    alignment == 0]
+                    operand1.address + index
+                    for index in range(max_address - min_address + 1)
+                    if (operand1.address + index).displacement % alignment == 0
+                ]
 
                 if len(addresses) == 0:
                     raise NotImplementedError
@@ -1326,9 +1198,8 @@ def _check_memops_overlap(instruction, overlap_type, condition):
             assert max_address >= min_address
 
             if condition is False:
-                operand1.set_forbidden_address_range(
-                    min_address, max_address, context
-                )
+                operand1.set_forbidden_address_range(min_address, max_address,
+                                                     context)
             else:
 
                 alignment = operand2.alignment()
@@ -1336,29 +1207,25 @@ def _check_memops_overlap(instruction, overlap_type, condition):
                     alignment = 1
 
                 addresses = [
-                    operand2.address +
-                    index for index in range(
-                        max_address -
-                        min_address +
-                        1) if (
-                        operand2.address +
-                        index).displacement %
-                    alignment == 0]
+                    operand2.address + index
+                    for index in range(max_address - min_address + 1)
+                    if (operand2.address + index).displacement % alignment == 0
+                ]
 
                 if len(addresses) == 0:
                     raise NotImplementedError
 
                 operand1.set_possible_addresses(addresses, context)
 
-        operand1.register_mem_operand_callback(
-            function_set_operand1_address, function_set_operand1_length,
-            function_unset_operand1, function_unset_operand1
-        )
+        operand1.register_mem_operand_callback(function_set_operand1_address,
+                                               function_set_operand1_length,
+                                               function_unset_operand1,
+                                               function_unset_operand1)
 
-        operand2.register_mem_operand_callback(
-            function_set_operand2_address, function_set_operand2_length,
-            function_unset_operand2, function_unset_operand2
-        )
+        operand2.register_mem_operand_callback(function_set_operand2_address,
+                                               function_set_operand2_length,
+                                               function_unset_operand2,
+                                               function_unset_operand2)
 
     elif overlap_type == "exact":
 
@@ -1392,15 +1259,15 @@ def _check_memops_overlap(instruction, overlap_type, condition):
             else:
                 raise NotImplementedError
 
-        operand1.register_mem_operand_callback(
-            function_set_operand1_address, function_set_operand1_length,
-            function_unset_operand1, function_unset_operand1
-        )
+        operand1.register_mem_operand_callback(function_set_operand1_address,
+                                               function_set_operand1_length,
+                                               function_unset_operand1,
+                                               function_unset_operand1)
 
-        operand2.register_mem_operand_callback(
-            function_set_operand2_address, function_set_operand2_length,
-            function_unset_operand2, function_unset_operand2
-        )
+        operand2.register_mem_operand_callback(function_set_operand2_address,
+                                               function_set_operand2_length,
+                                               function_unset_operand2,
+                                               function_unset_operand2)
 
     else:
         # print(overlap_type, condition)
@@ -1425,11 +1292,8 @@ def _check_alignment(instruction, operand_idx, alignment):
 
 
 GENERIC_INSTRUCTION_CHECKS = {}
-for _key, _value in dict(
-    getmembers(
-        sys.modules[__name__], isfunction
-    )
-).items():
+for _key, _value in dict(getmembers(sys.modules[__name__],
+                                    isfunction)).items():
     if _key.startswith("_check_"):
         GENERIC_INSTRUCTION_CHECKS[_key[1:]] = _value
 
@@ -1566,10 +1430,8 @@ class GenericInstructionType(InstructionType):
 
     """
 
-    def __init__(
-        self, name, mnemonic, opcode, descr, iformat, operands, ioperands,
-        moperands, instruction_checks, target_checks
-    ):
+    def __init__(self, name, mnemonic, opcode, descr, iformat, operands,
+                 ioperands, moperands, instruction_checks, target_checks):
         """
 
         :param name:
@@ -1604,8 +1466,7 @@ class GenericInstructionType(InstructionType):
                 raise MicroprobeArchitectureDefinitionError(
                     "Inconsistent instruction definition. "
                     "Each instruction field should have an operand. "
-                    "Instruction: %s", self.name
-                )
+                    "Instruction: %s", self.name)
             else:
                 # Sort the operands
                 tmp_val = self.operands[key]
@@ -1613,29 +1474,26 @@ class GenericInstructionType(InstructionType):
                 self.operands[key] = tmp_val
 
         if list(self.operands.keys()) != [
-                field.name for field in iformat.fields]:
+                field.name for field in iformat.fields
+        ]:
             LOG.error("Operands: %s", list(self.operands.keys()))
             LOG.error("Fields: %s", [field.name for field in iformat.fields])
             LOG.error("Instruction format: %s", iformat.name)
             # print(self.operands.keys())
             # print([field.name for field in iformat.fields])
-            raise MicroprobeArchitectureDefinitionError(
-                "Operands and fields "
-                "are not aligned in "
-                "'%s'" % self.name
-            )
+            raise MicroprobeArchitectureDefinitionError("Operands and fields "
+                                                        "are not aligned in "
+                                                        "'%s'" % self.name)
 
         self._operand_descriptors = OrderedDict()
-        for op_descriptor, field in zip(
-            list(self.operands.items()), self.format.fields
-        ):
+        for op_descriptor, field in zip(list(self.operands.items()),
+                                        self.format.fields):
             fieldname, op_descriptor = op_descriptor
             operand, io_def = op_descriptor
 
             if field.name != fieldname:
                 raise MicroprobeArchitectureDefinitionError(
-                    "Operands and fields are not aligned in '%s" % self.name
-                )
+                    "Operands and fields are not aligned in '%s" % self.name)
 
             if not field.default_show:
                 continue
@@ -1644,15 +1502,13 @@ class GenericInstructionType(InstructionType):
             #     continue
 
             self._operand_descriptors[field.name] = OperandDescriptor(
-                operand, "I" in io_def, "O" in io_def
-            )
+                operand, "I" in io_def, "O" in io_def)
 
         opcode_operands = [op for op in operands if op.startswith('opcode')]
 
         if len(opcode_operands) == 1:
             self.operands[opcode_operands[0]][0] = OperandConst(
-                "Opcode", "Instruction opcode", int(self.opcode, 16)
-            )
+                "Opcode", "Instruction opcode", int(self.opcode, 16))
         else:
             # Assume the back-end will take care of multiple operands
             pass
@@ -1663,15 +1519,13 @@ class GenericInstructionType(InstructionType):
 
         mask_val_str = "0b"
         mask_str = "0b"
-        for op_descriptor, field in zip(
-            list(self.operands.items()), self.format.fields
-        ):
+        for op_descriptor, field in zip(list(self.operands.items()),
+                                        self.format.fields):
             dummy_fieldname, op_descriptor = op_descriptor
             format_str = "{0:0%db}" % field.size
 
             if op_descriptor[0].constant and op_descriptor[
-                0
-            ].immediate and not field.default_show:
+                    0].immediate and not field.default_show:
 
                 mask_val_str = mask_val_str + \
                     format_str.format(list(op_descriptor[0].values())[0])
@@ -1689,13 +1543,11 @@ class GenericInstructionType(InstructionType):
                 mask_str = mask_str + "".join(['0'] * field.size)
 
         assert len(mask_val_str) == self.format.length * 8 + 2, "%s != %s" % (
-            len(mask_val_str), self.format.length * 8 + 2
-        )
+            len(mask_val_str), self.format.length * 8 + 2)
         mask_val = int(mask_val_str, 2)
 
         assert len(mask_str) == self.format.length * 8 + 2, "%s != %s" % (
-            len(mask_str), self.format.length * 8 + 2
-        )
+            len(mask_str), self.format.length * 8 + 2)
         mask = int(mask_str, 2)
 
         assert mask != 0
@@ -1808,9 +1660,8 @@ class GenericInstructionType(InstructionType):
         LOG.debug("Assembly string: %s", format_str)
         assembly_str = format_str.replace("OPC", "@@@")
 
-        for op_descriptor, field in zip(
-            list(self.operands.items()), self.format.fields
-        ):
+        for op_descriptor, field in zip(list(self.operands.items()),
+                                        self.format.fields):
             fieldname, op_descriptor = op_descriptor
             operand, dummy = op_descriptor
 
@@ -1818,8 +1669,7 @@ class GenericInstructionType(InstructionType):
 
             if field.name != fieldname:
                 raise MicroprobeArchitectureDefinitionError(
-                    "Operands and fields are not aligned in '%s" % self.name
-                )
+                    "Operands and fields are not aligned in '%s" % self.name)
 
             if not field.default_show:
                 LOG.debug("Skip not shown")
@@ -1836,17 +1686,15 @@ class GenericInstructionType(InstructionType):
 
                 if operand.name == "Zero":  # Operand Zero never shows
                     assembly_str = assembly_str.replace(
-                        " %s," % field.name, ""
-                    )
+                        " %s," % field.name, "")
                     assembly_str = assembly_str.replace(
-                        ", %s" % field.name, ""
-                    )
+                        ", %s" % field.name, "")
                     assembly_str = assembly_str.replace("%s" % field.name, "")
                     assembly_str = assembly_str.replace("()", "")
                 else:
                     assembly_str = assembly_str.replace(
-                        field.name, next_operand_value().representation
-                    )
+                        field.name,
+                        next_operand_value().representation)
                     # operand.representation(operand.values()[0])
             else:
 
@@ -1856,98 +1704,85 @@ class GenericInstructionType(InstructionType):
 
                     assembly_str = assembly_str.replace(
                         "@@@ " + field.name + ",",
-                        "@@@ " + next_operand_value().representation + ",", 1
-                    )
+                        "@@@ " + next_operand_value().representation + ",", 1)
 
                 elif assembly_str.find(", " + field.name + ",") >= 0:
 
                     assembly_str = assembly_str.replace(
                         ", " + field.name + ",",
-                        ", " + next_operand_value().representation + ",", 1
-                    )
+                        ", " + next_operand_value().representation + ",", 1)
 
                 elif assembly_str.endswith(", " + field.name):
 
                     assembly_str = assembly_str.replace(
                         ", " + field.name,
-                        ", " + next_operand_value().representation, 1
-                    )
+                        ", " + next_operand_value().representation, 1)
 
                 elif assembly_str.find("@@@ $" + field.name + ",") >= 0:
 
                     assembly_str = assembly_str.replace(
                         "@@@ $" + field.name + ",",
-                        "@@@ $" + next_operand_value().representation + ",", 1
-                    )
+                        "@@@ $" + next_operand_value().representation + ",", 1)
 
                 elif assembly_str.find(", $" + field.name + ",") >= 0:
 
                     assembly_str = assembly_str.replace(
                         ", $" + field.name + ",",
-                        ", $" + next_operand_value().representation + ",", 1
-                    )
+                        ", $" + next_operand_value().representation + ",", 1)
 
                 elif assembly_str.endswith(", $" + field.name):
 
                     assembly_str = assembly_str.replace(
                         ", $" + field.name,
-                        ", $" + next_operand_value().representation, 1
-                    )
+                        ", $" + next_operand_value().representation, 1)
 
                 elif assembly_str.find("@@@ " + field.name) >= 0:
 
                     assembly_str = assembly_str.replace(
                         "@@@ " + field.name,
-                        "@@@ " + next_operand_value().representation, 1
-                    )
+                        "@@@ " + next_operand_value().representation, 1)
 
                 elif assembly_str.find("(" + field.name + ")") >= 0:
 
                     assembly_str = assembly_str.replace(
                         "(" + field.name + ")",
-                        "(" + next_operand_value().representation + ")", 1
-                    )
+                        "(" + next_operand_value().representation + ")", 1)
 
                 elif assembly_str.find("(" + field.name + ",") >= 0:
 
                     assembly_str = assembly_str.replace(
                         "(" + field.name + ",",
-                        "(" + next_operand_value().representation + ",", 1
-                    )
+                        "(" + next_operand_value().representation + ",", 1)
 
                 elif assembly_str.find(" " + field.name + ")") >= 0:
 
                     assembly_str = assembly_str.replace(
                         " " + field.name + ")",
-                        " " + next_operand_value().representation + ")", 1
-                    )
+                        " " + next_operand_value().representation + ")", 1)
 
                 elif assembly_str.find(" " + field.name + "(") >= 0:
 
                     assembly_str = assembly_str.replace(
                         " " + field.name + "(",
-                        " " + next_operand_value().representation + "(", 1
-                    )
+                        " " + next_operand_value().representation + "(", 1)
 
                 elif assembly_str.find("," + field.name + ")") >= 0:
 
                     assembly_str = assembly_str.replace(
                         "," + field.name + ")",
-                        "," + next_operand_value().representation + ")", 1
-                    )
+                        "," + next_operand_value().representation + ")", 1)
 
                 else:
                     LOG.debug(
-                        "%s", list(zip(
-                            list(self.operands.items()), self.format.fields
-                        ))
-                    )
+                        "%s",
+                        list(
+                            zip(list(self.operands.items()),
+                                self.format.fields)))
                     LOG.debug("Current assembly: %s", assembly_str)
 
                     raise MicroprobeArchitectureDefinitionError(
                         "Unable to generate correct assembly for '%s' "
-                        "instruction" % self.mnemonic
-                    )
+                        "instruction" % self.mnemonic)
 
             LOG.debug("Current assembly: %s", assembly_str)
 
@@ -1976,9 +1811,8 @@ class GenericInstructionType(InstructionType):
         LOG.debug("Start codification: %s", self.assembly(asm_args))
         LOG.debug("Args: %s", args)
 
-        for op_descriptor, field in zip(
-            list(self.operands.items()), self.format.fields
-        ):
+        for op_descriptor, field in zip(list(self.operands.items()),
+                                        self.format.fields):
 
             fieldname, op_descriptor = op_descriptor
             operand, dummy = op_descriptor
@@ -1989,8 +1823,7 @@ class GenericInstructionType(InstructionType):
 
             if field.name != fieldname:
                 raise MicroprobeArchitectureDefinitionError(
-                    "Operands and fields are not aligned in '%s" % self.name
-                )
+                    "Operands and fields are not aligned in '%s" % self.name)
 
             format_field_str = "{0:0%db}" % field.size
             field_length += field.size
@@ -2028,9 +1861,8 @@ class GenericInstructionType(InstructionType):
 
                 raise MicroprobeArchitectureDefinitionError(
                     "Operand value can not be codified within the "
-                    "instruction field. Operand: %s Value: %d"
-                    % (operand, opvalue)
-                )
+                    "instruction field. Operand: %s Value: %d" %
+                    (operand, opvalue))
 
             if opvalue < 0:
 
@@ -2045,9 +1877,8 @@ class GenericInstructionType(InstructionType):
 
                     raise MicroprobeArchitectureDefinitionError(
                         "Operand value can not be codified within the "
-                        "instruction field. Operand: %s Value: %d"
-                        % (operand, opvalue)
-                    )
+                        "instruction field. Operand: %s Value: %d" %
+                        (operand, opvalue))
 
                 opvalue = opvalue + 2**field.size
 
@@ -2084,11 +1915,8 @@ class GenericInstructionType(InstructionType):
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""

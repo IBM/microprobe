@@ -33,11 +33,9 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Pickable
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "register.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "register.yaml")
 
 LOG = get_logger(__name__)
 __all__ = ["import_definition", "Register", "GenericRegister"]
@@ -75,8 +73,7 @@ def import_definition(cls, filenames, regtypes):
             if rtype not in regtypes:
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown register type in definition of "
-                    "register '%s' in file '%s'" % (name, filename)
-                )
+                    "register '%s' in file '%s'" % (name, filename))
 
             if repeat:
                 rfrom = repeat["From"]
@@ -96,8 +93,7 @@ def import_definition(cls, filenames, regtypes):
                 if cname in regs:
                     raise MicroprobeArchitectureDefinitionError(
                         "Duplicated register definition of '%s' found"
-                        " in '%s'" % (cname, filename)
-                    )
+                        " in '%s'" % (cname, filename))
 
                 LOG.debug(regt)
                 regs[cname] = regt
@@ -176,11 +172,10 @@ class GenericRegister(Register, Pickable):
         self._descr = descr
         self._rrepr = rrepr
         self._rcodi = rcodi
-        self._hash = int(hashlib.sha512(
-            (
-                self.name + self.description +
-                self.representation + str(hash(self.type))
-            ).encode()).hexdigest(), 16)
+        self._hash = int(
+            hashlib.sha512(
+                (self.name + self.description + self.representation +
+                 str(hash(self.type))).encode()).hexdigest(), 16)
 
     @property
     def type(self):
@@ -213,11 +208,8 @@ class GenericRegister(Register, Pickable):
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""
@@ -331,9 +323,8 @@ class GenericRegister(Register, Pickable):
 
     def __str__(self):
         """ """
-        return "%8s : %s (Type: %s)" % (
-            self._name, self._descr, self._rtype.name
-        )
+        return "%8s : %s (Type: %s)" % (self._name, self._descr,
+                                        self._rtype.name)
 
     def __repr__(self):
         """ """
@@ -348,7 +339,5 @@ class GenericRegister(Register, Pickable):
         try:
             return self._rtype.__getattribute__(name)
         except AttributeError:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'" %
-                (self.__class__.__name__, name)
-            )
+            raise AttributeError("'%s' object has no attribute '%s'" %
+                                 (self.__class__.__name__, name))

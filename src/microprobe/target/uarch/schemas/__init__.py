@@ -16,7 +16,6 @@
 <your module documentation here>.
 """
 
-
 # Constants
 __all__ = []
 

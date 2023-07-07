@@ -29,7 +29,6 @@ from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.imp import find_subclasses
 from microprobe.utils.logger import get_logger
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["import_classes_from", "Generator"]
@@ -55,8 +54,7 @@ def import_classes_from(modules):
                     "Duplicated "
                     "definition"
                     " of Generator '%s' "
-                    "in module '%s'", name, module_str
-                )
+                    "in module '%s'", name, module_str)
 
             LOG.info("%s generator imported", name)
             classes[name] = cls
@@ -92,12 +90,12 @@ class Generator(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def generate(
-        self, value,
-        fvalue, dummy_reg,
-        dummy_instr=None,
-        address=False
-    ):
+    def generate(self,
+                 value,
+                 fvalue,
+                 dummy_reg,
+                 dummy_instr=None,
+                 address=False):
         """
 
         :param value:

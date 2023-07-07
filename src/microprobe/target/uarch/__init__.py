@@ -40,16 +40,11 @@ import six
 
 # Local modules
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas",
-    "microarchitecture.yaml"
-)
-DEFAULT_UARCH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "default",
-    "microarchitecture.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "microarchitecture.yaml")
+DEFAULT_UARCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "default", "microarchitecture.yaml")
 LOG = get_logger(__name__)
 __all__ = [
     "import_microarchitecture_definition",
@@ -70,10 +65,7 @@ def _read_uarch_extensions(uarchdefs, path):
             uarchdefval = os.path.join(path, uarchdefval)
 
         uarchdef = read_yaml(
-            os.path.join(
-                uarchdefval, "microarchitecture.yaml"
-            ), SCHEMA
-        )
+            os.path.join(uarchdefval, "microarchitecture.yaml"), SCHEMA)
         uarchdef["Path"] = uarchdefval
         uarchdefs.append(uarchdef)
 
@@ -127,29 +119,22 @@ def _read_yaml_definition(uarchdefs, path):
                         else:
                             if override:
                                 complete_uarchdef[key][key2] = [
-                                    os.path.join(
-                                        uarchdef["Path"], val[key2]
-                                    )
+                                    os.path.join(uarchdef["Path"], val[key2])
                                 ]
                             else:
                                 complete_uarchdef[key][key2].append(
-                                    os.path.join(
-                                        uarchdef["Path"], val[key2]
-                                    )
-                                )
+                                    os.path.join(uarchdef["Path"], val[key2]))
                     elif key2 == "Module":
                         if val[key2].startswith("microprobe"):
-                            val[key2] = os.path.join(
-                                os.path.dirname(__file__), "..", "..", "..",
-                                val[key2]
-                            )
+                            val[key2] = os.path.join(os.path.dirname(__file__),
+                                                     "..", "..", "..",
+                                                     val[key2])
 
                         if os.path.isabs(val[key2]):
                             complete_uarchdef[key][key2] = val[key2]
                         else:
                             complete_uarchdef[key][key2] = os.path.join(
-                                uarchdef["Path"], val[key2]
-                            )
+                                uarchdef["Path"], val[key2])
                     else:
                         complete_uarchdef[key][key2] = val[key2]
 
@@ -172,38 +157,26 @@ def import_microarchitecture_definition(path):
     uarchdef = _read_yaml_definition([], path)
 
     element_types, force = import_definition(
-        uarchdef, os.path.join(
-            path, "microarchitecture.yaml"
-        ), "Element_type", getattr(microprobe.target.uarch, 'element_type'),
-        None
-    )
+        uarchdef, os.path.join(path, "microarchitecture.yaml"), "Element_type",
+        getattr(microprobe.target.uarch, 'element_type'), None)
 
-    element, force = import_definition(
-        uarchdef,
-        os.path.join(
-            path, "microarchitecture.yaml"
-        ),
-        "Element",
-        getattr(
-            microprobe.target.uarch, 'element'
-        ),
-        element_types,
-        force=force
-    )
+    element, force = import_definition(uarchdef,
+                                       os.path.join(path,
+                                                    "microarchitecture.yaml"),
+                                       "Element",
+                                       getattr(microprobe.target.uarch,
+                                               'element'),
+                                       element_types,
+                                       force=force)
 
-    uarch_cls = get_object_from_module(
-        uarchdef["Microarchitecture"]["Class"],
-        uarchdef["Microarchitecture"]["Module"]
-    )
+    uarch_cls = get_object_from_module(uarchdef["Microarchitecture"]["Class"],
+                                       uarchdef["Microarchitecture"]["Module"])
 
-    uarch = uarch_cls(
-        uarchdef["Name"], uarchdef["Description"], element,
-        uarchdef["Instruction_properties"]["Path"]
-    )
+    uarch = uarch_cls(uarchdef["Name"], uarchdef["Description"], element,
+                      uarchdef["Instruction_properties"]["Path"])
 
-    import_properties(
-        os.path.join(path, "microarchitecture.yaml"), {uarchdef["Name"]: uarch}
-    )
+    import_properties(os.path.join(path, "microarchitecture.yaml"),
+                      {uarchdef["Name"]: uarch})
 
     LOG.info("Microarchitecture '%s' imported", uarch)
     return uarch
@@ -233,13 +206,10 @@ def find_microarchitecture_definitions(paths=None):
             continue
 
         try:
-            definition = Definition(
-                uarchfile, isadef["Name"], isadef["Description"]
-            )
-            if (
-                definition not in results and
-                not definition.name.endswith("common")
-            ):
+            definition = Definition(uarchfile, isadef["Name"],
+                                    isadef["Description"])
+            if (definition not in results
+                    and not definition.name.endswith("common")):
                 results.append(definition)
 
         except TypeError as exc:
@@ -371,13 +341,8 @@ class GenericMicroarchitecture(Microarchitecture):
         rstr += "Microarchitecture Description: %s\n" % self.name
         rstr += "-" * 80 + "\n"
         rstr += "Element Types:\n"
-        for elem in sorted(
-            set(
-                [
-                    elem.type for elem in self.elements.values()
-                ]
-            )
-        ):
+        for elem in sorted(set([elem.type
+                                for elem in self.elements.values()])):
             rstr += str(elem) + "\n"
         rstr += "-" * 80 + "\n"
         rstr += "Elements:\n"
@@ -388,9 +353,8 @@ class GenericMicroarchitecture(Microarchitecture):
 
     def __str__(self):
         """ """
-        return "%s('%s', '%s')" % (
-            self.__class__.__name__, self.name, self.description
-        )
+        return "%s('%s', '%s')" % (self.__class__.__name__, self.name,
+                                   self.description)
 
 
 class GenericCPUMicroarchitecture(GenericMicroarchitecture):
@@ -410,11 +374,9 @@ class GenericCPUMicroarchitecture(GenericMicroarchitecture):
         :param instruction_properties_defs:
 
         """
-        super(
-            GenericCPUMicroarchitecture, self
-        ).__init__(
-            name, descr, elements, instruction_properties_defs
-        )
+        super(GenericCPUMicroarchitecture,
+              self).__init__(name, descr, elements,
+                             instruction_properties_defs)
 
         self._cache_hierarchy = cache_hierarchy_from_elements(elements)
 

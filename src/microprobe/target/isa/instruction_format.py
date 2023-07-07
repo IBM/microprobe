@@ -31,12 +31,9 @@ from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
 from microprobe.utils.logger import get_logger
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas",
-    "instruction_format.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "instruction_format.yaml")
 LOG = get_logger(__name__)
 __all__ = [
     "import_definition", "InstructionFormat", "GenericInstructionFormat"
@@ -78,8 +75,7 @@ def import_definition(cls, filenames, ifields):
                 LOG.warning(
                     "Similar definition of instruction format: '%s' "
                     "and '%s'. Check if definition needed.", name,
-                    iformats_duplicated[key]
-                )
+                    iformats_duplicated[key])
             else:
                 iformats_duplicated[key] = name
 
@@ -90,8 +86,7 @@ def import_definition(cls, filenames, ifields):
                     "instruction format"
                     " '%s' found in '%s'"
                     " contains duplicated"
-                    " fields." % (name, filename)
-                )
+                    " fields." % (name, filename))
 
             try:
                 fields = [ifields[ifieldname] for ifieldname in elem["Fields"]]
@@ -100,20 +95,18 @@ def import_definition(cls, filenames, ifields):
                     "Unknown field %s "
                     "definition in "
                     "instruction format"
-                    " '%s' found in '%s'." % (key, name, filename)
-                )
+                    " '%s' found in '%s'." % (key, name, filename))
 
             iformat = cls(name, descr, fields, assembly)
 
             if name in iformats:
-                raise MicroprobeArchitectureDefinitionError(
-                    "Duplicated "
-                    "definition "
-                    "of instruction "
-                    "format "
-                    "'%s' found "
-                    "in '%s'" % (name, filename)
-                )
+                raise MicroprobeArchitectureDefinitionError("Duplicated "
+                                                            "definition "
+                                                            "of instruction "
+                                                            "format "
+                                                            "'%s' found "
+                                                            "in '%s'" %
+                                                            (name, filename))
             LOG.debug(iformat)
             iformats[name] = iformat
 
@@ -305,10 +298,8 @@ class GenericInstructionFormat(InstructionFormat):
         third is a :class:`~.bool` indicating if the operand is an output
         operand.
         """
-        return [
-            (field.get_foperand(), field.is_input(), field.is_output())
-            for field in self.get_fields() if field.get_fshow()
-        ]
+        return [(field.get_foperand(), field.is_input(), field.is_output())
+                for field in self.get_fields() if field.get_fshow()]
 
     def get_fields(self):
         """Returns a :class:`~.list` of the
@@ -330,10 +321,8 @@ class GenericInstructionFormat(InstructionFormat):
         ]
 
         if len(field) == 0:
-            raise MicroprobeLookupError(
-                "Unable to find a field "
-                "with name '%s'" % fname
-            )
+            raise MicroprobeLookupError("Unable to find a field "
+                                        "with name '%s'" % fname)
 
         assert len(field) == 1, "Field names should be key identifiers. " \
                                 "Field '%s' is duplicated" % fname
@@ -429,7 +418,6 @@ class GenericInstructionFormat(InstructionFormat):
 
             raise MicroprobeArchitectureDefinitionError(
                 "Instruction format"
-                " '%s' length is not multiple of a byte" % self.name
-            )
+                " '%s' length is not multiple of a byte" % self.name)
 
         self._length = sum([field.size for field in self._fields]) // 8

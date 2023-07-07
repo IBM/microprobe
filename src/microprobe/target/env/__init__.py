@@ -38,7 +38,6 @@ import six
 
 # Local modules
 
-
 # Constants
 LOG = get_logger(__name__)
 
@@ -62,12 +61,9 @@ def import_env_definition(module, isa, definition_name=None):
 
     LOG.info("Start Environment import")
     envcls = list(
-        find_subclasses(
-            module,
-            GenericEnvironment,
-            extra_import_name=definition_name
-        )
-    )
+        find_subclasses(module,
+                        GenericEnvironment,
+                        extra_import_name=definition_name))
 
     LOG.debug("Definition name: %s", definition_name)
     LOG.debug("Classes: %s", envcls)
@@ -76,20 +72,16 @@ def import_env_definition(module, isa, definition_name=None):
         envcls = [cls for cls in envcls if cls.__name__ == definition_name]
 
     if len(envcls) > 1 and definition_name is None:
-        LOG.warning(
-            "Multiple environment definitions found and a specific"
-            " name not provided. Taking the first one."
-        )
+        LOG.warning("Multiple environment definitions found and a specific"
+                    " name not provided. Taking the first one.")
     elif len(envcls) < 1 and definition_name is None:
         raise MicroprobeImportDefinitionError(
-            "No environment definitions found in '%s'" % module
-        )
+            "No environment definitions found in '%s'" % module)
 
     elif len(envcls) < 1:
         raise MicroprobeImportDefinitionError(
             "No environment definitions found in '%s' with name"
-            " '%s'" % (module, definition_name)
-        )
+            " '%s'" % (module, definition_name))
 
     environment = envcls[0](isa)
 
@@ -316,9 +308,7 @@ class GenericEnvironment(Environment):
             Property(
                 "problem_state", "Boolean indicating if the program"
                 " is executed in the problem state"
-                " (not privilege level)", True
-            )
-        )
+                " (not privilege level)", True))
 
     @property
     def name(self):
@@ -378,8 +368,8 @@ class GenericEnvironment(Environment):
         """
         raise NotImplementedError(
             "Register name translation requested but not implemented. Check"
-            " if you are targeting the appropriate environment (%s)" % register
-        )
+            " if you are targeting the appropriate environment (%s)" %
+            register)
 
     def full_report(self):
         """ """
@@ -393,29 +383,21 @@ class GenericEnvironment(Environment):
     def elf_abi(self, stack_size, start_symbol, **kwargs):
         """ """
 
-        stack = VariableArray(
-            kwargs.get("stack_name", "microprobe_stack"),
-            "uint8_t",
-            stack_size,
-            align=kwargs.get("stack_alignment", 16),
-            address=kwargs.get("stack_address", None)
-        )
+        stack = VariableArray(kwargs.get("stack_name", "microprobe_stack"),
+                              "uint8_t",
+                              stack_size,
+                              align=kwargs.get("stack_alignment", 16),
+                              address=kwargs.get("stack_address", None))
 
         instructions = []
         instructions += self.target.set_register_to_address(
             self.stack_pointer,
-            Address(
-                base_address=kwargs.get(
-                    "stack_name", "microprobe_stack"
-                )
-            ),
-            Context()
-        )
+            Address(base_address=kwargs.get("stack_name", "microprobe_stack")),
+            Context())
 
         if self.stack_direction == "decrease":
             instructions += self.target.add_to_register(
-                self.stack_pointer, stack_size
-            )
+                self.stack_pointer, stack_size)
 
         if start_symbol is not None:
             instructions += self.target.function_call(start_symbol)
@@ -454,11 +436,8 @@ class GenericEnvironment(Environment):
     def _check_cmp(self, other):
 
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""

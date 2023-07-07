@@ -31,7 +31,6 @@ from microprobe.exceptions import MicroprobeAddressTranslationError, \
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict
 
-
 # Constants
 
 LOG = get_logger(__name__)
@@ -105,9 +104,8 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
 
     def __init__(self, target, **kwargs):
         """ """
-        super(GenericDynamicAddressTranslation, self).__init__(
-            target, **kwargs
-        )
+        super(GenericDynamicAddressTranslation,
+              self).__init__(target, **kwargs)
 
         self._map = RejectingDict()
         self._target = target
@@ -134,8 +132,7 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
             self._map[source & mask] = DATmap(source, target, mask)
         except MicroprobeDuplicatedValueError:
             raise MicroprobeAddressTranslationError(
-                "Map in '%s' already exists" % hex(source & mask)
-            )
+                "Map in '%s' already exists" % hex(source & mask))
 
     def copy(self, **kwargs):
         """ """
@@ -161,12 +158,10 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
         if len(tmap) > 1:
             raise MicroprobeAddressTranslationError(
                 "Multiple translation maps found for address '%s'" %
-                hex(address)
-            )
+                hex(address))
         elif len(tmap) < 1:
             raise MicroprobeAddressTranslationError(
-                "No translation maps found for address '%s'" % hex(address)
-            )
+                "No translation maps found for address '%s'" % hex(address))
         else:
             return tmap[0].address_translate(address, rev=rev)
 
@@ -174,15 +169,13 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
         """ """
         raise NotImplementedError(
             "DAT mechanisms and parameters are target dependent. Target: '%s'"
-            " does not implement them. " % self._target
-        )
+            " does not implement them. " % self._target)
 
     def raw_decorate(self, raw_str):
         """ """
         raise NotImplementedError(
             "DAT mechanisms and parameters are target dependent. Target: '%s'"
-            " does not implement them. " % self._target
-        )
+            " does not implement them. " % self._target)
 
     def required_register_values(self):
         """ """
@@ -198,8 +191,7 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
             if key not in self._control_keys:
                 warnings.warn(
                     "DAT Control key '%s' specified but not supported. "
-                    "Ignoring it." % key
-                )
+                    "Ignoring it." % key)
                 continue
             self._control[key] = value['value']
 
@@ -232,10 +224,8 @@ class DATmap(object):
     def address_translate(self, address, rev=False):
         if not self.address_in_map(address, rev=rev):
             raise MicroprobeAddressTranslationError(
-                "Unable to translate address '%s' in map: %s" % (
-                    hex(address), str(self)
-                )
-            )
+                "Unable to translate address '%s' in map: %s" %
+                (hex(address), str(self)))
 
         address &= (~self.mask)
         if rev:

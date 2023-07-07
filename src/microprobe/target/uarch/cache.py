@@ -28,7 +28,6 @@ from six.moves import range
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = [
@@ -51,8 +50,7 @@ def cache_hierarchy_from_elements(elements):
         raise MicroprobeArchitectureDefinitionError(
             "Expecting cache hierarchy"
             " elements in the microarchitecture"
-            " description, but none found."
-        )
+            " description, but none found.")
 
     cache_hierarchy = CacheHierarchy(caches)
 
@@ -81,8 +79,7 @@ def _caches_from_elements(elements):
                 "Microarchitecture "
                 "definition requires the definition of the "
                 "'data_cache' and 'instruction_cache' properties "
-                "for the element types."
-            )
+                "for the element types.")
 
         LOG.debug("Cache element found:'%s'", element)
 
@@ -96,8 +93,7 @@ def _caches_from_elements(elements):
             raise MicroprobeArchitectureDefinitionError(
                 "Element '%s' defined as a cache, but required "
                 "property '%s' not specified in its type "
-                "'%s'" % (element, exc.message.split("'")[3], element.type)
-            )
+                "'%s'" % (element, exc.message.split("'")[3], element.type))
 
         # Figuring out the cache type based on element attributes
         # Right now, we only implement N-way set associative
@@ -105,18 +101,18 @@ def _caches_from_elements(elements):
         ways = getattr(element.type, "cache_ways", None)
 
         if ways is not None:
-            new_cache = SetAssociativeCache(
-                element, size, level, line_size, address_size,
-                element.type.data_cache, element.type.instruction_cache, ways
-            )
+            new_cache = SetAssociativeCache(element, size, level, line_size,
+                                            address_size,
+                                            element.type.data_cache,
+                                            element.type.instruction_cache,
+                                            ways)
             caches.append(new_cache)
         else:
             raise MicroprobeArchitectureDefinitionError(
                 "Element '%s' defined "
                 "as a cache, but cache type can not be "
                 "determined. Please specify on of the "
-                "following properties: ['cache_ways']"
-            )
+                "following properties: ['cache_ways']")
 
     LOG.debug("End")
     return caches
@@ -126,9 +122,8 @@ def _caches_from_elements(elements):
 class Cache(object):
     """Class to represent a cache."""
 
-    def __init__(
-        self, element, size, level, line_size, address_size, data, ins
-    ):
+    def __init__(self, element, size, level, line_size, address_size, data,
+                 ins):
         """Create a Cache object.
 
         :param element: Micrarchitecture element
@@ -216,9 +211,8 @@ class Cache(object):
 class SetAssociativeCache(Cache):
     """Class to represent a set-associative cache."""
 
-    def __init__(
-        self, element, size, level, line_size, address_size, data, ins, ways
-    ):
+    def __init__(self, element, size, level, line_size, address_size, data,
+                 ins, ways):
         """Create a SetAssociativeCache object.
 
         :param element: Micrarchitecture element
@@ -240,9 +234,9 @@ class SetAssociativeCache(Cache):
         :return: Cache instance
         :rtype: :class:`~.Cache`
         """
-        super(SetAssociativeCache, self).__init__(
-            element, size, level, line_size, address_size, data, ins
-        )
+        super(SetAssociativeCache,
+              self).__init__(element, size, level, line_size, address_size,
+                             data, ins)
 
         self._ways = ways
         self._address_size = address_size
@@ -362,8 +356,7 @@ class CacheHierarchy(object):
         ]
 
         first_ins_levels = [
-            cache
-            for cache in caches
+            cache for cache in caches
             if cache.level == 1 and cache.contains_instructions
         ]
 
@@ -371,14 +364,12 @@ class CacheHierarchy(object):
             raise MicroprobeArchitectureDefinitionError(
                 "At least one cache"
                 "should be defined as first level instruction"
-                "cache."
-            )
+                "cache.")
 
         if len(first_data_levels) == 0:
             raise MicroprobeArchitectureDefinitionError(
                 "At least one cache"
-                "should be defined as first level data cache"
-            )
+                "should be defined as first level data cache")
 
         data_levels = {}
         for cache in first_data_levels:
@@ -390,13 +381,11 @@ class CacheHierarchy(object):
 
         current_level = 2
         next_data_levels = [
-            cache
-            for cache in caches
+            cache for cache in caches
             if cache.level == current_level and cache.contains_data
         ]
         next_ins_levels = [
-            cache
-            for cache in caches
+            cache for cache in caches
             if cache.level == current_level and cache.contains_instructions
         ]
 
@@ -410,11 +399,9 @@ class CacheHierarchy(object):
 
                     assert data_level.level == (current_level - 1)
 
-                    new_level = sorted(
-                        next_data_levels,
-                        key=lambda x, elem=element:
-                        x.element.closest_common_element(elem).depth
-                    )[-1]
+                    new_level = sorted(next_data_levels,
+                                       key=lambda x, elem=element: x.element.
+                                       closest_common_element(elem).depth)[-1]
 
                     data_levels[element].append(new_level)
 
@@ -433,8 +420,7 @@ class CacheHierarchy(object):
                         :type elem:
                         """
                         return elem.element.closest_common_element(
-                            element
-                        ).depth
+                            element).depth
 
                     new_level = sorted(next_ins_levels, key=my_key)[-1]
 
@@ -442,13 +428,11 @@ class CacheHierarchy(object):
 
             current_level += 1
             next_data_levels = [
-                cache
-                for cache in caches
+                cache for cache in caches
                 if cache.level == current_level and cache.contains_data
             ]
             next_ins_levels = [
-                cache
-                for cache in caches
+                cache for cache in caches
                 if cache.level == current_level and cache.contains_instructions
             ]
 
@@ -464,8 +448,7 @@ class CacheHierarchy(object):
 
         LOG.debug("Generating hierarchy from '%s'", element)
         rhierarchy = [
-            entry_level
-            for entry_level in self._data_levels.values()
+            entry_level for entry_level in self._data_levels.values()
             if element in [cache.element for cache in entry_level]
         ]
 
@@ -483,8 +466,7 @@ class CacheHierarchy(object):
 
         LOG.debug("Generating hierarchy from '%s'", element)
         rhierarchy = [
-            entry_level
-            for entry_level in self._ins_levels.values()
+            entry_level for entry_level in self._ins_levels.values()
             if element in [cache.element for cache in entry_level]
         ]
 
@@ -495,5 +477,5 @@ class CacheHierarchy(object):
 
     def data_linesize(self):
         """ """
-        return self._data_levels[
-            list(self._data_levels.keys())[0]][0].line_size
+        return self._data_levels[list(
+            self._data_levels.keys())[0]][0].line_size

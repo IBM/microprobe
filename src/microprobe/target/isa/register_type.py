@@ -31,11 +31,9 @@ from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "register_type.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "register_type.yaml")
 LOG = get_logger(__name__)
 __all__ = ["import_definition", "RegisterType", "GenericRegisterType"]
 
@@ -72,8 +70,7 @@ def import_definition(cls, filenames, dummy):
                 LOG.warning(
                     "Similar definition of register types: '%s' and"
                     " '%s'. Check if definition needed.", name,
-                    regts_duplicated[key]
-                )
+                    regts_duplicated[key])
             else:
                 regts_duplicated[key] = name
 
@@ -83,8 +80,7 @@ def import_definition(cls, filenames, dummy):
                 raise MicroprobeArchitectureDefinitionError(
                     "Duplicated "
                     "definition of register type '%s' "
-                    "found in '%s'" % (name, filename)
-                )
+                    "found in '%s'" % (name, filename))
 
             regts[name] = regt
 
@@ -133,15 +129,13 @@ class RegisterType(six.with_metaclass(abc.ABCMeta, object)):
 
     def __str__(self):
         """x.__str__() <==> str(x)"""
-        return "%8s: %s (bit size: %d)" % (
-            self.name, self.description, self.size
-        )
+        return "%8s: %s (bit size: %d)" % (self.name, self.description,
+                                           self.size)
 
     def __repr__(self):
         """x.__repr__() <==> str(x)"""
-        return "%8s: %s (bit size: %d)" % (
-            self.name, self.description, self.size
-        )
+        return "%8s: %s (bit size: %d)" % (self.name, self.description,
+                                           self.size)
 
     @abc.abstractmethod
     def __hash__(self):
@@ -165,12 +159,9 @@ class GenericRegisterType(RegisterType):
     """
 
     _cmp_attributes = [
-        "name",
-        "description",
-        "size",
-        "used_for_address_arithmetic",
-        "used_for_float_arithmetic",
-        "used_for_vector_arithmetic"]
+        "name", "description", "size", "used_for_address_arithmetic",
+        "used_for_float_arithmetic", "used_for_vector_arithmetic"
+    ]
 
     def __init__(self, rtype, rdescr, rsize, u4aa, u4fa, u4va):
         """
@@ -190,12 +181,13 @@ class GenericRegisterType(RegisterType):
         self._used_for_address_arithmetic = u4aa
         self._used_for_float_arithmetic = u4fa
         self._used_for_vector_arithmetic = u4va
-        self._hash = int(hashlib.sha512((
-                str(self.name) + str(self.description) + str(self.size) +
-                str(self.used_for_address_arithmetic) +
-                str(self.used_for_float_arithmetic) +
-                str(self.used_for_vector_arithmetic)).encode()).hexdigest(),
-                16)
+        self._hash = int(
+            hashlib.sha512(
+                (str(self.name) + str(self.description) + str(self.size) +
+                 str(self.used_for_address_arithmetic) +
+                 str(self.used_for_float_arithmetic) +
+                 str(self.used_for_vector_arithmetic)).encode()).hexdigest(),
+            16)
 
     @property
     def name(self):
@@ -233,11 +225,8 @@ class GenericRegisterType(RegisterType):
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""

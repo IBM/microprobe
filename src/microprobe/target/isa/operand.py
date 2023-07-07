@@ -38,11 +38,9 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, natural_sort
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "operand.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "operand.yaml")
 
 LOG = get_logger(__name__)
 __all__ = [
@@ -91,8 +89,7 @@ def import_definition(filenames, inherits, registers):
                         if len(regnames) == 1 and \
                                 regnames[0] in register_types:
                             regs = [
-                                reg
-                                for reg in registers.values()
+                                reg for reg in registers.values()
                                 if reg.type.name == regnames[0]
                             ]
                         else:
@@ -109,18 +106,11 @@ def import_definition(filenames, inherits, registers):
                             regs[registers[regname]] = []
                             for regname2 in regnames[regname]:
                                 regs[registers[regname]].append(
-                                    registers[regname2]
-                                )
+                                    registers[regname2])
 
                         key.append(
-                            tuple(
-                                [
-                                    (
-                                        k, tuple(v)
-                                    ) for k, v in regnames.items()
-                                ]
-                            )
-                        )
+                            tuple([(k, tuple(v))
+                                   for k, v in regnames.items()]))
 
                     address_base = elem.get("AddressBase", False)
                     address_index = elem.get("AddressIndex", False)
@@ -140,8 +130,9 @@ def import_definition(filenames, inherits, registers):
                     # They are not architected registers.
 
                     if isinstance(regs, list):
-                        regs = [reg for reg in regs
-                                if reg.representation != 'N/A']
+                        regs = [
+                            reg for reg in regs if reg.representation != 'N/A'
+                        ]
                     elif isinstance(regs, dict):
                         for elem in regs:
                             regs[elem] = [
@@ -149,10 +140,8 @@ def import_definition(filenames, inherits, registers):
                                 if reg2.representation != 'N/A'
                             ]
 
-                    operand = OperandReg(
-                        name, descr, regs, address_base, address_index,
-                        floating_point, vector
-                    )
+                    operand = OperandReg(name, descr, regs, address_base,
+                                         address_index, floating_point, vector)
 
                 elif "Min" in elem and "Max" in elem:
 
@@ -172,10 +161,9 @@ def import_definition(filenames, inherits, registers):
                     key.append(shift)
                     key.append(add)
 
-                    operand = OperandImmRange(
-                        name, descr, minval, maxval, step, address_index,
-                        shift, novalues, add
-                    )
+                    operand = OperandImmRange(name, descr, minval, maxval,
+                                              step, address_index, shift,
+                                              novalues, add)
 
                 elif "Values" in elem:
 
@@ -205,10 +193,9 @@ def import_definition(filenames, inherits, registers):
                     key.append(floating_point)
                     key.append(vector)
 
-                    operand = OperandConstReg(
-                        name, descr, reg, address_base, address_index,
-                        floating_point, vector
-                    )
+                    operand = OperandConstReg(name, descr, reg, address_base,
+                                              address_index, floating_point,
+                                              vector)
 
                 elif "Relative" in elem:
 
@@ -226,22 +213,20 @@ def import_definition(filenames, inherits, registers):
                     key.append(tuple([tuple(elem) for elem in except_ranges]))
 
                     operand = InstructionAddressRelativeOperand(
-                        name, descr, maxdispl, mindispl,
-                        shift, except_ranges, relative, step)
+                        name, descr, maxdispl, mindispl, shift, except_ranges,
+                        relative, step)
 
                 else:
                     raise MicroprobeArchitectureDefinitionError(
                         "Operand definition '%s' in '%s' not supported" %
-                        (name, filename)
-                    )
+                        (name, filename))
 
                 tkey = tuple(key)
                 if tkey in operands_duplicated:
                     LOG.warning(
                         "Similar definition of operands: '%s' and"
                         " '%s'. Check if definition needed.", name,
-                        operands_duplicated[tkey]
-                    )
+                        operands_duplicated[tkey])
                 else:
                     operands_duplicated[tkey] = name
 
@@ -253,16 +238,12 @@ def import_definition(filenames, inherits, registers):
                     "uses an unknown "
                     "register in '%s'"
                     "\nMissing defini"
-                    "tion of: %s" % (
-                        name, filename, exception
-                    )
-                )
+                    "tion of: %s" % (name, filename, exception))
 
             if name in operands and not override and filename not in inherits:
                 raise MicroprobeArchitectureDefinitionError(
                     "Duplicated definition of operand '%s' found in '%s'" %
-                    (name, filename)
-                )
+                    (name, filename))
 
             if name in operands:
                 LOG.debug("Redefined operand: %s", operand)
@@ -283,8 +264,8 @@ def _format_integer(operand, value):
     elif MICROPROBE_RC['hex_none']:
         return str(value)
     elif MICROPROBE_RC['hex_address']:
-        if (operand.address_relative or
-                operand.address_immediate or operand.address_absolute):
+        if (operand.address_relative or operand.address_immediate
+                or operand.address_absolute):
             if hex(value).endswith("L"):
                 return hex(value)[:-1]
             return hex(value)
@@ -344,10 +325,8 @@ class OperandDescriptor(object):
 
     def __repr__(self):
         """ """
-        return "%s(%s, %s, %s)" % (
-            self.__class__.__name__, self._type, self._is_input,
-            self._is_output
-        )
+        return "%s(%s, %s, %s)" % (self.__class__.__name__, self._type,
+                                   self._is_input, self._is_output)
 
 
 class MemoryOperandDescriptor(object):
@@ -472,11 +451,8 @@ class MemoryOperand(object):
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""
@@ -536,9 +512,8 @@ class MemoryOperand(object):
 
     def __str__(self):
         """ """
-        return "%s(Address: %s, Length: %s)" % (
-            self.__class__.__name__, self._address, self._length
-        )
+        return "%s(Address: %s, Length: %s)" % (self.__class__.__name__,
+                                                self._address, self._length)
 
     def full_report(self, tabs=0):
         shift = ("\t" * (tabs + 1))
@@ -552,17 +527,9 @@ class Operand(six.with_metaclass(abc.ABCMeta, object)):
     """This represents a machine instruction operand"""
 
     _cmp_attributes = [
-        "_name",
-        "_descr",
-        "_ai",
-        "_ab",
-        "_aim",
-        "_imm",
-        "_const",
-        "_rel",
-        "_rela",
-        "_fp",
-        "_vector"]
+        "_name", "_descr", "_ai", "_ab", "_aim", "_imm", "_const", "_rel",
+        "_rela", "_fp", "_vector"
+    ]
 
     @abc.abstractmethod
     def __init__(self, name, descr):
@@ -714,30 +681,23 @@ class Operand(six.with_metaclass(abc.ABCMeta, object)):
             the value is not allowed for the operand
         """
         if not self.__contains__(value):
-            raise MicroprobeValueError(
-                "Invalid operand value %s not in %s" % (value,
-                                                        list(self.values()))
-            )
+            raise MicroprobeValueError("Invalid operand value %s not in %s" %
+                                       (value, list(self.values())))
 
     def __str__(self):
         """ """
-        return "%-8s : %s (%s)" % (
-            self.name, self.description, self.__class__.__name__
-        )
+        return "%-8s : %s (%s)" % (self.name, self.description,
+                                   self.__class__.__name__)
 
     def __repr__(self):
         """ """
-        return "%s(\"%s\", \"%s\")" % (
-            self.__class__.__name__, self.name, self.description
-        )
+        return "%s(\"%s\", \"%s\")" % (self.__class__.__name__, self.name,
+                                       self.description)
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""
@@ -804,10 +764,8 @@ class OperandReg(Operand):
 
     """
 
-    def __init__(
-        self, name, descr, regs, address_base, address_index, floating_point,
-        vector
-    ):
+    def __init__(self, name, descr, regs, address_base, address_index,
+                 floating_point, vector):
         """
 
         :param name:
@@ -834,12 +792,12 @@ class OperandReg(Operand):
         self._vector = vector
 
         if self._fp is None:
-            self._fp = list(set([reg.type for reg in self._regs]))[
-                0].used_for_float_arithmetic
+            self._fp = list(set([reg.type for reg in self._regs
+                                 ]))[0].used_for_float_arithmetic
 
         if self._vector is None:
-            self._vector = list(set([reg.type for reg in self._regs]))[
-                0].used_for_vector_arithmetic
+            self._vector = list(set([reg.type for reg in self._regs
+                                     ]))[0].used_for_vector_arithmetic
 
     def values(self):
         """Return the possible value of the operand.
@@ -894,10 +852,8 @@ class OperandReg(Operand):
     def copy(self):
         """ """
 
-        return OperandReg(
-            self.name, self.description, self._regs.copy(), self._ab, self._ai,
-            self._fp, self._vector
-        )
+        return OperandReg(self.name, self.description, self._regs.copy(),
+                          self._ab, self._ai, self._fp, self._vector)
 
     def set_valid_values(self, values):
         """
@@ -925,9 +881,8 @@ class OperandImmRange(Operand):
 
     """
 
-    def __init__(
-        self, name, descr, minvalue, maxvalue, step, aim, shift, novalues, add
-    ):
+    def __init__(self, name, descr, minvalue, maxvalue, step, aim, shift,
+                 novalues, add):
         """
 
         :param name:
@@ -954,10 +909,9 @@ class OperandImmRange(Operand):
 
     def copy(self):
         """ """
-        return OperandImmRange(
-            self.name, self.description, self._min, self._max, self._step,
-            self._aim, self._shift, self._novalues, self._add
-        )
+        return OperandImmRange(self.name, self.description, self._min,
+                               self._max, self._step, self._aim, self._shift,
+                               self._novalues, self._add)
 
     def values(self):
         """Return the possible value of the operand.
@@ -966,10 +920,8 @@ class OperandImmRange(Operand):
         """
         if self._computed_values is None:
             self._computed_values = [
-                elem
-                for elem in range(
-                    self._min, self._max + 1, self._step
-                ) if elem not in self._novalues
+                elem for elem in range(self._min, self._max + 1, self._step)
+                if elem not in self._novalues
             ]
         return self._computed_values
 
@@ -983,8 +935,7 @@ class OperandImmRange(Operand):
             raise MicroprobeCodeGenerationError(
                 "Setting an operand without any valid value. Please check "
                 "the definition files. Previous value: '%s'. New values: '%s'"
-                "." % (list(self.values()), values)
-            )
+                "." % (list(self.values()), values))
 
         for value in values:
             assert value in list(self.values())
@@ -998,17 +949,10 @@ class OperandImmRange(Operand):
         :rtype: ::class:`~.int`
         """
         if self._computed_values is not None:
-            return self._computed_values[
-                random.randrange(
-                    0, len(
-                        self._computed_values
-                    )
-                )
-            ]
+            return self._computed_values[random.randrange(
+                0, len(self._computed_values))]
 
-        value = random.randrange(
-            self._min, self._max + 1, self._step
-        )
+        value = random.randrange(self._min, self._max + 1, self._step)
 
         if value not in self._novalues:
             return value
@@ -1071,10 +1015,9 @@ class OperandImmRange(Operand):
         """
 
         if not isinstance(value, six.integer_types):
-            raise MicroprobeValueError(
-                "Invalid operand value: '%s'. Integer"
-                " required and '%s' provided" % (value, type(value))
-            )
+            raise MicroprobeValueError("Invalid operand value: '%s'. Integer"
+                                       " required and '%s' provided" %
+                                       (value, type(value)))
 
         # value = value >> self._shift
         if value <= self._max and value >= self._min \
@@ -1085,12 +1028,9 @@ class OperandImmRange(Operand):
 
         else:
 
-            raise MicroprobeValueError(
-                "Invalid operand value: %d (max: %d,"
-                " min: %d)" % (
-                    value, self._max, self._min
-                )
-            )
+            raise MicroprobeValueError("Invalid operand value: %d (max: %d,"
+                                       " min: %d)" %
+                                       (value, self._max, self._min))
 
     def access(self, dummy):
         """
@@ -1130,19 +1070,14 @@ class OperandValueSet(Operand):
         if rep is not None and len(rep) != len(values):
             raise MicroprobeArchitectureDefinitionError(
                 "Values and representation of operand definition "
-                "'%s' do not have the same length." % name
-            )
+                "'%s' do not have the same length." % name)
         if rep is not None:
             self._rep = dict(zip(values, rep))
 
     def copy(self):
         """ """
-        return OperandValueSet(
-            self.name,
-            self.description,
-            self._values,
-            self._rep
-        )
+        return OperandValueSet(self.name, self.description, self._values,
+                               self._rep)
 
     def values(self):
         """Return the possible value of the operand.
@@ -1314,10 +1249,8 @@ class OperandConstReg(Operand):
 
     """
 
-    def __init__(
-        self, name, descr, reg, address_base, address_index, floating_point,
-        vector
-    ):
+    def __init__(self, name, descr, reg, address_base, address_index,
+                 floating_point, vector):
         """
 
         :param name:
@@ -1340,19 +1273,17 @@ class OperandConstReg(Operand):
         self._vector = vector
 
         if self._fp is None:
-            self._fp = list(set([reg.type for reg in self._regs]))[
-                0].used_for_float_arithmetic
+            self._fp = list(set([reg.type for reg in self._regs
+                                 ]))[0].used_for_float_arithmetic
 
         if self._vector is None:
-            self._vector = list(set([reg.type for reg in self._regs]))[
-                0].used_for_float_arithmetic
+            self._vector = list(set([reg.type for reg in self._regs
+                                     ]))[0].used_for_float_arithmetic
 
     def copy(self):
         """ """
-        return OperandConstReg(
-            self.name, self.description, self._reg, self._ab, self._ai,
-            self._fp, self._vector
-        )
+        return OperandConstReg(self.name, self.description, self._reg,
+                               self._ab, self._ai, self._fp, self._vector)
 
     def values(self):
         """Return the possible value of the operand.
@@ -1424,16 +1355,8 @@ class InstructionAddressRelativeOperand(Operand):
     and the target. Examples are : branch relative, or load address relative.
     """
 
-    def __init__(
-            self,
-            name,
-            descr,
-            maxdispl,
-            mindispl,
-            shift,
-            except_range,
-            relative,
-            step):
+    def __init__(self, name, descr, maxdispl, mindispl, shift, except_range,
+                 relative, step):
         """Create a InstructionAddressRelativeOperand object.
 
         :param name: Operand name
@@ -1464,10 +1387,11 @@ class InstructionAddressRelativeOperand(Operand):
 
     def copy(self):
         """ """
-        return InstructionAddressRelativeOperand(
-            self.name, self.description, self._maxdispl, self._mindispl,
-            self._shift, self._except, self._rel, self._step
-        )
+        return InstructionAddressRelativeOperand(self.name, self.description,
+                                                 self._maxdispl,
+                                                 self._mindispl, self._shift,
+                                                 self._except, self._rel,
+                                                 self._step)
 
     def values(self):
         """Return the possible value of the operand.
@@ -1515,8 +1439,7 @@ class InstructionAddressRelativeOperand(Operand):
             else:
                 raise MicroprobeCodeGenerationError(
                     "Unable to generate the string representation of '%s'"
-                    " with value: '%s'" % (self, value)
-                )
+                    " with value: '%s'" % (self, value))
 
             if displacement > 0:
                 str_value = "%s+0x%x" % (str_value, displacement)
@@ -1552,10 +1475,8 @@ class InstructionAddressRelativeOperand(Operand):
         else:
             if not isinstance(value[0], Address) or \
                     not isinstance(value[1], Address):
-                raise MicroprobeValueError(
-                    "Invalid operand value '%s'."
-                    " Any Address?" % (value)
-                )
+                raise MicroprobeValueError("Invalid operand value '%s'."
+                                           " Any Address?" % (value))
             cvalue = value[0] - value[1]
 
         if cvalue > (self._maxdispl << self._shift) or \
@@ -1566,10 +1487,8 @@ class InstructionAddressRelativeOperand(Operand):
                 "Invalid operand value '%d' "
                 "not within the"
                 " allowed range (%d, %d) and exceptions"
-                " '%s' " % (
-                    cvalue, self._mindispl, self._maxdispl, self._except
-                )
-            )
+                " '%s' " %
+                (cvalue, self._mindispl, self._maxdispl, self._except))
 
     def codification(self, value):
         """
@@ -1581,13 +1500,11 @@ class InstructionAddressRelativeOperand(Operand):
         if isinstance(value, six.integer_types):
             return str(value >> self._shift)
         elif isinstance(value, Address):
-            raise MicroprobeCodeGenerationError(
-                "Unable to codify the"
-                " symbolic address: %s ."
-                " Consider to add a pass to"
-                " translate them to actual "
-                "values " % value
-            )
+            raise MicroprobeCodeGenerationError("Unable to codify the"
+                                                " symbolic address: %s ."
+                                                " Consider to add a pass to"
+                                                " translate them to actual "
+                                                "values " % value)
         else:
             raise NotImplementedError
 
