@@ -23,7 +23,6 @@ import abc
 import warnings
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeAddressTranslationError, \
@@ -40,60 +39,53 @@ __all__ = ["DynamicAddressTranslation", "GenericDynamicAddressTranslation"]
 
 
 # Classes
-class DynamicAddressTranslation(six.with_metaclass(abc.ABCMeta, object)):
+class DynamicAddressTranslation(abc.ABC):
     """ """
 
     @abc.abstractmethod
     def __init__(self, target, **kwargs):
-        """ """
         pass
 
     @abc.abstractmethod
     def add_mapping(self, source, target, mask):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def maps(self):
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def control(self):
         raise NotImplementedError
 
     @abc.abstractmethod
     def copy(self, **kwargs):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def translate(self, address):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def raw_parse(self, raw_str):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def raw_decorate(self, raw_str):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def required_register_values(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def required_memory_values(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def update_dat(self, **kwargs):
-        """ """
         raise NotImplementedError
 
 
@@ -103,7 +95,6 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
     _control_keys = {'DAT': False}
 
     def __init__(self, target, **kwargs):
-        """ """
         super(GenericDynamicAddressTranslation,
               self).__init__(target, **kwargs)
 
@@ -126,7 +117,6 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
         return self._map
 
     def add_mapping(self, source, target, mask):
-        """ """
 
         try:
             self._map[source & mask] = DATmap(source, target, mask)
@@ -135,7 +125,6 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
                 "Map in '%s' already exists" % hex(source & mask))
 
     def copy(self, **kwargs):
-        """ """
 
         newargs = self.control.copy()
         newargs.update(kwargs)
@@ -145,7 +134,6 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
         return new_dat
 
     def translate(self, address, rev=False):
-        """ """
 
         if not self.control['DAT']:
             return address
@@ -166,27 +154,22 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
             return tmap[0].address_translate(address, rev=rev)
 
     def raw_parse(self, raw_str):
-        """ """
         raise NotImplementedError(
             "DAT mechanisms and parameters are target dependent. Target: '%s'"
             " does not implement them. " % self._target)
 
     def raw_decorate(self, raw_str):
-        """ """
         raise NotImplementedError(
             "DAT mechanisms and parameters are target dependent. Target: '%s'"
             " does not implement them. " % self._target)
 
     def required_register_values(self):
-        """ """
         return []
 
     def required_memory_values(self):
-        """ """
         return []
 
     def update_dat(self, **kwargs):
-        """ """
         for key, value in kwargs.items():
             if key not in self._control_keys:
                 warnings.warn(
@@ -196,7 +179,7 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
             self._control[key] = value['value']
 
 
-class DATmap(object):
+class DATmap:
     """ """
 
     def __init__(self, source, target, mask):

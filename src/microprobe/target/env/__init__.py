@@ -16,12 +16,14 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
+from typing import TYPE_CHECKING, List
 
 # Third party modules
+import six
 
 # Own modules
 from microprobe import MICROPROBE_RC
@@ -33,10 +35,16 @@ from microprobe.exceptions import MicroprobeImportDefinitionError, \
 from microprobe.property import Property, PropertyHolder
 from microprobe.utils.imp import find_subclasses
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import RejectingOrderedDict, findfiles
-import six
+from microprobe.utils.misc import findfiles
 
 # Local modules
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.isa import ISA
+    from microprobe.code.ins import Instruction
+    from microprobe.target import Target
+    from microprobe.target.isa.register import Register
 
 # Constants
 LOG = get_logger(__name__)
@@ -50,7 +58,9 @@ __all__ = [
 
 
 # Functions
-def import_env_definition(module, isa, definition_name=None):
+def import_env_definition(module,
+                          isa: ISA,
+                          definition_name: str | None = None):
     """
 
     :param module:
@@ -89,7 +99,7 @@ def import_env_definition(module, isa, definition_name=None):
     return environment
 
 
-def find_env_definitions(paths=None):
+def find_env_definitions(paths: List[str] | None = None):
 
     LOG.debug("Start find environment definitions")
 
@@ -107,7 +117,7 @@ def find_env_definitions(paths=None):
     paths = paths + MICROPROBE_RC["environment_paths"] \
         + MICROPROBE_RC["default_paths"]
 
-    results = []
+    results: List[Definition] = []
     files = findfiles(paths, "env/.*.py$", full=True)
 
     if len(files) > 0:
@@ -146,32 +156,31 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def name(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def description(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def isa(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def environment_reserved_registers(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def threads(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -185,7 +194,6 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
 
     @abc.abstractmethod
     def __str__(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -199,47 +207,43 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
 
     @abc.abstractmethod
     def full_report(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def default_wrapper(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def stack_pointer(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def stack_direction(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def elf_abi(self, stack_size, start_symbol):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def function_call(self, target, return_address_reg=None, long_jump=False):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def function_return(self, return_address_reg=None):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def volatile_registers(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def little_endian(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -251,34 +255,29 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def target(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def hook_before_test_instructions(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def hook_after_test_instructions(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def hook_test_init_instructions(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def hook_after_reset_instructions(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def hook_test_end_instructions(self):
-        """ """
         raise NotImplementedError
 
 
@@ -287,7 +286,11 @@ class GenericEnvironment(Environment):
 
     _cmp_attributes = ["name", "descr"]
 
-    def __init__(self, name, descr, isa, little_endian=False):
+    def __init__(self,
+                 name: str,
+                 descr: str,
+                 isa: ISA,
+                 little_endian: bool = False):
         """
 
         :param name:
@@ -299,7 +302,7 @@ class GenericEnvironment(Environment):
         self._name = name
         self._description = descr
         self._isa = isa
-        self._reserved_registers = []
+        self._reserved_registers: List[Register] = []
         self._threads = 1
         self._target = None
         self._default_wrapper = None
@@ -312,35 +315,29 @@ class GenericEnvironment(Environment):
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def description(self):
-        """ """
         return self._description
 
     @property
     def isa(self):
-        """ """
         return self._isa
 
     @property
     def environment_reserved_registers(self):
-        """ """
         return self._reserved_registers
 
     @property
     def threads(self):
-        """ """
         return self._threads
 
     @property
     def target(self):
-        """ """
         return self._target
 
-    def set_target(self, target):
+    def set_target(self, target: Target):
         """
 
         :param target:
@@ -348,7 +345,7 @@ class GenericEnvironment(Environment):
         """
         self._target = target
 
-    def set_threads(self, num_threads):
+    def set_threads(self, num_threads: int):
         """
 
         :param num_threads:
@@ -357,10 +354,9 @@ class GenericEnvironment(Environment):
         self._threads = num_threads
 
     def __str__(self):
-        """ """
         return "Environment '%s': %s" % (self.name, self.description)
 
-    def register_name(self, register):
+    def register_name(self, register: str):
         """
 
         :param register:
@@ -372,28 +368,29 @@ class GenericEnvironment(Environment):
             register)
 
     def full_report(self):
-        """ """
         return str(self)
 
     @property
     def default_wrapper(self):
-        """ """
         return self._default_wrapper
 
-    def elf_abi(self, stack_size, start_symbol, **kwargs):
-        """ """
+    def elf_abi(self,
+                stack_size: int,
+                start_symbol,
+                stack_name: str = "microprobe stack",
+                stack_alignment: int = 16,
+                stack_address: Address | None = None,
+                **kwargs):
 
-        stack = VariableArray(kwargs.get("stack_name", "microprobe_stack"),
+        stack = VariableArray(stack_name,
                               "uint8_t",
                               stack_size,
-                              align=kwargs.get("stack_alignment", 16),
-                              address=kwargs.get("stack_address", None))
+                              align=stack_alignment,
+                              address=stack_address)
 
-        instructions = []
+        instructions: List[Instruction] = []
         instructions += self.target.set_register_to_address(
-            self.stack_pointer,
-            Address(base_address=kwargs.get("stack_name", "microprobe_stack")),
-            Context())
+            self.stack_pointer, Address(base_address=stack_name), Context())
 
         if self.stack_direction == "decrease":
             instructions += self.target.add_to_register(
@@ -407,30 +404,29 @@ class GenericEnvironment(Environment):
 
         return [stack], instructions
 
-    def function_call(self, target, return_address_reg=None, long_jump=False):
-        """ """
+    def function_call(self,
+                      target: Target,
+                      return_address_reg: Register | None = None,
+                      long_jump: bool = False):
         raise NotImplementedError
 
-    def function_return(self, return_address_reg=None):
-        """ """
+    def function_return(self, return_address_reg: Register | None = None):
         raise NotImplementedError
 
     @property
     def volatile_registers(self):
-        """ """
         raise NotImplementedError
 
+    @property
     def stack_pointer(self):
-        """ """
         raise NotImplementedError
 
+    @property
     def stack_direction(self):
-        """ """
         raise NotImplementedError
 
     @property
     def little_endian(self):
-        """ """
         return self._little_endian
 
     def _check_cmp(self, other):
@@ -496,21 +492,16 @@ class GenericEnvironment(Environment):
         return True
 
     def hook_before_test_instructions(self):
-        """ """
         return []
 
     def hook_after_test_instructions(self):
-        """ """
         return [self._target.nop()]
 
     def hook_test_init_instructions(self):
-        """ """
         return []
 
     def hook_after_reset_instructions(self):
-        """ """
         return []
 
     def hook_test_end_instructions(self):
-        """ """
         return []

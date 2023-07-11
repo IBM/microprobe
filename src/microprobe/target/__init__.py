@@ -33,31 +33,35 @@ The main elements of this package are the following:
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
-import collections
 import copy
 import itertools
 import os
+from typing import TYPE_CHECKING, Tuple
 
 # Third party modules
 
 # Own modules
-from microprobe import MICROPROBE_RC
-from microprobe.exceptions import MicroprobeDuplicatedValueError, \
-    MicroprobeError, MicroprobeImportDefinitionError, \
-    MicroprobePolicyError, MicroprobeTargetDefinitionError
+from microprobe.exceptions import MicroprobeError, \
+    MicroprobeTargetDefinitionError
 from microprobe.target.env import GenericEnvironment, \
     find_env_definitions, import_env_definition
 from microprobe.target.isa import find_isa_definitions, import_isa_definition
 from microprobe.target.uarch import find_microarchitecture_definitions, \
     import_microarchitecture_definition
-from microprobe.utils.imp import get_attr_from_module, get_dict_from_module
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import Pickable, RejectingDict, findfiles
+from microprobe.utils.misc import Pickable
 
 # Local modules
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.env import Environment
+    from microprobe.target.isa import ISA
+    from microprobe.target.uarch import Microarchitecture
+    from microprobe.code.wrapper import Wrapper
 
 # Constants
 LOG = get_logger(__name__)
@@ -70,7 +74,8 @@ __all__ = [
 
 
 # Functions
-def import_definition(definition_tuple):
+def import_definition(definition_tuple: str
+                      | Tuple[Definition, Definition, Definition]):
     """Return the target corresponding the to the given *definition_tuple*.
 
     Return the target object corresponding the to the given
@@ -106,7 +111,7 @@ def import_definition(definition_tuple):
     return target
 
 
-def _parse_definition_tuple(definition_tuple):
+def _parse_definition_tuple(definition_tuple: str):
     """Return the target definitions corresponding to the *definition_tuple*.
 
     Return the target definitions corresponding to the *definition_tuple*.
@@ -202,7 +207,7 @@ def _parse_definition_tuple(definition_tuple):
 
 
 # Classes
-class Definition(object):
+class Definition:
     """Class to represent a target element definition.
 
     A target element definition could be the definition of the architecture,
@@ -219,7 +224,7 @@ class Definition(object):
         _field1, _field2, _field3)
     _cmp_attributes = ["name", "description", "filename"]
 
-    def __init__(self, filename, name, description):
+    def __init__(self, filename: str, name: str, description: str):
         """Create a Definition object.
 
         :param filename: Filename where the definition is placed
@@ -329,7 +334,10 @@ class Target(Pickable):
     other modules (code generation, design space exploration, ...).
     """
 
-    def __init__(self, isa, env=None, uarch=None):
+    def __init__(self,
+                 isa: ISA,
+                 env: Environment | None = None,
+                 uarch: Microarchitecture | None = None):
         """Create a Target object.
 
         :param isa: Architecture (i.e. Instruction Set Architecture)
@@ -341,7 +349,6 @@ class Target(Pickable):
         :return: Target instance
         :rtype: :class:`~.Target`
         """
-        self._isa = None
         self._uarch = None
         self._env = None
         self._policies = None
@@ -467,7 +474,7 @@ class Target(Pickable):
 
         return prop_map
 
-    def set_env(self, env):
+    def set_env(self, env: Environment):
         """Set the environment of the Target.
 
         :param env: Execution environment definition
@@ -476,7 +483,7 @@ class Target(Pickable):
         self._env = copy.deepcopy(env)
         self._env.set_target(self)
 
-    def set_isa(self, isa):
+    def set_isa(self, isa: ISA):
         """Set the ISA of the Target.
 
         :param isa: Architecture (i.e. ISA)
@@ -485,7 +492,7 @@ class Target(Pickable):
         self._isa = copy.deepcopy(isa)
         self._isa.set_target(self)
 
-    def set_uarch(self, uarch):
+    def set_uarch(self, uarch: Microarchitecture):
         """Set the microarchitecture of the Target.
 
         :param uarch: Microarchitecture
@@ -495,7 +502,7 @@ class Target(Pickable):
         self._uarch.set_target(self)
 
     # TODO: remove this interface once the code generation back-end is fixed
-    def set_wrapper(self, wrapper):
+    def set_wrapper(self, wrapper: Wrapper):
         """Set the wrapper of the Target.
 
         :param wrapper: Wrapper
@@ -503,6 +510,7 @@ class Target(Pickable):
         """
         self._wrapper = wrapper
 
+    # TODO: Remove facade pattern to allow type hints to propagate
     def __getattr__(self, name):
         """Facade design pattern implementation.
 

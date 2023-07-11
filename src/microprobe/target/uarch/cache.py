@@ -16,10 +16,11 @@
 """
 
 # Futures
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, division, print_function, annotations
 
 # Built-in modules
 import math
+from typing import TYPE_CHECKING, Dict, List
 
 # Third party modules
 from six.moves import range
@@ -27,6 +28,10 @@ from six.moves import range
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
+
+# Type checking
+if TYPE_CHECKING:
+    from microprobe.target.uarch.element import MicroarchitectureElement
 
 # Constants
 LOG = get_logger(__name__)
@@ -66,7 +71,7 @@ def _caches_from_elements(elements):
 
     LOG.debug("Start")
 
-    caches = []
+    caches: List[Cache] = []
     for element in elements.values():
 
         LOG.debug("Checking: '%s'", element)
@@ -119,11 +124,12 @@ def _caches_from_elements(elements):
 
 
 # Classes
-class Cache(object):
+class Cache:
     """Class to represent a cache."""
 
-    def __init__(self, element, size, level, line_size, address_size, data,
-                 ins):
+    def __init__(self, element: MicroarchitectureElement, size: int,
+                 level: int, line_size: int, address_size: int, data: bool,
+                 ins: bool):
         """Create a Cache object.
 
         :param element: Micrarchitecture element
@@ -187,7 +193,7 @@ class Cache(object):
     @property
     def name(self):
         """Cache name (class:`~.str`)."""
-        return "%s Cache" % self.element.full_name
+        return f"{self.element.full_name} Cache"
 
     @property
     def description(self):
@@ -211,8 +217,9 @@ class Cache(object):
 class SetAssociativeCache(Cache):
     """Class to represent a set-associative cache."""
 
-    def __init__(self, element, size, level, line_size, address_size, data,
-                 ins, ways):
+    def __init__(self, element: MicroarchitectureElement, size: int,
+                 level: int, line_size: int, address_size: int, data: bool,
+                 ins: bool, ways: int):
         """Create a SetAssociativeCache object.
 
         :param element: Micrarchitecture element
@@ -300,7 +307,7 @@ class SetAssociativeCache(Cache):
         """
         return list(range(0, self._setsways))
 
-    def congruence_class(self, value):
+    def congruence_class(self, value: int):
         """Return the congruence class for a given *value*.
 
         :param value: Address
@@ -311,7 +318,7 @@ class SetAssociativeCache(Cache):
         cgc = (value >> self.offset_bits) & ((1 << (self._set_bits)) - 1)
         return cgc
 
-    def offset(self, value):
+    def offset(self, value: int):
         """
 
         :param value:
@@ -321,7 +328,6 @@ class SetAssociativeCache(Cache):
         return cgc
 
     def print_info(self):
-        """ """
 
         from microprobe.utils.cmdline import print_info
         print_info(self._offset_bits)
@@ -340,10 +346,10 @@ class SetAssociativeCache(Cache):
         print_info((bit_range, offset_range, ccrange))
 
 
-class CacheHierarchy(object):
+class CacheHierarchy:
     """Class to represent a cache hierarchy."""
 
-    def __init__(self, caches):
+    def __init__(self, caches: List[Cache]):
         """
 
         :param caches:
@@ -371,11 +377,11 @@ class CacheHierarchy(object):
                 "At least one cache"
                 "should be defined as first level data cache")
 
-        data_levels = {}
+        data_levels: Dict[MicroarchitectureElement, List[Cache]] = {}
         for cache in first_data_levels:
             data_levels[cache.element] = [cache]
 
-        ins_levels = {}
+        ins_levels: Dict[MicroarchitectureElement, List[Cache]] = {}
         for cache in first_ins_levels:
             ins_levels[cache.element] = [cache]
 
@@ -439,7 +445,8 @@ class CacheHierarchy(object):
         self._data_levels = data_levels
         self._ins_levels = ins_levels
 
-    def get_data_hierarchy_from_element(self, element):
+    def get_data_hierarchy_from_element(self,
+                                        element: MicroarchitectureElement):
         """
 
         :param element:
@@ -457,7 +464,8 @@ class CacheHierarchy(object):
 
         return rhierarchy[0]
 
-    def get_instruction_hierarchy_from_element(self, element):
+    def get_instruction_hierarchy_from_element(
+            self, element: MicroarchitectureElement):
         """
 
         :param element:
@@ -476,6 +484,5 @@ class CacheHierarchy(object):
         return rhierarchy[0]
 
     def data_linesize(self):
-        """ """
         return self._data_levels[list(
             self._data_levels.keys())[0]][0].line_size

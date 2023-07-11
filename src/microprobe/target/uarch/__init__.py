@@ -16,11 +16,12 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
 import os
+from typing import TYPE_CHECKING, List
 
 # Third party modules
 
@@ -31,14 +32,17 @@ from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeYamlFormatError
 from microprobe.property import PropertyHolder, import_properties
 from microprobe.target.uarch.cache import cache_hierarchy_from_elements
-from microprobe.utils.imp import get_object_from_module, \
-    import_cls_definition, import_definition, import_operand_definition
+from microprobe.utils.imp import get_object_from_module, import_definition
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import findfiles
 from microprobe.utils.yaml import read_yaml
 import six
 
 # Local modules
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target import Target, Definition
 
 # Constants
 SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
@@ -54,7 +58,7 @@ __all__ = [
 
 
 # Functions
-def _read_uarch_extensions(uarchdefs, path):
+def _read_uarch_extensions(uarchdefs, path: str):
     """ """
 
     if "Extends" in uarchdefs[-1]:
@@ -72,7 +76,7 @@ def _read_uarch_extensions(uarchdefs, path):
         _read_uarch_extensions(uarchdefs, uarchdefval)
 
 
-def _read_yaml_definition(uarchdefs, path):
+def _read_yaml_definition(uarchdefs, path: str):
     """
 
     :param uarchdefs:
@@ -141,7 +145,7 @@ def _read_yaml_definition(uarchdefs, path):
     return complete_uarchdef
 
 
-def import_microarchitecture_definition(path):
+def import_microarchitecture_definition(path: str):
     """Imports a Microarchitecture definition given a path
 
     :param path:
@@ -182,7 +186,7 @@ def import_microarchitecture_definition(path):
     return uarch
 
 
-def find_microarchitecture_definitions(paths=None):
+def find_microarchitecture_definitions(paths: List[str] | None = None):
 
     if paths is None:
         paths = []
@@ -190,7 +194,7 @@ def find_microarchitecture_definitions(paths=None):
     paths = paths + MICROPROBE_RC["microarchitecture_paths"] \
         + MICROPROBE_RC["default_paths"]
 
-    results = []
+    results: List[Definition] = []
     uarchfiles = findfiles(paths, "^microarchitecture.yaml$")
 
     if len(uarchfiles) > 0:
@@ -226,22 +230,21 @@ class Microarchitecture(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def name(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def elements(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -255,16 +258,14 @@ class Microarchitecture(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
 
     @abc.abstractmethod
     def full_report(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __str__(self):
-        """ """
+    def __str__(self) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def set_target(self, target):
+    def set_target(self, target: Target):
         """
 
         :param target:
@@ -272,16 +273,17 @@ class Microarchitecture(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def target(self):
-        """ """
         raise NotImplementedError
 
 
 class GenericMicroarchitecture(Microarchitecture):
     """ """
 
-    def __init__(self, name, descr, elements, instruction_properties_defs):
+    def __init__(self, name: str, descr: str, elements,
+                 instruction_properties_defs):
         """
 
         :param name:
@@ -299,25 +301,21 @@ class GenericMicroarchitecture(Microarchitecture):
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def description(self):
-        """ """
         return self._descr
 
     @property
     def elements(self):
-        """ """
         return self._elements
 
     @property
     def target(self):
-        """ """
         return self._target
 
-    def set_target(self, target):
+    def set_target(self, target: Target):
         """
 
         :param target:
@@ -335,7 +333,6 @@ class GenericMicroarchitecture(Microarchitecture):
             import_properties(cfile, instructions)
 
     def full_report(self):
-        """ """
         rstr = "-" * 80 + "\n"
         rstr += "Microarchitecture Name: %s\n" % self.name
         rstr += "Microarchitecture Description: %s\n" % self.name
@@ -352,7 +349,6 @@ class GenericMicroarchitecture(Microarchitecture):
         return rstr
 
     def __str__(self):
-        """ """
         return "%s('%s', '%s')" % (self.__class__.__name__, self.name,
                                    self.description)
 
@@ -365,7 +361,8 @@ class GenericCPUMicroarchitecture(GenericMicroarchitecture):
 
     """
 
-    def __init__(self, name, descr, elements, instruction_properties_defs):
+    def __init__(self, name: str, descr: str, elements,
+                 instruction_properties_defs):
         """
 
         :param name:
@@ -382,5 +379,4 @@ class GenericCPUMicroarchitecture(GenericMicroarchitecture):
 
     @property
     def cache_hierarchy(self):
-        """ """
         return self._cache_hierarchy

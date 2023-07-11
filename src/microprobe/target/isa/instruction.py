@@ -16,7 +16,7 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, annotations
 
 # Built-in modules
 import abc
@@ -25,6 +25,7 @@ import os
 import random
 import sys
 from inspect import getmembers, getmodule, isfunction
+from typing import TYPE_CHECKING, List
 
 # Third party modules
 import six
@@ -42,6 +43,11 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, getnextf
 from microprobe.utils.yaml import read_yaml
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.isa.register import Register
+    from microprobe.target.isa.operand import Operand
+
 # Constants
 SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
                       "instruction.yaml")
@@ -53,7 +59,7 @@ __all__ = [
 
 
 # Functions
-def import_definition(cls, filenames, args):
+def import_definition(cls, filenames: List[str], args):
     """
 
     :param filenames:
@@ -1000,13 +1006,11 @@ def _check_memops_overlap(instruction, overlap_type, condition):
     operand2 = instruction.memory_operands()[1]
 
     def function_unset_operand1():
-        """ """
         operand2.unset_possible_addresses()
         operand2.unset_possible_lengths()
         operand2.unset_forbidden_address_range()
 
     def function_unset_operand2():
-        """ """
         operand1.unset_possible_addresses()
         operand1.unset_possible_lengths()
         operand1.unset_forbidden_address_range()
@@ -1304,62 +1308,61 @@ class InstructionType(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def name(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def description(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def mnemonic(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def opcode(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def format(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def operands(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def memory_operand_descriptors(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def operand_descriptors(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def implicit_operands(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def target_checks(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def instruction_checks(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -1556,62 +1559,50 @@ class GenericInstructionType(InstructionType):
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def mnemonic(self):
-        """ """
         return self._mnemonic
 
     @property
     def description(self):
-        """ """
         return self._descr
 
     @property
     def opcode(self):
-        """ """
         return self._opcode
 
     @property
     def operands(self):
-        """ """
         return self._operands
 
     @property
     def memory_operand_descriptors(self):
-        """ """
         return self._memoperands
 
     @property
     def operand_descriptors(self):
-        """ """
         return self._operand_descriptors
 
     @property
     def implicit_operands(self):
-        """ """
         return self._ioperands
 
     @property
     def format(self):
-        """ """
         return self._format
 
     @property
     def instruction_checks(self):
-        """ """
         return self._instruction_checks
 
     @property
     def target_checks(self):
-        """ """
         return self._target_checks
 
     @property
     def bit_mask(self):
-        """ """
         if self._mask is None:
             self._compute_mask()
         return self._mask
@@ -1949,7 +1940,6 @@ class GenericInstructionType(InstructionType):
         return self.name >= other.name
 
     def full_report(self, tabs=0):
-        """ """
 
         shift = ("\t" * (tabs + 1))
         fmt = "%-17s : %-30s\n"

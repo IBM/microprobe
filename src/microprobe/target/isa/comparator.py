@@ -22,7 +22,6 @@ from __future__ import absolute_import
 import abc
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
@@ -66,7 +65,7 @@ def import_classes_from(modules):
 
 
 # Classes
-class Comparator(six.with_metaclass(abc.ABCMeta, object)):
+class Comparator(object, metaclass=abc.ABCMeta):
     """Abstract class to perform comparisons. :class:`~.Comparator`
     objects are in charge of performing comparisons between values
     while providing an architecture independent and modular interface.
@@ -126,7 +125,8 @@ class Comparator(six.with_metaclass(abc.ABCMeta, object)):
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def instr_name(self):
         """Value comparator name, usually the opcode of the instruction it
         uses (:class:`~.str`).

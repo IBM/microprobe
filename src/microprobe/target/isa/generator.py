@@ -16,18 +16,23 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
+from typing import TYPE_CHECKING, List
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.imp import find_subclasses
 from microprobe.utils.logger import get_logger
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.isa.register import Register
+    from microprobe.code.ins import Instruction
 
 # Constants
 LOG = get_logger(__name__)
@@ -35,7 +40,7 @@ __all__ = ["import_classes_from", "Generator"]
 
 
 # Functions
-def import_classes_from(modules):
+def import_classes_from(modules: List[str]):
     """
 
     :param modules:
@@ -67,7 +72,7 @@ def import_classes_from(modules):
 
 
 # Classes
-class Generator(six.with_metaclass(abc.ABCMeta, object)):
+class Generator(abc.ABC):
     """ """
 
     def __init__(self, arch):
@@ -111,17 +116,16 @@ class Generator(six.with_metaclass(abc.ABCMeta, object)):
                                                          fvalue,
                                                          address=address))
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def instr_name(self):
-        """ """
         raise NotImplementedError
 
     @property
     def arch(self):
-        """ """
         return self._arch
 
-    def _orig_reg(self, value, reg, instr):
+    def _orig_reg(self, value, reg: Register, instr: Instruction):
         """
 
         :param value:
@@ -138,5 +142,4 @@ class Generator(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def alias(self):  # pylint: disable=no-self-use
-        """ """
         return []

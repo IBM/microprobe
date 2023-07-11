@@ -16,20 +16,24 @@
 """
 
 # Futures
-from __future__ import absolute_import, division
+from __future__ import absolute_import, division, annotations
 
 # Built-in modules
 import abc
 import os
+from typing import TYPE_CHECKING, List, Tuple
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
     MicroprobeLookupError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.yaml import read_yaml
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.isa.instruction_field import InstructionField
 
 # Constants
 SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
@@ -41,7 +45,7 @@ __all__ = [
 
 
 # Functions
-def import_definition(cls, filenames, ifields):
+def import_definition(cls, filenames: List[str], ifields):
     """
 
     :param filenames:
@@ -82,31 +86,22 @@ def import_definition(cls, filenames, ifields):
             if len(nonzero_fields) != len(set(nonzero_fields)):
 
                 raise MicroprobeArchitectureDefinitionError(
-                    "Definition of "
-                    "instruction format"
-                    " '%s' found in '%s'"
-                    " contains duplicated"
-                    " fields." % (name, filename))
+                    f"Definition of instruction format '{name}' found in "
+                    f"'{filename}' contains duplicated fields.")
 
             try:
                 fields = [ifields[ifieldname] for ifieldname in elem["Fields"]]
             except KeyError as key:
                 raise MicroprobeArchitectureDefinitionError(
-                    "Unknown field %s "
-                    "definition in "
-                    "instruction format"
-                    " '%s' found in '%s'." % (key, name, filename))
+                    f"Unknown field {key} definition in instruction format "
+                    f"'{name}' found in '{filename}'.")
 
             iformat = cls(name, descr, fields, assembly)
 
             if name in iformats:
-                raise MicroprobeArchitectureDefinitionError("Duplicated "
-                                                            "definition "
-                                                            "of instruction "
-                                                            "format "
-                                                            "'%s' found "
-                                                            "in '%s'" %
-                                                            (name, filename))
+                raise MicroprobeArchitectureDefinitionError(
+                    f"Duplicated definition of instruction format '{name}' "
+                    f"found in '{filename}'")
             LOG.debug(iformat)
             iformats[name] = iformat
 
@@ -115,11 +110,11 @@ def import_definition(cls, filenames, ifields):
 
 
 # Classes
-class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
+class InstructionFormat(abc.ABC):
     """Abstract class to represent an instruction format"""
 
     @abc.abstractmethod
-    def __init__(self, fname, descr):
+    def __init__(self, fname: str, descr: str):
         """
 
         :param fname:
@@ -131,22 +126,20 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def description(self):
-        """ """
         return self._descr
 
-    @abc.abstractproperty
-    def fields(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def fields(self) -> List[InstructionField]:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def assembly_format(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def assembly_format(self) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -160,7 +153,7 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_fields(self):
+    def get_fields(self) -> List[InstructionField]:
         """Returns a :class:`~.list` of
         the :class:`~.InstructionField`
 
@@ -169,7 +162,7 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_field(self, fname):
+    def get_field(self, fname: str) -> InstructionField:
         """Returns a the :class:`~.InstructionField` with name
         *fname*.
 
@@ -179,7 +172,7 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_field_props(self, fname):
+    def get_field_props(self, fname: str):
         """Returns extra properties of field with name *fname*.
 
         :param fname: Field name.
@@ -189,7 +182,7 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_findex(self, fname):
+    def get_findex(self, fname: str):
         """Returns the index of the field *fname* within the instruction format
 
         :param fname: Field name.
@@ -199,7 +192,7 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def flip_fields(self, fname1, fname2):
+    def flip_fields(self, fname1: str, fname2: str):
         """Interchanges the position of the fields with name *fname1* and
         *fname2*.
 
@@ -212,7 +205,7 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def set_fields(self, fields, reset=True):
+    def set_fields(self, fields: List[InstructionField], reset: bool = True):
         """Sets the fields of the instruction format. If *reset* is *True* the
         properties and the flip records of the fields are removed.
 
@@ -226,7 +219,6 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     def __str__(self):
-        """ """
 
         values = "%-10s : %-30s ([" % (self.name, self.description)
 
@@ -254,7 +246,8 @@ class InstructionFormat(six.with_metaclass(abc.ABCMeta, object)):
 class GenericInstructionFormat(InstructionFormat):
     """Instruction format generic class."""
 
-    def __init__(self, fname, descr, fields, assembly):
+    def __init__(self, fname: str, descr: str, fields: List[InstructionField],
+                 assembly: str):
         """
 
         :param fname:
@@ -265,9 +258,10 @@ class GenericInstructionFormat(InstructionFormat):
         """
         super(GenericInstructionFormat, self).__init__(fname, descr)
         self._fname = fname
-        self._fields = []
-        self._props = []
-        self._flips = []
+        self._fields: List[InstructionField] = []
+        self._props: List[None] = [
+        ]  # TODO: Check if this list of None is needed
+        self._flips: List[Tuple[int, int]] = []
         self._length = 0
         self._assembly_format = assembly
 
@@ -278,17 +272,14 @@ class GenericInstructionFormat(InstructionFormat):
 
     @property
     def fields(self):
-        """ """
         return self._fields
 
     @property
     def length(self):
-        """ """
         return self._length
 
     @property
     def assembly_format(self):
-        """ """
         return self._assembly_format
 
     def get_operands(self):
@@ -309,7 +300,7 @@ class GenericInstructionFormat(InstructionFormat):
         """
         return self._fields
 
-    def get_field(self, fname):
+    def get_field(self, fname: str):
         """Returns a the :class:`~.InstructionField` with name
         *fname*.
 
@@ -321,15 +312,17 @@ class GenericInstructionFormat(InstructionFormat):
         ]
 
         if len(field) == 0:
-            raise MicroprobeLookupError("Unable to find a field "
-                                        "with name '%s'" % fname)
+            raise MicroprobeLookupError(
+                f"Unable to find a field with name '{fname}'")
 
-        assert len(field) == 1, "Field names should be key identifiers. " \
-                                "Field '%s' is duplicated" % fname
+        assert len(
+            field
+        ) == 1, "Field names should be key identifiers." + \
+            f" Field '{fname}' is duplicated"
 
         return field[0]
 
-    def get_field_props(self, fname):
+    def get_field_props(self, fname: str):
         """Returns extra properties of field with name *fname*.
 
         :param fname: Field name.
@@ -339,7 +332,7 @@ class GenericInstructionFormat(InstructionFormat):
         idx = self.get_findex(fname)
         return self._props[idx]
 
-    def get_findex(self, fname):
+    def get_findex(self, fname: str):
         """Returns the index of the field *fname* within the instruction
         format.
 
@@ -349,7 +342,7 @@ class GenericInstructionFormat(InstructionFormat):
         """
         return self.get_fields().index(self.get_field(fname))
 
-    def flip_fields(self, fname1, fname2):
+    def flip_fields(self, fname1: str, fname2: str):
         """Interchanges the position of the fields with name *fname1* and
         *fname2*.
 
@@ -375,7 +368,7 @@ class GenericInstructionFormat(InstructionFormat):
 
         self._flips.append((idx1, idx2))
 
-    def set_fields(self, fields, reset=True):
+    def set_fields(self, fields: List[InstructionField], reset: bool = True):
         """Sets the fields of the instruction format. If *reset* is *True* the
         properties and the flip records of the fields are removed.
 
@@ -394,7 +387,7 @@ class GenericInstructionFormat(InstructionFormat):
 
         self._compute_length()
 
-    def _add_field(self, field):
+    def _add_field(self, field: InstructionField):
         """Adds an field to the instruction format.
 
         :param field: Instruction field
@@ -405,7 +398,6 @@ class GenericInstructionFormat(InstructionFormat):
         self._props.append(None)
 
     def _compute_length(self):
-        """ """
 
         length = sum([field.size for field in self._fields])
         if length % 8 != 0:

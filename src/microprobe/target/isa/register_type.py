@@ -22,9 +22,9 @@ from __future__ import absolute_import
 import abc
 import hashlib
 import os
+from typing import Dict, List, Tuple
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
@@ -40,7 +40,7 @@ __all__ = ["import_definition", "RegisterType", "GenericRegisterType"]
 # Functions
 
 
-def import_definition(cls, filenames, dummy):
+def import_definition(cls, filenames: List[str], dummy):
     """
 
     :param filenames:
@@ -50,7 +50,7 @@ def import_definition(cls, filenames, dummy):
 
     LOG.debug("Start")
     regts = {}
-    regts_duplicated = {}
+    regts_duplicated: Dict[Tuple[int, bool, bool, bool], str] = {}
 
     for filename in filenames:
         regt_data = read_yaml(filename, SCHEMA)
@@ -89,42 +89,44 @@ def import_definition(cls, filenames, dummy):
 
 
 # Classes
-class RegisterType(six.with_metaclass(abc.ABCMeta, object)):
+class RegisterType(abc.ABC):
     """Abstract base class to represent a Register Type"""
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def name(self):
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         """Register type name (:class:`~.str`)"""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         """Register type name (:class:`~.str`)"""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def size(self):
+    @property
+    @abc.abstractmethod
+    def size(self) -> int:
         """Register size in bits (::class:`~.int`)"""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def used_for_address_arithmetic(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def used_for_address_arithmetic(self) -> bool:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def used_for_float_arithmetic(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def used_for_float_arithmetic(self) -> bool:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def used_for_vector_arithmetic(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def used_for_vector_arithmetic(self) -> bool:
         raise NotImplementedError
 
     def __str__(self):
@@ -138,8 +140,7 @@ class RegisterType(six.with_metaclass(abc.ABCMeta, object)):
                                            self.size)
 
     @abc.abstractmethod
-    def __hash__(self):
-        """ """
+    def __hash__(self) -> int:
         raise NotImplementedError
 
 
@@ -163,7 +164,8 @@ class GenericRegisterType(RegisterType):
         "used_for_float_arithmetic", "used_for_vector_arithmetic"
     ]
 
-    def __init__(self, rtype, rdescr, rsize, u4aa, u4fa, u4va):
+    def __init__(self, rtype: str, rdescr: str, rsize: int, u4aa: bool,
+                 u4fa: bool, u4va: bool):
         """
 
         :param rtype:
@@ -206,21 +208,17 @@ class GenericRegisterType(RegisterType):
 
     @property
     def used_for_address_arithmetic(self):
-        """ """
         return self._used_for_address_arithmetic
 
     @property
     def used_for_float_arithmetic(self):
-        """ """
         return self._used_for_float_arithmetic
 
     @property
     def used_for_vector_arithmetic(self):
-        """ """
         return self._used_for_vector_arithmetic
 
     def __hash__(self):
-        """ """
         return self._hash
 
     def _check_cmp(self, other):

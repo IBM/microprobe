@@ -276,7 +276,7 @@ def _format_integer(operand, value):
 
 
 # Classes
-class OperandDescriptor(object):
+class OperandDescriptor:
     """Class to represent an operand descriptor.
 
     """
@@ -324,12 +324,11 @@ class OperandDescriptor(object):
         return OperandDescriptor(self.type, self.is_input, self.is_output)
 
     def __repr__(self):
-        """ """
         return "%s(%s, %s, %s)" % (self.__class__.__name__, self._type,
                                    self._is_input, self._is_output)
 
 
-class MemoryOperandDescriptor(object):
+class MemoryOperandDescriptor:
     """Class to represent a memory operand descriptor.
 
     """
@@ -420,7 +419,7 @@ class MemoryOperandDescriptor(object):
         return rstr
 
 
-class MemoryOperand(object):
+class MemoryOperand:
     """This represents a machine instruction memory operand. It contains
     the operands, the formula, the
 
@@ -446,7 +445,6 @@ class MemoryOperand(object):
 
     @property
     def length_operands(self):
-        """ """
         return self._length
 
     def _check_cmp(self, other):
@@ -511,7 +509,6 @@ class MemoryOperand(object):
         return True
 
     def __str__(self):
-        """ """
         return "%s(Address: %s, Length: %s)" % (self.__class__.__name__,
                                                 self._address, self._length)
 
@@ -523,7 +520,7 @@ class MemoryOperand(object):
         return rstr
 
 
-class Operand(six.with_metaclass(abc.ABCMeta, object)):
+class Operand(abc.ABC):
     """This represents a machine instruction operand"""
 
     _cmp_attributes = [
@@ -685,12 +682,10 @@ class Operand(six.with_metaclass(abc.ABCMeta, object)):
                                        (value, list(self.values())))
 
     def __str__(self):
-        """ """
         return "%-8s : %s (%s)" % (self.name, self.description,
                                    self.__class__.__name__)
 
     def __repr__(self):
-        """ """
         return "%s(\"%s\", \"%s\")" % (self.__class__.__name__, self.name,
                                        self.description)
 
@@ -850,7 +845,6 @@ class OperandReg(Operand):
         return value.name in [reg.name for reg in self.values()]
 
     def copy(self):
-        """ """
 
         return OperandReg(self.name, self.description, self._regs.copy(),
                           self._ab, self._ai, self._fp, self._vector)
@@ -908,7 +902,6 @@ class OperandImmRange(Operand):
         self._computed_values = None
 
     def copy(self):
-        """ """
         return OperandImmRange(self.name, self.description, self._min,
                                self._max, self._step, self._aim, self._shift,
                                self._novalues, self._add)
@@ -984,27 +977,22 @@ class OperandImmRange(Operand):
 
     @property
     def max(self):
-        """ """
         return self._max
 
     @property
     def min(self):
-        """ """
         return self._min
 
     @property
     def step(self):
-        """ """
         return self._step
 
     @property
     def shift(self):
-        """ """
         return self._shift
 
     @property
     def add(self):
-        """ """
         return self._add
 
     def check(self, value):
@@ -1075,7 +1063,6 @@ class OperandValueSet(Operand):
             self._rep = dict(zip(values, rep))
 
     def copy(self):
-        """ """
         return OperandValueSet(self.name, self.description, self._values,
                                self._rep)
 
@@ -1121,12 +1108,10 @@ class OperandValueSet(Operand):
 
     @property
     def shift(self):
-        """ """
         return 0
 
     @property
     def min(self):
-        """ """
         return min(self._values)
 
     def __contains__(self, value):
@@ -1172,7 +1157,6 @@ class OperandConst(Operand):
         self._const = True
 
     def copy(self):
-        """ """
         return OperandConst(self.name, self.description, self._value)
 
     def values(self):
@@ -1207,12 +1191,10 @@ class OperandConst(Operand):
 
     @property
     def shift(self):
-        """ """
         return 0
 
     @property
     def min(self):
-        """ """
         return self._value
 
     def access(self, dummy):
@@ -1281,7 +1263,6 @@ class OperandConstReg(Operand):
                                      ]))[0].used_for_float_arithmetic
 
     def copy(self):
-        """ """
         return OperandConstReg(self.name, self.description, self._reg,
                                self._ab, self._ai, self._fp, self._vector)
 
@@ -1386,7 +1367,6 @@ class InstructionAddressRelativeOperand(Operand):
         self._step = step
 
     def copy(self):
-        """ """
         return InstructionAddressRelativeOperand(self.name, self.description,
                                                  self._maxdispl,
                                                  self._mindispl, self._shift,
@@ -1510,7 +1490,6 @@ class InstructionAddressRelativeOperand(Operand):
 
     @property
     def shift(self):
-        """ """
         return self._shift
 
     def access(self, dummy):

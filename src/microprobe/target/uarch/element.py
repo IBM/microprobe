@@ -202,37 +202,36 @@ class MicroarchitectureElement(six.with_metaclass(abc.ABCMeta,
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def name(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def full_name(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def full_name(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def type(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def depth(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def subelements(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -244,14 +243,14 @@ class MicroarchitectureElement(six.with_metaclass(abc.ABCMeta,
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def parent(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def parents(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -305,46 +304,38 @@ class GenericMicroarchitectureElement(MicroarchitectureElement):
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def full_name(self):
-        """ """
         if self._parent is None:
             return self._name
         return "%s_%s" % (self._name, self.parent.full_name)
 
     @property
     def parents(self):
-        """ """
         if self._parent is None:
             return []
         return [self.parent] + self.parent.parents
 
     @property
     def description(self):
-        """ """
         return self._descr
 
     @property
     def type(self):
-        """ """
         return self._type
 
     @property
     def subelements(self):
-        """ """
         return list(self._subelements.values())
 
     @property
     def parent(self):
-        """ """
         return self._parent
 
     @property
     def depth(self):
-        """ """
         if self._parent is None:
             return 0
         return 1 + self.parent.depth
@@ -387,7 +378,6 @@ class GenericMicroarchitectureElement(MicroarchitectureElement):
         return None
 
     def __hash__(self):
-        """ """
         return self._hash
 
     def __str__(self):
