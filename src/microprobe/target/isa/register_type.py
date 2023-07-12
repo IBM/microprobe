@@ -22,27 +22,25 @@ from __future__ import absolute_import
 import abc
 import hashlib
 import os
+from typing import Dict, List, Tuple
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "register_type.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "register_type.yaml")
 LOG = get_logger(__name__)
 __all__ = ["import_definition", "RegisterType", "GenericRegisterType"]
 
 # Functions
 
 
-def import_definition(cls, filenames, dummy):
+def import_definition(cls, filenames: List[str], dummy):
     """
 
     :param filenames:
@@ -52,7 +50,7 @@ def import_definition(cls, filenames, dummy):
 
     LOG.debug("Start")
     regts = {}
-    regts_duplicated = {}
+    regts_duplicated: Dict[Tuple[int, bool, bool, bool], str] = {}
 
     for filename in filenames:
         regt_data = read_yaml(filename, SCHEMA)
@@ -72,8 +70,7 @@ def import_definition(cls, filenames, dummy):
                 LOG.warning(
                     "Similar definition of register types: '%s' and"
                     " '%s'. Check if definition needed.", name,
-                    regts_duplicated[key]
-                )
+                    regts_duplicated[key])
             else:
                 regts_duplicated[key] = name
 
@@ -83,8 +80,7 @@ def import_definition(cls, filenames, dummy):
                 raise MicroprobeArchitectureDefinitionError(
                     "Duplicated "
                     "definition of register type '%s' "
-                    "found in '%s'" % (name, filename)
-                )
+                    "found in '%s'" % (name, filename))
 
             regts[name] = regt
 
@@ -93,59 +89,58 @@ def import_definition(cls, filenames, dummy):
 
 
 # Classes
-class RegisterType(six.with_metaclass(abc.ABCMeta, object)):
+class RegisterType(abc.ABC):
     """Abstract base class to represent a Register Type"""
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def name(self):
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         """Register type name (:class:`~.str`)"""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         """Register type name (:class:`~.str`)"""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def size(self):
+    @property
+    @abc.abstractmethod
+    def size(self) -> int:
         """Register size in bits (::class:`~.int`)"""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def used_for_address_arithmetic(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def used_for_address_arithmetic(self) -> bool:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def used_for_float_arithmetic(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def used_for_float_arithmetic(self) -> bool:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def used_for_vector_arithmetic(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def used_for_vector_arithmetic(self) -> bool:
         raise NotImplementedError
 
     def __str__(self):
         """x.__str__() <==> str(x)"""
-        return "%8s: %s (bit size: %d)" % (
-            self.name, self.description, self.size
-        )
+        return "%8s: %s (bit size: %d)" % (self.name, self.description,
+                                           self.size)
 
     def __repr__(self):
         """x.__repr__() <==> str(x)"""
-        return "%8s: %s (bit size: %d)" % (
-            self.name, self.description, self.size
-        )
+        return "%8s: %s (bit size: %d)" % (self.name, self.description,
+                                           self.size)
 
     @abc.abstractmethod
-    def __hash__(self):
-        """ """
+    def __hash__(self) -> int:
         raise NotImplementedError
 
 
@@ -165,14 +160,12 @@ class GenericRegisterType(RegisterType):
     """
 
     _cmp_attributes = [
-        "name",
-        "description",
-        "size",
-        "used_for_address_arithmetic",
-        "used_for_float_arithmetic",
-        "used_for_vector_arithmetic"]
+        "name", "description", "size", "used_for_address_arithmetic",
+        "used_for_float_arithmetic", "used_for_vector_arithmetic"
+    ]
 
-    def __init__(self, rtype, rdescr, rsize, u4aa, u4fa, u4va):
+    def __init__(self, rtype: str, rdescr: str, rsize: int, u4aa: bool,
+                 u4fa: bool, u4va: bool):
         """
 
         :param rtype:
@@ -190,12 +183,13 @@ class GenericRegisterType(RegisterType):
         self._used_for_address_arithmetic = u4aa
         self._used_for_float_arithmetic = u4fa
         self._used_for_vector_arithmetic = u4va
-        self._hash = int(hashlib.sha512((
-                str(self.name) + str(self.description) + str(self.size) +
-                str(self.used_for_address_arithmetic) +
-                str(self.used_for_float_arithmetic) +
-                str(self.used_for_vector_arithmetic)).encode()).hexdigest(),
-                16)
+        self._hash = int(
+            hashlib.sha512(
+                (str(self.name) + str(self.description) + str(self.size) +
+                 str(self.used_for_address_arithmetic) +
+                 str(self.used_for_float_arithmetic) +
+                 str(self.used_for_vector_arithmetic)).encode()).hexdigest(),
+            16)
 
     @property
     def name(self):
@@ -214,30 +208,23 @@ class GenericRegisterType(RegisterType):
 
     @property
     def used_for_address_arithmetic(self):
-        """ """
         return self._used_for_address_arithmetic
 
     @property
     def used_for_float_arithmetic(self):
-        """ """
         return self._used_for_float_arithmetic
 
     @property
     def used_for_vector_arithmetic(self):
-        """ """
         return self._used_for_vector_arithmetic
 
     def __hash__(self):
-        """ """
         return self._hash
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""

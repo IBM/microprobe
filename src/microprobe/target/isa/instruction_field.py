@@ -16,33 +16,34 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
 import os
+from typing import TYPE_CHECKING, Dict, List, Tuple
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.yaml import read_yaml
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.isa.operand import Operand
 
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas",
-    "instruction_field.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "instruction_field.yaml")
 
 LOG = get_logger(__name__)
 __all__ = ["import_definition", "InstructionField", "GenericInstructionField"]
 
 
 # Functions
-def import_definition(cls, filenames, operands):
+def import_definition(cls, filenames: List[str], operands: Dict[str, Operand]):
     """
 
     :param filenames:
@@ -52,7 +53,7 @@ def import_definition(cls, filenames, operands):
 
     LOG.debug("Start")
     ifields = {}
-    ifields_duplicated = {}
+    ifields_duplicated: Dict[Tuple[int, bool, str, str], str] = {}
 
     for filename in filenames:
         ifield_data = read_yaml(filename, SCHEMA)
@@ -74,8 +75,7 @@ def import_definition(cls, filenames, operands):
                 LOG.warning(
                     "Similar definition of instruction field: '%s' and"
                     " '%s'. Check if definition needed.", name,
-                    ifields_duplicated[key]
-                )
+                    ifields_duplicated[key])
             else:
                 ifields_duplicated[key] = name
 
@@ -85,8 +85,7 @@ def import_definition(cls, filenames, operands):
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown operand "
                     "defined in instruction"
-                    " field '%s' in '%s'." % (name, filename)
-                )
+                    " field '%s' in '%s'." % (name, filename))
             ifield = cls(name, descr, size, show, fio, operand)
 
             if name in ifields:
@@ -94,8 +93,7 @@ def import_definition(cls, filenames, operands):
                     "Duplicated "
                     "definition "
                     "of instruction field"
-                    " '%s' found in '%s'" % (name, filename)
-                )
+                    " '%s' found in '%s'" % (name, filename))
 
             LOG.debug(ifield)
             ifields[name] = ifield
@@ -105,47 +103,45 @@ def import_definition(cls, filenames, operands):
 
 
 # Classes
-class InstructionField(six.with_metaclass(abc.ABCMeta, object)):
+class InstructionField(abc.ABC):
     """Abstract class to represent an instruction field"""
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def name(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def size(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def size(self) -> int:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def default_show(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def default_show(self) -> bool:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def default_io(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def default_io(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def default_operand(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def default_operand(self) -> Operand:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __str__(self):
-        """ """
+    def __str__(self) -> str:
         raise NotImplementedError
 
 
@@ -167,7 +163,8 @@ class GenericInstructionField(InstructionField):
 
     _valid_fio_values = ['I', 'O', 'IO', '?']
 
-    def __init__(self, fname, descr, fsize, fshow, fio, foperand):
+    def __init__(self, fname: str, descr: str, fsize: int, fshow: bool,
+                 fio: str, foperand: Operand):
         """
 
         :param fname:
@@ -189,45 +186,34 @@ class GenericInstructionField(InstructionField):
 
         if fio not in self._valid_fio_values:
             raise MicroprobeArchitectureDefinitionError(
-                "Invalid default IO "
-                "definition for field "
-                "%s" % fname
-            )
+                f"Invalid default IO definition for field {fname}")
 
     @property
     def name(self):
-        """ """
         return self._fname
 
     @property
     def description(self):
-        """ """
         return self._fdescr
 
     @property
     def size(self):
-        """ """
         return self._fsize
 
     @property
     def default_show(self):
-        """ """
         return self._fshow
 
     @property
     def default_operand(self):
-        """ """
         return self._foperand
 
     @property
     def default_io(self):
-        """ """
         return self._fio
 
     def __str__(self):
-        """ """
         return "%10s : %s" % (self.name, self.description)
 
     def __repr__(self):
-        """ """
         return "%s('%s')" % (self.__class__.__name__, self.name)

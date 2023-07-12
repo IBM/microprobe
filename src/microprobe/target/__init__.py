@@ -33,32 +33,35 @@ The main elements of this package are the following:
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
-import collections
 import copy
 import itertools
 import os
+from typing import TYPE_CHECKING, Tuple
 
 # Third party modules
 
 # Own modules
-from microprobe import MICROPROBE_RC
-from microprobe.exceptions import MicroprobeDuplicatedValueError, \
-    MicroprobeError, MicroprobeImportDefinitionError, \
-    MicroprobePolicyError, MicroprobeTargetDefinitionError
+from microprobe.exceptions import MicroprobeError, \
+    MicroprobeTargetDefinitionError
 from microprobe.target.env import GenericEnvironment, \
     find_env_definitions, import_env_definition
 from microprobe.target.isa import find_isa_definitions, import_isa_definition
 from microprobe.target.uarch import find_microarchitecture_definitions, \
     import_microarchitecture_definition
-from microprobe.utils.imp import get_attr_from_module, get_dict_from_module
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import Pickable, RejectingDict, findfiles
+from microprobe.utils.misc import Pickable
 
 # Local modules
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.env import Environment
+    from microprobe.target.isa import ISA
+    from microprobe.target.uarch import Microarchitecture
+    from microprobe.code.wrapper import Wrapper
 
 # Constants
 LOG = get_logger(__name__)
@@ -71,7 +74,8 @@ __all__ = [
 
 
 # Functions
-def import_definition(definition_tuple):
+def import_definition(definition_tuple: str
+                      | Tuple[Definition, Definition, Definition]):
     """Return the target corresponding the to the given *definition_tuple*.
 
     Return the target object corresponding the to the given
@@ -94,24 +98,20 @@ def import_definition(definition_tuple):
 
     isa_def, uarch_def, env_def = definition_tuple
     isa = import_isa_definition(os.path.dirname(isa_def.filename))
-    env = import_env_definition(
-        env_def.filename, isa,
-        definition_name=env_def.name
-    )
+    env = import_env_definition(env_def.filename,
+                                isa,
+                                definition_name=env_def.name)
     uarch = import_microarchitecture_definition(
-        os.path.dirname(uarch_def.filename)
-    )
+        os.path.dirname(uarch_def.filename))
 
     target = Target(isa, uarch=uarch, env=env)
-    LOG.info(
-        "Target '%s-%s-%s' imported", isa_def.name, uarch_def.name,
-        env_def.name
-    )
+    LOG.info("Target '%s-%s-%s' imported", isa_def.name, uarch_def.name,
+             env_def.name)
     LOG.debug("End importing definition tuple")
     return target
 
 
-def _parse_definition_tuple(definition_tuple):
+def _parse_definition_tuple(definition_tuple: str):
     """Return the target definitions corresponding to the *definition_tuple*.
 
     Return the target definitions corresponding to the *definition_tuple*.
@@ -133,44 +133,40 @@ def _parse_definition_tuple(definition_tuple):
         isa_def, architecture_def, env_def = definition_tuple.split("-")
     except ValueError:
         raise MicroprobeTargetDefinitionError(
-            "Invalid format of '%s' target tuple" % definition_tuple
-        )
+            "Invalid format of '%s' target tuple" % definition_tuple)
 
     definitions = find_isa_definitions()
     if isa_def not in [definition.name for definition in definitions]:
-        raise MicroprobeTargetDefinitionError(
-            "ISA '%s' not available" % isa_def
-        )
+        raise MicroprobeTargetDefinitionError("ISA '%s' not available" %
+                                              isa_def)
     else:
         isa_def = [
-            definition
-            for definition in definitions if definition.name == isa_def
+            definition for definition in definitions
+            if definition.name == isa_def
         ][-1]
 
     definitions = find_microarchitecture_definitions()
     if architecture_def not in [definition.name for definition in definitions]:
         raise MicroprobeTargetDefinitionError(
-            "Microarchitecture '%s' not available" % architecture_def
-        )
+            "Microarchitecture '%s' not available" % architecture_def)
     else:
         architecture_def = [
-            definition
-            for definition in definitions
+            definition for definition in definitions
             if definition.name == architecture_def
         ][-1]
 
     definitions = find_env_definitions()
     if env_def not in [definition.name for definition in definitions]:
         raise MicroprobeTargetDefinitionError(
-            "Environment '%s' not available. " % env_def
-        )
+            "Environment '%s' not available. " % env_def)
     else:
         env_def = [
-            definition
-            for definition in definitions if definition.name == env_def
+            definition for definition in definitions
+            if definition.name == env_def
         ][-1]
 
     return (isa_def, architecture_def, env_def)
+
 
 # def import_policies(target_name):
 #    """Return the dictionary of policies for the *target_name*."""
@@ -211,7 +207,7 @@ def _parse_definition_tuple(definition_tuple):
 
 
 # Classes
-class Definition(object):
+class Definition:
     """Class to represent a target element definition.
 
     A target element definition could be the definition of the architecture,
@@ -225,11 +221,10 @@ class Definition(object):
     _field2 = 25
     _field3 = 78 - _field1 - _field2
     _fmt_str_ = "Name:'%%%ds', Description:'%%%ds', File:'%%%ds'" % (
-        _field1, _field2, _field3
-    )
+        _field1, _field2, _field3)
     _cmp_attributes = ["name", "description", "filename"]
 
-    def __init__(self, filename, name, description):
+    def __init__(self, filename: str, name: str, description: str):
         """Create a Definition object.
 
         :param filename: Filename where the definition is placed
@@ -266,11 +261,8 @@ class Definition(object):
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""
@@ -342,7 +334,10 @@ class Target(Pickable):
     other modules (code generation, design space exploration, ...).
     """
 
-    def __init__(self, isa, env=None, uarch=None):
+    def __init__(self,
+                 isa: ISA,
+                 env: Environment | None = None,
+                 uarch: Microarchitecture | None = None):
         """Create a Target object.
 
         :param isa: Architecture (i.e. Instruction Set Architecture)
@@ -354,7 +349,6 @@ class Target(Pickable):
         :return: Target instance
         :rtype: :class:`~.Target`
         """
-        self._isa = None
         self._uarch = None
         self._env = None
         self._policies = None
@@ -364,18 +358,13 @@ class Target(Pickable):
 
         if uarch is not None:
             self.set_uarch(uarch)
-            self.microarchitecture.add_properties_to_isa(
-                self.isa.instructions
-            )
+            self.microarchitecture.add_properties_to_isa(self.isa.instructions)
 
         if env is not None:
             self.set_env(env)
         else:
             self.set_env(
-                GenericEnvironment(
-                    "Default", "Empty environment", self.isa
-                )
-            )
+                GenericEnvironment("Default", "Empty environment", self.isa))
 
     @property
     def name(self):
@@ -394,20 +383,16 @@ class Target(Pickable):
         description.append("Target ISA: %s" % self.isa.name)
         description.append("ISA Description: %s" % self.isa.description)
         if self.microarchitecture is not None:
-            description.append(
-                "Target Micro-architecture: %s" % self.microarchitecture.name
-            )
-            description.append(
-                "Micro-architecture Description: %s" %
-                self.microarchitecture.description
-            )
+            description.append("Target Micro-architecture: %s" %
+                               self.microarchitecture.name)
+            description.append("Micro-architecture Description: %s" %
+                               self.microarchitecture.description)
         else:
             description.append("Target Micro-architecture: Not defined")
             description.append("Micro-architecture Description: Not defined")
         description.append("Target Environment: %s" % self.environment.name)
-        description.append(
-            "Environment description: %s" % self.environment.description
-        )
+        description.append("Environment description: %s" %
+                           self.environment.description)
         return "\n".join(description)
 
     @property
@@ -470,8 +455,7 @@ class Target(Pickable):
                 value = getattr(instr, prop_name)
             except AttributeError:
                 raise MicroprobeTargetDefinitionError(
-                    "Property '%s' for instruction not found" % prop_name
-                )
+                    "Property '%s' for instruction not found" % prop_name)
 
             if not isinstance(value, list):
                 values = [value]
@@ -490,7 +474,7 @@ class Target(Pickable):
 
         return prop_map
 
-    def set_env(self, env):
+    def set_env(self, env: Environment):
         """Set the environment of the Target.
 
         :param env: Execution environment definition
@@ -499,7 +483,7 @@ class Target(Pickable):
         self._env = copy.deepcopy(env)
         self._env.set_target(self)
 
-    def set_isa(self, isa):
+    def set_isa(self, isa: ISA):
         """Set the ISA of the Target.
 
         :param isa: Architecture (i.e. ISA)
@@ -508,7 +492,7 @@ class Target(Pickable):
         self._isa = copy.deepcopy(isa)
         self._isa.set_target(self)
 
-    def set_uarch(self, uarch):
+    def set_uarch(self, uarch: Microarchitecture):
         """Set the microarchitecture of the Target.
 
         :param uarch: Microarchitecture
@@ -518,7 +502,7 @@ class Target(Pickable):
         self._uarch.set_target(self)
 
     # TODO: remove this interface once the code generation back-end is fixed
-    def set_wrapper(self, wrapper):
+    def set_wrapper(self, wrapper: Wrapper):
         """Set the wrapper of the Target.
 
         :param wrapper: Wrapper
@@ -526,6 +510,7 @@ class Target(Pickable):
         """
         self._wrapper = wrapper
 
+    # TODO: Remove facade pattern to allow type hints to propagate
     def __getattr__(self, name):
         """Facade design pattern implementation.
 
@@ -572,7 +557,5 @@ class Target(Pickable):
             else:
                 raise MicroprobeError("Attribute defined in multiple objects")
         else:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'" %
-                (self.__class__.__name__, name)
-            )
+            raise AttributeError("'%s' object has no attribute '%s'" %
+                                 (self.__class__.__name__, name))

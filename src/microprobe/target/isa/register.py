@@ -16,15 +16,15 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
 import hashlib
 import os
+from typing import List, TYPE_CHECKING
 
 # Third party modules
-import six
 from six.moves import range
 
 # Own modules
@@ -33,18 +33,20 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Pickable
 from microprobe.utils.yaml import read_yaml
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target.isa.register_type import RegisterType
 
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "register.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "register.yaml")
 
 LOG = get_logger(__name__)
 __all__ = ["import_definition", "Register", "GenericRegister"]
 
 
 # Functions
-def import_definition(cls, filenames, regtypes):
+def import_definition(cls, filenames: List[str], regtypes):
     """
 
     :param filenames:
@@ -75,8 +77,7 @@ def import_definition(cls, filenames, regtypes):
             if rtype not in regtypes:
                 raise MicroprobeArchitectureDefinitionError(
                     "Unknown register type in definition of "
-                    "register '%s' in file '%s'" % (name, filename)
-                )
+                    "register '%s' in file '%s'" % (name, filename))
 
             if repeat:
                 rfrom = repeat["From"]
@@ -96,8 +97,7 @@ def import_definition(cls, filenames, regtypes):
                 if cname in regs:
                     raise MicroprobeArchitectureDefinitionError(
                         "Duplicated register definition of '%s' found"
-                        " in '%s'" % (cname, filename)
-                    )
+                        " in '%s'" % (cname, filename))
 
                 LOG.debug(regt)
                 regs[cname] = regt
@@ -107,52 +107,53 @@ def import_definition(cls, filenames, regtypes):
 
 
 # Classes
-class Register(six.with_metaclass(abc.ABCMeta, object)):
+class Register(abc.ABC):
     """Abstract class to represent an architecture register."""
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def type(self):
+    @property
+    @abc.abstractmethod
+    def type(self) -> RegisterType:
         """Register type (:class:`~.RegisterType` instance)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def name(self):
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         """Register name (:class:`~.str` instance)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         """Register description (:class:`~.str` instance)."""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def representation(self):
+    def representation(self) -> str:
         """Return the assembly representation of this register."""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def codification(self):
+    def codification(self) -> str:
         """Return the assembly representation of this register."""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the string representation of this register."""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return the string representation of this register."""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __hash__(self):
-        """ """
+    def __hash__(self) -> int:
         raise NotImplementedError
 
 
@@ -161,7 +162,8 @@ class GenericRegister(Register, Pickable):
 
     _cmp_attributes = ["type", "representation", "name"]
 
-    def __init__(self, name, descr, rtype, rrepr, rcodi):
+    def __init__(self, name: str, descr: str, rtype: RegisterType, rrepr,
+                 rcodi):
         """
 
         :param name:
@@ -176,48 +178,38 @@ class GenericRegister(Register, Pickable):
         self._descr = descr
         self._rrepr = rrepr
         self._rcodi = rcodi
-        self._hash = int(hashlib.sha512(
-            (
-                self.name + self.description +
-                self.representation + str(hash(self.type))
-            ).encode()).hexdigest(), 16)
+        self._hash = int(
+            hashlib.sha512(
+                (self.name + self.description + self.representation +
+                 str(hash(self.type))).encode()).hexdigest(), 16)
 
     @property
     def type(self):
-        """ """
         return self._rtype
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def description(self):
-        """ """
         return self._descr
 
     @property
     def representation(self):
-        """ """
         return str(self._rrepr)
 
     @property
     def codification(self):
-        """ """
         return str(self._rcodi)
 
     def __hash__(self):
-        """ """
         return self._hash
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""
@@ -330,13 +322,10 @@ class GenericRegister(Register, Pickable):
         return True
 
     def __str__(self):
-        """ """
-        return "%8s : %s (Type: %s)" % (
-            self._name, self._descr, self._rtype.name
-        )
+        return "%8s : %s (Type: %s)" % (self._name, self._descr,
+                                        self._rtype.name)
 
     def __repr__(self):
-        """ """
         return "%s('%s')" % (self.__class__.__name__, self.name)
 
     def __getattr__(self, name):
@@ -348,7 +337,5 @@ class GenericRegister(Register, Pickable):
         try:
             return self._rtype.__getattribute__(name)
         except AttributeError:
-            raise AttributeError(
-                "'%s' object has no attribute '%s'" %
-                (self.__class__.__name__, name)
-            )
+            raise AttributeError("'%s' object has no attribute '%s'" %
+                                 (self.__class__.__name__, name))

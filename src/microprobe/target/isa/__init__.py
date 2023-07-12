@@ -16,23 +16,23 @@
 """
 
 # Futures
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
 import os
+from typing import TYPE_CHECKING, List, Dict
 
 # Third party modules
 
 # Own modules
 import microprobe.code.ins
 from microprobe import MICROPROBE_RC
-from microprobe.code.address import Address, InstructionAddress
+from microprobe.code.address import InstructionAddress
 from microprobe.code.context import Context
 from microprobe.code.var import VariableArray
-from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
-    MicroprobeCodeGenerationError, MicroprobeTargetDefinitionError, \
-    MicroprobeYamlFormatError
+from microprobe.exceptions import MicroprobeCodeGenerationError, \
+    MicroprobeTargetDefinitionError, MicroprobeYamlFormatError
 from microprobe.target.isa import comparator as comparator_mod
 from microprobe.target.isa import generator as generator_mod
 from microprobe.target.isa import instruction as instruction_mod
@@ -45,20 +45,23 @@ from microprobe.target.isa.dat import GenericDynamicAddressTranslation
 from microprobe.utils.imp import get_object_from_module, \
     import_cls_definition, import_definition, import_operand_definition
 from microprobe.utils.logger import DEBUG, get_logger
-from microprobe.utils.misc import dict2OrderedDict, findfiles, natural_sort
+from microprobe.utils.misc import dict2OrderedDict, findfiles
 from microprobe.utils.yaml import read_yaml
-import six
 
 # Local modules
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.target import Definition, Target
+    from microprobe.target.isa.register import Register
+    from microprobe.code.var import Variable
+    from microprobe.code.ins import Instruction, InstructionType
 
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "isa.yaml"
-)
-DEFAULT_ISA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "default", "isa.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "isa.yaml")
+DEFAULT_ISA = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "default", "isa.yaml")
 LOG = get_logger(__name__)
 __all__ = [
     "find_isa_definitions", "import_isa_definition", "ISA", "GenericISA"
@@ -66,7 +69,7 @@ __all__ = [
 
 
 # Functions
-def _read_isa_extensions(isadefs, path):
+def _read_isa_extensions(isadefs: List[Dict[str, str]], path: str):
     """
 
     :param isadefs:
@@ -88,7 +91,7 @@ def _read_isa_extensions(isadefs, path):
         _read_isa_extensions(isadefs, isadefval)
 
 
-def _read_yaml_definition(isadefs, path):
+def _read_yaml_definition(isadefs: List[Dict[str, str]], path: str):
     """
 
     :param isadefs:
@@ -136,45 +139,37 @@ def _read_yaml_definition(isadefs, path):
                         else:
                             if override:
                                 complete_isadef[key][key2] = [
-                                    os.path.join(
-                                        isadef["Path"], val[key2]
-                                    )
+                                    os.path.join(isadef["Path"], val[key2])
                                 ]
                             else:
                                 complete_isadef[key][key2].append(
-                                    os.path.join(
-                                        isadef["Path"], val[key2]
-                                    )
-                                )
+                                    os.path.join(isadef["Path"], val[key2]))
 
                         if inherit:
                             key3 = "%s_inherits" % key2
                             if key3 not in complete_isadef[key]:
                                 complete_isadef[key][key3] = []
                             complete_isadef[key][key3].append(
-                                complete_isadef[key][key2][-1]
-                            )
+                                complete_isadef[key][key2][-1])
 
                     elif key2 == "Module":
                         if val[key2].startswith("microprobe"):
-                            val[key2] = os.path.join(
-                                os.path.dirname(__file__), "..", "..", "..",
-                                val[key2]
-                            )
+                            val[key2] = os.path.join(os.path.dirname(__file__),
+                                                     "..", "..", "..",
+                                                     val[key2])
 
                         if os.path.isabs(val[key2]):
                             complete_isadef[key][key2] = val[key2]
                         else:
                             complete_isadef[key][key2] = os.path.join(
-                                isadef["Path"], val[key2]
-                            )
+                                isadef["Path"], val[key2])
                     else:
                         complete_isadef[key][key2] = val[key2]
 
     return complete_isadef
 
 
-def import_isa_definition(path):
+def import_isa_definition(path: str):
     """Imports a ISA definition given a path
 
     :param path:
@@ -189,89 +184,62 @@ def import_isa_definition(path):
 
     isadef = _read_yaml_definition([], path)
 
-    regts, force = import_definition(
-        isadef, os.path.join(path, "isa.yaml"), "Register_type",
-        register_type_mod, None
-    )
+    regts, force = import_definition(isadef, os.path.join(path, "isa.yaml"),
+                                     "Register_type", register_type_mod, None)
     regts = dict2OrderedDict(regts)
 
-    regs, force = import_definition(
-        isadef,
-        os.path.join(
-            path, "isa.yaml"
-        ),
-        "Register",
-        register_mod,
-        regts,
-        force=force
-    )
+    regs, force = import_definition(isadef,
+                                    os.path.join(path, "isa.yaml"),
+                                    "Register",
+                                    register_mod,
+                                    regts,
+                                    force=force)
     regs = dict2OrderedDict(regs)
 
-    ops, force = import_operand_definition(
-        isadef,
-        os.path.join(
-            path, "isa.yaml"
-        ),
-        "Operand",
-        operand_mod,
-        regs,
-        force=force
-    )
+    ops, force = import_operand_definition(isadef,
+                                           os.path.join(path, "isa.yaml"),
+                                           "Operand",
+                                           operand_mod,
+                                           regs,
+                                           force=force)
     ops = dict2OrderedDict(ops)
 
-    ifields, force = import_definition(
-        isadef,
-        os.path.join(
-            path, "isa.yaml"
-        ),
-        "Instruction_field",
-        ifield_mod,
-        ops,
-        force=force
-    )
+    ifields, force = import_definition(isadef,
+                                       os.path.join(path, "isa.yaml"),
+                                       "Instruction_field",
+                                       ifield_mod,
+                                       ops,
+                                       force=force)
     ifields = dict2OrderedDict(ifields)
 
-    iformats, force = import_definition(
-        isadef,
-        os.path.join(
-            path, "isa.yaml"
-        ),
-        "Instruction_format",
-        iformat_mod,
-        ifields,
-        force=force
-    )
+    iformats, force = import_definition(isadef,
+                                        os.path.join(path, "isa.yaml"),
+                                        "Instruction_format",
+                                        iformat_mod,
+                                        ifields,
+                                        force=force)
 
     iformats = dict2OrderedDict(iformats)
 
-    ins, force = import_definition(
-        isadef,
-        os.path.join(
-            path, "isa.yaml"
-        ),
-        "Instruction",
-        instruction_mod, (iformats, ops),
-        force=force
-    )
+    ins, force = import_definition(isadef,
+                                   os.path.join(path, "isa.yaml"),
+                                   "Instruction",
+                                   instruction_mod, (iformats, ops),
+                                   force=force)
     ins = dict2OrderedDict(ins)
 
-    comp_clss = import_cls_definition(
-        isadef, os.path.join(path, "isa.yaml"), "Comparator", comparator_mod
-    )
+    comp_clss = import_cls_definition(isadef, os.path.join(path, "isa.yaml"),
+                                      "Comparator", comparator_mod)
 
-    gen_clss = import_cls_definition(
-        isadef, os.path.join(path, "isa.yaml"), "Generator", generator_mod
-    )
+    gen_clss = import_cls_definition(isadef, os.path.join(path, "isa.yaml"),
+                                     "Generator", generator_mod)
 
-    isa_cls = get_object_from_module(
-        isadef["ISA"]["Class"], isadef["ISA"]["Module"]
-    )
+    isa_cls = get_object_from_module(isadef["ISA"]["Class"],
+                                     isadef["ISA"]["Module"])
 
     try:
-        isa = isa_cls(
-            isadef["Name"], isadef["Description"], path, ins,
-            regs, comp_clss, gen_clss
-        )
+        isa = isa_cls(isadef["Name"], isadef["Description"], path, ins, regs,
+                      comp_clss, gen_clss)
     except TypeError as exc:
         LOG.critical("Unable to import ISA definition.")
         LOG.critical("Check if you definition is complete.")
@@ -285,14 +253,14 @@ def import_isa_definition(path):
 
     # Check definition. Ensure that all the components defined are referenced.
     for unused_regt in [
-        regt
-        for regt in regts.values()
-        if regt not in [reg.type for reg in isa.registers.values()]
+            regt for regt in regts.values()
+            if regt not in [reg.type for reg in isa.registers.values()]
     ]:
         LOG.warning("Unused register type definition: %s", unused_regt)
 
     for unused_reg in [
-        reg for reg in regs.values() if reg not in list(isa.registers.values())
+            reg for reg in regs.values()
+            if reg not in list(isa.registers.values())
     ]:
         LOG.warning("Unused register definition: %s", unused_reg)
 
@@ -306,8 +274,8 @@ def import_isa_definition(path):
             used_operands.append(field.default_operand.name)
 
     for unused_op in [
-        operand for operand in ops.values()
-        if operand.name not in used_operands
+            operand for operand in ops.values()
+            if operand.name not in used_operands
     ]:
         LOG.warning("Unused operand definition: %s", unused_op)
 
@@ -316,7 +284,8 @@ def import_isa_definition(path):
         used_fields += [field.name for field in ins.format.fields]
 
     for unused_field in [
-        field for field in ifields.values() if field.name not in used_fields
+            field for field in ifields.values()
+            if field.name not in used_fields
     ]:
         LOG.warning("Unused field definition: %s", unused_field)
 
@@ -325,15 +294,15 @@ def import_isa_definition(path):
         used_formats.append(ins.format.name)
 
     for unused_format in [
-        iformat
-        for iformat in iformats.values() if iformat.name not in used_formats
+            iformat for iformat in iformats.values()
+            if iformat.name not in used_formats
     ]:
         LOG.warning("Unused format definition: %s", unused_format)
 
     return isa
 
 
-def find_isa_definitions(paths=None):
+def find_isa_definitions(paths: List[str] | None = None):
 
     if paths is None:
         paths = []
@@ -341,7 +310,7 @@ def find_isa_definitions(paths=None):
     paths = paths + MICROPROBE_RC["architecture_paths"] \
         + MICROPROBE_RC["default_paths"]
 
-    results = []
+    results: List[Definition] = []
     isafiles = findfiles(paths, "^isa.yaml$")
 
     if len(isafiles) > 0:
@@ -357,13 +326,10 @@ def find_isa_definitions(paths=None):
             continue
 
         try:
-            definition = Definition(
-                isafile, isadef["Name"], isadef["Description"]
-            )
-            if (
-                definition not in results and
-                not definition.name.endswith("common")
-            ):
+            definition = Definition(isafile, isadef["Name"],
+                                    isadef["Description"])
+            if (definition not in results
+                    and not definition.name.endswith("common")):
                 results.append(definition)
         except TypeError as exc:
             # Skip bad definitions
@@ -374,7 +340,7 @@ def find_isa_definitions(paths=None):
 
 
 # Classes
-class ISA(six.with_metaclass(abc.ABCMeta, object)):
+class ISA(abc.ABC):
     """Abstract class to represent an Instruction Set Architecture (ISA).
 
     An instruction set architecture (ISA) object defines the part of the
@@ -384,82 +350,84 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def name(self):
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         """ISA name (:class:`~.str`)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         """ISA description (:class:`~.str`)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def path(self):
+    @property
+    @abc.abstractmethod
+    def path(self) -> str:
         """Path to definition (:class:`~.str`)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def instructions(self):
+    @property
+    @abc.abstractmethod
+    def instructions(self) -> Dict[str, InstructionType]:
         """ISA instructions (:class:`~.dict` mapping strings to
-           :class:`~.InstructionType`). """
+        :class:`~.InstructionType`)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def target(self):
+    @property
+    @abc.abstractmethod
+    def target(self) -> Target:
         """Associated target object (:class:`~.Target`)."""
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def registers(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def registers(self) -> Dict[str, Register]:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def scratch_registers(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def scratch_registers(self) -> List[Register]:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def address_registers(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def address_registers(self) -> List[Register]:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def float_registers(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def float_registers(self) -> List[Register]:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def control_registers(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def control_registers(self) -> List[Register]:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def scratch_var(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def scratch_var(self) -> Variable:
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def context_var(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __str__(self):
-        """ """
+    def __str__(self) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
     def full_report(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def set_register(self, reg, value, context):
+    def set_register(self, reg: Register, value, context: Context):
         """
 
         :param reg:
@@ -470,7 +438,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def negate_register(self, reg, context):
+    def negate_register(self, reg: Register, context: Context):
         """
 
         :param reg:
@@ -480,18 +448,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def load(self, reg, address, context):
-        """
-
-        :param reg:
-        :param address:
-        :param context:
-
-        """
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def load_float(self, reg, address, context):
+    def load(self, reg: Register, address, context: Context):
         """
 
         :param reg:
@@ -502,7 +459,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def store_float(self, reg, address, context):
+    def load_float(self, reg: Register, address, context: Context):
         """
 
         :param reg:
@@ -513,7 +470,18 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def store_integer(self, reg, address, length, context):
+    def store_float(self, reg: Register, address, context: Context):
+        """
+
+        :param reg:
+        :param address:
+        :param context:
+
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def store_integer(self, reg: Register, address, length, context: Context):
         """
 
         :param reg:
@@ -525,7 +493,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def store_decimal(self, address, length, value, context):
+    def store_decimal(self, address, length, value, context: Context):
         """
 
         :param address:
@@ -537,14 +505,12 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def set_register_to_address(
-        self,
-        reg,
-        address,
-        context,
-        force_absolute=False,
-        force_relative=False
-    ):
+    def set_register_to_address(self,
+                                reg: Register,
+                                address,
+                                context: Context,
+                                force_absolute: bool = False,
+                                force_relative: bool = False):
         """
 
         :param reg:
@@ -556,7 +522,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_register_for_address_arithmetic(self, context):
+    def get_register_for_address_arithmetic(self, context: Context):
         """
 
         :param context:
@@ -565,7 +531,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_register_for_float_arithmetic(self, context):
+    def get_register_for_float_arithmetic(self, context: Context):
         """
 
         :param context:
@@ -574,7 +540,8 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def set_register_bits(self, register, value, mask, shift, context):
+    def set_register_bits(self, register, value, mask, shift,
+                          context: Context):
         """
 
         :param register:
@@ -587,7 +554,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def new_instruction(self, name):
+    def new_instruction(self, name: str):
         """
 
         :param name:
@@ -596,7 +563,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def set_target(self, target):
+    def set_target(self, target: Target):
         """
 
         :param target:
@@ -605,7 +572,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add_to_register(self, register, value):
+    def add_to_register(self, register: Register, value):
         """
 
         :param register:
@@ -615,7 +582,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def branch_unconditional_relative(self, source, target):
+    def branch_unconditional_relative(self, source, target: Target):
         """
 
         :param source:
@@ -629,7 +596,7 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def compare_and_branch(self, val1, val2, cond, target, context):
+    def compare_and_branch(self, val1, val2, cond, target, context: Context):
         """
 
         :param val1:
@@ -643,37 +610,31 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
 
     @abc.abstractmethod
     def nop(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def flag_registers(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_dat(self, **kwargs):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def set_context(self, variable=None, tmpl_path=None):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def get_context(self, variable=None, tmpl_path=None):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def register_value_comparator(self, comp):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
     def normalize_asm(self, mnemonic, operands):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -684,7 +645,9 @@ class ISA(six.with_metaclass(abc.ABCMeta, object)):
 class GenericISA(ISA):
     """Class to represent a generic Instruction Set Architecture (ISA)."""
 
-    def __init__(self, name, descr, path, ins, regs, comparators, generators):
+    def __init__(self, name: str, descr: str, path: str,
+                 ins: Dict[str, InstructionType], regs: Dict[str, Register],
+                 comparators, generators):
         """
 
         :param name:
@@ -718,23 +681,20 @@ class GenericISA(ISA):
         for generator in generators:
             self._generators.append(generator(self))
 
-        self._scratch_registers = []
-        self._control_registers = []
-        self._flag_registers = []
+        self._scratch_registers: List[Register] = []
+        self._control_registers: List[Register] = []
+        self._flag_registers: List[Register] = []
 
         self._scratch_var = VariableArray(
-            ("%s_scratch_var" % self._name).upper(), "char", 256, align=8
-        )
+            ("%s_scratch_var" % self._name).upper(), "char", 256, align=8)
         self._context_var = None
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def description(self):
-        """ """
         return self._descr
 
     @property
@@ -744,44 +704,36 @@ class GenericISA(ISA):
 
     @property
     def address_registers(self):
-        """ """
         return self._address_registers
 
     @property
     def float_registers(self):
-        """ """
         return self._float_registers
 
     @property
     def flag_registers(self):
-        """ """
         return self._flag_registers
 
     @property
     def instructions(self):
-        """ """
         return self._instructions
 
     @property
     def scratch_var(self):
-        """ """
         return self._scratch_var
 
     @property
     def registers(self):
-        """ """
         return self._registers
 
     @property
     def target(self):
-        """ """
         return self._target
 
     def normalize_asm(self, mnemonic, operands):
-        """ """
         return mnemonic, operands
 
-    def set_target(self, target):
+    def set_target(self, target: Target):
         """
 
         :param target:
@@ -790,10 +742,9 @@ class GenericISA(ISA):
         self._target = target
 
     def __str__(self):
-        """ """
         return "ISA Name: %s - %s" % (self.name, self.description)
 
-    def new_instruction(self, name):
+    def new_instruction(self, name: str):
         """
 
         :param name:
@@ -803,7 +754,6 @@ class GenericISA(ISA):
         return microprobe.code.ins.instruction_factory(ins_type)
 
     def full_report(self):
-        """ """
         rstr = "-" * 80 + "\n"
         rstr += "ISA Name: %s\n" % self.name
         rstr += "ISA Description: %s\n" % self.name
@@ -827,7 +777,7 @@ class GenericISA(ISA):
         rstr += "-" * 80 + "\n"
         return rstr
 
-    def set_register(self, reg, value, context):
+    def set_register(self, reg: Register, value, context: Context):
         """
 
         :param reg:
@@ -835,53 +785,45 @@ class GenericISA(ISA):
         :param context:
 
         """
-        raise MicroprobeCodeGenerationError(
-            "Unable to set register '%s' to "
-            " value '%d'." % (reg.name, value)
-        )
+        raise MicroprobeCodeGenerationError("Unable to set register '%s' to "
+                                            " value '%d'." % (reg.name, value))
 
     @property
     def scratch_registers(self):
-        """ """
         return self._scratch_registers
 
     @property
     def control_registers(self):
-        """ """
         return self._control_registers
 
-    def get_register_for_address_arithmetic(self, context):
+    def get_register_for_address_arithmetic(self, context: Context):
         """
 
         :param context:
 
         """
         reg = [
-            reg
-            for reg in self._address_registers
+            reg for reg in self._address_registers
             if reg not in context.reserved_registers
         ]
 
         if len(reg) == 0:
-            raise MicroprobeCodeGenerationError(
-                "No free registers available. "
-                "Change your policy."
-            )
+            raise MicroprobeCodeGenerationError("No free registers available. "
+                                                "Change your policy.")
 
         # REG0 tends to have special meaning and it is usually at the
         # beginning, move it
         reg = reg[1:] + [reg[0]]
         return reg[0]
 
-    def get_register_for_float_arithmetic(self, context):
+    def get_register_for_float_arithmetic(self, context: Context):
         """
 
         :param context:
 
         """
         reg = [
-            reg
-            for reg in self._float_registers
+            reg for reg in self._float_registers
             if reg not in context.reserved_registers
         ]
 
@@ -892,7 +834,7 @@ class GenericISA(ISA):
         reg = reg[1:] + [reg[0]]
         return reg[0]
 
-    def add_to_register(self, register, value):
+    def add_to_register(self, register: Register, value):
         """
 
         :param register:
@@ -901,42 +843,34 @@ class GenericISA(ISA):
         """
         super(GenericISA, self).add_to_register(register, value)
 
-    def branch_unconditional_relative(self, source, target):
+    def branch_unconditional_relative(self, source, target: Target):
         """
 
         :param source:
         :param target:
 
         """
-        return super(GenericISA, self).branch_unconditional_relative(
-                source, target)
+        return super(GenericISA,
+                     self).branch_unconditional_relative(source, target)
 
     def branch_to_itself(self):
         instr = self.branch_unconditional_relative(
-            InstructionAddress(
-                base_address="code"
-            ),
-            InstructionAddress(
-                base_address="code"
-            )
-        )
+            InstructionAddress(base_address="code"),
+            InstructionAddress(base_address="code"))
         instr.set_address(None)
         return instr
 
     def get_dat(self, **kwargs):
-        """ """
         return GenericDynamicAddressTranslation(self, **kwargs)
 
     def set_context(self, variable=None, tmpl_path=None, complete=False):
-        """ """
 
         if variable is None:
             variable = self.context_var
 
         if variable.size < self.context_var.size:
             raise MicroprobeCodeGenerationError(
-                "Variable '%s' is too small to restore the target context"
-            )
+                "Variable '%s' is too small to restore the target context")
 
         asm = open(os.path.join(tmpl_path, "setcontext.S")).readlines()
         for idx, line in enumerate(asm):
@@ -947,27 +881,25 @@ class GenericISA(ISA):
 
         if complete:
             return microprobe.code.ins.instructions_from_asm(
-                asm, self.target, labels=[variable.name]
-            )
+                asm, self.target, labels=[variable.name])
         else:
             reg = self._scratch_registers[0]
-            instrs = self.set_register_to_address(
-                reg, variable.address, Context()
-            )
+            instrs = self.set_register_to_address(reg, variable.address,
+                                                  Context())
             return instrs + microprobe.code.ins.instructions_from_asm(
-                asm, self.target, labels=[variable.name]
-            )
+                asm, self.target, labels=[variable.name])
 
-    def get_context(self, variable=None, tmpl_path=None, complete=False):
-        """ """
+    def get_context(self,
+                    variable=None,
+                    tmpl_path=None,
+                    complete: bool = False):
 
         if variable is None:
             variable = self.context_var
 
         if variable.size < self.context_var.size:
             raise MicroprobeCodeGenerationError(
-                "Variable '%s' is too small to save the target context"
-            )
+                "Variable '%s' is too small to save the target context")
 
         asm = open(os.path.join(tmpl_path, "getcontext.S")).readlines()
         for idx, line in enumerate(asm):
@@ -978,21 +910,18 @@ class GenericISA(ISA):
 
         if complete:
             return microprobe.code.ins.instructions_from_asm(
-                asm, self.target, labels=[variable.name]
-            )
+                asm, self.target, labels=[variable.name])
         else:
             reg = self._scratch_registers[0]
-            instrs = self.set_register_to_address(
-                reg, variable.address, Context()
-            )
+            instrs = self.set_register_to_address(reg, variable.address,
+                                                  Context())
             return instrs + \
                 microprobe.code.ins.instructions_from_asm(
                     asm, self.target, labels=[variable.name]
                 )
 
     def register_value_comparator(self, comp):
-        """ """
         raise NotImplementedError
 
-    def randomize_register(self, register, seed=None):
+    def randomize_register(self, register: Register, seed=None):
         raise NotImplementedError

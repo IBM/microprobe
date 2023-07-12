@@ -34,11 +34,9 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict
 from microprobe.utils.yaml import read_yaml
 
-
 # Constants
-SCHEMA = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "schemas", "element.yaml"
-)
+SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
+                      "element.yaml")
 
 LOG = get_logger(__name__)
 __all__ = [
@@ -77,8 +75,7 @@ def import_definition(cls, filenames, element_types):
                     "Unknown "
                     "microarchitecture element type in "
                     "microarchitecture element definition "
-                    " '%s' found in '%s'" % (name, filename)
-                )
+                    " '%s' found in '%s'" % (name, filename))
             descr = elem.get("Description", elem_type.description)
 
             if repeat:
@@ -97,8 +94,7 @@ def import_definition(cls, filenames, element_types):
                 except ValueError:
                     raise MicroprobeArchitectureDefinitionError(
                         "Duplicated microarchitecture element "
-                        "definition '%s' found in '%s'" % (name, filename)
-                    )
+                        "definition '%s' found in '%s'" % (name, filename))
 
             LOG.debug(element)
 
@@ -112,8 +108,7 @@ def import_definition(cls, filenames, element_types):
             raise MicroprobeArchitectureDefinitionError(
                 "Undefined sub-element '%s' in element "
                 "definition '%s'. Check following "
-                "files: %s" % (exc, elem, filenames)
-            )
+                "files: %s" % (exc, elem, filenames))
 
         elements[elem].set_subelements(subelements_instances)
 
@@ -139,9 +134,8 @@ def import_definition(cls, filenames, element_types):
                 for parent in sorted(parents):
                     LOG.debug("Duplicating for parent: %s", parent)
                     # Create a new copy
-                    new_element = cls(
-                        element.name, element.description, element.type
-                    )
+                    new_element = cls(element.name, element.description,
+                                      element.type)
                     new_element.set_subelements(element.subelements)
                     element_list.append(new_element)
 
@@ -168,10 +162,8 @@ def import_definition(cls, filenames, element_types):
             raise MicroprobeArchitectureDefinitionError(
                 "Wrong hierarchy of microarchitecture "
                 "elements. The definition of element"
-                " '%s' has multiple parents: '%s'." % (
-                    element, [str(elem) for elem in parents]
-                )
-            )
+                " '%s' has multiple parents: '%s'." %
+                (element, [str(elem) for elem in parents]))
         elif len(parents) == 0:
             if top_element is not None:
                 raise MicroprobeArchitectureDefinitionError(
@@ -179,8 +171,7 @@ def import_definition(cls, filenames, element_types):
                     "elements. There are at least two top "
                     "elements: '%s' and '%s'. Define a single "
                     "parent element for all the hierarchy." %
-                    (element, top_element)
-                )
+                    (element, top_element))
             top_element = element
         else:
             element.set_parent_element(parents[0])
@@ -190,16 +181,12 @@ def import_definition(cls, filenames, element_types):
             "Wrong hierarchy of microarchitecture "
             "elements. There is not a top element."
             " Define a single parent element for all "
-            "the hierarchy."
-        )
+            "the hierarchy.")
 
     LOG.info("Element hierarchy correct")
 
-    elem_dict = dict(
-        [
-            (element.full_name, element) for element in element_list
-        ]
-    )
+    elem_dict = dict([(element.full_name, element)
+                      for element in element_list])
 
     for filename in filenames:
         import_properties(filename, elem_dict)
@@ -209,45 +196,42 @@ def import_definition(cls, filenames, element_types):
 
 
 # Classes
-class MicroarchitectureElement(
-    six.with_metaclass(
-        abc.ABCMeta,
-        PropertyHolder)):
+class MicroarchitectureElement(six.with_metaclass(abc.ABCMeta,
+                                                  PropertyHolder)):
     """ """
 
     @abc.abstractmethod
     def __init__(self):
-        """ """
         pass
 
-    @abc.abstractproperty
-    def name(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def full_name(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def full_name(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
-    def description(self):
-        """ """
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def type(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def depth(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def subelements(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -259,14 +243,14 @@ class MicroarchitectureElement(
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def parent(self):
-        """ """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def parents(self):
-        """ """
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -313,54 +297,45 @@ class GenericMicroarchitectureElement(MicroarchitectureElement):
 
         self._parent = None
         self._subelements = {}
-        self._hash = int(hashlib.sha512(
-            (
-                self.name + self.description +
-                self.full_name + str(self.type) + str(self.depth)
-            ).encode()).hexdigest(), 16)
+        self._hash = int(
+            hashlib.sha512(
+                (self.name + self.description + self.full_name +
+                 str(self.type) + str(self.depth)).encode()).hexdigest(), 16)
 
     @property
     def name(self):
-        """ """
         return self._name
 
     @property
     def full_name(self):
-        """ """
         if self._parent is None:
             return self._name
         return "%s_%s" % (self._name, self.parent.full_name)
 
     @property
     def parents(self):
-        """ """
         if self._parent is None:
             return []
         return [self.parent] + self.parent.parents
 
     @property
     def description(self):
-        """ """
         return self._descr
 
     @property
     def type(self):
-        """ """
         return self._type
 
     @property
     def subelements(self):
-        """ """
         return list(self._subelements.values())
 
     @property
     def parent(self):
-        """ """
         return self._parent
 
     @property
     def depth(self):
-        """ """
         if self._parent is None:
             return 0
         return 1 + self.parent.depth
@@ -380,9 +355,8 @@ class GenericMicroarchitectureElement(MicroarchitectureElement):
         :param subelements:
 
         """
-        self._subelements = dict(
-            [(element.name, element) for element in subelements]
-        )
+        self._subelements = dict([(element.name, element)
+                                  for element in subelements])
 
         for subelement in subelements:
             subelement.set_parent_element(self)
@@ -404,23 +378,17 @@ class GenericMicroarchitectureElement(MicroarchitectureElement):
         return None
 
     def __hash__(self):
-        """ """
         return self._hash
 
     def __str__(self):
         """Return the string representation of this element"""
-        return "%s('%s','%s','%s')" % (
-            self.__class__.__name__, self.name, self.full_name,
-            self.description
-        )
+        return "%s('%s','%s','%s')" % (self.__class__.__name__, self.name,
+                                       self.full_name, self.description)
 
     def _check_cmp(self, other):
         if not isinstance(other, self.__class__):
-            raise NotImplementedError(
-                "%s != %s" % (
-                    other.__class__, self.__class__
-                )
-            )
+            raise NotImplementedError("%s != %s" %
+                                      (other.__class__, self.__class__))
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""
