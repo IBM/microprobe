@@ -96,6 +96,9 @@ def import_definition(definition_tuple: str
     if isinstance(definition_tuple, str):
         definition_tuple = _parse_definition_tuple(definition_tuple)
 
+    # Type hinting needs some help here :)
+    assert not isinstance(definition_tuple, str)
+
     isa_def, uarch_def, env_def = definition_tuple
     isa = import_isa_definition(os.path.dirname(isa_def.filename))
     env = import_env_definition(env_def.filename,
@@ -349,10 +352,10 @@ class Target(Pickable):
         :return: Target instance
         :rtype: :class:`~.Target`
         """
-        self._uarch = None
-        self._env = None
+        self._uarch: Microarchitecture | None = None
+        self._env: Environment | None = None
         self._policies = None
-        self._wrapper = None
+        self._wrapper: Wrapper | None = None
 
         self.set_isa(isa)
 

@@ -48,3 +48,4 @@ pep8-naming
 yapf
 isort<5,>=4.2.5
 # twine
+mypy

@@ -247,7 +247,7 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def set_target(self, target):
+    def set_target(self, target: Target):
         """
 
         :param target:
@@ -304,7 +304,7 @@ class GenericEnvironment(Environment):
         self._isa = isa
         self._reserved_registers: List[Register] = []
         self._threads = 1
-        self._target = None
+        self._target: Target | None = None
         self._default_wrapper = None
         self._little_endian = little_endian
         self.register_property(

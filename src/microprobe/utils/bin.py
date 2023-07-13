@@ -36,6 +36,7 @@ import itertools
 import math
 import string
 import re
+from typing import List
 
 # Third party modules
 import cachetools
@@ -74,7 +75,7 @@ _CODE_CACHE_SAVED = False
 _CODE_CACHE_SIZE = 16*1024
 _CODE_CACHE_STATS = {'hit': 0, 'access': 0}
 _DATA_CACHE = RejectingDict()
-_DATA_CACHE_LENGTHS = []
+_DATA_CACHE_LENGTHS: List[str] = []
 _DATA_CACHE_ENABLED = False
 
 __all__ = ["interpret_bin",

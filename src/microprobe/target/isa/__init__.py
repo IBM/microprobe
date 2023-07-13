@@ -664,13 +664,14 @@ class GenericISA(ISA):
         self._path = path
         self._instructions = ins
         self._registers = regs
-        self._target = None
+        self._target: Target | None = None
 
         self._address_registers = [
-            reg for reg in regs.values() if reg.used_for_address_arithmetic
+            reg for reg in regs.values()
+            if reg.type.used_for_address_arithmetic
         ]
         self._float_registers = [
-            reg for reg in regs.values() if reg.used_for_float_arithmetic
+            reg for reg in regs.values() if reg.type.used_for_float_arithmetic
         ]
 
         self._comparators = []

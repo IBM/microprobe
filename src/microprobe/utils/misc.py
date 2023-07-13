@@ -34,12 +34,7 @@ import timeit
 from microprobe.exceptions import MicroprobeDuplicatedValueError
 from microprobe.utils.logger import get_logger
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    # python 2.6 or earlier, use ordereddict back-port
-    # pylint: disable-msg=F0401
-    from ordereddict import OrderedDict
+from collections import OrderedDict
 
 
 # Constants
