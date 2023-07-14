@@ -15,8 +15,10 @@
 
 """
 
+from typing import List
+
 # Constants
-__all__ = []
+__all__: List[str] = []
 
 # Functions
 

@@ -455,7 +455,7 @@ class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
 
 class MicroprobeTestDefinitionDefault(MicroprobeTestDefinition):
     """Class to represent a Microprobe Test configuration (default impl.)"""
-    version = 0
+    version = 0.
 
     def __init__(self):
 

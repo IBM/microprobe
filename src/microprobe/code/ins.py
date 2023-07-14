@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function, annotations
 # Built-in modules
 import copy
 from itertools import product
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, List
 
 # Third party modules
 import six
@@ -114,11 +114,11 @@ def instruction_from_definition(definition: MicroprobeInstructionDefinition,
 
 
 def instruction_set_def_properties(instr,
-                                   definition: MicroprobeInstructionDefinition,
+                                   definition,
                                    building_block=None,
-                                   target: Target | None = None,
+                                   target=None,
                                    allowed_registers=None,
-                                   fix_relative: bool = True,
+                                   fix_relative=True,
                                    label_displ=None):
     """
     Set instruction properties from an intruction definition.
@@ -168,7 +168,7 @@ def instruction_set_def_properties(instr,
     LOG.debug("Operands, not fixed: %s", operands)
     if len(operands) > 0:
 
-        fixed_operands = []
+        fixed_operands: List[Address | InstructionAddress] = []
         relocation_mode = False
         LOG.debug("Fixed operands: %s", fixed_operands)
 
@@ -298,13 +298,14 @@ def instruction_set_def_properties(instr,
         instr.add_decorator(decorator_key, decorator_value)
 
     for register_name in allowed_registers:
-        if register_name not in list(target.registers.keys()):
+        assert target is not None
+        if register_name not in list(target.isa.registers.keys()):
             raise MicroprobeCodeGenerationError(
                 "Unknown register '%s'. Known registers: %s" %
-                (register_name, list(target.registers.keys())))
+                (register_name, list(target.isa.registers.keys())))
 
-        if target.registers[register_name] in instr.sets() + instr.uses():
-            instr.add_allow_register(target.registers[register_name])
+        if target.isa.registers[register_name] in instr.sets() + instr.uses():
+            instr.add_allow_register(target.isa.registers[register_name])
 
     # TODO : NO NEED TO CHECK ANYTHING JUST REPRODUCING!
     # reserve implicit operands (if they are not already
@@ -373,7 +374,7 @@ class InstructionOperandValue(Pickable):
         self._operand_descriptor = operand_descriptor
         self._value = None
         self._set_function = None
-        self._unset_function = None
+        self._unset_function: Callable[[], None] | None = None
 
     @property
     def value(self):
@@ -613,7 +614,7 @@ class InstructionMemoryOperandValue(Pickable):
 
         return length
 
-    def _compute_possible_lengths(self, context: Context):
+    def _compute_possible_lengths(self, context):
         """Compute the possible lengths that can be generated.
 
         Compute the possible lengths that can be generated from the context
@@ -1596,7 +1597,7 @@ class Instruction(Pickable):
         self._mem_operands = []
         self._operands = RejectingOrderedDict()
 
-    def set_arch_type(self, instrtype: InstructionType):
+    def set_arch_type(self, instrtype):
         """
 
         :param instrtype:
@@ -1956,7 +1957,7 @@ class Instruction(Pickable):
         """List of allowed registers of the instructon. """
         return self._allowed_regs
 
-    def set_label(self, label: str):
+    def set_label(self, label: str | None):
         """
 
         :param label:

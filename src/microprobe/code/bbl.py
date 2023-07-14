@@ -82,8 +82,8 @@ class Bbl:
 
         self._instdic = {}
 
-        self._address = None
-        self._displacement = 0
+        self._address: Address | None = None
+        self._displacement: int | None = 0
 
         if MICROPROBE_RC["verbose"]:
             progress = Progress(size, "Initializing BBL:")
@@ -104,7 +104,12 @@ class Bbl:
                     self._instrs[self._pointer] = instructions[idx]
                 else:
                     self._instrs[self._pointer] = Instruction()
-                self._instdic[self._instrs[self._pointer]] = self._pointer
+
+                # Type hinting needs some help here :)
+                instr_index: Instruction | None = self._instrs[self._pointer]
+                assert instr_index is not None
+
+                self._instdic[instr_index] = self._pointer
                 self._pointer += 10
                 if MICROPROBE_RC["verbose"]:
                     progress()
@@ -153,7 +158,7 @@ class Bbl:
         """Size of the basic block, number of instructions (::class:`~.int`)"""
         return len(self.instrs)
 
-    def _index(self, instr: Instruction):
+    def _index(self, instr: Instruction | None):
         """Returns the index of the given instruction within the basic block.
 
         Returns the index of the given instruction within the basic block.
@@ -163,7 +168,10 @@ class Bbl:
         :type instr: :class:`~.Instruction`
 
         """
-        return self._instdic.get(instr, -1)
+        if instr is None:
+            return -1
+        else:
+            return self._instdic.get(instr, -1)
 
     def get_instruction_index(self, instr: Instruction):
         """Returns the index of the given instruction within the basic block.

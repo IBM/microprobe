@@ -40,7 +40,7 @@ __all__ = ["import_definition", "RegisterType", "GenericRegisterType"]
 # Functions
 
 
-def import_definition(cls, filenames: List[str], dummy):
+def import_definition(cls, filenames, dummy):
     """
 
     :param filenames:
@@ -50,7 +50,7 @@ def import_definition(cls, filenames: List[str], dummy):
 
     LOG.debug("Start")
     regts = {}
-    regts_duplicated: Dict[Tuple[int, bool, bool, bool], str] = {}
+    regts_duplicated = {}
 
     for filename in filenames:
         regt_data = read_yaml(filename, SCHEMA)

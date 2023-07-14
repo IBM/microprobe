@@ -78,6 +78,12 @@ jobs:
               - . ./dev_tools/ci/travis_prolog
               - ./dev_tools/ci/code_conventions_003_documentation.sh
         - stage: tests
+          name: mypy
+          script:
+              - set -e
+              - . ./dev_tools/ci/travis_prolog
+              - ./dev_tools/ci/code_conventions_004_mypy.sh
+        - stage: tests
           name: tools RISCV
           script:
               - set -e

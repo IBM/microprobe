@@ -59,7 +59,7 @@ __all__ = [
 
 
 # Functions
-def import_definition(cls, filenames: List[str], args):
+def import_definition(cls, filenames, args):
     """
 
     :param filenames:
