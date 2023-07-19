@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 power_v206_power7_ppc64_linux_gcc_custom.py
 
@@ -79,8 +78,10 @@ def example_1():
     """ Example 1 """
     name = "L1-LOADS"
 
-    base_element = [element for element in TARGET.elements.values()
-                    if element.name == 'L1D'][0]
+    base_element = [
+        element for element in TARGET.elements.values()
+        if element.name == 'L1D'
+    ][0]
     cache_hierarchy = TARGET.cache_hierarchy.get_data_hierarchy_from_element(
         base_element)
 
@@ -102,23 +103,24 @@ def example_1():
             continue
         if "ultiple" in instr.description:  # Skip unsupported mult. ld/sts
             continue
-        if instr.category in [
-                'DS',
-                'LMA',
-                'LMV',
-                'EC']:  # Skip unsupported categories
+        if instr.category in ['DS', 'LMA', 'LMV',
+                              'EC']:  # Skip unsupported categories
             continue
         if instr.access_storage_with_update:  # Not supported
             continue
 
-        if instr.name in ['LD_V1', 'LWZ_V1', 'STW_V1', ]:
+        if instr.name in [
+                'LD_V1',
+                'LWZ_V1',
+                'STW_V1',
+        ]:
             continue
 
-        if (any([moper.is_load
-                 for moper in instr.memory_operand_descriptors]) and
-            all(
-                [not moper.is_store
-                 for moper in instr.memory_operand_descriptors])):
+        if (any([moper.is_load for moper in instr.memory_operand_descriptors])
+                and all([
+                    not moper.is_store
+                    for moper in instr.memory_operand_descriptors
+                ])):
             profile[instr] = 1
 
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
@@ -127,20 +129,17 @@ def example_1():
     synth.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegisterPass(
-            "GPR1", 0, force=True, reserve=True
-        )
-    )
+        microprobe.passes.initialization.InitializeRegisterPass("GPR1",
+                                                                0,
+                                                                force=True,
+                                                                reserve=True))
     synth.add_pass(
-        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile)
-    )
+        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(mmodel))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=3))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=3))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -160,18 +159,14 @@ def example_2():
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
-            TARGET,
-            [TARGET.elements['MUL_FXU0_Core0_SCM_Processor']],
-            {}))
+            TARGET, [TARGET.elements['MUL_FXU0_Core0_SCM_Processor']], {}))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=4))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=4))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -191,18 +186,14 @@ def example_3():
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
-            TARGET,
-            [TARGET.elements['ALU_FXU0_Core0_SCM_Processor']],
-            {}))
+            TARGET, [TARGET.elements['ALU_FXU0_Core0_SCM_Processor']], {}))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=1))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -228,15 +219,13 @@ def example_4():
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=10))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=10))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -262,15 +251,13 @@ def example_5():
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=1))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()

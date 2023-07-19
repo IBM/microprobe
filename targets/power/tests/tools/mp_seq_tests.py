@@ -31,8 +31,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -83,12 +85,10 @@ class seq(TestCase):  # pylint: disable=invalid-name
         """
         test_001 on power_v300-power9-ppc64_linux_gcc
         """
-        self._wrapper(
-            "power_v300-power9-ppc64_linux_gcc",
-            extra="-is 6 -ig ADDIC_V0 LVXL_V0 LWA_V0 ADDIC_V0 "
-            "LXVW4X_V0 VMHADDSHS_V0 -im 1,2,3 2,3 4,5 6 1,2 3 "
-            "-B 12 -p"
-        )
+        self._wrapper("power_v300-power9-ppc64_linux_gcc",
+                      extra="-is 6 -ig ADDIC_V0 LVXL_V0 LWA_V0 ADDIC_V0 "
+                      "LXVW4X_V0 VMHADDSHS_V0 -im 1,2,3 2,3 4,5 6 1,2 3 "
+                      "-B 12 -p")
 
     def _wrapper(self, target, extra=None):
         """
@@ -109,11 +109,9 @@ class seq(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

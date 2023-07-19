@@ -30,8 +30,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -57,8 +59,9 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
 
     name = "mp_mpt2test"
     description = "mp_mpt2test tool tests"
-    cmd = [os.path.join(BASEPATH,
-                        "targets", "generic", "tools", "mp_mpt2test.py")]
+    cmd = [
+        os.path.join(BASEPATH, "targets", "generic", "tools", "mp_mpt2test.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -78,7 +81,7 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
 
     def tearDown(self):
         for filename in [
-            fname for fname in self.filenames if os.path.isfile(fname)
+                fname for fname in self.filenames if os.path.isfile(fname)
         ]:
             os.unlink(filename)
 
@@ -89,13 +92,8 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "power_v206-power7-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "mpt2test_test003.mpt"))
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         "mpt2test_test003.mpt"))
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER7"], "Long testing")
     def test_004(self):
@@ -104,13 +102,8 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "power_v206-power7-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "mpt2test_test004.mpt"))
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         "mpt2test_test004.mpt"))
 
     def _wrapper(self, target, filename, extra=None):
         """
@@ -131,11 +124,9 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

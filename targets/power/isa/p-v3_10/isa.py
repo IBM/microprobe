@@ -23,8 +23,8 @@ import imp
 import os
 
 # Own modules
-from microprobe.utils.logger import get_logger
 from microprobe.code.address import Address, InstructionAddress
+from microprobe.utils.logger import get_logger
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -37,27 +37,17 @@ __status__ = "Development"  # "Prototype", "Development", or "Production"
 
 # Constants
 
-_POWERISA_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    "..", "p-common", "isa.py"
-)
-_POWERISA_MODULE = imp.load_source(
-    '_POWERISA_MODULE', _POWERISA_PATH
-)
+_POWERISA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                              "p-common", "isa.py")
+_POWERISA_MODULE = imp.load_source('_POWERISA_MODULE', _POWERISA_PATH)
 _MODULE_DIR = os.path.dirname(_POWERISA_PATH)
 
-POWERISACOMMON = __import__(
-    "_POWERISA_MODULE",
-    globals(),
-    locals(),
-    [],
-    0
-).PowerISA
+POWERISACOMMON = __import__("_POWERISA_MODULE", globals(), locals(), [],
+                            0).PowerISA
 
 __all__ = ["POWERISAV310"]
 LOG = get_logger(__name__)
 _MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 
 # Functions
 
@@ -106,7 +96,7 @@ class POWERISAV310(POWERISACOMMON):
                 return [xxsetaccz_ins]
 
             tregs = [
-                self.registers['VSR%d' % (int(register.representation)+i)]
+                self.registers['VSR%d' % (int(register.representation) + i)]
                 for i in range(0, 4)
             ]
             for reg in tregs:
@@ -121,6 +111,5 @@ class POWERISAV310(POWERISACOMMON):
 
         else:
 
-            return super(POWERISAV310, self).set_register(
-                register, value, context
-            )
+            return super(POWERISAV310,
+                         self).set_register(register, value, context)

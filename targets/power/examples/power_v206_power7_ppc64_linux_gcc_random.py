@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 power_v206_power7_ppc64_linux_gcc_memory.py
 
@@ -41,6 +40,7 @@ import microprobe.passes.instruction
 import microprobe.passes.memory
 import microprobe.passes.register
 import microprobe.passes.structure
+from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeError, \
     MicroprobeTargetDefinitionError
 from microprobe.model.memory import EndlessLoopDataMemoryModel
@@ -67,8 +67,9 @@ except MicroprobeTargetDefinitionError as exc:
     print_error("Exception message: %s" % str(exc))
     exit(-1)
 
-BASE_ELEMENT = [element for element in TARGET.elements.values()
-                if element.name == 'L1D'][0]
+BASE_ELEMENT = [
+    element for element in TARGET.elements.values() if element.name == 'L1D'
+][0]
 CACHE_HIERARCHY = TARGET.cache_hierarchy.get_data_hierarchy_from_element(
     BASE_ELEMENT)
 
@@ -78,7 +79,7 @@ PARALLEL = True
 def main():
     """ Main program. """
     if PARALLEL:
-        pool = mp.Pool(processes=mp.cpu_count())
+        pool = mp.Pool(processes=MICROPROBE_RC['cpus'])
         pool.map(generate, list(range(0, 100)), 1)
     else:
         list(map(generate, list(range(0, 100))))
@@ -139,8 +140,7 @@ def generate(name):
 
     # --> Init registers to random values
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=rnd))
+        microprobe.passes.initialization.InitializeRegistersPass(value=rnd))
 
     # --> Add a single basic block of size size
     synth.add_pass(
@@ -164,12 +164,8 @@ def generate(name):
             continue
         if "Multiple" in instr.description:  # Skip unsupported mult. ld/sts
             continue
-        if instr.category in [
-                'LMA',
-                'LMV',
-                'DS',
-                'EC',
-                'WT']:  # Skip unsupported categories
+        if instr.category in ['LMA', 'LMV', 'DS', 'EC',
+                              'WT']:  # Skip unsupported categories
             continue
         if instr.access_storage_with_update:  # Not supported by mem. model
             continue
@@ -179,7 +175,11 @@ def generate(name):
             continue
         if "Conitional Indexed" in instr.description:  # Skip (illegal intr.)
             continue
-        if instr.name in ['LD_V1', 'LWZ_V1', 'STW_V1', ]:
+        if instr.name in [
+                'LD_V1',
+                'LWZ_V1',
+                'STW_V1',
+        ]:
             continue
 
         instructions.append(instr)

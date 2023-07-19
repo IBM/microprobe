@@ -18,7 +18,7 @@ Docstring
 # Futures
 from __future__ import absolute_import
 
-# Third party modules
+# Built-in modules
 import imp
 import os
 
@@ -34,22 +34,16 @@ __maintainer__ = "Ramon Bertran"
 __email__ = "rbertra@us.ibm.com"
 __status__ = "Development"  # "Prototype", "Development", or "Production"
 
-
 # Constants
 __all__ = [
-    "check_acc_overlap",
-    "check_load_string_overlap",
-    "POWERInstructionV310"
+    "check_acc_overlap", "check_load_string_overlap", "POWERInstructionV310"
 ]
 LOG = get_logger(__name__)
 
-_POWERBASELINE_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    "..", "p-common", "instruction.py"
-)
-_POWERBASELINE_MODULE = imp.load_source(
-    '_POWERBASELINE_MODULE', _POWERBASELINE_PATH
-)
+_POWERBASELINE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "..", "p-common", "instruction.py")
+_POWERBASELINE_MODULE = imp.load_source('_POWERBASELINE_MODULE',
+                                        _POWERBASELINE_PATH)
 
 PowerInstruction = _POWERBASELINE_MODULE.PowerInstruction
 check_load_string_overlap = _POWERBASELINE_MODULE.check_load_string_overlap
@@ -64,13 +58,11 @@ def check_acc_overlap(instruction, condition):
 
         for idx, operand in enumerate(instruction.operands()):
             if operand.type.name == "ACC_regs":
-                acc_operands[idx] = (
-                    operand, operand.type.copy(), operand.descriptor.copy()
-                )
+                acc_operands[idx] = (operand, operand.type.copy(),
+                                     operand.descriptor.copy())
             elif operand.type.name in ["VSR_regs", "VSR_regpairs"]:
-                vsr_operands[idx] = (
-                    operand, operand.type.copy(), operand.descriptor.copy()
-                )
+                vsr_operands[idx] = (operand, operand.type.copy(),
+                                     operand.descriptor.copy())
             else:
                 raise NotImplementedError
 
@@ -172,22 +164,17 @@ def check_acc_overlap(instruction, condition):
         operand, _, _ = orig_acc_operands[operand_idx]
 
         operand.register_operand_callbacks(
-            get_acc_func(operand_idx),
-            get_acc_func(operand_idx, unset=True)
-        )
+            get_acc_func(operand_idx), get_acc_func(operand_idx, unset=True))
 
     for operand_idx in orig_vsr_operands:
         operand, _, _ = orig_vsr_operands[operand_idx]
 
         operand.register_operand_callbacks(
-            get_vsr_func(operand_idx),
-            get_vsr_func(operand_idx, unset=True)
-        )
+            get_vsr_func(operand_idx), get_vsr_func(operand_idx, unset=True))
 
 
 # Classes
 class POWERInstructionV310(PowerInstruction, object):
-
     """
     POWER Instruction v3.10 Class
     """

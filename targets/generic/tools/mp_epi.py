@@ -36,7 +36,6 @@ from microprobe.utils.cmdline import CLI, existing_dir, float_type, \
 from microprobe.utils.logger import get_logger
 from microprobe.utils.policy import find_policy
 
-
 # Constants
 LOG = get_logger(__name__)
 
@@ -50,8 +49,7 @@ def _get_wrapper(name):
             "Wrapper '%s' not available. Check if you have the wrappers "
             "of the target installed or set up an appropriate "
             "MICROPROBEWRAPPERS environment variable. Original error was: %s" %
-            (name, str(exc))
-        )
+            (name, str(exc)))
 
 
 def _generic_policy_wrapper(all_arguments):
@@ -70,72 +68,55 @@ def _generic_policy_wrapper(all_arguments):
 
     extension = ""
 
-    if target.name.endswith(
-            "z64_mesa_st") or target.name.endswith("z64_mesa_smt2"):
+    if target.name.endswith("z64_mesa_st") or target.name.endswith(
+            "z64_mesa_smt2"):
 
         wrapper_name = "Avp"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            reset=kwargs['reset'],
-            endless=True
-        )
+        wrapper = wrapper_class(reset=kwargs['reset'], endless=True)
         extension = "avp"
 
     elif target.name.endswith("ppc64_mesa"):
 
         wrapper_name = "TstLE"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            outputname.replace("%INSTR%", bname).replace("%EXT%",
-                                                         "tst"),
+        wrapper = wrapper_class(outputname.replace("%INSTR%", bname).replace(
+            "%EXT%", "tst"),
             reset=kwargs['reset'],
-            endless=True
-        )
+            endless=True)
         extension = "tst"
 
     elif target.name.endswith("linux_gcc"):
 
         wrapper_name = "CInfGen"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            reset=kwargs['reset']
-        )
+        wrapper = wrapper_class(reset=kwargs['reset'])
         extension = "c"
 
     elif target.name.endswith("poe"):
 
         wrapper_name = "PoeSimple"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            reset=kwargs['reset'],
-            endless=True
-        )
+        wrapper = wrapper_class(reset=kwargs['reset'], endless=True)
         extension = "bin"
 
     elif target.name.endswith("cronus"):
 
         wrapper_name = "Cronus"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            reset=kwargs['reset'],
-            endless=True
-        )
+        wrapper = wrapper_class(reset=kwargs['reset'], endless=True)
         extension = "bin"
 
     elif target.name.endswith("test_p"):
 
         wrapper_name = "RiscvTestsP"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            reset=kwargs['reset'],
-            endless=True
-        )
+        wrapper = wrapper_class(reset=kwargs['reset'], endless=True)
         extension = "S"
 
     else:
-        raise NotImplementedError(
-            "Unsupported configuration '%s'" % target.name
-        )
+        raise NotImplementedError("Unsupported configuration '%s'" %
+                                  target.name)
 
     if MICROPROBE_RC['debugwrapper']:
         extension = "s"
@@ -151,14 +132,14 @@ def _generic_policy_wrapper(all_arguments):
     outputfile = outputfile.replace("%EXT%", extension)
 
     if wrapper.outputname(outputfile) != outputfile:
-        print_error(
-            "Fix outputname to have a proper extension. E.g. '%s'" %
-            wrapper.outputname(outputfile)
-        )
+        print_error("Fix outputname to have a proper extension. E.g. '%s'" %
+                    wrapper.outputname(outputfile))
         exit(-1)
 
-    for prop in ["unsupported", "hypervisor", "privileged_optional",
-                 "privileged", "syscall", "trap"]:
+    for prop in [
+            "unsupported", "hypervisor", "privileged_optional", "privileged",
+            "syscall", "trap"
+    ]:
         if (hasattr(instruction, prop) and getattr(instruction, prop)
                 and not kwargs['all']):
             print_info("%s not skip (reason: %s)!" % (instruction.name, prop))
@@ -206,36 +187,28 @@ def main():
     Program main
     """
     args = sys.argv[1:]
-    cmdline = CLI(
-        "Microprobe epi tool",
-        default_config_file="mp_epi.cfg",
-        force_required=['target']
-    )
+    cmdline = CLI("Microprobe epi tool",
+                  default_config_file="mp_epi.cfg",
+                  force_required=['target'])
 
     groupname = "EPI arguments"
-    cmdline.add_group(
-        groupname, "Command arguments related to EPI generation"
-    )
+    cmdline.add_group(groupname, "Command arguments related to EPI generation")
 
-    cmdline.add_option(
-        "epi-output-file",
-        "O",
-        None,
-        "Output file name",
-        group=groupname,
-        opt_type=new_file,
-        required=False
-    )
+    cmdline.add_option("epi-output-file",
+                       "O",
+                       None,
+                       "Output file name",
+                       group=groupname,
+                       opt_type=new_file,
+                       required=False)
 
-    cmdline.add_option(
-        "epi-output-dir",
-        "D",
-        None,
-        "Output directory name",
-        group=groupname,
-        opt_type=existing_dir,
-        required=False
-    )
+    cmdline.add_option("epi-output-dir",
+                       "D",
+                       None,
+                       "Output directory name",
+                       group=groupname,
+                       opt_type=existing_dir,
+                       required=False)
 
     cmdline.add_option(
         "instructions",
@@ -244,30 +217,24 @@ def main():
         "Comma separated list of instructions to generate a benchmark with",
         group=groupname,
         opt_type=str,
-        required=False
-    )
+        required=False)
 
-    cmdline.add_option(
-        "benchmark-size",
-        "B",
-        4096,
-        "Size in instructions of the microbenchmark."
-        " If more instruction are needed, nested loops are "
-        "automatically generated",
-        group=groupname,
-        opt_type=int_type(1, 999999999999)
-    )
+    cmdline.add_option("benchmark-size",
+                       "B",
+                       4096, "Size in instructions of the microbenchmark."
+                       " If more instruction are needed, nested loops are "
+                       "automatically generated",
+                       group=groupname,
+                       opt_type=int_type(1, 999999999999))
 
     cmdline.add_option(
         "dependency-distance",
         "dd",
-        0,
-        "Average dependency distance between instructions. A value"
+        0, "Average dependency distance between instructions. A value"
         " below 1 means not dependency between instructions. A value of "
         "1 means a chain of dependent instructions.",
         group=groupname,
-        opt_type=float_type(0, 999999999999)
-    )
+        opt_type=float_type(0, 999999999999))
 
     cmdline.add_option(
         "data-init",
@@ -277,8 +244,7 @@ def main():
         " to zero (all zeros) or to random. ",
         group=groupname,
         choices=["random", "zero"],
-        opt_type=str
-    )
+        opt_type=str)
 
     cmdline.add_flag(
         "reset",
@@ -332,25 +298,17 @@ def _main(arguments):
 
     print_info("Checking input arguments for consistency...")
 
-    if (
-        "epi_output_file" not in arguments and
-        "epi_output_dir" not in arguments
-    ):
+    if ("epi_output_file" not in arguments
+            and "epi_output_dir" not in arguments):
         print_error("No output provided")
         exit(-1)
 
-    if (
-        "epi_output_file" in arguments and
-        "epi_output_dir" in arguments
-    ):
+    if ("epi_output_file" in arguments and "epi_output_dir" in arguments):
         print_error("--epi-output-file and --epi-output-dir options conflict")
         print_error("Use one of them")
         exit(-1)
 
-    if (
-        "instructions" not in arguments and
-        "epi_output_dir" not in arguments
-    ):
+    if ("instructions" not in arguments and "epi_output_dir" not in arguments):
         print_error("If --instructions is not provided, you need to provide")
         print_error("--epi-output-dir and not --epi-output-file")
         exit(-1)
@@ -375,13 +333,12 @@ def _main(arguments):
     else:
 
         arguments['instructions'] = parse_instruction_list(
-            target, arguments['instructions']
-        )
+            target, arguments['instructions'])
 
         arguments['all'] = True
 
-        if ("epi_output_file" in arguments and
-                len(arguments['instructions']) != 1):
+        if ("epi_output_file" in arguments
+                and len(arguments['instructions']) != 1):
             print_error("More than one microbenchmark to generate.")
             print_error("Use --epi-output-dir parameter")
             exit(-1)
@@ -407,25 +364,17 @@ def _main(arguments):
         print_info("up the benchmark generation.")
         for instruction in arguments['instructions']:
             _generic_policy_wrapper(
-                (instruction,
-                 outputdir,
-                 outputname,
-                 target,
-                 arguments,
-                 False))
+                (instruction, outputdir, outputname, target, arguments, False))
 
     else:
-        print_info("Start parallel generation. Threads: %s" % mp.cpu_count())
-        pool = mp.Pool(processes=mp.cpu_count())
-        args = [
-            (instruction, outputdir, outputname, target, arguments, True)
-            for instruction in arguments['instructions']
-        ]
+        print_info("Start parallel generation. Threads: %s" %
+                   MICROPROBE_RC["cpus"])
+        pool = mp.Pool(processes=MICROPROBE_RC["cpus"])
+        args = [(instruction, outputdir, outputname, target, arguments, True)
+                for instruction in arguments['instructions']]
         regen = pool.map(_generic_policy_wrapper, args)
-        args = [
-            (instruction, outputdir, outputname, target, arguments, False)
-            for instruction in arguments['instructions']
-        ]
+        args = [(instruction, outputdir, outputname, target, arguments, False)
+                for instruction in arguments['instructions']]
         args = [elem[0] for elem in zip(args, regen) if elem[1] is True]
         pool.map(_generic_policy_wrapper, args)
 

@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 power_v206_power7_ppc64_linux_gcc_memory.py
 
@@ -41,6 +40,7 @@ import microprobe.passes.instruction
 import microprobe.passes.memory
 import microprobe.passes.register
 import microprobe.passes.structure
+from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeTargetDefinitionError
 from microprobe.model.memory import EndlessLoopDataMemoryModel
 from microprobe.target import import_definition
@@ -63,8 +63,9 @@ except MicroprobeTargetDefinitionError as exc:
     print_error("Exception message: %s" % str(exc))
     exit(-1)
 
-BASE_ELEMENT = [element for element in TARGET.elements.values()
-                if element.name == 'L1D'][0]
+BASE_ELEMENT = [
+    element for element in TARGET.elements.values() if element.name == 'L1D'
+][0]
 CACHE_HIERARCHY = TARGET.cache_hierarchy.get_data_hierarchy_from_element(
     BASE_ELEMENT)
 
@@ -84,45 +85,14 @@ MEMORY_MODELS = []
 #        "ALL", CACHE_HIERARCHY, [
 #            25, 25, 25, 25]))
 
-MEMORY_MODELS.append(
-    (
-        "L1", CACHE_HIERARCHY, [
-            100, 0, 0, 0]))
-MEMORY_MODELS.append(
-    (
-        "L2",
-        CACHE_HIERARCHY, [
-            0, 100, 0, 0]))
-MEMORY_MODELS.append(
-    (
-        "L3",
-        CACHE_HIERARCHY, [
-            0, 0, 100, 0]))
-MEMORY_MODELS.append(
-    (
-        "L1L3",
-        CACHE_HIERARCHY, [
-            50, 0, 50, 0]))
-MEMORY_MODELS.append(
-    (
-        "L1L2",
-        CACHE_HIERARCHY, [
-            50, 50, 0, 0]))
-MEMORY_MODELS.append(
-    (
-        "L2L3",
-        CACHE_HIERARCHY, [
-            0, 50, 50, 0]))
-MEMORY_MODELS.append(
-    (
-        "CACHES",
-        CACHE_HIERARCHY, [
-            33, 33, 34, 0]))
-MEMORY_MODELS.append(
-    (
-        "MEM", CACHE_HIERARCHY, [
-            0, 0, 0, 100]))
-
+MEMORY_MODELS.append(("L1", CACHE_HIERARCHY, [100, 0, 0, 0]))
+MEMORY_MODELS.append(("L2", CACHE_HIERARCHY, [0, 100, 0, 0]))
+MEMORY_MODELS.append(("L3", CACHE_HIERARCHY, [0, 0, 100, 0]))
+MEMORY_MODELS.append(("L1L3", CACHE_HIERARCHY, [50, 0, 50, 0]))
+MEMORY_MODELS.append(("L1L2", CACHE_HIERARCHY, [50, 50, 0, 0]))
+MEMORY_MODELS.append(("L2L3", CACHE_HIERARCHY, [0, 50, 50, 0]))
+MEMORY_MODELS.append(("CACHES", CACHE_HIERARCHY, [33, 33, 34, 0]))
+MEMORY_MODELS.append(("MEM", CACHE_HIERARCHY, [0, 0, 0, 100]))
 
 # Enable parallel generation
 PARALLEL = False
@@ -134,7 +104,7 @@ def main():
 
     if PARALLEL:
         print_info("Start parallel execution...")
-        pool = mp.Pool(processes=mp.cpu_count())
+        pool = mp.Pool(processes=MICROPROBE_RC['cpus'])
         pool.map(generate, MEMORY_MODELS, 1)
     else:
         print_info("Start sequential execution...")
@@ -174,12 +144,8 @@ def generate(model):
             continue
         if "Multiple" in instr.description:  # Skip unsupported mult. ld/sts
             continue
-        if instr.category in [
-                'LMA',
-                'LMV',
-                'DS',
-                'EC',
-                'WT']:  # Skip unsupported categories
+        if instr.category in ['LMA', 'LMV', 'DS', 'EC',
+                              'WT']:  # Skip unsupported categories
             continue
         if instr.access_storage_with_update:  # Not supported by mem. model
             continue
@@ -210,26 +176,22 @@ def generate(model):
 
     # --> Init registers to random values
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=rnd))
+        microprobe.passes.initialization.InitializeRegistersPass(value=rnd))
 
     # --> Add a single basic block of size 'size'
     if model.name in ['MEM']:
         synth.add_pass(
             microprobe.passes.structure.SimpleBuildingBlockPass(
-                BENCHMARK_SIZE *
-                4))
+                BENCHMARK_SIZE * 4))
     else:
         synth.add_pass(
-            microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
-        )
+            microprobe.passes.structure.SimpleBuildingBlockPass(
+                BENCHMARK_SIZE))
 
     # --> Fill the basic block using the sequence of instructions provided
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence
-        )
-    )
+            sequence))
 
     # --> Set the memory operations parameters to fulfill the given model
     synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(model))
@@ -238,8 +200,7 @@ def generate(model):
     # remaining undefined instruction operands (register allocation,...)
     synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=0))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=0))
 
     # Generate the benchmark (applies the passes).
     bench = synth.synthesize()

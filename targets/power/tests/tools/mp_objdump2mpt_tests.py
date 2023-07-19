@@ -30,8 +30,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -57,8 +59,10 @@ class objdump2mpt(TestCase):  # pylint: disable=invalid-name
 
     name = "mp_objdump2mpt"
     description = "mp_objdump2mpt tool tests"
-    cmd = [os.path.join(BASEPATH,
-                        "targets", "generic", "tools", "mp_objdump2mpt.py")]
+    cmd = [
+        os.path.join(BASEPATH, "targets", "generic", "tools",
+                     "mp_objdump2mpt.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -79,7 +83,7 @@ class objdump2mpt(TestCase):  # pylint: disable=invalid-name
     def tearDown(self):
 
         for filename in [
-            fname for fname in self.filenames if os.path.isfile(fname)
+                fname for fname in self.filenames if os.path.isfile(fname)
         ]:
             os.unlink(filename)
 
@@ -91,30 +95,19 @@ class objdump2mpt(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "power_v206-power8-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "objdump2mpt_test001.dump.gz"))
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         "objdump2mpt_test001.dump.gz"))
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER8"], "Long testing")
     def test_002(self):
         """
         objdump2mpt_test002 on power_v206-power8-ppc64_linux_gcc
         """
-        self._wrapper(
-            "power_v206-power8-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "objdump2mpt_test002.dump"),
-            extra="--elf-abi --stack-size 2000 --stack-name my_test"
-            " -s microprobe.text")
+        self._wrapper("power_v206-power8-ppc64_linux_gcc",
+                      os.path.join(BASEPATH, "targets", "power", "tests",
+                                   "tools", "objdump2mpt_test002.dump"),
+                      extra="--elf-abi --stack-size 2000 --stack-name my_test"
+                      " -s microprobe.text")
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER8"], "Long testing")
     def test_003(self):
@@ -123,13 +116,8 @@ class objdump2mpt(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "power_v206-power8-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "objdump2mpt_test003.dump"),
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         "objdump2mpt_test003.dump"),
             extra="--elf-abi --stack-address 0x1234500 --start-symbol my_test"
             " -s microprobe.text")
 
@@ -152,11 +140,9 @@ class objdump2mpt(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

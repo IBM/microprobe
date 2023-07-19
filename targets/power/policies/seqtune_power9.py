@@ -50,8 +50,7 @@ __all__ = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
 NAME = "seqtune"
 DESCRIPTION = "Sequence tune generation policy"
 SUPPORTED_TARGETS = [
-    "power_v300-power9-ppc64_cronus",
-    "power_v300-power9-ppc64_linux_gcc",
+    "power_v300-power9-ppc64_cronus", "power_v300-power9-ppc64_linux_gcc",
     "power_v300-power9-ppc64_mesa"
 ]
 
@@ -77,8 +76,7 @@ def policy(target, wrapper, **kwargs):
     if target.name not in SUPPORTED_TARGETS:
         raise MicroprobePolicyError(
             "Policy '%s' not valid for target '%s'. Supported targets are:"
-            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS))
-        )
+            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS)))
 
     sequence = kwargs['instructions']
 
@@ -98,74 +96,53 @@ def policy(target, wrapper, **kwargs):
             if operand.type.vector:
                 vector = True
 
-    synthesizer = microprobe.code.Synthesizer(
-        target, wrapper, value=0b01010101
-    )
+    synthesizer = microprobe.code.Synthesizer(target,
+                                              wrapper,
+                                              value=0b01010101)
 
     synthesizer.add_pass(
-        microprobe.passes.initialization.ReserveRegistersPass(
-            ["GPR0"]
-        )
-    )
+        microprobe.passes.initialization.ReserveRegistersPass(["GPR0"]))
 
     synthesizer.add_pass(
-        microprobe.passes.initialization.InitializeRegisterPass(
-            "GPR0", 0
-        )
-    )
+        microprobe.passes.initialization.InitializeRegisterPass("GPR0", 0))
 
     synthesizer.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT
-        )
-    )
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
 
     if vector and floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(1.000000000000001, 64)
-            )
-        )
+                v_value=(1.000000000000001, 64)))
     elif vector:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(RNDINT(), 64)
-            )
-        )
+                v_value=(RNDINT(), 64)))
     elif floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                fp_value=1.000000000000001
-            )
-        )
+                fp_value=1.000000000000001))
 
     synthesizer.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
-            kwargs['benchmark_size']
-        )
-    )
+            kwargs['benchmark_size']))
 
     synthesizer.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
             sequence,
             # prepend=[target.instructions["ADDI_V0"]] * 12
-        )
-    )
+        ))
 
     for repl in kwargs["replace_every"]:
         synthesizer.add_pass(
-            microprobe.passes.instruction.ReplaceInstructionByTypePass(*repl)
-        )
+            microprobe.passes.instruction.ReplaceInstructionByTypePass(*repl))
 
     for addl in kwargs["add_every"]:
         synthesizer.add_pass(
             microprobe.passes.instruction.InsertInstructionSequencePass(
-                addl[0], every=addl[1])
-        )
+                addl[0], every=addl[1]))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     # cmp 3, 0, reg, reg
     # not taken: test bit should be 1 --> 00100 --> 4
@@ -180,68 +157,45 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.instruction.SetInstructionOperandsByOpcodePass(
-            ["BC_V0", "BCL_V0", "BCA_V0", "BCLA_V0"],
-            0,
-            br_list
-        )
-    )
+            ["BC_V0", "BCL_V0", "BCA_V0", "BCLA_V0"], 0, br_list))
 
     synthesizer.add_pass(
         microprobe.passes.initialization.AddInitializationAssemblyPass(
-            "cmp 3, 0, 16, 16"
-        )
-    )
+            "cmp 3, 0, 16, 16"))
     cr_bit = 14
     synthesizer.add_pass(
         microprobe.passes.instruction.SetInstructionOperandsByOpcodePass(
-            ["BC_V0", "BCL_V0", "BCA_V0", "BCLA_V0"],
-            1,
-            [cr_bit]
-        )
-    )
+            ["BC_V0", "BCL_V0", "BCA_V0", "BCLA_V0"], 1, [cr_bit]))
 
     if kwargs["branch_switch"]:
         synthesizer.add_pass(
             microprobe.passes.initialization.AddFinalizationAssemblyPass(
-                "crnor %d, %d, %d" % (cr_bit, cr_bit, cr_bit)
-            )
-        )
+                "crnor %d, %d, %d" % (cr_bit, cr_bit, cr_bit)))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
             kwargs['memory_streams'],
             switch_stores=kwargs["mem_switch"],
             shift_streams=16,
-            warmstores=True
-        )
-    )
+            warmstores=True))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     synthesizer.add_pass(
         microprobe.passes.float.InitializeMemoryFloatPass(
-            value=1.000000000000001
-        )
-    )
+            value=1.000000000000001))
 
     synthesizer.add_pass(
-        microprobe.passes.decimal.InitializeMemoryDecimalPass(
-            value=1
-        )
-    )
+        microprobe.passes.decimal.InitializeMemoryDecimalPass(value=1))
 
     synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
 
     if kwargs["data_switch"]:
-        synthesizer.add_pass(
-            microprobe.passes.switch.SwitchingInstructions()
-        )
+        synthesizer.add_pass(microprobe.passes.switch.SwitchingInstructions())
 
     if kwargs['dependency_distance'] < 1:
         synthesizer.add_pass(
@@ -249,20 +203,16 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=kwargs['dependency_distance']
-        )
-    )
+            dd=kwargs['dependency_distance']))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     for minstr in sequence:
         if minstr.disable_asm:
             synthesizer.add_pass(
                 microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-                    instructions=[minstr])
-            )
+                    instructions=[minstr]))
 
     fix_branches = False
     for minstr in sequence:
@@ -271,40 +221,29 @@ def policy(target, wrapper, **kwargs):
             break
 
     if target.name in [
-
-            "power_v300-power9-ppc64_cronus",
-            "power_v300-power9-ppc64_mesa"]:
+            "power_v300-power9-ppc64_cronus", "power_v300-power9-ppc64_mesa"
+    ]:
         synthesizer.add_pass(
             microprobe.passes.initialization.AutoAlignPass(
                 [target.instructions["ORI_V1"]],
-                [[target.registers["GPR0"],
-                  target.registers["GPR0"],
-                  0]],
-                64
-            )
-        )
+                [[target.registers["GPR0"], target.registers["GPR0"], 0]], 64))
 
         synthesizer.add_pass(
-            microprobe.passes.address.UpdateInstructionAddressesPass()
-        )
+            microprobe.passes.address.UpdateInstructionAddressesPass())
 
     elif target.name == "power_v300-power9-ppc64_linux_gcc":
         pass
     else:
-        raise MicroprobePolicyError(
-            "Unsupported alignment target: %s" % target.name
-        )
+        raise MicroprobePolicyError("Unsupported alignment target: %s" %
+                                    target.name)
 
     if (not synthesizer.wrapper.context().symbolic or fix_branches):
 
         synthesizer.add_pass(
             microprobe.passes.address.UpdateInstructionAddressesPass(
-                force=True)
-        )
+                force=True))
 
         synthesizer.add_pass(
-            microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-            )
-        )
+            microprobe.passes.symbol.ResolveSymbolicReferencesPass())
 
     return synthesizer

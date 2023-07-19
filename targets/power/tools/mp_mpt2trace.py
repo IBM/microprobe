@@ -76,15 +76,13 @@ def generate(test_definition, outputfile, target, **kwargs):
 
     variables = test_definition.variables
     print_info("Interpreting assembly...")
-    sequence = interpret_asm(
-        test_definition.code, target, [var.name for var in variables]
-    )
+    sequence = interpret_asm(test_definition.code, target,
+                             [var.name for var in variables])
 
     if len(sequence) < 1:
         raise MicroprobeMPTFormatError(
             "No instructions found in the 'instructions' entry of the MPT"
-            " file. Check the input file."
-        )
+            " file. Check the input file.")
 
     max_ins = test_definition.instruction_count
     if kwargs["max_trace_size"] != _DEFAULT_MAX_INS or max_ins is None:
@@ -112,8 +110,7 @@ def generate(test_definition, outputfile, target, **kwargs):
             "Wrapper '%s' not available. Check if you have the wrappers "
             "of the target installed or set up an appropriate "
             "MICROPROBEWRAPPERS environment variable. Original error was: %s" %
-            (wrapper_name, str(exc))
-        )
+            (wrapper_name, str(exc)))
 
     start_addr = [
         reg.value for reg in test_definition.registers
@@ -126,10 +123,8 @@ def generate(test_definition, outputfile, target, **kwargs):
         start_addr = test_definition.default_code_address
 
     if start_addr != test_definition.default_code_address:
-        print_error(
-            "Default code address does not match register state "
-            "PC/IAR value. Check MPT consistency."
-        )
+        print_error("Default code address does not match register state "
+                    "PC/IAR value. Check MPT consistency.")
         exit(-1)
 
     wrapper_kwargs = {}
@@ -137,13 +132,13 @@ def generate(test_definition, outputfile, target, **kwargs):
     wrapper_kwargs["init_data_address"] = test_definition.default_data_address
     wrapper = cwrapper(**wrapper_kwargs)
 
-    synth = microprobe.code.TraceSynthesizer(
-        target, wrapper, show_trace=kwargs.get(
-            "show_trace", False),
-        maxins=max_ins,
-        start_addr=start_addr,
-        no_scratch=True
-    )
+    synth = microprobe.code.TraceSynthesizer(target,
+                                             wrapper,
+                                             show_trace=kwargs.get(
+                                                 "show_trace", False),
+                                             maxins=max_ins,
+                                             start_addr=start_addr,
+                                             no_scratch=True)
 
     # if len(registers) >= 0:
     #    synth.add_pass(
@@ -153,37 +148,26 @@ def generate(test_definition, outputfile, target, **kwargs):
     #    )
 
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(len(sequence))
-    )
+        microprobe.passes.structure.SimpleBuildingBlockPass(len(sequence)))
 
     synth.add_pass(
-        microprobe.passes.instruction.ReproduceSequencePass(sequence)
-    )
+        microprobe.passes.instruction.ReproduceSequencePass(sequence))
 
-    synth.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+    synth.add_pass(microprobe.passes.address.UpdateInstructionAddressesPass())
 
-    synth.add_pass(
-        microprobe.passes.branch.NormalizeBranchTargetsPass()
-    )
+    synth.add_pass(microprobe.passes.branch.NormalizeBranchTargetsPass())
 
     synth.add_pass(
         microprobe.passes.memory.InitializeMemoryDecorator(
-            default=kwargs.get("default_memory_access_pattern", None)
-        )
-    )
+            default=kwargs.get("default_memory_access_pattern", None)))
 
     synth.add_pass(
         microprobe.passes.branch.InitializeBranchDecorator(
             default=kwargs.get("default_branch_pattern", None),
-            indirect=kwargs.get("default_branch_indirect_target_pattern", None)
-        )
-    )
+            indirect=kwargs.get("default_branch_indirect_target_pattern",
+                                None)))
 
-    synth.add_pass(
-        microprobe.passes.symbol.ResolveSymbolicReferencesPass()
-    )
+    synth.add_pass(microprobe.passes.symbol.ResolveSymbolicReferencesPass())
 
     print_info("Synthesizing...")
     bench = synth.synthesize()
@@ -203,30 +187,28 @@ def main():
         "MicroprobeTest (mpt) to TRACE tool",
         mpt_options=True,
         default_config_file="mp_mpt2trace.cfg",
-        force_required=['target']
-    )
+        force_required=['target'])
 
     groupname = "MPT to trace arguments"
-    cmdline.add_group(
-        groupname,
-        "Command arguments related to MPT to trace tool")
+    cmdline.add_group(groupname,
+                      "Command arguments related to MPT to trace tool")
 
-    cmdline.add_option(
-        "trace-output-file",
-        "O",
-        None,
-        "C output file name",
-        group=groupname,
-        opt_type=new_file_ext([".qt", ".qt.gz", ".qt.bz2"]),
-        required=True
-    )
+    cmdline.add_option("trace-output-file",
+                       "O",
+                       None,
+                       "C output file name",
+                       group=groupname,
+                       opt_type=new_file_ext([".qt", ".qt.gz", ".qt.bz2"]),
+                       required=True)
 
     groupname = "Trace generation options"
     cmdline.add_group(groupname,
                       "Command arguments related to trace generation options")
 
     cmdline.add_option(
-        "default-memory-access-pattern", None, None,
+        "default-memory-access-pattern",
+        None,
+        None,
         "Memory access pattern for memory references that are not modeled by"
         "Microprobe or not modeled using 'MP' decorator in MPT file. "
         "Format: comma separated list of addresses or address ranges. If a "
@@ -240,7 +222,9 @@ def main():
     )
 
     cmdline.add_option(
-        "default-branch-pattern", None, None,
+        "default-branch-pattern",
+        None,
+        None,
         "Branch pattern for branches that are not modeled by"
         "Microprobe or not modeled using 'BP' decorator in MPT file. "
         "Format: string with T or N, for taken and not taken branches, "
@@ -252,7 +236,9 @@ def main():
     )
 
     cmdline.add_option(
-        "default-branch-indirect-target-pattern", None, None,
+        "default-branch-indirect-target-pattern",
+        None,
+        None,
         "Branch target pattern for branches that are not modeled by"
         "Microprobe or not modeled using 'BT' decorator in MPT file. "
         "Format: comma separated list of target addresses. If a file "
@@ -263,7 +249,9 @@ def main():
     )
 
     cmdline.add_option(
-        "max-trace-size", None, _DEFAULT_MAX_INS,
+        "max-trace-size",
+        None,
+        _DEFAULT_MAX_INS,
         "Maximum trace size in intructions. Default: %d" % _DEFAULT_MAX_INS,
         group=groupname,
         opt_type=int_type(0, 999999999999),
@@ -280,8 +268,7 @@ def main():
         "safe-bin", None, "Ignore unrecognized binary codifications (do not"
         "fail). Useful when MPTs are generated by dumping directly code "
         "pages, which contain padding zeros and other non-code stuff)",
-        groupname
-    )
+        groupname)
 
     print_info("Processing input arguments...")
     cmdline.main(args, _main)

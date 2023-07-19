@@ -31,8 +31,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -59,12 +61,8 @@ class mpt2trace(TestCase):  # pylint: disable=invalid-name
     name = "mp_mpt2trace"
     description = "mp_mpt2trace tool tests"
     cmd = [
-        os.path.join(
-            BASEPATH,
-            "targets",
-            "power",
-            "tools",
-            "mp_mpt2trace.py")]
+        os.path.join(BASEPATH, "targets", "power", "tools", "mp_mpt2trace.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -89,36 +87,30 @@ class mpt2trace(TestCase):  # pylint: disable=invalid-name
         """
         test_001 on power_v300-power9-ppc64_linux_gcc
         """
-        self._wrapper(
-            "power_v300-power9-ppc64_linux_gcc",
-            "mpt2trace_test001.mpt",
-            "output.qt",
-            extra="--default-memory-access-pattern 0x1234"
-        )
+        self._wrapper("power_v300-power9-ppc64_linux_gcc",
+                      "mpt2trace_test001.mpt",
+                      "output.qt",
+                      extra="--default-memory-access-pattern 0x1234")
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER9"], "Long testing")
     def test_002(self):
         """
         test_002 on power_v300-power9-ppc64_linux_gcc
         """
-        self._wrapper(
-            "power_v300-power9-ppc64_linux_gcc",
-            "mpt2trace_test002.mpt",
-            "output.qt.gz",
-            extra="--default-memory-access-pattern 0x1234"
-        )
+        self._wrapper("power_v300-power9-ppc64_linux_gcc",
+                      "mpt2trace_test002.mpt",
+                      "output.qt.gz",
+                      extra="--default-memory-access-pattern 0x1234")
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER9"], "Long testing")
     def test_003(self):
         """
         test_003 on power_v300-power9-ppc64_linux_gcc
         """
-        self._wrapper(
-            "power_v300-power9-ppc64_linux_gcc",
-            "mpt2trace_test003.mpt",
-            "output.qt.bz2",
-            extra="--default-memory-access-pattern 0x1234"
-        )
+        self._wrapper("power_v300-power9-ppc64_linux_gcc",
+                      "mpt2trace_test003.mpt",
+                      "output.qt.bz2",
+                      extra="--default-memory-access-pattern 0x1234")
 
     def _wrapper(self, target, testfile, output, extra=None):
         """
@@ -129,10 +121,11 @@ class mpt2trace(TestCase):  # pylint: disable=invalid-name
         test_cmd.extend(["-T", target])
         test_cmd.extend(["-P", self.target])
         test_cmd.extend(["-O", os.path.join(self.tdirname, output)])
-        test_cmd.extend(
-            ["-t",
-             os.path.join(BASEPATH, "targets", "power", "tests", "tools",
-                          testfile)])
+        test_cmd.extend([
+            "-t",
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         testfile)
+        ])
 
         if extra is not None:
             extra = extra + " --max-trace-size 100"
@@ -144,11 +137,9 @@ class mpt2trace(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

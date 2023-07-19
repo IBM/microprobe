@@ -30,8 +30,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -59,12 +61,9 @@ class bin2objdump(TestCase):  # pylint: disable-msg=invalid-name
     name = "mp_bin2objdump"
     description = "mp_bin2objdump tool tests"
     cmd = [
-        os.path.join(
-            BASEPATH,
-            "targets",
-            "generic",
-            "tools",
-            "mp_bin2objdump.py")]
+        os.path.join(BASEPATH, "targets", "generic", "tools",
+                     "mp_bin2objdump.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -89,13 +88,8 @@ class bin2objdump(TestCase):  # pylint: disable-msg=invalid-name
         """
         self._wrapper(
             "power_v300-power9-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "bin2objdump_test002.bin"))
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         "bin2objdump_test002.bin"))
 
     def _wrapper(self, target, filename, extra=None):
         """
@@ -115,11 +109,9 @@ class bin2objdump(TestCase):  # pylint: disable-msg=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

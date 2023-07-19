@@ -37,77 +37,80 @@ __email__ = "rbertra@us.ibm.com"
 __status__ = "Development"  # "Prototype", "Development", or "Production"
 
 # Constants
-__all__ = ["check_load_string_overlap",
-           "PowerInstruction",
-           ]
+__all__ = [
+    "check_load_string_overlap",
+    "PowerInstruction",
+]
 LOG = get_logger(__name__)
 
 _14BITS_OPERAND_DESCRIPTOR = OperandDescriptor(
-    OperandImmRange("dummy",  # Name
-                    "dummy",  # Description
-                    - (2 ** 13),  # Min value
-                    (2 ** 13) - 1,  # Max value
-                    1,  # StepUImm1v0
-                    False,  # Address immediate
-                    0,  # Shift
-                    [],  # No values
-                    0  # Add
-                    ),
+    OperandImmRange(
+        "dummy",  # Name
+        "dummy",  # Description
+        -(2**13),  # Min value
+        (2**13) - 1,  # Max value
+        1,  # StepUImm1v0
+        False,  # Address immediate
+        0,  # Shift
+        [],  # No values
+        0  # Add
+    ),
     False,  # Input
     False  # Output
 )
 
 _10BITS_OPERAND_DESCRIPTOR = OperandDescriptor(
-    OperandImmRange("dummy",  # Name
-                    "dummy",  # Description
-                    0,  # Min value
-                    (2 ** 10) - 1,  # Max value
-                    1,  # Step
-                    False,  # Address immediate
-                    0,  # Shift
-                    [],  # No values
-                    0  # Add
-                    ),
+    OperandImmRange(
+        "dummy",  # Name
+        "dummy",  # Description
+        0,  # Min value
+        (2**10) - 1,  # Max value
+        1,  # Step
+        False,  # Address immediate
+        0,  # Shift
+        [],  # No values
+        0  # Add
+    ),
     False,  # Input
     False  # Output
 )
 
 _5BITS_OPERAND_DESCRIPTOR = OperandDescriptor(
-    OperandImmRange("dummy",  # Name
-                    "dummy",  # Description
-                    0,  # Min value
-                    31,  # Max value
-                    1,  # Step
-                    False,  # Address immediate
-                    0,  # Shift
-                    [],  # No values
-                    0  # Add
-                    ),
+    OperandImmRange(
+        "dummy",  # Name
+        "dummy",  # Description
+        0,  # Min value
+        31,  # Max value
+        1,  # Step
+        False,  # Address immediate
+        0,  # Shift
+        [],  # No values
+        0  # Add
+    ),
     False,  # Input
     False  # Output
 )
 
 _1BIT_OPERAND_DESCRIPTOR = OperandDescriptor(
-    OperandImmRange("dummy",  # Name
-                    "dummy",  # Description
-                    0,  # Min value
-                    1,  # Max value
-                    1,  # Step
-                    False,  # Address immediate
-                    0,  # Shift
-                    [],  # No values
-                    0  # Add
-                    ),
+    OperandImmRange(
+        "dummy",  # Name
+        "dummy",  # Description
+        0,  # Min value
+        1,  # Max value
+        1,  # Step
+        False,  # Address immediate
+        0,  # Shift
+        [],  # No values
+        0  # Add
+    ),
     False,  # Input
     False  # Output
 )
 
 
 # Functions
-def check_load_string_overlap(dummy_instruction,
-                              dummy_target_reg,
-                              dummy_source_reg,
-                              dummy_number_bytes):
+def check_load_string_overlap(dummy_instruction, dummy_target_reg,
+                              dummy_source_reg, dummy_number_bytes):
 
     # TODO: remove this
     LOG.warning("Not implemented")
@@ -169,9 +172,8 @@ def check_implicit_ctr(instruction, operand1_name):
     def function_unset_operand1():
         instruction._ioperands = []
 
-    operand.register_operand_callbacks(
-        function_set_operand1, function_unset_operand1
-    )
+    operand.register_operand_callbacks(function_set_operand1,
+                                       function_unset_operand1)
 
 
 def check_cr(instruction):
@@ -195,12 +197,15 @@ def check_cr(instruction):
                 if operand.value is None:
                     continue
                 if operand.is_input:
-                    ivalues.append(operand.value//4)
+                    ivalues.append(operand.value // 4)
                 if operand.is_output:
-                    ovalues.append(operand.value//4)
+                    ovalues.append(operand.value // 4)
 
-            iovalues = list(set([val for val in ivalues + ovalues
-                                 if val in ivalues and val in ovalues]))
+            iovalues = list(
+                set([
+                    val for val in ivalues + ovalues
+                    if val in ivalues and val in ovalues
+                ]))
             ivalues = [val for val in ivalues if val not in iovalues]
             ovalues = [val for val in ovalues if val not in iovalues]
 
@@ -222,14 +227,12 @@ def check_cr(instruction):
         def function_unset_operand():
             function_update_operands()
 
-        operand.register_operand_callbacks(
-            function_set_operand, function_unset_operand
-        )
+        operand.register_operand_callbacks(function_set_operand,
+                                           function_unset_operand)
 
 
 # Classes
 class PowerInstruction(GenericInstructionType):
-
     """
     Power Instruction Class
     """
@@ -240,11 +243,13 @@ class PowerInstruction(GenericInstructionType):
 
         # Check if fixing is needed
         fix_needed = False
-        fix_fields = ['SH0', 'CX', 'AX', 'BX', 'TX', 'SX', 'MB6', 'ME6',
-                      'SPR', 'D_14dw', 'D_14sw', 'D_14qw2', 'Dd0',
-                      'Dd2', 'dc', 'dm']
-        base_fields = ['SH6_5', 'C', 'A', 'Ap', 'B', 'S', 'T', 'TP',
-                       'Dd1', 'dx']
+        fix_fields = [
+            'SH0', 'CX', 'AX', 'BX', 'TX', 'SX', 'MB6', 'ME6', 'SPR', 'D_14dw',
+            'D_14sw', 'D_14qw2', 'Dd0', 'Dd2', 'dc', 'dm'
+        ]
+        base_fields = [
+            'SH6_5', 'C', 'A', 'Ap', 'B', 'S', 'T', 'TP', 'Dd1', 'dx'
+        ]
 
         for fix_field in fix_fields:
             if fix_field in [field.name for field in self.format.fields]:
@@ -273,8 +278,8 @@ class PowerInstruction(GenericInstructionType):
             LOG.debug("Field: %s", field)
             LOG.debug("Operand: %s", operand)
 
-            if (operand.constant and
-                    (field.name not in fix_fields + base_fields)):
+            if (operand.constant
+                    and (field.name not in fix_fields + base_fields)):
 
                 if field.default_show:
                     arg = next_operand_value()
@@ -371,16 +376,18 @@ class PowerInstruction(GenericInstructionType):
                 elif field.name in ["SPR"]:
                     arg = next_operand_value()
                     newarg = InstructionOperandValue(
-                        _10BITS_OPERAND_DESCRIPTOR
-                    )
+                        _10BITS_OPERAND_DESCRIPTOR)
                     value = int(arg.type.codification(arg.value))
                     value = ((value & 0x1F) << 5) | ((value & 0x3E0) >> 5)
-                elif field.name in ['D_14dw', 'D_14sw', 'D_14qw2', ]:
+                elif field.name in [
+                        'D_14dw',
+                        'D_14sw',
+                        'D_14qw2',
+                ]:
                     arg = next_operand_value()
                     # newarg = arg.copy()
                     newarg = InstructionOperandValue(
-                        _14BITS_OPERAND_DESCRIPTOR
-                    )
+                        _14BITS_OPERAND_DESCRIPTOR)
                     value = int(arg.type.codification(arg.value))
                     value = value >> 2
                 elif field.name == "Dd0":
@@ -398,8 +405,7 @@ class PowerInstruction(GenericInstructionType):
 
         LOG.debug("New args: %s", newargs)
 
-        long_str = super(PowerInstruction, self).binary(newargs,
-                                                        asm_args=args)
+        long_str = super(PowerInstruction, self).binary(newargs, asm_args=args)
 
         assert len(long_str) == 32, "Bad PowerPC codification. Length: %d " \
             % len(long_str)

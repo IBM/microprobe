@@ -60,9 +60,7 @@ class ppc64_common(GenericEnvironment):
                                                  stack_alignment=16,
                                                  **kwargs)
 
-    def function_call(self, target,
-                      return_address_reg=None,
-                      long_jump=False):
+    def function_call(self, target, return_address_reg=None, long_jump=False):
 
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["LR"]
@@ -75,8 +73,7 @@ class ppc64_common(GenericEnvironment):
 
         return [bl_ins]
 
-    def function_return(self,
-                        return_address_reg=None):
+    def function_return(self, return_address_reg=None):
 
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["LR"]
@@ -111,13 +108,10 @@ class ppc64_linux_gcc(ppc64_common):
                 ""
 
     def __init__(self, isa):
-        super(
-            ppc64_linux_gcc,
-            self).__init__(
+        super(ppc64_linux_gcc, self).__init__(
             "ppc64_linux_gcc",
             "POWERPC architecture BE (64bit addressing mode), "
-            "Linux operating system, GCC compiler",
-            isa)
+            "Linux operating system, GCC compiler", isa)
 
         self._default_wrapper = "CInfPpc"
 
@@ -129,13 +123,10 @@ class ppc64le_linux_gcc(ppc64_common):
                 ""
 
     def __init__(self, isa):
-        super(
-            ppc64le_linux_gcc,
-            self).__init__(
+        super(ppc64le_linux_gcc, self).__init__(
             "ppc64le_linux_gcc",
             "POWERPC architecture LE (64bit addressing mode), "
-            "Linux operating system, GCC compiler",
-            isa)
+            "Linux operating system, GCC compiler", isa)
 
         self._default_wrapper = "CInfPpc"
         self._little_endian = True

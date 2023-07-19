@@ -30,7 +30,6 @@ __maintainer__ = "Ramon Bertran"
 __email__ = "rbertra@us.ibm.com"
 __status__ = "Development"  # "Prototype", "Development", or "Production"
 
-
 # Constants
 __all__ = ["PowerInstructionFormat"]
 
@@ -39,19 +38,15 @@ __all__ = ["PowerInstructionFormat"]
 
 # Classes
 class PowerInstructionFormat(GenericInstructionFormat):
-
     """
     Power Instruction Format Class
     """
 
     def __init__(self, fname, descr, fields, assembly):
-        super(PowerInstructionFormat, self).__init__(fname,
-                                                     descr,
-                                                     fields,
+        super(PowerInstructionFormat, self).__init__(fname, descr, fields,
                                                      assembly)
 
         if self.length != 4:
             raise MicroprobeArchitectureDefinitionError(
-                "Instruction format '%s' length: %d is not 4 bytes "
-                % (self.name, self.length)
-            )
+                "Instruction format '%s' length: %d is not 4 bytes " %
+                (self.name, self.length))

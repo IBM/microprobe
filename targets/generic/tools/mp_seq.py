@@ -45,7 +45,6 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import findfiles, iter_flatten, move_file
 from microprobe.utils.policy import find_policy
 
-
 # Constants
 LOG = get_logger(__name__)
 _DIRCONTENTS = []
@@ -61,8 +60,7 @@ def _get_wrapper(name):
             "Wrapper '%s' not available. Check if you have the wrappers "
             "of the target installed or set up an appropriate "
             "MICROPROBEWRAPPERS environment variable. Original error was: %s" %
-            (name, str(exc))
-        )
+            (name, str(exc)))
 
 
 def _generic_policy_wrapper(all_arguments):
@@ -71,38 +69,30 @@ def _generic_policy_wrapper(all_arguments):
 
     outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
     outputfile = outputfile.replace(
-        "%DIRTREE%", os.path.join(
-            *[instr.name for instr in instructions]))
+        "%DIRTREE%", os.path.join(*[instr.name for instr in instructions]))
 
     if kwargs['shortnames']:
         outputfile = outputfile.replace(
-            "%INSTR%", "mp_seq_%s" % hashlib.sha1(
-                "_".join(instr.name for instr in instructions).encode()
-            ).hexdigest()
-        )
+            "%INSTR%", "mp_seq_%s" % hashlib.sha1("_".join(
+                instr.name for instr in instructions).encode()).hexdigest())
     else:
         outputfile = outputfile.replace(
-            "%INSTR%", "_".join(
-                instr.name for instr in instructions))
+            "%INSTR%", "_".join(instr.name for instr in instructions))
 
     extension = ""
     if target.name.endswith("linux_gcc"):
 
         wrapper_name = "CInfGen"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            reset=kwargs['reset']
-        )
+        wrapper = wrapper_class(reset=kwargs['reset'])
         extension = "c"
 
     elif target.name.endswith("cronus"):
 
         wrapper_name = "Cronus"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            reset=kwargs['reset'],
-            endless=kwargs['endless']
-        )
+        wrapper = wrapper_class(reset=kwargs['reset'],
+                                endless=kwargs['endless'])
         extension = "bin"
 
     elif target.name.endswith("mesa"):
@@ -110,38 +100,32 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_name = "Tst"
         extension = "tst"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            os.path.basename(outputfile.replace("%EXT%", extension)),
+        wrapper = wrapper_class(os.path.basename(
+            outputfile.replace("%EXT%", extension)),
             endless=kwargs['endless'],
-            reset=kwargs['reset']
-        )
+            reset=kwargs['reset'])
 
     elif target.name.endswith("riscv64_test_p"):
 
         wrapper_name = "RiscvTestsP"
         extension = "S"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            endless=kwargs['endless'],
-            reset=kwargs['reset']
-        )
+        wrapper = wrapper_class(endless=kwargs['endless'],
+                                reset=kwargs['reset'])
 
     elif target.environment.default_wrapper:
 
         wrapper_name = target.environment.default_wrapper
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            endless=kwargs['endless'],
-            reset=kwargs['reset']
-        )
+        wrapper = wrapper_class(endless=kwargs['endless'],
+                                reset=kwargs['reset'])
 
         outputfile = outputfile.replace(".%EXT%", "")
         outputfile = wrapper.outputname(outputfile)
 
     else:
-        raise NotImplementedError(
-            "Unsupported configuration '%s'" % target.name
-        )
+        raise NotImplementedError("Unsupported configuration '%s'" %
+                                  target.name)
 
     if MICROPROBE_RC['debugwrapper']:
         extension = "s"
@@ -176,8 +160,7 @@ def _generic_policy_wrapper(all_arguments):
     if wrapper.outputname(outputfile) != outputfile:
         print_error(
             "Fix outputname '%s' to have a proper extension. E.g. '%s'" %
-            (outputfile, wrapper.outputname(outputfile))
-        )
+            (outputfile, wrapper.outputname(outputfile)))
         exit(-1)
 
     for instr in instructions:
@@ -213,49 +196,40 @@ def main():
     Program main
     """
     args = sys.argv[1:]
-    cmdline = CLI(
-        "Microprobe seq tool",
-        default_config_file="mp_seq.cfg",
-        force_required=['target']
-    )
+    cmdline = CLI("Microprobe seq tool",
+                  default_config_file="mp_seq.cfg",
+                  force_required=['target'])
 
     groupname = "SEQ arguments"
-    cmdline.add_group(
-        groupname, "Command arguments related to Sequence generation"
-    )
+    cmdline.add_group(groupname,
+                      "Command arguments related to Sequence generation")
 
-    cmdline.add_option(
-        "seq-output-dir",
-        "D",
-        None,
-        "Output directory name",
-        group=groupname,
-        opt_type=existing_dir,
-        required=True
-    )
+    cmdline.add_option("seq-output-dir",
+                       "D",
+                       None,
+                       "Output directory name",
+                       group=groupname,
+                       opt_type=existing_dir,
+                       required=True)
 
     cmdline.add_option(
         "instruction-slots",
         "is",
-        4,
-        "Number of instructions slots in the sequence. E.g. '-is 4' will "
+        4, "Number of instructions slots in the sequence. E.g. '-is 4' will "
         "generate sequences of length 4.",
         group=groupname,
-        opt_type=int_type(1, 999999999999)
-    )
+        opt_type=int_type(1, 999999999999))
 
     cmdline.add_option(
         "instruction-groups",
         "ig",
-        None,
-        "Comma separated list of instruction candidates per group. E.g. "
+        None, "Comma separated list of instruction candidates per group. E.g. "
         "-ins ins1,ins2 ins3,ins4. Defines two groups of instruction "
         "candidates: group 1: ins1,ins2 and group 2: ins3,ins4.",
         group=groupname,
         opt_type=str,
         action="append",
-        nargs="+"
-    )
+        nargs="+")
 
     cmdline.add_option(
         "instruction-map",
@@ -271,8 +245,7 @@ def main():
         opt_type=str,
         required=False,
         action="append",
-        nargs="+"
-    )
+        nargs="+")
 
     cmdline.add_option(
         "base-seq",
@@ -297,8 +270,7 @@ def main():
         opt_type=str,
         required=False,
         action="append",
-        nargs="+"
-    )
+        nargs="+")
 
     cmdline.add_option(
         "group-min",
@@ -313,30 +285,24 @@ def main():
         opt_type=str,
         required=False,
         action="append",
-        nargs="+"
-    )
+        nargs="+")
 
-    cmdline.add_option(
-        "benchmark-size",
-        "B",
-        4096,
-        "Size in instructions of the microbenchmark."
-        " If more instruction are needed, nested loops are "
-        "automatically generated",
-        group=groupname,
-        opt_type=int_type(1, 999999999999)
-    )
+    cmdline.add_option("benchmark-size",
+                       "B",
+                       4096, "Size in instructions of the microbenchmark."
+                       " If more instruction are needed, nested loops are "
+                       "automatically generated",
+                       group=groupname,
+                       opt_type=int_type(1, 999999999999))
 
     cmdline.add_option(
         "dependency-distance",
         "dd",
-        0,
-        "Average dependency distance between instructions. A value"
+        0, "Average dependency distance between instructions. A value"
         " below 1 means not dependency between instructions. A value of "
         "1 means a chain of dependent instructions.",
         group=groupname,
-        opt_type=float_type(0, 999999999999)
-    )
+        opt_type=float_type(0, 999999999999))
 
     cmdline.add_flag(
         "force-switch",
@@ -372,24 +338,20 @@ def main():
     cmdline.add_option(
         "batch-number",
         "bn",
-        1,
-        "Batch number to generate. Check --num-batches option for more "
+        1, "Batch number to generate. Check --num-batches option for more "
         "details",
         group=groupname,
-        opt_type=int_type(1, 10000)
-    )
+        opt_type=int_type(1, 10000))
 
     cmdline.add_option(
         "num-batches",
         "nb",
-        1,
-        "Number of batches. The number of microbenchmark to generate "
+        1, "Number of batches. The number of microbenchmark to generate "
         "is divided by this number, and the number the batch number "
         "specified using -bn option is generated. This is useful to "
         "split the generation of many test cases in various batches.",
         group=groupname,
-        opt_type=int_type(1, 10000)
-    )
+        opt_type=int_type(1, 10000))
 
     cmdline.add_flag(
         "skip",
@@ -425,13 +387,8 @@ def main():
     cmdline.main(args, _main)
 
 
-def _generate_sequences(
-        slots,
-        instruction_groups,
-        instruction_map,
-        group_max,
-        group_min,
-        base_seq):
+def _generate_sequences(slots, instruction_groups, instruction_map, group_max,
+                        group_min, base_seq):
 
     instr_names = []
     instr_objs = []
@@ -450,11 +407,13 @@ def _generate_sequences(
         allowed_groups = instruction_map[elem]
         allowed_instructions = []
         for group in allowed_groups:
-            allowed_instructions += [iname for iname in instr_names
-                                     if iname.endswith("_GRP%05d" % group)]
+            allowed_instructions += [
+                iname for iname in instr_names
+                if iname.endswith("_GRP%05d" % group)
+            ]
 
-        descriptor = [
-            ['%d' % group for group in allowed_groups], allowed_instructions]
+        descriptor = [['%d' % group for group in allowed_groups],
+                      allowed_instructions]
 
         slot_dsrc.append(descriptor)
 
@@ -463,8 +422,8 @@ def _generate_sequences(
     print_info("\tSequence Length: %s" % slots)
     for idx, slot in enumerate(slot_dsrc):
         print_info("\t\tSlot %s:\tAllowed groups: %s"
-                   "\tAllowed instructions: %s" % (idx + 1, ",".join(slot[0]),
-                                                   ",".join(slot[1])))
+                   "\tAllowed instructions: %s" %
+                   (idx + 1, ",".join(slot[0]), ",".join(slot[1])))
 
     print_info("\tGroup constraints per sequence:")
     for idx, igroup in enumerate(instruction_groups):
@@ -475,8 +434,10 @@ def _generate_sequences(
     for seq in itertools.product(*[descr[1] for descr in slot_dsrc]):
         valid = True
         for idx, igroup in enumerate(instruction_groups):
-            count = len([instr for instr in seq
-                         if instr.endswith("_GRP%05d" % (idx + 1))])
+            count = len([
+                instr for instr in seq
+                if instr.endswith("_GRP%05d" % (idx + 1))
+            ])
 
             if count < group_min[idx]:
                 valid = False
@@ -491,8 +452,10 @@ def _generate_sequences(
             for instrname in seq:
                 for idx in range(0, len(instruction_groups)):
                     instrname = instrname.replace("_GRP%05d" % (idx + 1), "")
-                sequence += [instr_obj for instr_obj in instr_objs
-                             if instr_obj.name == instrname]
+                sequence += [
+                    instr_obj for instr_obj in instr_objs
+                    if instr_obj.name == instrname
+                ]
             yield base_seq + sequence
 
 
@@ -508,17 +471,14 @@ def _main(arguments):
     print_info("Checking input arguments for consistency...")
 
     if arguments["num_batches"] < arguments["batch_number"]:
-        print_error(
-            "Batch number should be within the number"
-            " of batches specified"
-        )
+        print_error("Batch number should be within the number"
+                    " of batches specified")
         exit(-1)
 
     slots = arguments['instruction_slots']
 
     instruction_groups = list(
-        iter_flatten(arguments.get('instruction_groups', []))
-    )
+        iter_flatten(arguments.get('instruction_groups', [])))
     check_group_length_func = int_type(1, len(instruction_groups))
     check_slots_length_func = int_type(0, slots)
 
@@ -530,9 +490,7 @@ def _main(arguments):
 
     if len(instruction_map) != slots:
         print_error('Instruction map: %s' % instruction_map)
-        print_error(
-            'Instruction map incorrect. Length should be: %s' %
-            slots)
+        print_error('Instruction map incorrect. Length should be: %s' % slots)
         exit(-1)
 
     new_map = []
@@ -563,9 +521,8 @@ def _main(arguments):
 
     if len(group_max) != len(instruction_groups):
         print_error('Group max: %s' % group_max)
-        print_error(
-            'Group max incorrect. Length should be: %s' %
-            len(instruction_groups))
+        print_error('Group max incorrect. Length should be: %s' %
+                    len(instruction_groups))
         exit(-1)
 
     new_map = []
@@ -592,9 +549,8 @@ def _main(arguments):
 
     if len(group_min) != len(instruction_groups):
         print_error('Group min: %s' % group_min)
-        print_error(
-            'Group min incorrect. Length should be: %s' %
-            len(instruction_groups))
+        print_error('Group min incorrect. Length should be: %s' %
+                    len(instruction_groups))
         exit(-1)
 
     new_map = []
@@ -632,11 +588,8 @@ def _main(arguments):
 
     sequences = [base_seq]
     if len(instruction_groups) > 0:
-        sequences = _generate_sequences(slots,
-                                        instruction_groups,
-                                        instruction_map,
-                                        group_max,
-                                        group_min,
+        sequences = _generate_sequences(slots, instruction_groups,
+                                        instruction_map, group_max, group_min,
                                         base_seq)
 
     sequences = [seq for seq in sequences if seq]
@@ -683,30 +636,23 @@ def _main(arguments):
     size = len(sequences) // arguments["num_batches"]
     size = size + 1
 
-    sequences = sequences[
-        (arguments["batch_number"] - 1) * size:
-        arguments["batch_number"] * size
-    ]
+    sequences = sequences[(arguments["batch_number"] - 1) *
+                          size:arguments["batch_number"] * size]
 
     if 'parallel' not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")
         print_info("up the benchmark generation.")
         for sequence in sequences:
             _generic_policy_wrapper(
-                (sequence,
-                 outputdir,
-                 outputname,
-                 target,
-                 arguments))
+                (sequence, outputdir, outputname, target, arguments))
 
     else:
-        print_info("Start parallel generation. Threads: %s" % mp.cpu_count())
-        pool = mp.Pool(processes=mp.cpu_count())
+        print_info("Start parallel generation. Threads: %s" %
+                   MICROPROBE_RC['cpus'])
+        pool = mp.Pool(processes=MICROPROBE_RC['cpus'])
         pool.map(_generic_policy_wrapper,
-                 [(sequence, outputdir, outputname, target,
-                   arguments)
-                  for sequence in sequences]
-                 )
+                 [(sequence, outputdir, outputname, target, arguments)
+                  for sequence in sequences])
 
 
 if __name__ == '__main__':  # run main if executed from the command line

@@ -24,7 +24,6 @@ __maintainer__ = "Ramon Bertran"
 __email__ = "rbertra@us.ibm.com"
 __status__ = "Development"  # "Prototype", "Development", or "Production"
 
-
 # Constants
 
 # Functions

@@ -32,8 +32,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -51,9 +53,8 @@ MP_TESTING_ARCH = os.environ.get("MP_TESTING_ARCH", None)
 
 
 def copy_func(f, name=None):
-    return types.FunctionType(f.__code__, copy.copy(f.__globals__),
-                              name or f.__name__,
-                              f.__defaults__, f.__closure__)
+    return types.FunctionType(f.__code__, copy.copy(f.__globals__), name
+                              or f.__name__, f.__defaults__, f.__closure__)
 
 
 # Classes
@@ -63,7 +64,8 @@ if MP_TESTING_ARCH is None:
         'power_v310-power10-ppc64_linux_gcc',
         'power_v206-power7-ppc64_linux_gcc',
         'power_v207-power8-ppc64_linux_gcc',
-        'power_v300-power9-ppc64_linux_gcc']
+        'power_v300-power9-ppc64_linux_gcc'
+    ]
 elif MP_TESTING_ARCH == "POWER7":
     TARGETS = ['power_v206-power7-ppc64_linux_gcc']
 elif MP_TESTING_ARCH == "POWER8":
@@ -87,8 +89,10 @@ for target in TARGETS:
 
         name = "mp_target"
         description = "mp_target tool tests"
-        cmd = [os.path.join(BASEPATH,
-                            "targets", "generic", "tools", "mp_target.py")]
+        cmd = [
+            os.path.join(BASEPATH, "targets", "generic", "tools",
+                         "mp_target.py")
+        ]
         targetpath = os.path.join(BASEPATH, "targets")
         trials = 3
 
@@ -129,11 +133,9 @@ for target in TARGETS:
             for trial in range(0, self.trials):
                 print("Trial %s" % trial)
                 tfile = SpooledTemporaryFile()
-                error_code = subprocess.call(
-                    test_cmd,
-                    stdout=tfile,
-                    stderr=subprocess.STDOUT
-                )
+                error_code = subprocess.call(test_cmd,
+                                             stdout=tfile,
+                                             stderr=subprocess.STDOUT)
                 if error_code == 0:
                     break
 
@@ -143,10 +145,8 @@ for target in TARGETS:
 
             self.assertEqual(error_code, 0)
 
-    newclass = type(
-        "mp_target_%s" % targetname, TestTargetQuery.__bases__,
-        dict(TestTargetQuery.__dict__)
-    )
+    newclass = type("mp_target_%s" % targetname, TestTargetQuery.__bases__,
+                    dict(TestTargetQuery.__dict__))
 
     globals().pop("TestTargetQuery")
 
@@ -173,12 +173,8 @@ for target in TARGETS:
     globals().pop("test_function")
 
     TCLASSES.append(
-        type(
-            "mp_target_%s" % targetname, newclass.__bases__, dict(
-                newclass.__dict__
-            )
-        )
-    )
+        type("mp_target_%s" % targetname, newclass.__bases__,
+             dict(newclass.__dict__)))
     globals().pop("newclass")
 
 for tclass in TCLASSES:

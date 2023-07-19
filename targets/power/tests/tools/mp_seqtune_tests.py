@@ -31,8 +31,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -58,8 +60,9 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
 
     name = "mp_seqtune"
     description = "mp_seqtune tool tests"
-    cmd = [os.path.join(BASEPATH,
-                        "targets", "generic", "tools", "mp_seqtune.py")]
+    cmd = [
+        os.path.join(BASEPATH, "targets", "generic", "tools", "mp_seqtune.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -88,8 +91,7 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
             "power_v300-power9-ppc64_linux_gcc",
             extra="-B 1024 -re SUBFIC_V0:ADDI_V0:1-2 -p " +
             "-me 1-2:2048:1:144:1:0:1:0 " +
-            "-seq SUBFIC_V0,LVXL_V0,LWA_V0,SUBFIC_V0,LXVW4X_V0,VMHADDSHS_V0 "
-        )
+            "-seq SUBFIC_V0,LVXL_V0,LWA_V0,SUBFIC_V0,LXVW4X_V0,VMHADDSHS_V0 ")
 
     def _wrapper(self, target, extra=None):
         """
@@ -110,11 +112,9 @@ class seqtune(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

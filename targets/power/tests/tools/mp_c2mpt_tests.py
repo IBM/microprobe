@@ -30,8 +30,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -57,8 +59,9 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
 
     name = "mp_c2mpt"
     description = "mp_c2mpt tool tests"
-    cmd = [os.path.join(BASEPATH,
-                        "targets", "generic", "tools", "mp_c2mpt.py")]
+    cmd = [
+        os.path.join(BASEPATH, "targets", "generic", "tools", "mp_c2mpt.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -79,7 +82,7 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
     def tearDown(self):
 
         for filename in [
-            fname for fname in self.filenames if os.path.isfile(fname)
+                fname for fname in self.filenames if os.path.isfile(fname)
         ]:
             os.unlink(filename)
 
@@ -90,13 +93,8 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "power_v206-power8-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "c2mpt_test001.c"))
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         "c2mpt_test001.c"))
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER8"], "Long testing")
     def test_002(self):
@@ -105,13 +103,8 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "power_v206-power8-ppc64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "power",
-                "tests",
-                "tools",
-                "c2mpt_test002.c"))
+            os.path.join(BASEPATH, "targets", "power", "tests", "tools",
+                         "c2mpt_test002.c"))
 
     def _wrapper(self, target, filename, extra=None):
         """
@@ -128,13 +121,14 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
             test_cmd.extend([
                 "--target-c-compiler",
                 os.environ.get("MP_TESTING_COMPILER_POWER",
-                               "powerpc64-unknown-linux-gnu-gcc")])
-            test_cmd.extend(
-                ["--target-objdump",
-                 os.environ.get(
-                     "MP_TESTING_COMPILER_POWER",
-                     "powerpc64-unknown-linux-gnu-gcc").replace("gcc",
-                                                                "objdump")])
+                               "powerpc64-unknown-linux-gnu-gcc")
+            ])
+            test_cmd.extend([
+                "--target-objdump",
+                os.environ.get("MP_TESTING_COMPILER_POWER",
+                               "powerpc64-unknown-linux-gnu-gcc").replace(
+                                   "gcc", "objdump")
+            ])
 
         if extra is not None:
             test_cmd.extend(extra.split(' '))
@@ -144,11 +138,9 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

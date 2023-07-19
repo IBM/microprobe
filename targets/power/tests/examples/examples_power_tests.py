@@ -34,8 +34,10 @@ from six.moves import range
 import microprobe
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -57,11 +59,10 @@ _LIBC = ctypes.CDLL("libc.so.6")
 
 
 def _get_child_processes(parent_pid):
-    ps_command = subprocess.Popen(
-        "ps -o pid --ppid %d --noheaders" % parent_pid,
-        shell=True,
-        stdout=subprocess.PIPE
-    )
+    ps_command = subprocess.Popen("ps -o pid --ppid %d --noheaders" %
+                                  parent_pid,
+                                  shell=True,
+                                  stdout=subprocess.PIPE)
     ps_output = ps_command.stdout.read()
     retcode = ps_command.wait()
     if retcode == 1:
@@ -119,10 +120,8 @@ class power_example_suite(TestCase):  # pylint: disable=invalid-name
         return "%s/targets/%s/examples/" % (BASEPATH, arch)
 
     def setUp(self):
-        tempdir = mkdtemp(
-            prefix="microprobe_examples_%s_" % self.name,
-            suffix=".example"
-        )
+        tempdir = mkdtemp(prefix="microprobe_examples_%s_" % self.name,
+                          suffix=".example")
         self.dirnames = [tempdir]
 
     def tearDown(self):
@@ -134,57 +133,57 @@ class power_example_suite(TestCase):  # pylint: disable=invalid-name
         """
         power_example_suite: isa_power_v206_info.py
         """
-        self._wrapper(
-            [self._dir() + 'isa_power_v206_info.py'])
+        self._wrapper([self._dir() + 'isa_power_v206_info.py'])
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER"], "Long testing")
     def test_002(self):
         """
         power_example_suite: power_v206_power7_ppc64_linux_gcc_profile.py
         """
-        self._wrapper(
-            [self._dir() + 'power_v206_power7_ppc64_linux_gcc_profile.py',
-             '-p',
-             '1',
-             '-O',
-             self.dirnames[0]])
+        self._wrapper([
+            self._dir() + 'power_v206_power7_ppc64_linux_gcc_profile.py', '-p',
+            '1', '-O', self.dirnames[0]
+        ])
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER"], "Long testing")
     def test_003(self):
         """
         power_example_suite: power_v206_power7_ppc64_linux_gcc_fu_stress.py
         """
-        self._wrapper(
-            [self._dir() + 'power_v206_power7_ppc64_linux_gcc_fu_stress.py',
-             '-O',
-             self.dirnames[0]])
+        self._wrapper([
+            self._dir() + 'power_v206_power7_ppc64_linux_gcc_fu_stress.py',
+            '-O', self.dirnames[0]
+        ])
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER"], "Long testing")
     def test_004(self):
         """
         power_example_suite: power_v206_power7_ppc64_linux_gcc_memory.py
         """
-        self._wrapper(
-            [self._dir() + 'power_v206_power7_ppc64_linux_gcc_memory.py',
-             self.dirnames[0]])
+        self._wrapper([
+            self._dir() + 'power_v206_power7_ppc64_linux_gcc_memory.py',
+            self.dirnames[0]
+        ])
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER"], "Long testing")
     def test_005(self):
         """
         power_example_suite: power_v206_power7_ppc64_linux_gcc_random.py
         """
-        self._wrapper(
-            [self._dir() + 'power_v206_power7_ppc64_linux_gcc_random.py',
-             self.dirnames[0]])
+        self._wrapper([
+            self._dir() + 'power_v206_power7_ppc64_linux_gcc_random.py',
+            self.dirnames[0]
+        ])
 
     @skipIf(MP_TESTING_ARCH not in [None, "POWER"], "Long testing")
     def test_006(self):
         """
         power_example_suite: power_v206_power7_ppc64_linux_gcc_custom.py
         """
-        self._wrapper(
-            [self._dir() + 'power_v206_power7_ppc64_linux_gcc_custom.py',
-             self.dirnames[0]])
+        self._wrapper([
+            self._dir() + 'power_v206_power7_ppc64_linux_gcc_custom.py',
+            self.dirnames[0]
+        ])
 
     @skipIf(True, "Deprecated (removing PyEvolve)")
     @skipIf(MP_TESTING_ARCH not in [None, "POWER"], "Long testing")
@@ -192,10 +191,11 @@ class power_example_suite(TestCase):  # pylint: disable=invalid-name
         """
         power_example_suite: power_v206_power7_ppc64_linux_gcc_genetic.py
         """
-        self._wrapper(
-            [self._dir() + 'power_v206_power7_ppc64_linux_gcc_genetic.py',
-             self.dirnames[0],
-             '%s/genetic_eval.sh' % self._dir('power')])
+        self._wrapper([
+            self._dir() + 'power_v206_power7_ppc64_linux_gcc_genetic.py',
+            self.dirnames[0],
+            '%s/genetic_eval.sh' % self._dir('power')
+        ])
 
     def _wrapper(self, commands):
         """
@@ -206,14 +206,11 @@ class power_example_suite(TestCase):  # pylint: disable=invalid-name
 
         for dummy_trial in range(0, self.trials):
             tfile = SpooledTemporaryFile()
-            process = subprocess.Popen(
-                commands,
-                stdout=tfile,
-                stderr=subprocess.STDOUT,
-                preexec_fn=_set_pdeathsig(
-                    signal.SIGTERM
-                )
-            )
+            process = subprocess.Popen(commands,
+                                       stdout=tfile,
+                                       stderr=subprocess.STDOUT,
+                                       preexec_fn=_set_pdeathsig(
+                                           signal.SIGTERM))
             ctime = 0
 
             while ctime < self.timeout:

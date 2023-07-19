@@ -163,9 +163,13 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
         else:
 
             if var.value is not None:
+                val = var.value
+                if isinstance(val, list):
+                    assert len(val) == 1
+                    val = val[0]
 
                 return "%s %s %s = %s;\n" % (
-                    var.type, var.name, align, var.value
+                    var.type, var.name, align, val
                 )
 
             else:

@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 power_v206_power7_ppc64_linux_gcc_genetic.py
 
@@ -148,19 +147,17 @@ def generate_genetic(compname, ipc):
             microprobe.passes.initialization.InitializeRegistersPass(
                 value=RNDINT))
         synth.add_pass(
-            microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
-        )
+            microprobe.passes.structure.SimpleBuildingBlockPass(
+                BENCHMARK_SIZE))
         synth.add_pass(
             microprobe.passes.instruction.SetInstructionTypeByElementPass(
                 TARGET,
-                comps,
-                {},
+                comps, {},
                 block=bcomps,
                 avelatency=latency,
                 any_comp=any_comp))
         synth.add_pass(
-            microprobe.passes.register.DefaultRegisterAllocationPass(
-                dd=dist))
+            microprobe.passes.register.DefaultRegisterAllocationPass(dd=dist))
         bench = synth.synthesize()
         synth.save(name, bench=bench)
 
@@ -171,8 +168,7 @@ def generate_genetic(compname, ipc):
 
     # Set up the search driver
     driver = microprobe.driver.genetic.ExecCmdDriver(
-        generate, 20, 30, 30, "'%s' %f " %
-        (COMMAND, ipc), ga_params)
+        generate, 20, 30, 30, "'%s' %f " % (COMMAND, ipc), ga_params)
 
     starttime = runtime.time()
     print_info("Start search...")
@@ -180,9 +176,8 @@ def generate_genetic(compname, ipc):
     print_info("Search end")
     endtime = runtime.time()
 
-    print_info("Genetic time::%s" % (
-        datetime.timedelta(seconds=endtime - starttime))
-    )
+    print_info("Genetic time::%s" %
+               (datetime.timedelta(seconds=endtime - starttime)))
 
     # Check if we found a solution
     ga_params = driver.solution()
@@ -196,19 +191,17 @@ def generate_genetic(compname, ipc):
         generate(
             "%s/%s:IPC:%.2f:DIST:%.2f:LAT:%.2f-check" %
             (DIRECTORY, compname, ipc, ga_params[0], ga_params[1]),
-            ga_params[0], ga_params[1]
-        )
+            ga_params[0], ga_params[1])
         print_info("Closest solution generated")
     else:
-        print_info(
-            "Solution found for %s and IPC %f -> dist: %f , "
-            "latency: %f " %
-            (compname, ipc, ga_params[0], ga_params[1]))
+        print_info("Solution found for %s and IPC %f -> dist: %f , "
+                   "latency: %f " %
+                   (compname, ipc, ga_params[0], ga_params[1]))
         print_info("Generating solution...")
-        generate("%s/%s:IPC:%.2f:DIST:%.2f:LAT:%.2f" %
-                 (DIRECTORY, compname, ipc, ga_params[0], ga_params[1]),
-                 ga_params[0], ga_params[1]
-                 )
+        generate(
+            "%s/%s:IPC:%.2f:DIST:%.2f:LAT:%.2f" %
+            (DIRECTORY, compname, ipc, ga_params[0], ga_params[1]),
+            ga_params[0], ga_params[1])
         print_info("Solution generated")
     return True
 

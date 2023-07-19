@@ -47,11 +47,9 @@ ISANAME = "power_v206"
 
 # Search and import definition
 ISADEF = import_isa_definition(
-    os.path.dirname(
-        [isa for isa in find_isa_definitions()
-         if isa.name == ISANAME][0].filename
-        )
-    )
+    os.path.dirname([
+        isa for isa in find_isa_definitions() if isa.name == ISANAME
+    ][0].filename))
 
 # Print definition
 print((ISADEF.full_report()))

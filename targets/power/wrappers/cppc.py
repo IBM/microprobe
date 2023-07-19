@@ -86,9 +86,10 @@ class CInfPpc(get_wrapper("CWrapper")):
         """ """
         return True
 
-    def reserved_registers(self,  # pylint: disable=no-self-use
-                           dummy_reserved,
-                           dummy_target):
+    def reserved_registers(
+            self,  # pylint: disable=no-self-use
+            dummy_reserved,
+            dummy_target):
         """
 
         :param dummy_reserved:
@@ -133,9 +134,10 @@ class CInfPpcSingleLiteral(get_wrapper("CWrapper")):
         """ """
         return True
 
-    def reserved_registers(self,  # pylint: disable=no-self-use
-                           dummy_reserved,
-                           dummy_target):
+    def reserved_registers(
+            self,  # pylint: disable=no-self-use
+            dummy_reserved,
+            dummy_target):
         """
 
         :param dummy_reserved:
@@ -260,9 +262,10 @@ class CSpecialPpc(get_wrapper("CWrapper")):
         """ """
         return True
 
-    def reserved_registers(self,  # pylint: disable=no-self-use
-                           dummy_reserved,
-                           dummy_target):
+    def reserved_registers(
+            self,  # pylint: disable=no-self-use
+            dummy_reserved,
+            dummy_target):
         """
 
         :param dummy_reserved:
@@ -298,9 +301,10 @@ class CSpecialPpc(get_wrapper("CWrapper")):
         header.append('#include "common.h"')
         return "\n".join(header)
 
-    def init_global_var(self,  # pylint: disable=no-self-use
-                        dummy_var,
-                        dummy_value):
+    def init_global_var(
+            self,  # pylint: disable=no-self-use
+            dummy_var,
+            dummy_value):
         """
 
         :param dummy_var:
@@ -330,18 +334,16 @@ class CSpecialPpc(get_wrapper("CWrapper")):
 
 
 class CPSynchStepMultithread(get_wrapper("CWrapper")):
-
     """ """
 
-    def __init__(
-        self, synctype,
-        steps,
-        bias,
-        dithering=0,
-        delay=0,
-        master_delay=0,
-        reset=False
-    ):
+    def __init__(self,
+                 synctype,
+                 steps,
+                 bias,
+                 dithering=0,
+                 delay=0,
+                 master_delay=0,
+                 reset=False):
         """
 
         :param synctype:
@@ -360,11 +362,8 @@ class CPSynchStepMultithread(get_wrapper("CWrapper")):
         self._delay = delay
         self._master_delay = master_delay
 
-        with open(
-                os.path.join(
-                    _MODULE_DIR, "CPSynchStepMultithread.headers"
-                ),
-                'r') as textfile:
+        with open(os.path.join(_MODULE_DIR, "CPSynchStepMultithread.headers"),
+                  'r') as textfile:
 
             for header in textfile.readlines():
                 self._extra_headers.append(header[:-1])
@@ -382,9 +381,7 @@ class CPSynchStepMultithread(get_wrapper("CWrapper")):
         main = [super(CPSynchStepMultithread, self).start_main()]
 
         with open(
-                os.path.join(
-                    _MODULE_DIR, "CPSynchStepMultithread.start_main"
-                ),
+                os.path.join(_MODULE_DIR, "CPSynchStepMultithread.start_main"),
                 'r') as textfile:
 
             for elem in textfile.readlines():
@@ -414,9 +411,7 @@ class CPSynchStepMultithread(get_wrapper("CWrapper")):
             loop.append(self.wrap_ins("infloop:"))
 
         with open(
-                os.path.join(
-                    _MODULE_DIR, "CPSynchStepMultithread.start_loop"
-                ),
+                os.path.join(_MODULE_DIR, "CPSynchStepMultithread.start_loop"),
                 'r') as textfile:
 
             for elem in textfile.readlines():
@@ -434,8 +429,8 @@ class CPSynchStepMultithread(get_wrapper("CWrapper")):
 
         treplace.append(("$MASTERSTEPS$",
                          self.wrap_ins("li 0, %s" % max(self._steps // 2, 1))))
-        treplace.append(("$SLAVESTEPS$",
-                         self.wrap_ins("li 0, %s" % self._steps)))
+        treplace.append(
+            ("$SLAVESTEPS$", self.wrap_ins("li 0, %s" % self._steps)))
 
         master_delay = []
         for dummy_idx in range(0, self._master_delay):
@@ -483,8 +478,9 @@ class CPSynchStepMultithread(get_wrapper("CWrapper")):
         for dummy in range(0, self._dithering):
             instr_list.append(self.wrap_ins(self.target.nop()))
 
-        instr_list.extend([self.wrap_ins("bdnz+ steploop"),
-                           self.wrap_ins("b infloop")])
+        instr_list.extend(
+            [self.wrap_ins("bdnz+ steploop"),
+             self.wrap_ins("b infloop")])
 
         return "\n".join(instr_list)
 
@@ -496,11 +492,8 @@ class CPSynchStepMultithread(get_wrapper("CWrapper")):
 
         """
 
-        reserved = super(
-            CPSynchStepMultithread, self
-        ).reserved_registers(
-            reserved, target
-        )
+        reserved = super(CPSynchStepMultithread,
+                         self).reserved_registers(reserved, target)
 
         reserved.append(target.registers["GPR1"])
         reserved.append(target.registers["GPR9"])

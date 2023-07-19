@@ -24,29 +24,23 @@ import random
 import re
 
 # Third party modules
-from six.moves import zip
 import six
+from six.moves import zip
 
 # Own modules
 import microprobe.passes
 import microprobe.utils.distrib
 from microprobe.code.address import Address, MemoryValue
-from microprobe.exceptions import MicroprobeCodeGenerationError, \
-    MicroprobeValueError
+from microprobe.exceptions import \
+    MicroprobeCodeGenerationError, MicroprobeValueError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict
-
-# Local modules
-
 
 # Constants
 LOG = get_logger(__name__)
 __all__ = [
-    'DefaultRegisterAllocationPass',
-    'CycleMinimalAllocationPass',
-    'FixRegistersPass',
-    'NoHazardsAllocationPass',
-    'RandomAllocationPass'
+    'DefaultRegisterAllocationPass', 'CycleMinimalAllocationPass',
+    'FixRegistersPass', 'NoHazardsAllocationPass', 'RandomAllocationPass'
 ]
 
 # Functions
@@ -69,10 +63,8 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
         super(DefaultRegisterAllocationPass, self).__init__()
         self._min = minimize
         if self._min:
-            raise NotImplementedError(
-                "Feature changed need to be"
-                " reimplemented"
-            )
+            raise NotImplementedError("Feature changed need to be"
+                                      " reimplemented")
 
         if isinstance(dd, six.integer_types):
             self._dd = lambda: dd  # Dependency distance
@@ -155,9 +147,8 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                                 LOG.warning(
                                     "Operand '%s' in instruction '%s' "
                                     "not modeled properly. Tried to "
-                                    "'%s' value ...", operand.type,
-                                    instr.name, svalue
-                                )
+                                    "'%s' value ...", operand.type, instr.name,
+                                    svalue)
 
                                 value = list(operand.type.values())[0]
                                 operand.set_value(value)
@@ -170,8 +161,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                     elif operand.type.address_relative:
                         LOG.warning(
                             "Operand '%s' in instruction '%s' "
-                            "not modeled properly", operand.type, instr.name
-                        )
+                            "not modeled properly", operand.type, instr.name)
                         operand.set_value(list(operand.type.values())[0])
 
                     else:
@@ -191,15 +181,13 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                                 valid_values = []
                                 for reg in regs:
                                     if len(
-                                        rregs.intersection(
-                                            operand.type.access(reg)
-                                        )
-                                    ) == 0:
+                                            rregs.intersection(
+                                                operand.type.access(
+                                                    reg))) == 0:
                                         valid_values.append(reg)
 
-                            if (len(valid_values) == 0 and
-                                    operand.is_input and
-                                    not operand.is_output):
+                            if (len(valid_values) == 0 and operand.is_input
+                                    and not operand.is_output):
                                 # Try to use reserved values
                                 # if the operand is read only
                                 valid_values = list(operand.type.values())
@@ -210,24 +198,17 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                             reg = microprobe.utils.distrib.sort_by_distance(
                                 valid_values, lastdefined[regs[0].type],
                                 lastused[regs[0].type], idx - distance, instr,
-                                idx
-                            )
+                                idx)
 
                             LOG.debug("%s selected", reg)
 
                             if reg in lastdefined[regs[0].type]:
-                                LOG.debug(
-                                    "Last defined: %s", lastdefined[
-                                        regs[0].type
-                                    ][reg]
-                                )
+                                LOG.debug("Last defined: %s",
+                                          lastdefined[regs[0].type][reg])
 
                             if reg in lastused[regs[0].type]:
-                                LOG.debug(
-                                    "Last used: %s", lastused[
-                                        regs[0].type
-                                    ][reg]
-                                )
+                                LOG.debug("Last used: %s",
+                                          lastused[regs[0].type][reg])
 
                             dependency_ok = True
 
@@ -243,15 +224,13 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                             else:
                                 for reg in regs:
                                     if len(
-                                        rregs.intersection(
-                                            operand.type.access(reg)
-                                        )
-                                    ) == 0:
+                                            rregs.intersection(
+                                                operand.type.access(
+                                                    reg))) == 0:
                                         valid_values.append(reg)
 
-                            if (len(valid_values) == 0 and
-                                    operand.is_input and
-                                    not operand.is_output):
+                            if (len(valid_values) == 0 and operand.is_input
+                                    and not operand.is_output):
                                 # Try to use reserved values
                                 # if the operand is reading only
                                 valid_values = list(operand.type.values())
@@ -261,29 +240,24 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                                 LOG.critical("Operand: %s", operand)
                                 LOG.critical("Possible all values: %s",
                                              sorted(operand.type.values()))
-                                LOG.critical(
-                                    "Possible values: %s",
-                                    sorted(regs))
-                                LOG.critical(
-                                    "Reserved values: %s",
-                                    sorted(rregs))
+                                LOG.critical("Possible values: %s",
+                                             sorted(regs))
+                                LOG.critical("Reserved values: %s",
+                                             sorted(rregs))
                                 raise MicroprobeCodeGenerationError(
                                     "Unable to find proper operand"
-                                    " values for register allocation."
-                                )
+                                    " values for register allocation.")
 
                             if regs[0].type not in lastused:
                                 raise MicroprobeCodeGenerationError(
                                     "Unable to find proper operand"
                                     " values for register allocation."
                                     " No registers of type '%s' "
-                                    "available." % regs[0].type
-                                )
+                                    "available." % regs[0].type)
 
                             reg = microprobe.utils.distrib.sort_by_usage(
                                 valid_values, lastused[regs[0].type],
-                                lastdefined[regs[0].type]
-                            )
+                                lastdefined[regs[0].type])
 
                         operand.set_value(reg)
 
@@ -333,11 +307,9 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                             raise MicroprobeCodeGenerationError(
                                 "Instruction '%s' sets a reserved"
                                 " register but not allowed before:"
-                                "Register: %s. Reserved: %s" % (
-                                    instr.name, reg.name,
-                                    sorted([reg.name for reg in rregs])
-                                )
-                            )
+                                "Register: %s. Reserved: %s" %
+                                (instr.name, reg.name,
+                                 sorted([reg.name for reg in rregs])))
 
                 for reg in instr.uses():
                     if reg not in used and reg not in rregs:
@@ -355,19 +327,16 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                 LOG.debug("Last used rank:")
                 for rtype in lastused:
                     for reg in lastused[rtype]:
-                        if lastused[rtype][
-                            reg
-                        ] > 0 and reg.name.startswith("GPR"):
+                        if lastused[rtype][reg] > 0 and reg.name.startswith(
+                                "GPR"):
                             LOG.debug("%s: %d", reg.name, lastused[rtype][reg])
                 LOG.debug("Last defined rank:")
                 for rtype in lastdefined:
                     for reg in lastdefined[rtype]:
-                        if lastdefined[rtype][
-                            reg
-                        ] > 0 and reg.name.startswith("GPR"):
-                            LOG.debug(
-                                "%s: %d", reg.name, lastdefined[rtype][reg]
-                            )
+                        if lastdefined[rtype][reg] > 0 and reg.name.startswith(
+                                "GPR"):
+                            LOG.debug("%s: %d", reg.name,
+                                      lastdefined[rtype][reg])
 
                 idx = idx + 1
 
@@ -451,9 +420,8 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
 
             """
 
-            for reg, arch_operands in zip(
-                instr.operand_fields(), instr.architecture_type.operands()
-            ):
+            for reg, arch_operands in zip(instr.operand_fields(),
+                                          instr.architecture_type.operands()):
                 operand, ins_input, output = arch_operands
                 if reg is not None and not operand.immediate():
 
@@ -511,10 +479,7 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
                         else:
 
                             instroperands.append(
-                                operand.assembly(
-                                    operand.random_value()
-                                )
-                            )
+                                operand.assembly(operand.random_value()))
 
                     elif not operand.immediate():
 
@@ -524,13 +489,11 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
                         if ins_input and output:
 
                             regs = [
-                                elem
-                                for elem in lastdefread[rtype].keys()
+                                elem for elem in lastdefread[rtype].keys()
                                 if elem in regs
                             ]
-                            regs.sort(
-                                key=lambda x,
-                                ltype=rtype: lastdefread[ltype][x],
+                            regs.sort(key=lambda x, ltype=rtype: lastdefread[
+                                ltype][x],
                                 reverse=True)
                             reg = regs[oper_idx_io]
 
@@ -547,13 +510,11 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
                         elif ins_input:
 
                             regs = [
-                                elem
-                                for elem in lastreaded[rtype].keys()
+                                elem for elem in lastreaded[rtype].keys()
                                 if elem in regs
                             ]
-                            regs.sort(
-                                key=lambda x,
-                                ltype=rtype: lastreaded[ltype][x],
+                            regs.sort(key=lambda x, ltype=rtype: lastreaded[
+                                ltype][x],
                                 reverse=True)
                             reg = regs[oper_idx_i]
                             if reg in lastdefread[rtype]:
@@ -565,13 +526,11 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
                         elif output:
 
                             regs = [
-                                elem
-                                for elem in lastdefined[rtype].keys()
+                                elem for elem in lastdefined[rtype].keys()
                                 if elem in regs
                             ]
-                            regs.sort(
-                                key=lambda x,
-                                ltype=rtype: lastdefined[ltype][x],
+                            regs.sort(key=lambda x, ltype=rtype: lastdefined[
+                                ltype][x],
                                 reverse=True)
                             reg = regs[oper_idx_o]
                             if reg in lastdefread[rtype]:
@@ -744,11 +703,8 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
                     for reg in regs:
 
-                        if len(
-                            rregs.intersection(
-                                operand.type.access(reg)
-                            )
-                        ) > 0:
+                        if len(rregs.intersection(
+                                operand.type.access(reg))) > 0:
                             continue
 
                         values.add(reg)
@@ -795,10 +751,8 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
                                     to_add.append(val)
 
-                                    if (
-                                        val in inputoutputs or val in inputs or
-                                        val in outputs
-                                    ):
+                                    if (val in inputoutputs or val in inputs
+                                            or val in outputs):
                                         valid_val = False
 
                                 if valid_val:
@@ -832,8 +786,7 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
                     else:
                         raise MicroprobeCodeGenerationError(
-                            "Unknown operand type"
-                        )
+                            "Unknown operand type")
 
         inputs = sorted(list(inputs))
         inputoutputs = sorted(list(inputoutputs))
@@ -953,10 +906,8 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                     LOG.debug("TYPE: %s", regt)
 
                     regs = [
-                        reg
-                        for reg in queue
-                        if reg.type == regt and
-                        reg in list(operand.type.values())
+                        reg for reg in queue if reg.type == regt and reg in
+                        list(operand.type.values()) and reg not in rregs
                     ]
 
                     # if values are not found, fail-back to input output list
@@ -966,37 +917,33 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                         LOG.debug(inputoutputs)
                         queue = inputoutputs
                         regs = [
-                            reg
-                            for reg in queue
-                            if reg.type == regt and
-                            reg in list(operand.type.values())
+                            reg for reg in queue if reg.type == regt
+                            and reg in list(operand.type.values())
                         ]
 
                     # Check if all possible values are reserved, if so, just
                     # pick one and add a comment
-                    if (
-                        set(operand.type.values()).issubset(rregs) and
-                        len(regs) == 0
-                    ):
+                    if (set(operand.type.values()).issubset(rregs)
+                            and len(regs) == 0):
+
                         operand.set_value(list(operand.type.values())[0])
                         LOG.debug("Operand forced to: %s",
                                   list(operand.type.values())[0])
-                        instr.add_comment(
-                            "Operand '%s' using reserved value" %
-                            operand)
-                        if not instr.allows(list(operand.type.values())[0]):
-                            instr.add_allow_register(
-                                list(operand.type.values())[0])
+                        instr.add_comment("Operand '%s' using reserved value" %
+                                          operand)
+                        for reg in operand.sets():
+                            if not instr.allows(reg):
+                                instr.add_allow_registe([reg])
                         continue
                     elif len(regs) == 0:
                         LOG.debug("Operand forced to: %s",
                                   list(operand.type.values())[0])
                         operand.set_value(list(operand.type.values())[0])
-                        instr.add_comment(
-                            "Operand '%s' using first value" % operand)
-                        if not instr.allows(list(operand.type.values())[0]):
-                            instr.add_allow_register(
-                                list(operand.type.values())[0])
+                        instr.add_comment("Operand '%s' using first value" %
+                                          operand)
+                        for reg in operand.sets():
+                            if not instr.allows(reg):
+                                instr.add_allow_registe([reg])
                         continue
 
                     if len(regs) == 0:
@@ -1037,8 +984,9 @@ class FixRegistersPass(microprobe.passes.Pass):
     def __call__(self, building_block, target):
 
         if self._writes is not None:
-            self._writes = [target.registers[regname]
-                            for regname in self._writes]
+            self._writes = [
+                target.registers[regname] for regname in self._writes
+            ]
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:

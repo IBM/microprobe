@@ -34,8 +34,10 @@ import microprobe
 from microprobe.target import import_definition
 
 if six.PY2:
+    # Third party modules
     import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
 else:
+    # Built-in modules
     import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
@@ -54,9 +56,8 @@ MP_CI = os.environ.get("TRAVIS", None)
 
 
 def copy_func(f, name=None):
-    return types.FunctionType(f.__code__, copy.copy(f.__globals__),
-                              name or f.__name__,
-                              f.__defaults__, f.__closure__)
+    return types.FunctionType(f.__code__, copy.copy(f.__globals__), name
+                              or f.__name__, f.__defaults__, f.__closure__)
 
 
 def variations(basestr, params):
@@ -88,8 +89,10 @@ def subins(instructions):
             continue
 
         skip = False
-        for prop in ["unsupported", "hypervisor", "privileged_optional",
-                     "privileged", "syscall", "trap"]:
+        for prop in [
+                "unsupported", "hypervisor", "privileged_optional",
+                "privileged", "syscall", "trap"
+        ]:
             if hasattr(instruction, prop) and getattr(instruction, prop):
                 skip = True
                 break
@@ -108,8 +111,8 @@ def subins(instructions):
 
         if MP_CI is not None:
             if instr.format.name.split("_")[0] not in [
-                    ins.format.name.split("_")[0]
-                    for ins in myins]:
+                    ins.format.name.split("_")[0] for ins in myins
+            ]:
                 myins.append(instr)
                 continue
         else:
@@ -193,11 +196,9 @@ class epi(TestCase):  # pylint: disable-msg=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
 
             if error_code == 0:
                 break
@@ -232,9 +233,7 @@ else:
         TEST_TARGETS.append(("power_v310-power10-ppc64_linux_gcc", "c"))
 
 TEST_FLAGS = []
-TEST_FLAGS.extend(
-    variations("", [_PARAM1, _PARAM2, _PARAM3])
-)
+TEST_FLAGS.extend(variations("", [_PARAM1, _PARAM2, _PARAM3]))
 
 _TEST_NUMBER = 1
 for _TEST_TARGET in TEST_TARGETS:
@@ -242,24 +241,22 @@ for _TEST_TARGET in TEST_TARGETS:
     _TARGET = import_definition(_TEST_TARGET[0])
 
     for _TEST_INSTR in [
-        my_instr.name for my_instr in subins(
-            list(_TARGET.isa.instructions.values()))]:
+            my_instr.name
+            for my_instr in subins(list(_TARGET.isa.instructions.values()))
+    ]:
 
         for _TEST_FLAG in TEST_FLAGS:
 
             def test_function(self):
                 """ test_function """
-                self.wrapper(
-                    _TEST_TARGET[0],
-                    _TEST_TARGET[1],
-                    _TEST_INSTR,
-                    extra=_TEST_FLAG)
+                self.wrapper(_TEST_TARGET[0],
+                             _TEST_TARGET[1],
+                             _TEST_INSTR,
+                             extra=_TEST_FLAG)
 
             func_name = "test_%s_%03d" % (_TEST_INSTR, _TEST_NUMBER)
-            func_doc = "epi_test_%s_%03d on %s flags: %s" % (_TEST_INSTR,
-                                                             _TEST_NUMBER,
-                                                             _TEST_TARGET[0],
-                                                             _TEST_FLAG)
+            func_doc = "epi_test_%s_%03d on %s flags: %s" % (
+                _TEST_INSTR, _TEST_NUMBER, _TEST_TARGET[0], _TEST_FLAG)
 
             setattr(epi, func_name, copy_func(test_function, func_name))
 
@@ -274,7 +271,6 @@ for _TEST_TARGET in TEST_TARGETS:
             globals().pop("mfunc")
             globals().pop("test_function")
             _TEST_NUMBER += 1
-
 
 TEST_CLASSES = [epi]
 

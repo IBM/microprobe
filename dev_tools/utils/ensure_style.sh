@@ -70,14 +70,14 @@ while [ "$cfile" != "" ]; do
 
     if [ -e "$cfile" ]; then
         if [ -f "$cfile" ]; then
-            isort -rc --atomic "$cfile"
+            isort --atomic "$cfile"
             format "$cfile"
             format2 "$cfile"
         elif [ -d "$cfile" ]; then
             echo "Recursive directory"
             # shellcheck disable=2044
             for file in $(find "$cfile" -name "*.py"); do
-                isort -rc --atomic "$cfile"
+                isort --atomic "$cfile"
                 format "$file"
                 format2 "$file"
             done;

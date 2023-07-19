@@ -20,6 +20,7 @@ from __future__ import absolute_import, division, print_function
 # Built-in modules
 import os
 
+# Third party modules
 # This party modules
 import six
 
@@ -53,21 +54,21 @@ _MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 class PowerISA(GenericISA):
 
     def __init__(self, name, descr, path, ins, regs, comparators, generators):
-        super(PowerISA, self).__init__(name, descr, path,
-                                       ins, regs, comparators,
-                                       generators)
-        self._scratch_registers += [self.registers["GPR11"],
-                                    self.registers["GPR12"],
-                                    self.registers["FPR28"],
-                                    self.registers["FPR29"],
-                                    self.registers["VSR28"],
-                                    self.registers["VSR29"],
-                                    self.registers["CR4"],
-                                    # self.registers["VR28"],
-                                    # self.registers["VR29"],
-                                    # self.registers["VSR60"],
-                                    # self.registers["VSR61"],
-                                    ]
+        super(PowerISA, self).__init__(name, descr, path, ins, regs,
+                                       comparators, generators)
+        self._scratch_registers += [
+            self.registers["GPR11"],
+            self.registers["GPR12"],
+            self.registers["FPR28"],
+            self.registers["FPR29"],
+            self.registers["VSR28"],
+            self.registers["VSR29"],
+            self.registers["CR4"],
+            # self.registers["VR28"],
+            # self.registers["VR29"],
+            # self.registers["VSR60"],
+            # self.registers["VSR61"],
+        ]
         self._control_registers += [reg for reg in self.registers.values()
                                     if reg.type.name == "SPR"] + \
                                    [reg for reg in self.registers.values()
@@ -116,15 +117,13 @@ class PowerISA(GenericISA):
 
             else:
 
-                instrs += self.set_register(self.scratch_registers[0],
-                                            value,
+                instrs += self.set_register(self.scratch_registers[0], value,
                                             context)
 
                 if not context.register_has_value(self.scratch_var.address):
 
                     instrs += self.set_register_to_address(
-                        self.scratch_registers[1],
-                        self.scratch_var.address,
+                        self.scratch_registers[1], self.scratch_var.address,
                         context)
                     ldstore_reg = self._scratch_registers[1]
 
@@ -134,9 +133,8 @@ class PowerISA(GenericISA):
                         self.scratch_var.address)[0]
 
                 std_ins = self.new_instruction("STD_V0")
-                std_ins.set_operands([self.scratch_registers[0],
-                                      ldstore_reg,
-                                      0])
+                std_ins.set_operands(
+                    [self.scratch_registers[0], ldstore_reg, 0])
                 instrs.append(std_ins)
 
                 ld_ins = self.new_instruction("LFD_V0")
@@ -165,20 +163,20 @@ class PowerISA(GenericISA):
                 or_ins.set_operands([present_reg, register, present_reg])
                 instrs.append(or_ins)
 
-            elif (not force_reset and current_value is not None and
-                  abs(value - current_value) <= 32767 and opt):
+            elif (not force_reset and current_value is not None
+                  and abs(value - current_value) <= 32767 and opt):
 
                 addi_ins = self.new_instruction("ADDI_V0")
-                addi_ins.set_operands([register, register,
-                                       value - current_value])
+                addi_ins.set_operands(
+                    [register, register, value - current_value])
                 instrs.append(addi_ins)
 
-            elif (closest_value is not None and
-                  abs(value - closest_value) <= 32767 and opt):
+            elif (closest_value is not None
+                  and abs(value - closest_value) <= 32767 and opt):
 
                 addi_ins = self.new_instruction("ADDI_V0")
-                addi_ins.set_operands([register, closest_register,
-                                       value - closest_value])
+                addi_ins.set_operands(
+                    [register, closest_register, value - closest_value])
                 instrs.append(addi_ins)
 
             elif value >= -2147483648 and value <= 2147483647 and opt:
@@ -224,18 +222,20 @@ class PowerISA(GenericISA):
         elif register.type.name == "CR":
 
             if value > 15 and value < 0:
-                LOG.warning("User trying to set a CR register with an invalid "
-                            "value (%d) ", str(value))
+                LOG.warning(
+                    "User trying to set a CR register with an invalid "
+                    "value (%d) ", str(value))
 
             value_4bits = int((value & 0x000000000000000F))
 
-            instrs += self.set_register(self.scratch_registers[0],
-                                        value_4bits,
+            instrs += self.set_register(self.scratch_registers[0], value_4bits,
                                         context)
 
-            fxm_mask = int("".join(
-                list(reversed("{0:08b}".format(2 ** int(
-                    register.representation))))), 2)
+            fxm_mask = int(
+                "".join(
+                    list(
+                        reversed("{0:08b}".format(2**int(
+                            register.representation))))), 2)
 
             mtocrf_ins = self.new_instruction("MTOCRF_V0")
             mtocrf_ins.set_operands([self.scratch_registers[0], fxm_mask])
@@ -254,8 +254,8 @@ class PowerISA(GenericISA):
                 else:
 
                     xxlor_ins = self.new_instruction("XXLOR_V0")
-                    xxlor_ins.set_operands([register, present_reg,
-                                            present_reg])
+                    xxlor_ins.set_operands(
+                        [register, present_reg, present_reg])
                     instrs.append(xxlor_ins)
 
             else:
@@ -270,8 +270,7 @@ class PowerISA(GenericISA):
                     else:
                         instrs += self.set_register_to_address(
                             self.scratch_registers[1],
-                            self.scratch_var.address,
-                            context)
+                            self.scratch_var.address, context)
 
                 if len(str(value).split("_")) == 2:
 
@@ -279,8 +278,9 @@ class PowerISA(GenericISA):
                     item_value = int(str(value).split("_")[0], base=0)
                     item_size = int(str(value).split("_")[1], base=10)
                     item_format_str = "%%0%dx" % (item_size // 4)
-                    value = int((item_format_str %
-                                 item_value) * (128 // item_size), 16)
+                    value = int(
+                        (item_format_str % item_value) * (128 // item_size),
+                        16)
 
                 elif len(str(value).split("_")) == 1:
                     pass
@@ -288,50 +288,47 @@ class PowerISA(GenericISA):
                     raise NotImplementedError("Unknown value format")
 
                 value_high = int((value & 0x0000000000000000FFFFFFFFFFFFFFFF))
-                value_low = int((value &
-                                 0xFFFFFFFFFFFFFFFF0000000000000000) >> 64)
+                value_low = int((value
+                                 & 0xFFFFFFFFFFFFFFFF0000000000000000) >> 64)
 
                 instrs += self.set_register(self.scratch_registers[0],
-                                            value_high,
-                                            context)
+                                            value_high, context)
 
                 std_ins = self.new_instruction("STD_V0")
-                std_ins.set_operands([self.scratch_registers[0],
-                                      self.scratch_registers[1],
-                                      8])
+                std_ins.set_operands(
+                    [self.scratch_registers[0], self.scratch_registers[1], 8])
                 instrs.append(std_ins)
 
                 instrs += self.set_register(self.scratch_registers[0],
-                                            value_low,
-                                            context)
+                                            value_low, context)
 
                 std_ins = self.new_instruction("STD_V0")
-                std_ins.set_operands([self.scratch_registers[0],
-                                      self.scratch_registers[1],
-                                      0])
+                std_ins.set_operands(
+                    [self.scratch_registers[0], self.scratch_registers[1], 0])
                 instrs.append(std_ins)
 
                 if register.type.name == "VR":
 
                     lvx_ins = self.new_instruction("LVX_V1")
-                    lvx_ins.set_operands([register,
-                                          self.registers["GPR0"],
-                                          self.scratch_registers[1]])
+                    lvx_ins.set_operands([
+                        register, self.registers["GPR0"],
+                        self.scratch_registers[1]
+                    ])
                     instrs.append(lvx_ins)
 
                 else:
 
                     # TODO: make sure we use the version where GPR0 is zero
                     lxvd2x_ins = self.new_instruction("LXVD2X_V1")
-                    lxvd2x_ins.set_operands([register,
-                                             self.registers["GPR0"],
-                                             self.scratch_registers[1]])
+                    lxvd2x_ins.set_operands([
+                        register, self.registers["GPR0"],
+                        self.scratch_registers[1]
+                    ])
                     instrs.append(lxvd2x_ins)
 
         elif register.type.name in ["SPR", "SPR32"]:
 
-            instrs += self.set_register(self.scratch_registers[0],
-                                        value,
+            instrs += self.set_register(self.scratch_registers[0], value,
                                         context)
 
             # Skip code generation for register that are
@@ -380,7 +377,10 @@ class PowerISA(GenericISA):
 
         return instrs
 
-    def set_register_to_address(self, register, address, context,
+    def set_register_to_address(self,
+                                register,
+                                address,
+                                context,
                                 force_absolute=False,
                                 force_relative=False):
         instrs = []
@@ -404,8 +404,7 @@ class PowerISA(GenericISA):
 
                 present_reg, taddress = closest
                 displacement = address.displacement - taddress.displacement
-                LOG.debug("Closest value '%s' found in '%s'",
-                          taddress,
+                LOG.debug("Closest value '%s' found in '%s'", taddress,
                           present_reg)
                 LOG.debug("Displacement needed: %s", displacement)
 
@@ -415,8 +414,7 @@ class PowerISA(GenericISA):
                 present_reg = context.registers_get_value(
                     Address(base_address=address.base_address))[0]
                 displacement = address.displacement
-                LOG.debug("Base address '%s' found in '%s'",
-                          taddress,
+                LOG.debug("Base address '%s' found in '%s'", taddress,
                           present_reg)
                 LOG.debug("Displacement needed: %s", displacement)
 
@@ -430,11 +428,11 @@ class PowerISA(GenericISA):
 
             if present_reg is not None:
 
-                if displacement != 0 and abs(displacement) < (2 ** 15):
+                if displacement != 0 and abs(displacement) < (2**15):
 
                     addi_ins = self.new_instruction("ADDI_V0")
-                    addi_ins.set_operands([register, present_reg,
-                                           displacement])
+                    addi_ins.set_operands(
+                        [register, present_reg, displacement])
                     instrs.append(addi_ins)
 
                     LOG.debug("Computing directly from context (short)")
@@ -467,20 +465,16 @@ class PowerISA(GenericISA):
             lis_ins = self.new_instruction("ADDIS_V1")
             lis_ins.operands()[0].set_value(register)
             lis_ins.operands()[1].set_value(0)
-            lis_ins.operands()[2].set_value(
-                "%s@highest" % basename,
-                check=False
-            )
+            lis_ins.operands()[2].set_value("%s@highest" % basename,
+                                            check=False)
 
             instrs.append(lis_ins)
 
             ori_ins = self.new_instruction("ORI_V0")
             ori_ins.operands()[0].set_value(register)
             ori_ins.operands()[1].set_value(register)
-            ori_ins.operands()[2].set_value(
-                "%s@higher" % basename,
-                check=False
-            )
+            ori_ins.operands()[2].set_value("%s@higher" % basename,
+                                            check=False)
             instrs.append(ori_ins)
 
             rldicr_ins = self.new_instruction("RLDICR_V0")
@@ -490,19 +484,13 @@ class PowerISA(GenericISA):
             oris_ins = self.new_instruction("ORIS_V0")
             oris_ins.operands()[0].set_value(register)
             oris_ins.operands()[1].set_value(register)
-            oris_ins.operands()[2].set_value(
-                "%s@h" % basename,
-                check=False
-            )
+            oris_ins.operands()[2].set_value("%s@h" % basename, check=False)
             instrs.append(oris_ins)
 
             ori_ins = self.new_instruction("ORI_V0")
             ori_ins.operands()[0].set_value(register)
             ori_ins.operands()[1].set_value(register)
-            ori_ins.operands()[2].set_value(
-                "%s@l" % basename,
-                check=False
-            )
+            ori_ins.operands()[2].set_value("%s@l" % basename, check=False)
             instrs.append(ori_ins)
 
             if address.displacement != 0:
@@ -533,8 +521,7 @@ class PowerISA(GenericISA):
             if base_address == "data":
                 base_address = Address(base_address=base_address)
             elif base_address == "code":
-                base_address = InstructionAddress(
-                    base_address=base_address)
+                base_address = InstructionAddress(base_address=base_address)
 
         source_register = None
         if context.register_has_value(base_address):
@@ -561,7 +548,7 @@ class PowerISA(GenericISA):
                         base_address=base_address.base_address)
                     break
 
-        if source_register is None or displacement >= (2 ** 31):
+        if source_register is None or displacement >= (2**31):
             # Not source register found
             if base_address.base_address == "data":
                 value = context.data_segment
@@ -572,11 +559,9 @@ class PowerISA(GenericISA):
                 raise MicroprobeCodeGenerationError(
                     "Unable to generate "
                     "the base address: '%s'"
-                    " for target address: '%s'."
-                    % (base_address, address)
-                )
+                    " for target address: '%s'." % (base_address, address))
 
-            if abs(displacement) >= (2 ** 31):
+            if abs(displacement) >= (2**31):
                 value = value + displacement
                 displacement = 0
 
@@ -644,6 +629,8 @@ class PowerISA(GenericISA):
             stb_ins.operands()[0].set_value(register)
             stb_ins.memory_operands()[0].set_address(address, context)
             return [stb_ins]
+
+
 #        elif length == 128:
 #            std_ins1 = self.new_instruction("STD_V0")
 #            std_ins1.operands()[0].set_value(register)
@@ -681,24 +668,24 @@ class PowerISA(GenericISA):
         if length == 64:
 
             dcffix_ins = self.new_instruction("DCFFIX_V0")
-            dcffix_ins.set_operands([self.scratch_registers[2],
-                                     self.scratch_registers[3]])
+            dcffix_ins.set_operands(
+                [self.scratch_registers[2], self.scratch_registers[3]])
             instrs.append(dcffix_ins)
-            instrs += self.store_float(self.scratch_registers[2],
-                                       address, context)
+            instrs += self.store_float(self.scratch_registers[2], address,
+                                       context)
 
         elif length == 128:
 
             dcffixq_ins = self.new_instruction("DCFFIXQ_V0")
-            dcffixq_ins.set_operands([self.scratch_registers[2],
-                                      self.scratch_registers[3]])
+            dcffixq_ins.set_operands(
+                [self.scratch_registers[2], self.scratch_registers[3]])
             instrs.append(dcffixq_ins)
 
             # TODO: This assumes a 64-bit store
-            instrs += self.store_float(self.scratch_registers[2],
-                                       address, context)
-            instrs += self.store_float(self.scratch_registers[3],
-                                       address + 8, context)
+            instrs += self.store_float(self.scratch_registers[2], address,
+                                       context)
+            instrs += self.store_float(self.scratch_registers[3], address + 8,
+                                       context)
 
         else:
 
@@ -764,21 +751,21 @@ class PowerISA(GenericISA):
                 or_ins.set_operands([origreg, register, origreg])
                 instrs.append(or_ins)
 
-            if abs(value) >= (2 ** 31):
+            if abs(value) >= (2**31):
 
                 raise NotImplementedError
 
-            if abs(value) >= (2 ** 16):
+            if abs(value) >= (2**16):
 
-                shift_value = value // (2 ** 16)
+                shift_value = value // (2**16)
 
                 addis_ins = self.new_instruction("ADDIS_V0")
                 addis_ins.set_operands([register, register, shift_value])
                 instrs.append(addis_ins)
 
-                value = value - (shift_value * (2 ** 16))
+                value = value - (shift_value * (2**16))
 
-            if abs(value) < (2 ** 15):
+            if abs(value) < (2**15):
 
                 if register.name != "GPR0":
                     addi_ins = self.new_instruction("ADDI_V0")
@@ -831,15 +818,14 @@ class PowerISA(GenericISA):
             if val1.type.name == "GPR":
 
                 cmp_ins = self.new_instruction("CMP_V0")
-                cmp_ins.set_operands([self.scratch_registers[6], 1,
-                                      val1, val2])
+                cmp_ins.set_operands(
+                    [self.scratch_registers[6], 1, val1, val2])
                 instrs.append(cmp_ins)
 
             elif val1.type.name == "FPR":
 
                 fcmpu_ins = self.new_instruction("FCMPU_V0")
-                fcmpu_ins.set_operands([self.scratch_registers[6],
-                                        val1, val2])
+                fcmpu_ins.set_operands([self.scratch_registers[6], val1, val2])
                 instrs.append(fcmpu_ins)
 
             else:
@@ -914,8 +900,7 @@ class PowerISA(GenericISA):
     def context_var(self):
         if self._context_var is None:
             self._context_var = VariableArray(
-                "%s_CONTEXT_VAR" % self._name.upper(), "uint8_t", 600
-            )
+                "%s_CONTEXT_VAR" % self._name.upper(), "uint8_t", 600)
         return self._context_var
 
     def set_context(self, variable=None, tmpl_path=None):
@@ -923,11 +908,8 @@ class PowerISA(GenericISA):
         if tmpl_path is None:
             tmpl_path = _MODULE_DIR
 
-        return super(
-            PowerISA,
-            self).set_context(
-            variable=variable,
-            tmpl_path=tmpl_path)
+        return super(PowerISA, self).set_context(variable=variable,
+                                                 tmpl_path=tmpl_path)
 
     def get_context(self, variable=None, tmpl_path=None):
         """ """
@@ -935,8 +917,5 @@ class PowerISA(GenericISA):
         if tmpl_path is None:
             tmpl_path = _MODULE_DIR
 
-        return super(
-            PowerISA,
-            self).get_context(
-            variable=variable,
-            tmpl_path=tmpl_path)
+        return super(PowerISA, self).get_context(variable=variable,
+                                                 tmpl_path=tmpl_path)

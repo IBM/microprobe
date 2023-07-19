@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 power_v206_power7_ppc64_linux_gcc_fu_stress.py
 
@@ -93,8 +92,10 @@ def main_setup():
                 continue
 
             if unit not in func_units:
-                func_units[unit] = [elem for elem in target.elements.values()
-                                    if elem.name == unit][0]
+                func_units[unit] = [
+                    elem for elem in target.elements.values()
+                    if elem.name == unit
+                ][0]
 
     # Create the CLI interface object
     cmdline = microprobe.utils.cmdline.CLI("ISA power v206 profile example",
@@ -103,16 +104,14 @@ def main_setup():
                                            debug_options=False)
 
     # Add the different parameters for this particular tool
-    cmdline.add_option(
-        "functional_unit",
-        "f",
-        [func_units['ALU']],
-        "Functional units to stress. Default: ALU",
-        required=False,
-        nargs="+",
-        choices=func_units,
-        opt_type=dict_key(func_units),
-        metavar="FUNCTIONAL_UNIT_NAME")
+    cmdline.add_option("functional_unit",
+                       "f", [func_units['ALU']],
+                       "Functional units to stress. Default: ALU",
+                       required=False,
+                       nargs="+",
+                       choices=func_units,
+                       opt_type=dict_key(func_units),
+                       metavar="FUNCTIONAL_UNIT_NAME")
 
     cmdline.add_option(
         "output_prefix",
@@ -123,40 +122,35 @@ def main_setup():
         required=False,
         metavar="PREFIX")
 
-    cmdline.add_option(
-        "output_path",
-        "O",
-        "./",
-        "Output path. Default: current path",
-        opt_type=existing_dir,
-        metavar="PATH")
+    cmdline.add_option("output_path",
+                       "O",
+                       "./",
+                       "Output path. Default: current path",
+                       opt_type=existing_dir,
+                       metavar="PATH")
 
     cmdline.add_option(
         "size",
         "S",
-        64,
-        "Benchmark size (number of instructions in the endless loop). "
+        64, "Benchmark size (number of instructions in the endless loop). "
         "Default: 64 instructions",
         opt_type=int_type(1, 2**20),
         metavar="BENCHMARK_SIZE")
 
-    cmdline.add_option(
-        "dependency_distance",
-        "D",
-        1000,
-        "Average dependency distance between the instructions. "
-        "Default: 1000 (no dependencies)",
-        opt_type=int_type(1, 1000),
-        metavar="DEPENDECY_DISTANCE")
+    cmdline.add_option("dependency_distance",
+                       "D",
+                       1000,
+                       "Average dependency distance between the instructions. "
+                       "Default: 1000 (no dependencies)",
+                       opt_type=int_type(1, 1000),
+                       metavar="DEPENDECY_DISTANCE")
 
-    cmdline.add_option(
-        "average_latency",
-        "L",
-        2,
-        "Average latency of the selected instructins. "
-        "Default: 2 cycles",
-        opt_type=float_type(1, 1000),
-        metavar="AVERAGE_LATENCY")
+    cmdline.add_option("average_latency",
+                       "L",
+                       2, "Average latency of the selected instructins. "
+                       "Default: 2 cycles",
+                       opt_type=float_type(1, 1000),
+                       metavar="AVERAGE_LATENCY")
 
     # Start the main
     print_info("Processing input arguments...")
@@ -186,8 +180,7 @@ def _main(arguments):
     if functional_units is None:
         functional_units = ["ALL"]
 
-    _generate_benchmark(target,
-                        "%s/%s_" % (output_path, prefix),
+    _generate_benchmark(target, "%s/%s_" % (output_path, prefix),
                         (functional_units, size, latency, distance))
 
 
@@ -225,7 +218,8 @@ def _generate_benchmark(target, output_prefix, args):
         # generation of the microbenchmark, given a set of passes
         # (a.k.a. transformations) to apply to the an empty internal
         # representation of the microbenchmark
-        synth = microprobe.code.Synthesizer(target, cwrapper(),
+        synth = microprobe.code.Synthesizer(target,
+                                            cwrapper(),
                                             value=0b01010101)
 
         # Add the transformation passes
@@ -241,17 +235,14 @@ def _generate_benchmark(target, output_prefix, args):
         # Pass 2: Add a building block of size 'size'                         #
         #######################################################################
         synth.add_pass(
-            microprobe.passes.structure.SimpleBuildingBlockPass(size)
-        )
+            microprobe.passes.structure.SimpleBuildingBlockPass(size))
 
         #######################################################################
         # Pass 3: Fill the building block with the instruction sequence       #
         #######################################################################
         synth.add_pass(
             microprobe.passes.instruction.SetInstructionTypeByElementPass(
-                target,
-                functional_units,
-                {}))
+                target, functional_units, {}))
 
         #######################################################################
         # Pass 4: Compute addresses of instructions (this pass is needed to   #
@@ -259,8 +250,7 @@ def _generate_benchmark(target, output_prefix, args):
         #         case addresses are required, they are up to date).          #
         #######################################################################
         synth.add_pass(
-            microprobe.passes.address.UpdateInstructionAddressesPass()
-        )
+            microprobe.passes.address.UpdateInstructionAddressesPass())
 
         #######################################################################
         # Pass 5: Set target of branches to be the next instruction in the    #
@@ -273,26 +263,23 @@ def _generate_benchmark(target, output_prefix, args):
         #         in a round-robin fashion in stride 256 bytes.               #
         #         The pattern would be: 0, 256, 512, .... 3840, 0, 256, ...   #
         #######################################################################
-        synth.add_pass(
-            microprobe.passes.memory.SingleMemoryStreamPass(
-                16,
-                256))
+        synth.add_pass(microprobe.passes.memory.SingleMemoryStreamPass(
+            16, 256))
 
         #######################################################################
         # Pass 7.A: Initialize the storage locations accessed by floating     #
         #           point instructions to have a valid floating point value   #
         #######################################################################
-        synth.add_pass(microprobe.passes.float.InitializeMemoryFloatPass(
-            value=1.000000000000001)
-        )
+        synth.add_pass(
+            microprobe.passes.float.InitializeMemoryFloatPass(
+                value=1.000000000000001))
 
         #######################################################################
         # Pass 7.B: Initialize the storage locations accessed by decimal      #
         #           instructions to have a valid decimal value                #
         #######################################################################
         synth.add_pass(
-            microprobe.passes.decimal.InitializeMemoryDecimalPass(
-                value=1))
+            microprobe.passes.decimal.InitializeMemoryDecimalPass(value=1))
 
         #######################################################################
         # Pass 8: Set the remaining instructions operands (if not set)        #
