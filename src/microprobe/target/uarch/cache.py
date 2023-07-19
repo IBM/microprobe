@@ -349,7 +349,7 @@ class SetAssociativeCache(Cache):
 class CacheHierarchy:
     """Class to represent a cache hierarchy."""
 
-    def __init__(self, caches: List[Cache]):
+    def __init__(self, caches):
         """
 
         :param caches:

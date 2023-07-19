@@ -296,7 +296,7 @@ class GenericMicroarchitecture(Microarchitecture):
         self._name = name
         self._descr = descr
         self._elements = elements
-        self._target = None
+        self._target: Target | None = None
         self._instruction_property_defs = instruction_properties_defs
 
     @property

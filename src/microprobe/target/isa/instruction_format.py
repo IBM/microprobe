@@ -45,7 +45,7 @@ __all__ = [
 
 
 # Functions
-def import_definition(cls, filenames: List[str], ifields):
+def import_definition(cls, filenames, ifields):
     """
 
     :param filenames:

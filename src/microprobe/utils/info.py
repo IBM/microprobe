@@ -17,13 +17,14 @@
 
 # Futures
 from __future__ import absolute_import
+from typing import List
 
 # Own modules
 from microprobe import MICROPROBE_RC
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
-__credits__ = []
+__credits__: List[str] = []
 __license__ = "Apaceh Version 2.0"
 __version__ = "0.5"
 __maintainer__ = "Ramon Bertran"

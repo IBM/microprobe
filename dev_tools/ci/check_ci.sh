@@ -23,6 +23,7 @@ shellcheck -x -s sh ./*.sh dev_tools/*/*.sh ./targets/*/dev_tools/*/*.sh
 ./dev_tools/ci/code_conventions_001_pycodestyle.sh
 ./dev_tools/ci/code_conventions_002_pylint.sh
 ./dev_tools/ci/code_conventions_003_documentation.sh
+./dev_tools/ci/code_conventions_004_mypy.sh
 # Fast Functional Tests (run for branches and PR)
 ./dev_tools/ci/test_001_end2end_tools.sh
 ./dev_tools/ci/test_002_end2end_examples.sh

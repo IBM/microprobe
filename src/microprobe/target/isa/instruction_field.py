@@ -21,7 +21,7 @@ from __future__ import absolute_import, annotations
 # Built-in modules
 import abc
 import os
-from typing import TYPE_CHECKING, Dict, List, Tuple
+from typing import TYPE_CHECKING, Dict, List, Tuple, cast
 
 # Third party modules
 
@@ -64,12 +64,12 @@ def import_definition(cls, filenames: List[str], operands: Dict[str, Operand]):
         for elem in ifield_data:
             name = elem["Name"]
             descr = elem.get("Description", "No description")
-            size = elem["Size"]
-            show = elem.get("Show", False)
-            fio = elem.get("IO", "?")
-            operand_def = elem.get("Operand", "Zero")
+            size = cast(int, elem["Size"])
+            show = cast(bool, elem.get("Show", False))
+            fio = cast(str, elem.get("IO", "?"))
+            operand_def = cast(str, elem.get("Operand", "Zero"))
 
-            key = tuple([size, show, fio, operand_def])
+            key = (size, show, fio, operand_def)
 
             if key in ifields_duplicated:
                 LOG.warning(

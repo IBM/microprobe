@@ -79,7 +79,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         self._symbolic = symbolic
         self._fabsolute = absolute
 
-        self._dat = None
+        self._dat: DynamicAddressTranslation | None = None
 
         if default_context is not None:
             self = default_context.copy()
@@ -167,7 +167,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         # assert value in self._value_registers.keys()
         # assert self._register_values[register] == value
 
-    def get_closest_value(self, value: int | float | Address | str):
+    def get_closest_value(self, value):
         """Returns the closest value to the given value.
 
         Returns the closest value to the given value. If there are
@@ -179,7 +179,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        possible_regs: List[Tuple[Register, int | float | Address | str]] = []
+        possible_regs = []
 
         for reg, val in self._register_values.items():
 
@@ -224,7 +224,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         return None
 
-    def get_register_closest_value(self, value: int | float | str):
+    def get_register_closest_value(self, value):
         """Returns the register with the closest value to the given value.
 
         Returns the register with the closest value to the given value.
@@ -237,7 +237,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        possible_regs: List[Tuple[Register, int | float | str]] = []
+        possible_regs = []
 
         for reg, reg_value in self._register_values.items():
 
@@ -248,6 +248,8 @@ class Context(object):  # pylint: disable=too-many-public-methods
                 continue
 
             if isinstance(reg_value, str):
+                # Type hinting needs some help with this one :)
+                assert isinstance(value, str)
                 if reg_value.split("_")[1] != value.split(" ")[1]:
                     continue
 
@@ -310,7 +312,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         for reg in registers:
             self.unset_register(reg)
 
-    def unset_register(self, register: Register):
+    def unset_register(self, register):
         """Remove the value from a register.
 
         :param register: Registers
