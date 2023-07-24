@@ -55,6 +55,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                  rand: random.Random,
                  minimize=False,
                  value=None,
+                 lmul=1,
                  dd: Union[int, float] = 0,
                  relax=False):
         """
@@ -80,6 +81,8 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
         else:
             raise MicroprobeValueError("Invalid parameter")
 
+        self._lmul = lmul
+
         self._relax = relax
 
         if value is not None:
@@ -101,6 +104,18 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
         """
 
         allregs = target.registers
+
+        # RISC-V Specific
+        all_vec_regs = set([f"V{i}" for i in range(0, 32)])
+        lmul_allowed_regs = set([f"V{i}" for i in range(0, 32, self._lmul)])
+        if self._dd != 0:
+            # Play it safe, we might have a narrowing/widening insn.
+            # Pretend our lmul is one higher than it is.
+            lmul_allowed_regs = set([f"V{i}" for i in range(0, 32, self._lmul * 2)])
+        for lmul_disallowed_reg in all_vec_regs - lmul_allowed_regs:
+            if lmul_disallowed_reg in allregs:
+                del allregs[lmul_disallowed_reg]
+
         lastdefined = {}
         lastused = {}
         rregs = set(building_block.context.reserved_registers)

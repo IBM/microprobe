@@ -19,6 +19,12 @@
   Size: 64
   Description: Floating Point Register 64 bits
   FloatArithmetic: True
+- Name: vreg
+  Size: 1024
+  Description: Vector Register 1024 bits (max possible specified by Vector spec)
 - Name: SPR
   Size: 64
   Description: Special Purpose Register (64 bits)
+- Name: LMUL
+  Size: 64
+  Description: LMUL register

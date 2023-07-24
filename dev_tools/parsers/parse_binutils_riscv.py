@@ -9,6 +9,12 @@ import yaml
 
 VECTOR_EXTS = [
     "INSN_CLASS_V",
+    "INSN_CLASS_ZVBB",
+    "INSN_CLASS_ZVBC",
+    "INSN_CLASS_ZVKNED",
+    "INSN_CLASS_ZVKN",
+    "INSN_CLASS_ZVKS",
+    "INSN_CLASS_ZVEF",
 ]
 
 
@@ -88,6 +94,25 @@ def get_pattern_info() -> Dict[str, PatternInfo]:
         ["funct10", "vd", "vrs2", "rs1", "opcode"], "OPC vd, rs1, vrs2"
     )
 
+    # Vec, Float -> Vec patterns
+    pattern_info_dict["Vd,Vt,S"] = PatternInfo(
+        ["funct10", "vd", "vrs2", "frs1", "opcode"], "OPC vd, vrs2, frs1"
+    )
+    pattern_info_dict["Vd,S,Vt"] = PatternInfo(
+        ["funct10", "vd", "vrs2", "frs1", "opcode"],
+        "OPC vd, frs1, vrs2",
+    )
+
+    # Float -> Vec patterns
+    pattern_info_dict["Vd,S"] = PatternInfo(
+        ["funct10", "funct5", "vd", "frs1", "opcode"], "OPC vd, frs1"
+    )
+
+    # Vec -> Float patterns
+    pattern_info_dict["D,Vt"] = PatternInfo(
+        ["funct10", "funct5", "frd", "vrs2", "opcode"], "OPC frd, vrs2"
+    )
+
     # Vec -> Vec patterns
     pattern_info_dict["Vd,Vs"] = PatternInfo(
         ["funct10", "funct5", "vd", "vrs1", "opcode"], "OPC vd, vrs1"
@@ -102,10 +127,6 @@ def get_pattern_info() -> Dict[str, PatternInfo]:
     pattern_info_dict["Vd,Vs,Vt"] = PatternInfo(
         ["funct10", "vd", "vrs1", "vrs2", "opcode"],
         "OPC vd, vrs1, vrs2",
-    )
-    pattern_info_dict["Vd,S,Vt"] = PatternInfo(
-        ["funct10", "vd", "rs1", "vrs2", "opcode"],
-        "OPC vd, rs1, vrs2",
     )
     pattern_info_dict["Vd,Vt"] = PatternInfo(
         ["funct10", "funct5", "vd", "vrs2", "opcode"], "OPC vd, vrs2"
@@ -148,6 +169,32 @@ def get_pattern_info() -> Dict[str, PatternInfo]:
     pattern_info_dict["Vd,Vt,Vl"] = PatternInfo(
         ["funct5", "funct4", "vd", "vrs2", "i_imm6", "opcode"],
         "OPC vd, vrs2, i_imm6",
+    )
+
+    pattern_info_dict["Vd,Vt,Vs,V0"] = PatternInfo(
+        ["funct5", "vmd", "vrs2", "vrs1", "vmask", "opcode"],
+        "OPC vmd, vrs1, vrs2, vmask",
+    )
+
+    pattern_info_dict["Vd,Vt,s,V0"] = PatternInfo(
+        ["funct5", "vmd", "vrs2", "rs1", "vmask", "opcode"],
+        "OPC vmd, vrs2, rs1, vmask",
+    )
+
+    # Float
+    pattern_info_dict["Vd,Vt,S,V0"] = PatternInfo(
+        ["funct5", "vmd", "vrs2", "frs1", "vmask", "opcode"],
+        "OPC vmd, vrs2, frs1, vmask",
+    )
+
+    pattern_info_dict["d,Vt"] = PatternInfo(
+        ["funct10", "funct5", "rd", "vrs2", "opcode"],
+        "OPC rd, vrs2",
+    )
+
+    pattern_info_dict["d,VtVm"] = PatternInfo(
+        ["funct10", "rd", "vrs2", "vmask", "opcode"],
+        "OPC rd, vrs2, vmask.t",
     )
 
     # Add masked variants
@@ -209,26 +256,6 @@ def get_pattern_info() -> Dict[str, PatternInfo]:
             )
 
     pattern_info_dict |= widening_patterns
-
-    pattern_info_dict["Vd,Vt,Vs,V0"] = PatternInfo(
-        ["funct5", "vmd", "vrs2", "vrs1", "vmask", "opcode"],
-        "OPC vmd, vrs1, vrs2, vmask",
-    )
-
-    pattern_info_dict["Vd,Vt,s,V0"] = PatternInfo(
-        ["funct5", "vmd", "vrs2", "rs1", "vmask", "opcode"],
-        "OPC vmd, vrs2, rs1, vmask",
-    )
-
-    pattern_info_dict["d,Vt"] = PatternInfo(
-        ["funct10", "funct5", "rd", "vrs2", "opcode"],
-        "OPC rd, vrs2",
-    )
-
-    pattern_info_dict["d,VtVm"] = PatternInfo(
-        ["funct10", "rd", "vrs2", "vmask", "opcode"],
-        "OPC rd, vrs2, vmask.t",
-    )
 
     return pattern_info_dict
 

@@ -1779,6 +1779,13 @@ class GenericInstructionType(InstructionType):
                         "," + field.name + ")",
                         "," + next_operand_value().representation + ")", 1)
 
+                elif assembly_str.find(" " + field.name + ".t") >= 0:
+                    assembly_str = assembly_str.replace(
+                        ", " + field.name + ".t",
+                        ", " + next_operand_value().representation + ".t",
+                        1,
+                    )
+
                 else:
                     LOG.debug(
                         "%s",
