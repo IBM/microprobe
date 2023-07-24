@@ -16,9 +16,10 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, annotations
 
 # Built-in modules
+from typing import TYPE_CHECKING
 
 # Third party modules
 from six.moves import zip
@@ -36,6 +37,10 @@ from microprobe.utils.logger import get_logger
 
 # Local modules
 
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.benchmark import Benchmark
+    from microprobe.target import Target
 
 # Constants
 LOG = get_logger(__name__)
@@ -222,6 +227,7 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         skip_unknown = kwargs.get("skip_unknown", False)
         warn_unknown = kwargs.get("warn_unknown", False)
         self._force_code = kwargs.get("force_code", False)
+        self.lmul = kwargs.get("lmul", 1)
 
         if len(args) == 1:
             self._reg_dict = dict([
@@ -250,7 +256,7 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                                                            self._fp_value,
                                                            v_value)
 
-    def __call__(self, building_block, target):
+    def __call__(self, building_block: Benchmark, target: Target):
         """
 
         :param building_block:
@@ -259,26 +265,26 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         """
         if not self._skip_unknown:
             for register_name in self._reg_dict:
-                if register_name not in list(target.registers.keys()):
+                if register_name not in list(target.isa.registers.keys()):
                     raise MicroprobeCodeGenerationError(
                         "Unknown register name: '%s'. Unable to set it" %
                         register_name)
 
         if self._warn_unknown:
             for register_name in self._reg_dict:
-                if register_name not in list(target.registers.keys()):
+                if register_name not in list(target.isa.registers.keys()):
                     print_warning(
                         "Unknown register name: '%s'. Unable to set it" %
                         register_name)
 
-        regs = sorted(target.registers.values(),
+        regs = sorted(target.isa.registers.values(),
                       key=lambda x: self._priolist.index(x.name)
                       if x.name in self._priolist else 314159)
 
         #
         # Make sure scratch registers are set last
         #
-        for reg in target.scratch_registers:
+        for reg in target.isa.scratch_registers:
             if reg in regs:
                 regs.remove(reg)
                 regs.append(reg)
@@ -294,17 +300,31 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                 self._reg_dict.pop(reg.name)
                 force_direct = True
 
-            if (reg in building_block.context.reserved_registers and
-                    not self._force_reserved):
+            if reg.name == "LMUL":
+                building_block.add_init(
+                    target.isa.set_register(reg, self.lmul,
+                                            building_block.context))
+                building_block.context.set_register_value(reg, self.lmul)
+                continue
+
+            all_vec_regs = set([f"V{i}" for i in range(0, 32)])
+            lmul_allowed_regs = set([f"V{i}" for i in range(0, 32, self.lmul)])
+
+            if reg.name in all_vec_regs - lmul_allowed_regs:
+                # Skip vector registers ignored by lmul
+                continue
+
+            if (reg in building_block.context.reserved_registers
+                    and not self._force_reserved):
                 LOG.debug("Skip reserved - %s", reg)
                 continue
-            elif (reg in target.control_registers and
-                    (value is None or self._skip_control)):
+            elif (reg in target.isa.control_registers
+                  and (value is None or self._skip_control)):
                 LOG.debug("Skip control - %s", reg)
                 continue
 
             if value is None:
-                if reg.used_for_vector_arithmetic:
+                if reg.type.used_for_vector_arithmetic:
                     if self._vect_value is not None:
                         value = self._vect_value
                         elemsize = self._vect_elemsize
@@ -312,7 +332,7 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                         LOG.debug("Skip no vector default value provided - %s",
                                   reg)
                         continue
-                elif reg.used_for_float_arithmetic:
+                elif reg.type.used_for_float_arithmetic:
                     if self._fp_value is not None:
                         value = self._fp_value
                     else:
@@ -332,10 +352,10 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                 if isinstance(value, int):
                     value = value & ((2**reg.size)-1)
 
-                if reg.used_for_float_arithmetic:
+                if reg.type.used_for_float_arithmetic:
                     value = ieee_float_to_int64(float(value))
 
-                elif reg.used_for_vector_arithmetic:
+                elif reg.type.used_for_vector_arithmetic:
                     if isinstance(value, float):
                         if elemsize != 64:
                             raise MicroprobeCodeGenerationError(
@@ -360,13 +380,13 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                     else:
                         LOG.debug("Direct set of '%s' to '0x%x'", reg, value)
                 except MicroprobeCodeGenerationError:
-                    building_block.add_init(target.set_register(
+                    building_block.add_init(target.isa.set_register(
                         reg, value, building_block.context))
                     LOG.debug("Set '%s' to '0x%x'", reg, value)
                 except MicroprobeDuplicatedValueError:
                     LOG.debug("Skip already set - %s", reg)
             else:
-                building_block.add_init(target.set_register(
+                building_block.add_init(target.isa.set_register(
                     reg, value, building_block.context))
             building_block.context.set_register_value(reg, value)
 
