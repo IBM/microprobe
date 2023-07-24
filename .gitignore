@@ -18,6 +18,7 @@ htmlcov
 dev_tools/ci/*.sh.error
 dev_tools/ci/*.sh.html
 dev_tools/ci/*.sh.txt
+dev_tools/parsers/gen/*
 .*.swp
 .coverage
 .coverage.*
@@ -50,3 +51,4 @@ TAGS
 doc/error.log
 doc/errors.txt
 get_pip
+/.vscode
