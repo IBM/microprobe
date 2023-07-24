@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function, annotations
 # Built-in modules
 import copy
 from itertools import product
-from typing import TYPE_CHECKING, Callable, List
+from typing import TYPE_CHECKING, Callable, Dict, List
 
 # Third party modules
 
@@ -1603,7 +1603,8 @@ class Instruction(Pickable):
         self._generic_type = None
         self._label = None
         self._mem_operands = []
-        self._operands = RejectingOrderedDict()
+        self._operands: Dict[str,
+                             InstructionOperandValue] = RejectingOrderedDict()
 
     def set_arch_type(self, instrtype):
         """
@@ -1612,7 +1613,8 @@ class Instruction(Pickable):
 
         """
         self._arch_type = instrtype
-        self._operands = RejectingOrderedDict()
+        self._operands: Dict[str,
+                             InstructionOperandValue] = RejectingOrderedDict()
         self._mem_operands = []
         self._allowed_regs = []
         self._address = None

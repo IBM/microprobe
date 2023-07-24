@@ -27,7 +27,19 @@
   Repeat:
     From: 0
     To: 31
+- Name: V0
+  Type: vreg
+  Representation: 'v0'
+  Codification: '0'
+  Description: Vector Register 0
+  Repeat:
+    From: 0
+    To: 31
 - Name: PC
   Type: SPR
   Representation: 'N/A'
   Description: Program Counter register
+- Name: LMUL
+  Type: LMUL
+  Representation: 'N/A'
+  Description: LMUL register

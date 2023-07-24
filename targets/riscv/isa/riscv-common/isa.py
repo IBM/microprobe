@@ -227,9 +227,62 @@ class RISCVISA(GenericISA):
                 instr.set_operands([int(value & 0x3FF), register, register])
                 instrs.append(instr)
 
-        else:
+        elif register.type.name == "vreg":
+            LOG.debug("Vector register")
+
+            if present_reg is not None:
+                LOG.debug("Value already present")
+
+                instr = self.new_instruction("vmv.v.v_Vd-Vs")
+                instr.set_operands([register, present_reg])
+                instrs.append(instr)
+
+            else:
+                # Load the value into the vector register 1 chunk at a time.
+                # TODO: Fix this.
+                # Currently each chunk will overwrite the existing chunks.
+
+                chunks = [
+                    (value >> 1024 - (64 * i)) & 0xFFFFFFFFFFFFFFFF
+                    for i in range(1, 17)
+                ]
+
+                for chunk in chunks:
+                    # Set register to shift amount
+                    instrs.extend(
+                        self.set_register(
+                            self._scratch_registers[0], 64, context)
+                    )
+
+                    # Shift existing vector register value
+                    shiftleft = self.new_instruction("vsll.vx_Vd-Vt-s")
+                    shiftleft.set_operands(
+                        [register, register, self._scratch_registers[0]]
+                    )
+                    instrs.append(shiftleft)
+
+                    # Set int register to chunk
+                    instrs.extend(
+                        self.set_register(
+                            self._scratch_registers[0], chunk, context)
+                    )
+
+                    # Add chunk to the shifted register
+                    vadd = self.new_instruction("vadd.vx_Vd-Vt-s")
+                    vadd.set_operands(
+                        [register, register, self._scratch_registers[0]])
+                    instrs.append(vadd)
+
             LOG.debug("Register: %s set to value %d", register.name, value)
-            raise NotImplementedError
+        elif register.type.name == "LMUL" and value in [1, 2, 4, 8]:
+            vset = self.new_instruction(f"vsetivli_lmul{value}")
+            instrs.append(vset)
+            LOG.debug("Register: %s set to value %d", register.name, value)
+        else:
+            raise NotImplementedError(
+                "Microprobe doesn't know how to initialize "
+                f"{register.type.name} register with value {value}."
+            )
 
         if len(instrs) > 0:
             return instrs
