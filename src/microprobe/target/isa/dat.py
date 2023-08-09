@@ -29,6 +29,7 @@ from microprobe.exceptions import MicroprobeAddressTranslationError, \
     MicroprobeDuplicatedValueError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 
@@ -39,6 +40,7 @@ __all__ = ["DynamicAddressTranslation", "GenericDynamicAddressTranslation"]
 
 
 # Classes
+@typeguard_testsuite
 class DynamicAddressTranslation(abc.ABC):
     """ """
 
@@ -89,6 +91,7 @@ class DynamicAddressTranslation(abc.ABC):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericDynamicAddressTranslation(DynamicAddressTranslation):
     """ """
 
@@ -179,6 +182,7 @@ class GenericDynamicAddressTranslation(DynamicAddressTranslation):
             self._control[key] = value['value']
 
 
+@typeguard_testsuite
 class DATmap:
     """ """
 

@@ -20,7 +20,7 @@ from __future__ import absolute_import, annotations, print_function
 
 # Built in modules
 import hashlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 # Third party modules
 import six
@@ -29,6 +29,7 @@ import six
 from microprobe.code.var import Variable
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -42,6 +43,7 @@ __all__ = ["MemoryValue", "Address", "InstructionAddress"]
 
 
 # Classes
+@typeguard_testsuite
 class Address:
     """Class to represent an address."""
 
@@ -72,7 +74,7 @@ class Address:
         self._hash = None
 
     @property
-    def base_address(self) -> Variable | str | None:
+    def base_address(self) -> Union[Variable, str, None]:
         """Base address of the address (:class:`~.str`)"""
         return self._base_address
 
@@ -329,6 +331,7 @@ class Address:
             raise NotImplementedError
 
 
+@typeguard_testsuite
 class InstructionAddress(Address):
     """Class to represent an instruction address."""
 
@@ -417,12 +420,13 @@ class InstructionAddress(Address):
         return super(InstructionAddress, self).__sub__(other)
 
 
+@typeguard_testsuite
 class MemoryValue(object):
     """Class to represent a value in memory."""
 
     _cmp_attributes = ['address', 'value', 'length']
 
-    def __init__(self, address: Address, value: int, length: int):
+    def __init__(self, address: Address, value: int | float, length: int):
         """
 
         :param address:

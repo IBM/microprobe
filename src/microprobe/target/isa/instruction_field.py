@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING, Dict, List, Tuple, cast
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Type hinting
@@ -43,7 +44,8 @@ __all__ = ["import_definition", "InstructionField", "GenericInstructionField"]
 
 
 # Functions
-def import_definition(cls, filenames: List[str], operands: Dict[str, Operand]):
+@typeguard_testsuite
+def import_definition(cls, filenames: List[str], operands: Dict[str, "Operand"]):
     """
 
     :param filenames:
@@ -103,6 +105,7 @@ def import_definition(cls, filenames: List[str], operands: Dict[str, Operand]):
 
 
 # Classes
+@typeguard_testsuite
 class InstructionField(abc.ABC):
     """Abstract class to represent an instruction field"""
 
@@ -145,6 +148,7 @@ class InstructionField(abc.ABC):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericInstructionField(InstructionField):
     """Instruction field generic class.
 

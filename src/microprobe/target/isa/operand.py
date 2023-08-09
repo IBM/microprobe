@@ -36,6 +36,7 @@ from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
 from microprobe.target.isa.register import Register
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, natural_sort
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Constants
@@ -52,6 +53,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def import_definition(filenames, inherits, registers):
     """
 
@@ -255,6 +257,7 @@ def import_definition(filenames, inherits, registers):
     return operands
 
 
+@typeguard_testsuite
 def _format_integer(operand, value):
 
     if MICROPROBE_RC['hex_all']:
@@ -276,6 +279,7 @@ def _format_integer(operand, value):
 
 
 # Classes
+@typeguard_testsuite
 class OperandDescriptor:
     """Class to represent an operand descriptor.
 
@@ -328,6 +332,7 @@ class OperandDescriptor:
                                    self._is_input, self._is_output)
 
 
+@typeguard_testsuite
 class MemoryOperandDescriptor:
     """Class to represent a memory operand descriptor.
 
@@ -419,6 +424,7 @@ class MemoryOperandDescriptor:
         return rstr
 
 
+@typeguard_testsuite
 class MemoryOperand:
     """This represents a machine instruction memory operand. It contains
     the operands, the formula, the
@@ -520,6 +526,7 @@ class MemoryOperand:
         return rstr
 
 
+@typeguard_testsuite
 class Operand(abc.ABC):
     """This represents a machine instruction operand"""
 
@@ -754,6 +761,7 @@ class Operand(abc.ABC):
         return True
 
 
+@typeguard_testsuite
 class OperandReg(Operand):
     """Class to represent a register operand.
 
@@ -870,6 +878,7 @@ class OperandReg(Operand):
         self._const = len(values) == 1
 
 
+@typeguard_testsuite
 class OperandImmRange(Operand):
     """Class to represent a immediate range operand.
 
@@ -1037,6 +1046,7 @@ class OperandImmRange(Operand):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class OperandValueSet(Operand):
     """Class to represent a value set operand.
 
@@ -1136,6 +1146,7 @@ class OperandValueSet(Operand):
         self._const = len(values) == 1
 
 
+@typeguard_testsuite
 class OperandConst(Operand):
     """Class to represent a constant operand.
 
@@ -1226,6 +1237,7 @@ class OperandConst(Operand):
         self._value = values[0]
 
 
+@typeguard_testsuite
 class OperandConstReg(Operand):
     """Class to represent a constant register operand.
 
@@ -1328,6 +1340,7 @@ class OperandConstReg(Operand):
         self._reg = values[0]
 
 
+@typeguard_testsuite
 class InstructionAddressRelativeOperand(Operand):
     """Class to represent a relative instruction address operand.
 

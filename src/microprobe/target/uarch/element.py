@@ -32,6 +32,7 @@ from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.property import PropertyHolder, import_properties
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Constants
@@ -46,6 +47,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def import_definition(cls, filenames, element_types):
     """ """
     LOG.debug("Start importing microarchitecture elements")
@@ -196,6 +198,7 @@ def import_definition(cls, filenames, element_types):
 
 
 # Classes
+@typeguard_testsuite
 class MicroarchitectureElement(six.with_metaclass(abc.ABCMeta,
                                                   PropertyHolder)):
     """ """
@@ -277,6 +280,7 @@ class MicroarchitectureElement(six.with_metaclass(abc.ABCMeta,
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericMicroarchitectureElement(MicroarchitectureElement):
     """ """
 

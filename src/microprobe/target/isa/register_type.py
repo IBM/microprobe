@@ -29,6 +29,7 @@ from typing import Dict, List, Tuple
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Constants
@@ -40,6 +41,7 @@ __all__ = ["import_definition", "RegisterType", "GenericRegisterType"]
 # Functions
 
 
+@typeguard_testsuite
 def import_definition(cls, filenames, dummy):
     """
 
@@ -89,6 +91,7 @@ def import_definition(cls, filenames, dummy):
 
 
 # Classes
+@typeguard_testsuite
 class RegisterType(abc.ABC):
     """Abstract base class to represent a Register Type"""
 
@@ -144,6 +147,7 @@ class RegisterType(abc.ABC):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericRegisterType(RegisterType):
     """A class to represent a register type. Each register type is identified
     by its *type*, its *size* in bits and also its *semantic* properites (e.g.

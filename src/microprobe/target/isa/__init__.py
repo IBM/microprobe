@@ -46,6 +46,7 @@ from microprobe.utils.imp import get_object_from_module, \
     import_cls_definition, import_definition, import_operand_definition
 from microprobe.utils.logger import DEBUG, get_logger
 from microprobe.utils.misc import dict2OrderedDict, findfiles
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Local modules
@@ -55,7 +56,7 @@ if TYPE_CHECKING:
     from microprobe.target import Definition, Target
     from microprobe.target.isa.register import Register
     from microprobe.code.var import Variable
-    from microprobe.code.ins import Instruction, InstructionType
+    from microprobe.code.ins import InstructionType
 
 # Constants
 SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
@@ -69,6 +70,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def _read_isa_extensions(isadefs: List[Dict[str, str]], path: str):
     """
 
@@ -91,6 +93,7 @@ def _read_isa_extensions(isadefs: List[Dict[str, str]], path: str):
         _read_isa_extensions(isadefs, isadefval)
 
 
+@typeguard_testsuite
 def _read_yaml_definition(isadefs: List[Dict[str, str]], path: str):
     """
 
@@ -169,6 +172,7 @@ def _read_yaml_definition(isadefs: List[Dict[str, str]], path: str):
     return complete_isadef
 
 
+@typeguard_testsuite
 def import_isa_definition(path: str):
     """Imports a ISA definition given a path
 
@@ -340,6 +344,7 @@ def find_isa_definitions(paths: List[str] | None = None):
 
 
 # Classes
+@typeguard_testsuite
 class ISA(abc.ABC):
     """Abstract class to represent an Instruction Set Architecture (ISA).
 
@@ -372,7 +377,7 @@ class ISA(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def instructions(self) -> Dict[str, InstructionType]:
+    def instructions(self) -> Dict[str, "InstructionType"]:
         """ISA instructions (:class:`~.dict` mapping strings to
         :class:`~.InstructionType`)."""
         raise NotImplementedError
@@ -642,11 +647,12 @@ class ISA(abc.ABC):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericISA(ISA):
     """Class to represent a generic Instruction Set Architecture (ISA)."""
 
     def __init__(self, name: str, descr: str, path: str,
-                 ins: Dict[str, InstructionType], regs: Dict[str, Register],
+                 ins: Dict[str, "InstructionType"], regs: Dict[str, "Register"],
                  comparators, generators):
         """
 

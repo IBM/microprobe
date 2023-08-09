@@ -28,6 +28,7 @@ from six.moves import range
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type checking
 if TYPE_CHECKING:
@@ -42,6 +43,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def cache_hierarchy_from_elements(elements):
     """
 
@@ -62,6 +64,7 @@ def cache_hierarchy_from_elements(elements):
     return cache_hierarchy
 
 
+@typeguard_testsuite
 def _caches_from_elements(elements):
     """
 
@@ -124,6 +127,7 @@ def _caches_from_elements(elements):
 
 
 # Classes
+@typeguard_testsuite
 class Cache:
     """Class to represent a cache."""
 
@@ -214,6 +218,7 @@ class Cache:
         return "%s('%s')" % (self.__class__.__name__, self.description)
 
 
+@typeguard_testsuite
 class SetAssociativeCache(Cache):
     """Class to represent a set-associative cache."""
 
@@ -346,6 +351,7 @@ class SetAssociativeCache(Cache):
         print_info((bit_range, offset_range, ccrange))
 
 
+@typeguard_testsuite
 class CacheHierarchy:
     """Class to represent a cache hierarchy."""
 
@@ -377,11 +383,11 @@ class CacheHierarchy:
                 "At least one cache"
                 "should be defined as first level data cache")
 
-        data_levels: Dict[MicroarchitectureElement, List[Cache]] = {}
+        data_levels: Dict["MicroarchitectureElement", List[Cache]] = {}
         for cache in first_data_levels:
             data_levels[cache.element] = [cache]
 
-        ins_levels: Dict[MicroarchitectureElement, List[Cache]] = {}
+        ins_levels: Dict["MicroarchitectureElement", List[Cache]] = {}
         for cache in first_ins_levels:
             ins_levels[cache.element] = [cache]
 

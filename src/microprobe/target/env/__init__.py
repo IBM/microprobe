@@ -36,6 +36,7 @@ from microprobe.property import Property, PropertyHolder
 from microprobe.utils.imp import find_subclasses
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import findfiles
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Local modules
 
@@ -44,6 +45,7 @@ if TYPE_CHECKING:
     from microprobe.target.isa import ISA
     from microprobe.code.ins import Instruction
     from microprobe.target import Target
+    from microprobe.target import Definition
     from microprobe.target.isa.register import Register
 
 # Constants
@@ -58,6 +60,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def import_env_definition(module,
                           isa: ISA,
                           definition_name: str | None = None):
@@ -99,6 +102,7 @@ def import_env_definition(module,
     return environment
 
 
+@typeguard_testsuite
 def find_env_definitions(paths: List[str] | None = None):
 
     LOG.debug("Start find environment definitions")
@@ -117,7 +121,7 @@ def find_env_definitions(paths: List[str] | None = None):
     paths = paths + MICROPROBE_RC["environment_paths"] \
         + MICROPROBE_RC["default_paths"]
 
-    results: List[Definition] = []
+    results: List["Definition"] = []
     files = findfiles(paths, "env/.*.py$", full=True)
 
     if len(files) > 0:
@@ -151,6 +155,7 @@ def find_env_definitions(paths: List[str] | None = None):
 
 
 # Classes
+@typeguard_testsuite
 class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
     """ """
 
@@ -281,6 +286,7 @@ class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericEnvironment(Environment):
     """ """
 

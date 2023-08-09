@@ -22,6 +22,7 @@ from typing import TYPE_CHECKING, List, Tuple
 # Own modules
 from microprobe.code.bbl import Bbl
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -36,6 +37,7 @@ __all__ = ["Cfg"]
 # Classes
 
 
+@typeguard_testsuite
 class Cfg:
     """Class to represent the control flow graph of a building block."""
 

@@ -29,6 +29,7 @@ import six
 # Own modules
 from microprobe.property import PropertyHolder, import_properties
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Constants
@@ -43,6 +44,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def import_definition(cls, filenames: List[str], dummy):
     """
 
@@ -81,6 +83,7 @@ def import_definition(cls, filenames: List[str], dummy):
 
 
 # Classes
+@typeguard_testsuite
 class MicroarchitectureElementType(
         six.with_metaclass(abc.ABCMeta, PropertyHolder)):
     """Abstract class to represent a microarchitecture element type."""
@@ -113,6 +116,7 @@ class MicroarchitectureElementType(
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericMicroarchitectureElementType(
         six.with_metaclass(abc.ABCMeta, MicroarchitectureElementType)):
     """Class to represent a generic microarchitecture element type."""

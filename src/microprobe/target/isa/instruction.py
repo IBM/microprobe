@@ -41,6 +41,7 @@ from microprobe.target.isa.instruction_field import GenericInstructionField
 from microprobe.target.isa.instruction_format import GenericInstructionFormat
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, getnextf
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Type hinting
@@ -59,6 +60,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def import_definition(cls, filenames, args):
     """
 
@@ -142,6 +144,7 @@ def import_definition(cls, filenames, args):
     return instructions
 
 
+@typeguard_testsuite
 def instruction_type_from_bin(binstr, target):
     """
 
@@ -172,6 +175,7 @@ def instruction_type_from_bin(binstr, target):
     return instr_type
 
 
+@typeguard_testsuite
 def _translate_checks(name, filename, cls, checks, dummy_operands):
     """
 
@@ -213,6 +217,7 @@ def _translate_checks(name, filename, cls, checks, dummy_operands):
     return dict(translated_checks)
 
 
+@typeguard_testsuite
 def _translate_moperands(name, filename, operands, ioperands, moperands,
                          defined_memory_operands, iformat):
     """
@@ -365,6 +370,7 @@ def _translate_moperands(name, filename, operands, ioperands, moperands,
     return roperands
 
 
+@typeguard_testsuite
 def _translate_ioperands(name, filename, ioperands, defined_operands):
     """
 
@@ -424,6 +430,7 @@ def _translate_ioperands(name, filename, ioperands, defined_operands):
     return roperands
 
 
+@typeguard_testsuite
 def _merge_operands(name, filename, loperands, iformat, defined_operands):
     """
 
@@ -513,6 +520,7 @@ def _merge_operands(name, filename, loperands, iformat, defined_operands):
 
 
 # Generic Instruction checks
+@typeguard_testsuite
 def _check_reg_value(instruction, register_name, value, condition):
     """
 
@@ -662,6 +670,7 @@ def _check_reg_value(instruction, register_name, value, condition):
                                               fixing_function_true)
 
 
+@typeguard_testsuite
 def _check_reg_bit_value(instruction, register_name, bit, value, condition):
     """
 
@@ -732,6 +741,7 @@ def _check_reg_bit_value(instruction, register_name, bit, value, condition):
                                           fixing_function)
 
 
+@typeguard_testsuite
 def _check_operands(instruction, operand1_name, operand2_name, check_type,
                     condition):
     """
@@ -990,6 +1000,7 @@ def _check_operands(instruction, operand1_name, operand2_name, check_type,
                                   check_type)
 
 
+@typeguard_testsuite
 def _check_memops_overlap(instruction, overlap_type, condition):
     """
 
@@ -1278,6 +1289,7 @@ def _check_memops_overlap(instruction, overlap_type, condition):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 def _check_alignment(instruction, operand_idx, alignment):
     """
 
@@ -1303,6 +1315,7 @@ for _key, _value in dict(getmembers(sys.modules[__name__],
 
 
 # Classes
+@typeguard_testsuite
 class InstructionType(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
     """Abstract class to represent a machine instruction type."""
 
@@ -1421,6 +1434,7 @@ class InstructionType(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericInstructionType(InstructionType):
     """Instruction generic class implementation
 
