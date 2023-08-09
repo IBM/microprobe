@@ -45,7 +45,9 @@ __all__ = ["import_definition", "InstructionField", "GenericInstructionField"]
 
 # Functions
 @typeguard_testsuite
-def import_definition(cls, filenames: List[str], operands: Dict[str, "Operand"]):
+def import_definition(cls,
+                      filenames: List[str],
+                      operands: Dict[str, "Operand"]):
     """
 
     :param filenames:

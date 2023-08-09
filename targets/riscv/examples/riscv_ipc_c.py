@@ -32,7 +32,7 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 # Own modules
 from microprobe.code import Synthesizer, get_wrapper
 from microprobe.exceptions import MicroprobeException
-from microprobe.passes import initialization, instruction, register,\
+from microprobe.passes import initialization, instruction, register, \
     structure, memory, branch
 from microprobe.target import import_definition
 

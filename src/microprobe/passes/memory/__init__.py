@@ -32,7 +32,7 @@ import microprobe.code.var
 import microprobe.passes
 import microprobe.utils.distrib
 from microprobe.code.address import Address, InstructionAddress
-from microprobe.exceptions import MicroprobeCodeGenerationError,\
+from microprobe.exceptions import MicroprobeCodeGenerationError, \
         MicroprobeValueError
 from microprobe.target.isa.operand import OperandConst, \
     OperandConstReg, OperandDescriptor, OperandReg
@@ -2086,8 +2086,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 ):
 
                     mcomp = self._func()
-                    var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall,\
-                        calc_instrsl, last_instr, count, module, reduced,\
+                    var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall, \
+                        calc_instrsl, last_instr, count, module, reduced, \
                         max_value, sind = descriptors[mcomp]
 
                     reg_base = reg_basel[sind]
@@ -2257,7 +2257,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     #    reg_idx_val, calc_instrs
                     # )
 
-                    # reg_base_val_new, reg_idx_val_new,\
+                    # reg_base_val_new, reg_idx_val_new, \
                     #    tinstrs, new_instrs = values
 
                     for key, value in descriptors.items():
@@ -2487,8 +2487,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         emptycontext = target.wrapper.context()
 
         for sid, size, ratio, stride, streams, shuffle, loc in self._model:
-            var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall,\
-                calc_instrs, last_instr, count, module, reduced,\
+            var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall, \
+                calc_instrs, last_instr, count, module, reduced, \
                 max_value, sind = descriptors[sid]
 
             if max_value == 0:

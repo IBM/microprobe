@@ -426,7 +426,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """
         return value in list([
             elem for elem in self._value_registers.keys()
-            if type(elem) == type(value)
+            if type(elem) is type(value)
         ])
 
     def registers_get_value(self, value: int | float | Address | str):

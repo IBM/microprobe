@@ -652,7 +652,8 @@ class GenericISA(ISA):
     """Class to represent a generic Instruction Set Architecture (ISA)."""
 
     def __init__(self, name: str, descr: str, path: str,
-                 ins: Dict[str, "InstructionType"], regs: Dict[str, "Register"],
+                 ins: Dict[str, "InstructionType"],
+                 regs: Dict[str, "Register"],
                  comparators, generators):
         """
 
