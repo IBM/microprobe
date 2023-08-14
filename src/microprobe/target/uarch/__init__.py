@@ -35,6 +35,7 @@ from microprobe.target.uarch.cache import cache_hierarchy_from_elements
 from microprobe.utils.imp import get_object_from_module, import_definition
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import findfiles
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 import six
 
@@ -58,6 +59,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def _read_uarch_extensions(uarchdefs, path: str):
     """ """
 
@@ -76,6 +78,7 @@ def _read_uarch_extensions(uarchdefs, path: str):
         _read_uarch_extensions(uarchdefs, uarchdefval)
 
 
+@typeguard_testsuite
 def _read_yaml_definition(uarchdefs, path: str):
     """
 
@@ -145,6 +148,7 @@ def _read_yaml_definition(uarchdefs, path: str):
     return complete_uarchdef
 
 
+@typeguard_testsuite
 def import_microarchitecture_definition(path: str):
     """Imports a Microarchitecture definition given a path
 
@@ -186,6 +190,7 @@ def import_microarchitecture_definition(path: str):
     return uarch
 
 
+@typeguard_testsuite
 def find_microarchitecture_definitions(paths: List[str] | None = None):
 
     if paths is None:
@@ -225,6 +230,7 @@ def find_microarchitecture_definitions(paths: List[str] | None = None):
 
 
 # Classes
+@typeguard_testsuite
 class Microarchitecture(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
     """ """
 
@@ -279,6 +285,7 @@ class Microarchitecture(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericMicroarchitecture(Microarchitecture):
     """ """
 
@@ -353,6 +360,7 @@ class GenericMicroarchitecture(Microarchitecture):
                                    self.description)
 
 
+@typeguard_testsuite
 class GenericCPUMicroarchitecture(GenericMicroarchitecture):
     """Generic CPU Microarchitecture
 

@@ -46,9 +46,9 @@ from microprobe.code.ins import instruction_from_definition, \
 from microprobe.exceptions import MicroprobeCodeGenerationError, \
     MicroprobeException, MicroprobeMPTFormatError, MicroprobeValueError
 from microprobe.target import import_definition
-from microprobe.utils.asm import MicroprobeAsmInstructionDefinition,\
+from microprobe.utils.asm import MicroprobeAsmInstructionDefinition, \
     interpret_asm
-from microprobe.utils.cmdline import float_type, int_type, new_file_ext,\
+from microprobe.utils.cmdline import float_type, int_type, new_file_ext, \
     print_error, print_info, print_warning, string_with_fields
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress, twocs_to_int

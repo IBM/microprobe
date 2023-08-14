@@ -49,3 +49,4 @@ yapf
 isort
 twine
 mypy
+typeguard

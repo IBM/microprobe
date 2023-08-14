@@ -31,6 +31,7 @@ from six.moves import range
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Pickable
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Type hinting
@@ -46,6 +47,7 @@ __all__ = ["import_definition", "Register", "GenericRegister"]
 
 
 # Functions
+@typeguard_testsuite
 def import_definition(cls, filenames: List[str], regtypes):
     """
 
@@ -107,6 +109,7 @@ def import_definition(cls, filenames: List[str], regtypes):
 
 
 # Classes
+@typeguard_testsuite
 class Register(abc.ABC):
     """Abstract class to represent an architecture register."""
 
@@ -157,6 +160,7 @@ class Register(abc.ABC):
         raise NotImplementedError
 
 
+@typeguard_testsuite
 class GenericRegister(Register, Pickable):
     """A Generic architected register"""
 

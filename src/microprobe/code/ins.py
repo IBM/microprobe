@@ -39,6 +39,7 @@ from microprobe.utils.asm import interpret_asm
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, \
     Pickable, RejectingDict, RejectingOrderedDict
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -65,6 +66,7 @@ _LABEL_COUNTER = 0
 
 
 # Functions
+@typeguard_testsuite
 def instruction_to_definition(instr: Instruction):
     """
     Return the definition of an instruction.
@@ -93,6 +95,7 @@ def instruction_to_definition(instr: Instruction):
         asm, instr.decorators, comments)
 
 
+@typeguard_testsuite
 def instruction_from_definition(definition: MicroprobeInstructionDefinition,
                                 fix_relative: bool = True):
     """
@@ -113,6 +116,7 @@ def instruction_from_definition(definition: MicroprobeInstructionDefinition,
     return ninstr
 
 
+@typeguard_testsuite
 def instruction_set_def_properties(instr,
                                    definition,
                                    building_block=None,
@@ -330,6 +334,7 @@ def instruction_set_def_properties(instr,
     #        building_block.add_warning(str(warning_check))
 
 
+@typeguard_testsuite
 def instructions_from_asm(asm, target, labels=None, fix_relative=True):
     """
 
@@ -348,6 +353,7 @@ def instructions_from_asm(asm, target, labels=None, fix_relative=True):
     return instrs
 
 
+@typeguard_testsuite
 def instruction_factory(ins_type: InstructionType):
     """Return a instruction of the given instruction type.
 
@@ -362,6 +368,7 @@ def instruction_factory(ins_type: InstructionType):
 
 
 # Classes
+@typeguard_testsuite
 class InstructionOperandValue(Pickable):
     """Class to represent an instruction operand value"""
 
@@ -484,7 +491,7 @@ class InstructionOperandValue(Pickable):
                                             self.value)
 
     def register_operand_callbacks(self, set_function,
-                                   unset_function: Callable[[], None]):
+                                   unset_function: Callable[[], None] | None):
         """
 
         :param set_function:
@@ -498,6 +505,7 @@ class InstructionOperandValue(Pickable):
         self._unset_function = unset_function
 
 
+@typeguard_testsuite
 class InstructionMemoryOperandValue(Pickable):
     """Class to represent an instruction operand value"""
 
@@ -1579,6 +1587,7 @@ class InstructionMemoryOperandValue(Pickable):
                                               str(self.type), self.address)
 
 
+@typeguard_testsuite
 class Instruction(Pickable):
     """Class to represent an instruction"""
 
@@ -2075,6 +2084,7 @@ class Instruction(Pickable):
         return state
 
 
+@typeguard_testsuite
 def create_dependency_between_ins(output_ins: Instruction,
                                   input_ins: Instruction, context: Context):
     """
@@ -2150,10 +2160,11 @@ def create_dependency_between_ins(output_ins: Instruction,
     return dependency_set
 
 
+@typeguard_testsuite
 class MicroprobeInstructionDefinition(object):
 
     def __init__(self, instruction_type: InstructionType, operands, label,
-                 address: Address, asm, decorators, comments):
+                 address: Address | None, asm, decorators, comments):
 
         self._type = instruction_type
         self._operands = operands

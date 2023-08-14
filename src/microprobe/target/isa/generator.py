@@ -28,6 +28,7 @@ from typing import TYPE_CHECKING, List
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.imp import find_subclasses
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -40,6 +41,7 @@ __all__ = ["import_classes_from", "Generator"]
 
 
 # Functions
+@typeguard_testsuite
 def import_classes_from(modules: List[str]):
     """
 
@@ -72,6 +74,7 @@ def import_classes_from(modules: List[str]):
 
 
 # Classes
+@typeguard_testsuite
 class Generator(abc.ABC):
     """ """
 

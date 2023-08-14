@@ -30,6 +30,7 @@ from microprobe.exceptions import MicroprobeCodeGenerationError, \
     MicroprobeValueError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Progress
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -41,6 +42,7 @@ __all__ = ["Bbl", "replicate_bbls"]
 
 
 # Functions
+@typeguard_testsuite
 def replicate_bbls(bbl_list: List[Bbl], displacement: int | None = None):
     """Returns a copy the given basic block list at the specified displacement.
 
@@ -60,6 +62,7 @@ def replicate_bbls(bbl_list: List[Bbl], displacement: int | None = None):
 
 
 # Classes
+@typeguard_testsuite
 class Bbl:
     """Class to represent a basic block."""
 

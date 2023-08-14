@@ -27,6 +27,7 @@ import abc
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
 from microprobe.utils.imp import find_subclasses
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 LOG = get_logger(__name__)
@@ -34,6 +35,7 @@ __all__ = ["import_classes_from", "Comparator"]
 
 
 # Functions
+@typeguard_testsuite
 def import_classes_from(modules):
     """
 
@@ -65,6 +67,7 @@ def import_classes_from(modules):
 
 
 # Classes
+@typeguard_testsuite
 class Comparator(object, metaclass=abc.ABCMeta):
     """Abstract class to perform comparisons. :class:`~.Comparator`
     objects are in charge of performing comparisons between values

@@ -26,6 +26,7 @@ from microprobe.code.address import Address
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -41,6 +42,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def benchmark_factory(threads: int = 1):
     if threads == 1:
         return Benchmark()
@@ -49,6 +51,7 @@ def benchmark_factory(threads: int = 1):
 
 
 # Classes
+@typeguard_testsuite
 class BuildingBlock(object):
     """Class to represent a benchmark building block.
 
@@ -143,6 +146,7 @@ class BuildingBlock(object):
         return self._requirements
 
 
+@typeguard_testsuite
 class Benchmark(BuildingBlock):
     """Class to represent a benchmark (highest level building block)."""
 
@@ -453,6 +457,7 @@ class Benchmark(BuildingBlock):
                 (idx, self._num_threads + 1))
 
 
+@typeguard_testsuite
 class MultiThreadedBenchmark(Benchmark):
     """ """
 

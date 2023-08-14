@@ -27,6 +27,7 @@ from typing import TYPE_CHECKING, Dict, List
 # Own modules
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -93,6 +94,7 @@ VAR_TYPE_LEN_DICT["uint_fast64_t"] = 8
 
 
 # Classes
+@typeguard_testsuite
 class Variable(abc.ABC):
     """ """
 
@@ -239,6 +241,7 @@ class Variable(abc.ABC):
         return self._hash
 
 
+@typeguard_testsuite
 class VariableSingle(Variable):
     """ """
 
@@ -326,6 +329,7 @@ class VariableSingle(Variable):
         return "(%s) %s" % (self.type, self.name)
 
 
+@typeguard_testsuite
 class VariableArray(Variable):
     """ """
 

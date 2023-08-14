@@ -29,6 +29,7 @@ from typing import TYPE_CHECKING, List, Tuple
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
     MicroprobeLookupError
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
 
 # Type hinting
@@ -45,6 +46,7 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def import_definition(cls, filenames, ifields):
     """
 
@@ -110,6 +112,7 @@ def import_definition(cls, filenames, ifields):
 
 
 # Classes
+@typeguard_testsuite
 class InstructionFormat(abc.ABC):
     """Abstract class to represent an instruction format"""
 
@@ -243,6 +246,7 @@ class InstructionFormat(abc.ABC):
         return rstr
 
 
+@typeguard_testsuite
 class GenericInstructionFormat(InstructionFormat):
     """Instruction format generic class."""
 

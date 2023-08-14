@@ -168,7 +168,7 @@ def write_cache_data(filename, data, data_reload=False):
             base_data = None
 
         if base_data is not None:
-            if type(base_data) != type(data):
+            if type(base_data) is not type(data):
                 pass
             if isinstance(base_data, dict):
                 # TODO: Control cache size of dictionary caches

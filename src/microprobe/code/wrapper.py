@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING, Callable, List
 from microprobe.code.context import Context
 from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -42,6 +43,7 @@ __all__ = ["Wrapper"]
 
 
 # Classes
+@typeguard_testsuite
 class Wrapper(abc.ABC):
     """
     Abstract class to represent a language wrapper.

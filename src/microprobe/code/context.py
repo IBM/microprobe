@@ -28,6 +28,7 @@ import six
 from microprobe.code.address import Address, InstructionAddress
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, smart_copy_dict
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
@@ -43,6 +44,7 @@ __all__ = ["Context"]
 
 
 # Classes
+@typeguard_testsuite
 class Context(object):  # pylint: disable=too-many-public-methods
     """Class to represent the execution context (e.g. register values, etc ...
     on each benchmark building block)
@@ -205,7 +207,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
 
         """
 
-        possible_regs: List[Tuple[Register, Address]] = []
+        possible_regs: List[Tuple["Register", Address]] = []
 
         for reg, value in self._register_values.items():
 
@@ -424,7 +426,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """
         return value in list([
             elem for elem in self._value_registers.keys()
-            if type(elem) == type(value)
+            if type(elem) is type(value)
         ])
 
     def registers_get_value(self, value: int | float | Address | str):
@@ -457,7 +459,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """Address starting the data segment (::class:`~.int`)"""
         return self._data_segment
 
-    def set_data_segment(self, value: int):
+    def set_data_segment(self, value: int | None):
         """Sets the data segment start address.
 
         :param value: Start address.
@@ -485,7 +487,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         """Address starting the code segment (::class:`~.int`)"""
         return self._code_segment
 
-    def set_code_segment(self, value: int):
+    def set_code_segment(self, value: int | None):
         """Sets the code segment start address.
 
         :param value: Start address.
