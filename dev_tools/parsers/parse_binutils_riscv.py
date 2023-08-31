@@ -426,13 +426,19 @@ def main():
 
         seen.add((insn.name, fmt))
 
-        insn_names.append(f"{insn.name}_{fmt}")
+        if insn.ext in VECTOR_EXTS:
+            insn_name = f"{insn.name}_{'V1' if ('Vm' in fmt) else 'V0'}".upper()
+        else:
+            insn_name = f"{insn.name}_{fmt}"
+
+        # TODO Memory operands
+        insn_names.append(insn_name)
         instruction_list.append(
             {
-                "Name": f"{insn.name}_{fmt}",
+                "Name": insn_name,
                 "Format": fmt + "_parsed",
                 # "Extension": extensions[i],
-                "Mnemonic": insn.name,
+                "Mnemonic": insn.name.upper(),
                 "Opcode": "0",
                 "Description": "Auto parsed from binutils. Opcode is dummy data",
             }
@@ -465,11 +471,11 @@ def main():
         unmasked_vector_ops = [
             name
             for name in insn_names
-            if ("Vm" not in name and "V0" not in name) and name.startswith("v")
+            if ("_V0" in name and "VM" not in name) and name.startswith("V")
         ]
 
         masked_vector_ops = [
-            name for name in insn_names if ("Vm" in name or "V0" in name)
+            name for name in insn_names if ("_V1" in name or "VM" in name) and name.startswith("V")
         ]
         stream.writelines(
             [
