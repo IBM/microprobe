@@ -281,7 +281,7 @@ def filter_insns(
 
 def parse_binutils():
     """ Parse the binutils source files. """
-    with open("../binutils-gdb/opcodes/riscv-opc.c", "r", encoding='UTF-8') as stream:
+    with open("../binutils-files/2_40-release-hash-32778522c7d/riscv-opc.c", "r", encoding='UTF-8') as stream:
         raw_file = stream.read()
 
     split = raw_file.splitlines()
