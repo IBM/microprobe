@@ -1,3 +1,0 @@
-[submodule "dev_tools/binutils-gdb"]
-	path = dev_tools/binutils-gdb
-	url = git://sourceware.org/git/binutils-gdb.git
