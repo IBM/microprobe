@@ -35,8 +35,10 @@ from microprobe.exceptions import MicroprobeException
 from microprobe.passes import initialization, instruction, register, \
     structure, memory, branch
 from microprobe.target import import_definition
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 
+@typeguard_testsuite
 class RiscvIpcTest(object):
     """RiscvIpc
 
