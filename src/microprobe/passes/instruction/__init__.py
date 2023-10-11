@@ -24,10 +24,7 @@ import itertools
 import multiprocessing as mp
 import pickle
 from typing import TYPE_CHECKING, List
-
-# Third party modules
-from six.moves import range
-from six.moves import zip
+import random
 
 # Own modules
 import microprobe.code.ins
@@ -51,7 +48,6 @@ from microprobe.utils.misc import RejectingDict, closest_divisor, \
 
 # Type hinting
 if TYPE_CHECKING:
-    import random
     from microprobe.code.ins import Instruction
 
 # Constants

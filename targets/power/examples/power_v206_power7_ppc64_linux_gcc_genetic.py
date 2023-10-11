@@ -52,9 +52,7 @@ import datetime
 import os
 import sys
 import time as runtime
-
-# Third party modules
-from six.moves import range
+from typing import List, Tuple
 
 # Own modules
 import microprobe.code
@@ -68,6 +66,7 @@ from microprobe.exceptions import MicroprobeTargetDefinitionError
 from microprobe.target import import_definition
 from microprobe.utils.cmdline import print_error, print_info, print_warning
 from microprobe.utils.misc import RNDINT
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -81,6 +80,9 @@ __status__ = "Development"  # "Prototype", "Development", or "Production"
 # Benchmark size
 BENCHMARK_SIZE = 20
 
+COMMAND = None
+DIRECTORY = None
+
 # Get the target definition
 try:
     TARGET = import_definition("power_v206-power7-ppc64_linux_gcc")
@@ -90,6 +92,7 @@ except MicroprobeTargetDefinitionError as exc:
     exit(-1)
 
 
+@typeguard_testsuite
 def main():
     """Main function."""
 
@@ -102,24 +105,36 @@ def main():
             generate_genetic(name, ipc)
 
 
-def generate_genetic(compname, ipc):
+@typeguard_testsuite
+def generate_genetic(compname: str, ipc: float):
     """Generate a microbenchmark stressing compname at the given ipc."""
+
+    assert COMMAND is not None, "COMMAND variable cannot be None"
+    assert DIRECTORY is not None, "DIRECTORY variable cannot be None"
+
     comps = []
     bcomps = []
-    any_comp = False
+    any_comp: bool = False
+
+    assert TARGET.microarchitecture is not None, \
+        "Target must have a defined microarchitecture"
 
     if compname.find("FXU") >= 0:
-        comps.append(TARGET.elements["FXU0_Core0_SCM_Processor"])
+        comps.append(
+            TARGET.microarchitecture.elements["FXU0_Core0_SCM_Processor"])
 
     if compname.find("VSU") >= 0:
-        comps.append(TARGET.elements["VSU0_Core0_SCM_Processor"])
+        comps.append(
+            TARGET.microarchitecture.elements["VSU0_Core0_SCM_Processor"])
 
     if len(comps) == 2:
         any_comp = True
     elif compname.find("noLSU") >= 0:
-        bcomps.append(TARGET.elements["LSU0_Core0_SCM_Processor"])
+        bcomps.append(
+            TARGET.microarchitecture.elements["LSU0_Core0_SCM_Processor"])
     elif compname.find("LSU") >= 0:
-        comps.append(TARGET.elements["LSU_Core0_SCM_Processor"])
+        comps.append(
+            TARGET.microarchitecture.elements["LSU_Core0_SCM_Processor"])
 
     if (len(comps) == 1 and ipc > 2) or (len(comps) == 2 and ipc > 4):
         return True
@@ -131,16 +146,14 @@ def generate_genetic(compname, ipc):
             print_info("Already generated: %s %d" % (compname, ipc))
             return True
 
-    print_info("Going for IPC: %f and Element: %s" % (ipc, compname))
+    print_info(f"Going for IPC: {ipc} and Element: {compname}")
 
-    def generate(name, *args):
+    def generate(name: str, dist: float, latency: float):
         """Benchmark generation function.
 
         First argument is name, second the dependency distance and the
         third is the average instruction latency.
         """
-        dist, latency = args
-
         wrapper = microprobe.code.get_wrapper("CInfPpc")
         synth = microprobe.code.Synthesizer(TARGET, wrapper())
         synth.add_pass(
@@ -162,13 +175,13 @@ def generate_genetic(compname, ipc):
         synth.save(name, bench=bench)
 
     # Set the genetic algorithm parameters
-    ga_params = []
+    ga_params: List[Tuple[int, int, float]] = []
     ga_params.append((0, 20, 0.05))  # Average dependency distance design space
     ga_params.append((2, 8, 0.05))  # Average instruction latency design space
 
     # Set up the search driver
     driver = microprobe.driver.genetic.ExecCmdDriver(
-        generate, 20, 30, 30, "'%s' %f " % (COMMAND, ipc), ga_params)
+        generate, 20, 30, 30, f"'{COMMAND}' {ipc} ", ga_params)
 
     starttime = runtime.time()
     print_info("Start search...")
@@ -176,32 +189,32 @@ def generate_genetic(compname, ipc):
     print_info("Search end")
     endtime = runtime.time()
 
-    print_info("Genetic time::%s" %
-               (datetime.timedelta(seconds=endtime - starttime)))
+    print_info("Genetic time::"
+               f"{datetime.timedelta(seconds=endtime - starttime)}")
 
     # Check if we found a solution
-    ga_params = driver.solution()
+    ga_sol_params: Tuple[float, float] = driver.solution()
     score = driver.score()
 
-    print_info("IPC found: %f, score: %f" % (ipc, score))
+    print_info(f"IPC found: {ipc}, score: {score}")
 
     if score < 20:
-        print_warning("Unable to find an optimal solution with IPC: %f:" % ipc)
+        print_warning(f"Unable to find an optimal solution with IPC: {ipc}:")
         print_info("Generating the closest solution...")
         generate(
-            "%s/%s:IPC:%.2f:DIST:%.2f:LAT:%.2f-check" %
-            (DIRECTORY, compname, ipc, ga_params[0], ga_params[1]),
-            ga_params[0], ga_params[1])
+            f"{DIRECTORY}/{compname}:IPC:{ipc:.2f}:"
+            f"DIST:{ga_sol_params[0]:.2f}:LAT:{ga_sol_params[1]:.2f}-check",
+            ga_sol_params[0], ga_sol_params[1])
         print_info("Closest solution generated")
     else:
         print_info("Solution found for %s and IPC %f -> dist: %f , "
                    "latency: %f " %
-                   (compname, ipc, ga_params[0], ga_params[1]))
+                   (compname, ipc, ga_sol_params[0], ga_sol_params[1]))
         print_info("Generating solution...")
         generate(
-            "%s/%s:IPC:%.2f:DIST:%.2f:LAT:%.2f" %
-            (DIRECTORY, compname, ipc, ga_params[0], ga_params[1]),
-            ga_params[0], ga_params[1])
+            f"{DIRECTORY}/{compname}:IPC:{ipc:.2f}:"
+            f"DIST:{ga_sol_params[0]:.2f}:LAT:{ga_sol_params[1]:.2f}",
+            ga_sol_params[0], ga_sol_params[1])
         print_info("Solution generated")
     return True
 

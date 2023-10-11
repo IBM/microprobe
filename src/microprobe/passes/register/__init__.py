@@ -22,6 +22,7 @@ from __future__ import absolute_import, print_function
 import itertools
 import random
 import re
+from typing import Union
 
 # Third party modules
 import six
@@ -52,7 +53,11 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, minimize=False, value=None, dd=0, relax=False):
+    def __init__(self,
+                 minimize=False,
+                 value=None,
+                 dd: Union[int, float] = 0,
+                 relax=False):
         """
 
         :param minimize:  (Default value = False)
