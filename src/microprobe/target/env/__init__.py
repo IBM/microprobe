@@ -128,26 +128,26 @@ def find_env_definitions(paths: List[str] | None = None):
         from microprobe.target import Definition
         LOG.debug("Files found")
 
-    for modfile in files:
-        LOG.debug("Processing file: '%s'", modfile)
-        try:
-            envclses = list(find_subclasses(modfile, GenericEnvironment))
-        except (MicroprobeValueError, TypeError) as exc:
-            continue
-
-        LOG.debug("Classes find: '%s'", envclses)
-        for envcls in envclses:
-            LOG.debug("Trying class: '%s'", envcls)
+        for modfile in files:
+            LOG.debug("Processing file: '%s'", modfile)
             try:
-                env = envcls(None)
-                definition = Definition(modfile, env.name, env.description)
-                if definition not in results:
-                    results.append(definition)
-            except TypeError as exc:
-                # Skip not complete environments
-                LOG.debug("Skipping class '%s'...", envcls)
-                LOG.debug(exc)
+                envclses = list(find_subclasses(modfile, GenericEnvironment))
+            except (MicroprobeValueError, TypeError) as exc:
                 continue
+
+            LOG.debug("Classes find: '%s'", envclses)
+            for envcls in envclses:
+                LOG.debug("Trying class: '%s'", envcls)
+                try:
+                    env = envcls(None)
+                    definition = Definition(modfile, env.name, env.description)
+                    if definition not in results:
+                        results.append(definition)
+                except TypeError as exc:
+                    # Skip not complete environments
+                    LOG.debug("Skipping class '%s'...", envcls)
+                    LOG.debug(exc)
+                    continue
 
     LOG.debug("End find environment definitions")
     _ENV_DEFINITIONS = results

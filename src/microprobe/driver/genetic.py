@@ -29,7 +29,6 @@ import time as runtime
 
 # Third party modules
 import six
-from six.moves import range
 
 # Own modules
 from microprobe.exceptions import MicroprobeError
@@ -79,96 +78,106 @@ class GenericDriver(object):
         LOG.debug("Target score: %f", target_score)
         LOG.debug("Generations: %d", generations)
 
-        if not six.PY2:
-            raise NotImplementedError("Driver support only for Python2")
+        self._allele = None
+        self._params = []
+        self._ga = None
 
-        self._allele = allele
+        raise NotImplementedError(
+            "Genetic algorithm was implemented with pyevolve. "
+            "Python 3 support has not been added to pyevolve. "
+            "This driver only has support for Python2. "
+            "Microprobe is a python3 project now.")
 
-        if allele:
+        # if not six.PY2:
+        #     raise NotImplementedError("Driver support only for Python2")
 
-            set_of_alleles = pyevolve.GAllele.GAlleles()
+        # self._allele = allele
 
-            length = 0
-            self._params = []
-            for param_values in params:
-                pmin, pmax, pstep = param_values
-                start = length
+        # if allele:
 
-                for dummy_elem in range(0, int((pmax - pmin) // pstep)):
-                    allele_range = pyevolve.GAllele.GAlleleRange(0, 1)
-                    length += 1
-                    set_of_alleles.add(allele_range)
+        #     set_of_alleles = pyevolve.GAllele.GAlleles()
 
-                end = length
-                self._params.append((pmin, pmax, pstep, start, end))
+        #     length = 0
+        #     self._params = []
+        #     for param_values in params:
+        #         pmin, pmax, pstep = param_values
+        #         start = length
 
-                genome = pyevolve.G1DList.G1DList(length)
-                genome.setParams(allele=set_of_alleles)
+        #         for dummy_elem in range(0, int((pmax - pmin) // pstep)):
+        #             allele_range = pyevolve.GAllele.GAlleleRange(0, 1)
+        #             length += 1
+        #             set_of_alleles.add(allele_range)
 
-                genome.mutator.set(pyevolve.Mutators.G1DListMutatorAllele)
-                genome.initializator.set(
-                    pyevolve.Initializators.G1DListInitializatorAllele)
-                genome.crossover.set(
-                    pyevolve.Crossovers.G1DListCrossoverSinglePoint)
+        #         end = length
+        #         self._params.append((pmin, pmax, pstep, start, end))
 
-        else:
-            genome = pyevolve.G1DList.G1DList(len(params))
-            mmin = min([m[0] for m in params])
-            mmax = max([M[1] for M in params])
-            genome.setParams(rangemin=mmin)
-            genome.setParams(rangemax=mmax)
-            genome.setParams(gauss_mu=(mmax - mmin) // 2)
-            genome.setParams(gauss_mu=1)
-            genome.setParams(gauss_sigma=1)
-            genome.mutator.set(pyevolve.Mutators.G1DListMutatorRealGaussian)
-            genome.initializator.set(
-                pyevolve.Initializators.G1DListInitializatorReal)
-            genome.crossover.set(self.max_min_cross_over)
+        #         genome = pyevolve.G1DList.G1DList(length)
+        #         genome.setParams(allele=set_of_alleles)
 
-        genome.evaluator.set(eval_func)
+        #         genome.mutator.set(pyevolve.Mutators.G1DListMutatorAllele)
+        #         genome.initializator.set(
+        #             pyevolve.Initializators.G1DListInitializatorAllele)
+        #         genome.crossover.set(
+        #             pyevolve.Crossovers.G1DListCrossoverSinglePoint)
 
-        genome.setParams(bestrawscore=target_score)
-        genome.setParams(roundDecimal=2)
+        # else:
+        #     genome = pyevolve.G1DList.G1DList(len(params))
+        #     mmin = min([m[0] for m in params])
+        #     mmax = max([M[1] for M in params])
+        #     genome.setParams(rangemin=mmin)
+        #     genome.setParams(rangemax=mmax)
+        #     genome.setParams(gauss_mu=(mmax - mmin) // 2)
+        #     genome.setParams(gauss_mu=1)
+        #     genome.setParams(gauss_sigma=1)
+        #     genome.mutator.set(pyevolve.Mutators.G1DListMutatorRealGaussian)
+        #     genome.initializator.set(
+        #         pyevolve.Initializators.G1DListInitializatorReal)
+        #     genome.crossover.set(self.max_min_cross_over)
 
-        ga_obj = pyevolve.GSimpleGA.GSimpleGA(genome)
-        ga_obj.setGenerations(generations)
-        ga_obj.setElitism(False)
-        ga_obj.setMutationRate(0.5)
-        ga_obj.terminationCriteria.set(pyevolve.GSimpleGA.RawScoreCriteria)
-        ga_obj.setPopulationSize(population)
-        ga_obj.setMinimax(pyevolve.Consts.minimaxType["maximize"])
+        # genome.evaluator.set(eval_func)
 
-        self._ga = ga_obj
-        self._results = None
-        if logfile is not None:
-            if os.path.isfile(logfile):
-                raise MicroprobeError("Log file '%s' already exist" % logfile)
-            self._logfile_fd = open(logfile, 'w')
+        # genome.setParams(bestrawscore=target_score)
+        # genome.setParams(roundDecimal=2)
 
-            header = "TIME, GENERATION,INDIVIDUAL,%s,SCORE" % ','.join(
-                ['PARAM%03d' % elem for elem in range(0, len(params))])
+        # ga_obj = pyevolve.GSimpleGA.GSimpleGA(genome)
+        # ga_obj.setGenerations(generations)
+        # ga_obj.setElitism(False)
+        # ga_obj.setMutationRate(0.5)
+        # ga_obj.terminationCriteria.set(pyevolve.GSimpleGA.RawScoreCriteria)
+        # ga_obj.setPopulationSize(population)
+        # ga_obj.setMinimax(pyevolve.Consts.minimaxType["maximize"])
 
-            self._logfile_fd.write(header + "\n")
-            pyevolve.logEnable()
+        # self._ga = ga_obj
+        # self._results = None
+        # if logfile is not None:
+        #     if os.path.isfile(logfile):
+        #         raise MicroprobeError(f"Log file '{logfile}' already exist")
+        #     self._logfile_fd = open(logfile, 'w')
 
-            def _logging_callback(ga_engine):
+        #     header = "TIME, GENERATION,INDIVIDUAL,%s,SCORE" % ','.join(
+        #         ['PARAM%03d' % elem for elem in range(0, len(params))])
 
-                generation = ga_engine.getCurrentGeneration()
-                line = "%f" % runtime.time()
-                line += ",%03d" % generation
-                line += ","
+        #     self._logfile_fd.write(header + "\n")
+        #     pyevolve.logEnable()
 
-                for idx, elem in enumerate(ga_engine.getPopulation()):
-                    pline = line + str(idx) + ","
-                    pline += ",".join(
-                        [str(param) for param in elem.genomeList]
-                    )
-                    pline += "," + str(elem.score)
-                    self._logfile_fd.write(pline + "\n")
+        #     def _logging_callback(ga_engine):
 
-                return False
+        #         generation = ga_engine.getCurrentGeneration()
+        #         line = "%f" % runtime.time()
+        #         line += ",%03d" % generation
+        #         line += ","
 
-            self._ga.stepCallback.set(_logging_callback)
+        #         for idx, elem in enumerate(ga_engine.getPopulation()):
+        #             pline = line + str(idx) + ","
+        #             pline += ",".join(
+        #                 [str(param) for param in elem.genomeList]
+        #             )
+        #             pline += "," + str(elem.score)
+        #             self._logfile_fd.write(pline + "\n")
+
+        #         return False
+
+        #     self._ga.stepCallback.set(_logging_callback)
 
     def rejoinparams(self, chromosome):
         """
@@ -241,10 +250,10 @@ class ExecCmdDriver(GenericDriver):
 
     def __init__(self,
                  bench_factory,
-                 target_score,
-                 generations,
-                 population,
-                 cmd,
+                 target_score: int,
+                 generations: int,
+                 population: int,
+                 cmd: str,
                  params,
                  logfile=None):
         """
@@ -258,7 +267,7 @@ class ExecCmdDriver(GenericDriver):
 
         """
 
-        def eval_func_factory(function, cmd):
+        def eval_func_factory(function, cmd: str):
             """
 
             :param function:

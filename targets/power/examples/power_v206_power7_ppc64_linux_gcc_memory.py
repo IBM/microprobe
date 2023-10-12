@@ -27,9 +27,7 @@ import multiprocessing as mp
 import os
 import random
 import sys
-
-# Third party modules
-from six.moves import map
+from typing import List, Tuple
 
 # Own modules
 import microprobe.code
@@ -44,7 +42,10 @@ from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeTargetDefinitionError
 from microprobe.model.memory import EndlessLoopDataMemoryModel
 from microprobe.target import import_definition
+from microprobe.target.isa.instruction import InstructionType
+from microprobe.target.uarch.cache import SetAssociativeCache
 from microprobe.utils.cmdline import print_error, print_info
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -63,18 +64,23 @@ except MicroprobeTargetDefinitionError as exc:
     print_error("Exception message: %s" % str(exc))
     exit(-1)
 
+assert TARGET.microarchitecture is not None, \
+    "Target must have a defined microarchitecture"
+
 BASE_ELEMENT = [
-    element for element in TARGET.elements.values() if element.name == 'L1D'
+    element for element in TARGET.microarchitecture.elements.values()
+    if element.name == 'L1D'
 ][0]
-CACHE_HIERARCHY = TARGET.cache_hierarchy.get_data_hierarchy_from_element(
-    BASE_ELEMENT)
+CACHE_HIERARCHY: List[SetAssociativeCache] = \
+    TARGET.microarchitecture.cache_hierarchy.get_data_hierarchy_from_element(
+        BASE_ELEMENT)
 
 # Benchmark size
 BENCHMARK_SIZE = 8 * 1024
 
 # Fill a list of the models to be generated
 
-MEMORY_MODELS = []
+MEMORY_MODELS: List[Tuple[str, List[SetAssociativeCache], List[int]]] = []
 
 #
 # Due to performance issues (long exec. time) this
@@ -97,7 +103,10 @@ MEMORY_MODELS.append(("MEM", CACHE_HIERARCHY, [0, 0, 0, 100]))
 # Enable parallel generation
 PARALLEL = False
 
+DIRECTORY = None
 
+
+@typeguard_testsuite
 def main():
     """Main function. """
     # call the generate method for each model in the memory model list
@@ -113,24 +122,27 @@ def main():
     exit(0)
 
 
-def generate(model):
+@typeguard_testsuite
+def generate(model: Tuple[str, List[SetAssociativeCache], List[int]]):
     """Benchmark generation policy function. """
 
-    print_info("Creating memory model '%s' ..." % model[0])
-    model = EndlessLoopDataMemoryModel(*model)
+    assert DIRECTORY is not None, "DIRECTORY variable cannot be None"
 
-    modelname = model.name
+    print_info(f"Creating memory model '{model[0]}' ...")
+    memmodel = EndlessLoopDataMemoryModel(*model)
 
-    print_info("Generating Benchmark mem-%s ..." % (modelname))
+    modelname = memmodel.name
+
+    print_info(f"Generating Benchmark mem-{modelname} ...")
 
     # Get the architecture
     garch = TARGET
 
     # For all the supported instructions, get the memory operations,
-    sequence = []
-    for instr_name in sorted(garch.instructions.keys()):
+    sequence: List[InstructionType] = []
+    for instr_name in sorted(garch.isa.instructions.keys()):
 
-        instr = garch.instructions[instr_name]
+        instr = garch.isa.instructions[instr_name]
 
         if not instr.access_storage:
             continue
@@ -179,7 +191,7 @@ def generate(model):
         microprobe.passes.initialization.InitializeRegistersPass(value=rnd))
 
     # --> Add a single basic block of size 'size'
-    if model.name in ['MEM']:
+    if memmodel.name in ['MEM']:
         synth.add_pass(
             microprobe.passes.structure.SimpleBuildingBlockPass(
                 BENCHMARK_SIZE * 4))
@@ -194,7 +206,7 @@ def generate(model):
             sequence))
 
     # --> Set the memory operations parameters to fulfill the given model
-    synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(model))
+    synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(memmodel))
 
     # --> Set the dependency distance and the default allocation. Sets the
     # remaining undefined instruction operands (register allocation,...)
@@ -205,12 +217,12 @@ def generate(model):
     # Generate the benchmark (applies the passes).
     bench = synth.synthesize()
 
-    print_info("Benchmark mem-%s saving to disk..." % (modelname))
+    print_info(f"Benchmark mem-{modelname} saving to disk...")
 
     # Save the benchmark
-    synth.save("%s/mem-%s" % (DIRECTORY, modelname), bench=bench)
+    synth.save(f"{DIRECTORY}/mem-{modelname}", bench=bench)
 
-    print_info("Benchmark mem-%s generated" % (modelname))
+    print_info(f"Benchmark mem-{modelname} generated")
     return True
 
 
@@ -226,8 +238,7 @@ if __name__ == '__main__':
     DIRECTORY = sys.argv[1]
 
     if not os.path.isdir(DIRECTORY):
-        print_error("Output directory '%s' does not exists" % (DIRECTORY))
+        print_error(f"Output directory '{DIRECTORY}' does not exists")
         exit(-1)
 
-    if callable(locals().get('main')):
-        main()
+    main()

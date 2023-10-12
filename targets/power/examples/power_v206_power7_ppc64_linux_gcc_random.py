@@ -26,9 +26,7 @@ import multiprocessing as mp
 import os
 import random
 import sys
-
-# Third party modules
-from six.moves import map, range
+from typing import List
 
 # Own modules
 import microprobe.code
@@ -45,7 +43,9 @@ from microprobe.exceptions import MicroprobeError, \
     MicroprobeTargetDefinitionError
 from microprobe.model.memory import EndlessLoopDataMemoryModel
 from microprobe.target import import_definition
+from microprobe.target.isa.instruction import InstructionType
 from microprobe.utils.cmdline import print_error, print_info
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -67,15 +67,22 @@ except MicroprobeTargetDefinitionError as exc:
     print_error("Exception message: %s" % str(exc))
     exit(-1)
 
+assert TARGET.microarchitecture is not None, \
+    "Target must have a defined microarchitecture"
 BASE_ELEMENT = [
-    element for element in TARGET.elements.values() if element.name == 'L1D'
+    element for element in TARGET.microarchitecture.elements.values()
+    if element.name == 'L1D'
 ][0]
-CACHE_HIERARCHY = TARGET.cache_hierarchy.get_data_hierarchy_from_element(
-    BASE_ELEMENT)
+CACHE_HIERARCHY = \
+    TARGET.microarchitecture.cache_hierarchy.get_data_hierarchy_from_element(
+     BASE_ELEMENT)
 
 PARALLEL = True
 
+DIRECTORY = None
 
+
+@typeguard_testsuite
 def main():
     """ Main program. """
     if PARALLEL:
@@ -85,21 +92,24 @@ def main():
         list(map(generate, list(range(0, 100))))
 
 
-def generate(name):
+@typeguard_testsuite
+def generate(name: str):
     """ Benchmark generation policy. """
 
-    if os.path.isfile("%s/random-%s.c" % (DIRECTORY, name)):
-        print_info("Skip %d" % name)
+    assert DIRECTORY is not None, "DIRECTORY variable cannot be None"
+
+    if os.path.isfile(f"{DIRECTORY}/random-{name}.c"):
+        print_info(f"Skip {name}")
         return
 
-    print_info("Generating %d..." % name)
+    print_info(f"Generating {name}...")
 
     # Seed the randomness
     rand = random.Random()
     rand.seed(64)  # My favorite number ;)
 
     # Generate a random memory model (used afterwards)
-    model = []
+    model: List[int] = []
     total = 100
     for mcomp in CACHE_HIERARCHY[0:-1]:
         weight = rand.randint(0, total)
@@ -149,8 +159,8 @@ def generate(name):
     # --> Fill the basic block with instructions picked randomly from the list
     #     provided
 
-    instructions = []
-    for instr in TARGET.instructions.values():
+    instructions: List[InstructionType] = []
+    for instr in TARGET.isa.instructions.values():
 
         if instr.privileged:  # Skip privileged
             continue
@@ -186,9 +196,7 @@ def generate(name):
 
     synth.add_pass(
         microprobe.passes.instruction.SetRandomInstructionTypePass(
-            instructions, rand
-        )
-    )
+            instructions, rand))
 
     # --> Set the memory operations parameters to fulfill the given model
     synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(modelobj))
@@ -201,22 +209,20 @@ def generate(name):
     #     distance is randomly picked
     synth.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=rand.randint(1, 20)
-        )
-    )
+            dd=rand.randint(1, 20)))
 
     # Generate the benchmark (applies the passes)
     # Since it is a randomly generated code, the generation might fail
     # (e.g. not enough access to fulfill the requested memory model, etc.)
     # Because of that, we handle the exception accordingly.
     try:
-        print_info("Synthesizing %d..." % name)
+        print_info(f"Synthesizing {name}...")
         bench = synth.synthesize()
-        print_info("Synthesized %d!" % name)
+        print_info(f"Synthesized {name}!")
         # Save the benchmark
-        synth.save("%s/random-%s" % (DIRECTORY, name), bench=bench)
+        synth.save(f"{DIRECTORY}/random-{name}", bench=bench)
     except MicroprobeError:
-        print_info("Synthesizing error in '%s'. This is Ok." % name)
+        print_info(f"Synthesizing error in '{name}'. This is Ok.")
 
     return True
 
@@ -233,7 +239,7 @@ if __name__ == '__main__':
     DIRECTORY = sys.argv[1]
 
     if not os.path.isdir(DIRECTORY):
-        print_error("Output directory '%s' does not exists" % (DIRECTORY))
+        print_error(f"Output directory '{DIRECTORY}' does not exists")
         exit(-1)
 
     if callable(locals().get('main')):
