@@ -32,7 +32,7 @@ python "$(command -v mypy)" --version
 
 set +e
 # shellcheck disable=SC2046
-$NICE python "$(command -v mypy)" src/microprobe/code src/microprobe/target targets/generic --exclude targets/generic/wrappers/debug.py --ignore-missing-imports --install-types --non-interactive > "mypy$PYTHON_VERSION.out"
+$NICE python "$(command -v mypy)" src/microprobe/code src/microprobe/target src/microprobe/model targets/generic --exclude targets/generic/wrappers/debug.py --ignore-missing-imports --install-types --non-interactive > "mypy$PYTHON_VERSION.out"
 error=$?
 set -e
 
