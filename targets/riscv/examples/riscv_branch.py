@@ -31,13 +31,14 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
 # Own modules
 from microprobe.code import Synthesizer, get_wrapper
-from microprobe.exceptions import MicroprobeException
 from microprobe.passes import initialization, instruction, register, \
-    structure, memory, branch, address, symbol
+    structure, memory, branch, address
 from microprobe.target import import_definition
 from microprobe.utils.misc import RNDINT
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 
+@typeguard_testsuite
 class RiscvIpcTest(object):
     """RiscvIpc
 
