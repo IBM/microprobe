@@ -22,30 +22,25 @@ import copy
 import os
 import types
 from tempfile import SpooledTemporaryFile
+from typing import Union
 from unittest import TestCase, main
 
 # Third party modules
 import six
-from six.moves import range
 
 # Own modules
 import microprobe
 
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    import subprocess  # @Reimport
-
+import subprocess
 
 # Constants
 BASEPATH = os.path.join(os.path.dirname(microprobe.__file__), "..", "..")
 MP_TESTING_ARCH = os.environ.get("MP_TESTING_ARCH", None)
 
 
-def copy_func(f, name=None):
-    return types.FunctionType(f.__code__, copy.copy(f.__globals__),
-                              name or f.__name__,
-                              f.__defaults__, f.__closure__)
+def copy_func(f, name: Union[str, None] = None):
+    return types.FunctionType(f.__code__, copy.copy(f.__globals__), name
+                              or f.__name__, f.__defaults__, f.__closure__)
 
 
 # Classes
@@ -71,12 +66,14 @@ for target in TARGETS:
 
         name = "mp_target"
         description = "mp_target tool tests"
-        cmd = [os.path.join(BASEPATH,
-                            "targets", "generic", "tools", "mp_target.py")]
+        cmd = [
+            os.path.join(BASEPATH, "targets", "generic", "tools",
+                         "mp_target.py")
+        ]
         targetpath = os.path.join(BASEPATH, "targets")
         trials = 3
 
-        def __init__(self, methodName='runTest'):
+        def __init__(self, methodName: str = 'runTest'):
             # pylint: disable=E1003
             super(self.__class__, self).__init__(methodName=methodName)
             self.target = getattr(self, methodName).__doc__.split("'")[1]
@@ -95,7 +92,7 @@ for target in TARGETS:
         def tearDown(self):
             pass
 
-        def run_cmd(self, extra):
+        def run_cmd(self, extra: Union[str, None]):
             """
 
             :param extra:
@@ -113,11 +110,9 @@ for target in TARGETS:
             for trial in range(0, self.trials):
                 print("Trial %s" % trial)
                 tfile = SpooledTemporaryFile()
-                error_code = subprocess.call(
-                    test_cmd,
-                    stdout=tfile,
-                    stderr=subprocess.STDOUT
-                )
+                error_code = subprocess.call(test_cmd,
+                                             stdout=tfile,
+                                             stderr=subprocess.STDOUT)
                 if error_code == 0:
                     break
 
@@ -127,10 +122,8 @@ for target in TARGETS:
 
             self.assertEqual(error_code, 0)
 
-    newclass = type(
-        "mp_target_%s" % targetname, TestTargetQuery.__bases__,
-        dict(TestTargetQuery.__dict__)
-    )
+    newclass = type("mp_target_%s" % targetname, TestTargetQuery.__bases__,
+                    dict(TestTargetQuery.__dict__))
 
     globals().pop("TestTargetQuery")
 
@@ -150,8 +143,7 @@ for target in TARGETS:
     else:
         mfunc = getattr(newclass, fname)
 
-    setattr(mfunc, "__doc__", "mp_target - full report of '%s' " % target
-            )
+    setattr(mfunc, "__doc__", "mp_target - full report of '%s' " % target)
     mfunc.__name__ = fname
 
     globals().pop("mfunc")
@@ -159,12 +151,8 @@ for target in TARGETS:
     globals().pop("test_function")
 
     TCLASSES.append(
-        type(
-            "mp_target_%s" % targetname, newclass.__bases__, dict(
-                newclass.__dict__
-            )
-        )
-    )
+        type("mp_target_%s" % targetname, newclass.__bases__,
+             dict(newclass.__dict__)))
     globals().pop("newclass")
 
 for tclass in TCLASSES:

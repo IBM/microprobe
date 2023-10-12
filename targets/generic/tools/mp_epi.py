@@ -41,7 +41,7 @@ LOG = get_logger(__name__)
 
 
 # Functions
-def _get_wrapper(name):
+def _get_wrapper(name: str):
     try:
         return get_wrapper(name)
     except MicroprobeValueError as exc:
@@ -82,8 +82,8 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(outputname.replace("%INSTR%", bname).replace(
             "%EXT%", "tst"),
-            reset=kwargs['reset'],
-            endless=True)
+                                reset=kwargs['reset'],
+                                endless=True)
         extension = "tst"
 
     elif target.name.endswith("linux_gcc"):

@@ -19,17 +19,20 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 from time import localtime, strftime
+from typing import Callable, List, Union
 
 # Third party modules
-from six.moves import range
 import six
 
 # Own modules
 import microprobe.code.var
 import microprobe.code.wrapper
+from microprobe.code.ins import Instruction
 import microprobe.utils.info as mp_info
 from microprobe.utils.logger import get_logger
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
+from microprobe.code.var import Variable, VariableArray
+from microprobe.target import Target
 
 # Constants
 LOG = get_logger(__name__)
@@ -40,18 +43,21 @@ __all__ = ["CPAPIWrapper", "CPAPIInfGen", "CPAPILoopGen"]
 # Classes
 
 
+@typeguard_testsuite
 class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
     """A wrapper for the C language with PAPI calls to measure hardware
     counters.
     """
 
-    def __init__(self, counters=None):
+    def __init__(self, counters: Union[None, List[str]] = None):
         """ """
         super(CPAPIWrapper, self).__init__()
-        self._max_array_var = None
-        self._max_array_var_value = None
+        self._max_array_var: Union[Variable, None] = None
+        self._max_array_var_value: Union[str, int, Callable[[], Union[int,
+                                                                      str]],
+                                         None] = None
         self._loop = 0
-        self._vars = []
+        self._vars: List[Variable] = []
         self._extra_headers = ["#include <papi.h>\n"]
         # Events to be read
         if counters is None:
@@ -60,21 +66,13 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
 
         self._vars.append(microprobe.code.var.VariableSingle("retval", "int"))
         self._vars.append(
-            microprobe.code.var.VariableArray(
-                "Events", "int", len(
-                    self._counters
-                )
-            )
-        )
+            microprobe.code.var.VariableArray("Events", "int",
+                                              len(self._counters)))
         self._vars.append(
-            microprobe.code.var.VariableArray(
-                "values", "long long", len(
-                    self._counters
-                )
-            )
-        )
+            microprobe.code.var.VariableArray("values", "long long",
+                                              len(self._counters)))
 
-    def outputname(self, name):
+    def outputname(self, name: str):
         """
 
         :param name:
@@ -96,7 +94,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         """ """
         return []
 
-    def reserved_registers(self, dummy_reserved, target):
+    def reserved_registers(self, dummy_reserved, target: Target):
         """
 
         :param dummy_reserved:
@@ -105,8 +103,8 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         """
 
         return [
-            target.registers["GPR1"], target.registers["GPR2"],
-            target.registers["GPR13"], target.registers["GPR31"]
+            target.isa.registers["GPR1"], target.isa.registers["GPR2"],
+            target.isa.registers["GPR13"], target.isa.registers["GPR31"]
         ]
 
     def start_loop(self, dummy_instr, dummy_instr_reset, dummy_aligned=False):
@@ -129,7 +127,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
             header.append(elem)
         return "\n".join(header)
 
-    def declare_global_var(self, var):
+    def declare_global_var(self, var: Variable):
         """
 
         :param var:
@@ -146,18 +144,16 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
                 var_size = var.elems
 
             return "%s %s[%d]  __attribute__ ((aligned (%d)));\n" % (
-                var.type, var.name, var_size, align
-            )
+                var.type, var.name, var_size, align)
         elif var.value is not None:
             return "%s %s __attribute__ ((aligned (%d))) = %s;\n" % (
-                var.type, var.name, align, str(var.value)
-            )
+                var.type, var.name, align, str(var.value))
         else:
             return "%s %s __attribute__ ((aligned (%d)));\n" % (
-                var.type, var.name, align
-            )
+                var.type, var.name, align)
 
-    def init_global_var(self, var, value):
+    def init_global_var(self, var: Variable,
+                        value: Union[str, int, Callable[[], Union[int, str]]]):
         """
 
         :param var:
@@ -178,9 +174,8 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
                         self._max_array_var_value = value
                         return string
                     elif isinstance(value, six.integer_types):
-                        return "{memset(&%s, %d, %d);}\n" % (
-                            var.name, value, var.size
-                        )
+                        return "{memset(&%s, %d, %d);}\n" % (var.name, value,
+                                                             var.size)
                     else:
                         raise NotImplementedError
                 else:
@@ -198,18 +193,16 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
                                 var.size, varant.size,
                                 var.name, varant.name, size)
                     elif isinstance(value, six.integer_types):
-                        return "{memset(&%d, %d, %d);}\n" % (
-                            var.name, value, var.size
-                        )
+                        return f"{{memset(&{var.name}, {value}, " \
+                            "{var.size});}}\n"
                     else:
                         raise NotImplementedError
-            elif (
-                var.type == "int" or var.type == "long" or
-                var.type == "float" or var.type == "double" or
-                var.type == "long long"
-            ):
+            elif (var.type == "int" or var.type == "long"
+                  or var.type == "float" or var.type == "double"
+                  or var.type == "long long"):
 
                 initialization = ""
+                assert isinstance(var, VariableArray)
                 for xsize in range(var.elems):
                     initialization += "%s[%d] = " % (var.name, xsize)
                     if var.value is None:
@@ -230,7 +223,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
 
     def start_main(self):
         """ """
-        main = []
+        main: List[str] = []
 
         # TODO: improve this and provide an easy interface to add
         # command line option from the passes
@@ -248,14 +241,11 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         main.append("\n")
 
         main.append("printf(\"%s\\n\");" % ("=" * 80))
-        main.append(
-            "printf(\"Microprobe framework general information:\\n\")"
-            ";"
-        )
+        main.append("printf(\"Microprobe framework general information:\\n\")"
+                    ";")
         main.append("printf(\"%s\\n\");" % ("-" * 80))
-        main.append(
-            "printf(\"  Microprobe version: %s\\n\");" % mp_info.VERSION
-        )
+        main.append("printf(\"  Microprobe version: %s\\n\");" %
+                    mp_info.VERSION)
         main.append("printf(\"  Copyright: %s\\n\");" % mp_info.COPYRIGHT)
         main.append("printf(\"  License: %s\\n\");" % mp_info.LICENSE)
         main.append("printf(\"  Authors: %s\\n\");" % mp_info.AUTHOR)
@@ -273,11 +263,8 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         main.append("printf(\"%s\\n\");" % ("=" * 80))
         main.append("printf(\"MICRO-BENCHMARK DESCRIPTION\\n\");")
         main.append("printf(\"%s\\n\");" % ("-" * 80))
-        main.append(
-            "printf(\"Generation time: %s\\n\");" % strftime(
-                "%x %X %Z", localtime()
-            )
-        )
+        main.append("printf(\"Generation time: %s\\n\");" %
+                    strftime("%x %X %Z", localtime()))
         # main.append("printf(\"\\n\");")
         main.append("printf(\"Generation policy:\\n\");")
         # main.append("printf(\"%s\\n\");" % ("*"*80))
@@ -286,11 +273,8 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
             sinfo = info.split("-", 1)
             sinfo2 = [sinfo[1][i:i + 45] for i in range(0, len(sinfo[1]), 45)]
 
-            main.append(
-                "printf(\"  Step:%2s %24s %40s\\n\");" % (
-                    index, sinfo[0], sinfo2[0]
-                )
-            )
+            main.append("printf(\"  Step:%2s %24s %40s\\n\");" %
+                        (index, sinfo[0], sinfo2[0]))
             for line in sinfo2[1:]:
                 main.append("printf(\"%s%s\\n\");" % (" " * 36, line.strip()))
 
@@ -304,24 +288,18 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         main.append("printf(\"Target requirements:\\n\");")
         # main.append("printf(\"%s\\n\");" % ("*"*80))
         for index, requirement in enumerate(self.benchmark.requirements):
-            main.append(
-                "printf(\"  Requirement %2s - %s\\n\");" % (index, requirement)
-            )
+            main.append("printf(\"  Requirement %2s - %s\\n\");" %
+                        (index, requirement))
 
         main.append("printf(\"\\n\");")
-        main.append(
-            "printf(\"Warnings (includes not checkable requirements)"
-            ":\\n\");"
-        )
+        main.append("printf(\"Warnings (includes not checkable requirements)"
+                    ":\\n\");")
         # main.append("printf(\"%s\\n\");" % ("*"*80))
 
         num_warnings = 0
         for index, warning in enumerate(self.benchmark.warnings):
-            main.append(
-                "printf(\"  Warning %2s - %s\\n\");" % (
-                    index, warning
-                )
-            )
+            main.append("printf(\"  Warning %2s - %s\\n\");" %
+                        (index, warning))
             num_warnings += 1
         main.append("printf(\"\\n\");")
 
@@ -335,15 +313,11 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         main.append("exit(%d);" % num_warnings)
         main.append("}")
         main.append("\n")
-        main.append(
-            "void process_parameters("
-            "int argc, char **argv, char **envp)"
-        )
+        main.append("void process_parameters("
+                    "int argc, char **argv, char **envp)")
         main.append("{")
-        main.append(
-            "if (argc == 1) {printf(\"Running micro-benchmark...\\n\")"
-            "; return;}"
-        )
+        main.append("if (argc == 1) {printf(\"Running micro-benchmark...\\n\")"
+                    "; return;}")
         main.append("if (argc > 2) {usage();}")
         main.append("if (argv[1][0] != '-') {usage();}")
         main.append("if (argv[1][1] == 'h') {usage();}")
@@ -360,7 +334,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         main.append("process_parameters(argc, argv, envp);\n")
         return "\n".join(main)
 
-    def wrap_ins(self, instr):
+    def wrap_ins(self, instr: Instruction):
         """
 
         :param instr:
@@ -369,7 +343,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         LOG.debug(instr)
         LOG.debug(type(instr))
 
-        rstrl = []
+        rstrl: List[str] = []
         rstrl.append("__asm__(\"")
         if isinstance(instr, str):
             rstrl.append(instr)
@@ -380,7 +354,7 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
 
         rstr_len = len(rstr)
 
-        cstrl = []
+        cstrl: List[str] = []
         if not isinstance(instr, str):
             for idx, comment in enumerate(instr.comments):
 
@@ -400,13 +374,13 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         :param dummy_ins:
 
         """
-        loop = []
+        loop: List[str] = []
         loop.append("}")
         return "\n".join(loop)
 
     def end_main(self):
         """ """
-        main = []
+        main: List[str] = []
         main.append("}")
         return "\n".join(main)
 
@@ -415,13 +389,14 @@ class CPAPIWrapper(microprobe.code.wrapper.Wrapper):
         return ""
 
 
+@typeguard_testsuite
 class CPAPIInfGen(CPAPIWrapper):
     """A wrapper for the C language with an infinite loop and HWC value
     accesses on each loop
 
     """
 
-    def __init__(self, counters=None):
+    def __init__(self, counters: Union[None, List[str]] = None):
         """
 
         :param counters: (Default value = [PAPI_TOT_INS, PAPI_TOT_CYC])
@@ -431,18 +406,18 @@ class CPAPIInfGen(CPAPIWrapper):
 
         # Variables to
         self._vars.append(
-            microprobe.code.var.VariableSingle(
-                "iteration", "long long"
-            )
-        )
+            microprobe.code.var.VariableSingle("iteration", "long long"))
 
-    def start_loop(self, dummy_instr, dummy_instr_reset, dummy_aligned=False):
+    def start_loop(self,
+                   dummy_instr,
+                   dummy_instr_reset,
+                   dummy_aligned: bool = False):
         """
 
         :param dummy_instr:
         :param dummy_aligned:  (Default value = False)
         """
-        loop = []
+        loop: List[str] = []
 
         # Initialize PAPI
         loop.append("/* Initialize the PAPI library */")
@@ -496,7 +471,7 @@ class CPAPIInfGen(CPAPIWrapper):
         :param dummy_ins:
 
         """
-        loop = []
+        loop: List[str] = []
 
         # Read the events
 
@@ -545,26 +520,29 @@ class CPAPILoopGen(CPAPIWrapper):
 
     """
 
-    def __init__(self, counters=None, size=10):
+    def __init__(self,
+                 counters: Union[None, List[str]] = None,
+                 size: int = 10):
         super(CPAPILoopGen, self).__init__(counters=counters)
 
         self._size = size
         self._vars.append(microprobe.code.var.VariableSingle("i", "int"))
         self._vars.append(
-            microprobe.code.var.VariableSingle(
-                "iterations", "long long",
-                value=size
-            )
-        )
+            microprobe.code.var.VariableSingle("iterations",
+                                               "long long",
+                                               value=size))
 
-    def start_loop(self, dummy_instr, dummy_instr_reset, dummy_aligned=False):
+    def start_loop(self,
+                   dummy_instr,
+                   dummy_instr_reset,
+                   dummy_aligned: bool = False):
         """
 
         :param dummy_instr:
         :param dummy_aligned:  (Default value = False)
 
         """
-        loop = []
+        loop: List[str] = []
 
         # Initialize PAPI
         loop.append("iterations = %d;" % self._size)
@@ -619,7 +597,7 @@ class CPAPILoopGen(CPAPIWrapper):
         :param dummy_ins:
 
         """
-        loop = []
+        loop: List[str] = []
 
         # Close the loop
         loop.append("}")
@@ -640,7 +618,7 @@ class CPAPILoopGen(CPAPIWrapper):
         # Print the values to the std output
         print_hwc = ""
         print_hwc += "printf(\"%lld"
-        for dummy_counter in self._counters:
+        for _dummy_counter in self._counters:
             print_hwc += ", %lld"
         print_hwc += "\\n\", iterations"
         for i in range(len(self._counters)):

@@ -16,6 +16,7 @@ This is the debug module documentation
 """
 # Futures
 from __future__ import absolute_import
+from typing import List
 
 # Third party modules
 from six.moves import range
@@ -24,7 +25,8 @@ from six.moves import range
 import microprobe.code.wrapper
 from microprobe.code.context import Context
 from microprobe.utils.logger import get_logger
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
+from microprobe.code.ins import Instruction
 
 # Constants
 LOG = get_logger(__name__)
@@ -34,6 +36,7 @@ __all__ = ["DebugBinary", "DebugBinaryDouble"]
 
 
 # Classes
+@typeguard_testsuite
 class DebugBinary(microprobe.code.wrapper.Wrapper):
     """ """
 
@@ -42,7 +45,7 @@ class DebugBinary(microprobe.code.wrapper.Wrapper):
         super(DebugBinary, self).__init__()
         self._reset = reset
 
-    def outputname(self, name):
+    def outputname(self, name: str):
         """
 
         :param name:
@@ -81,7 +84,10 @@ class DebugBinary(microprobe.code.wrapper.Wrapper):
         """ """
         return ""
 
-    def start_loop(self, dummy_instr, dummy_instr_reset, dummy_aligned=True):
+    def start_loop(self,
+                   dummy_instr,
+                   dummy_instr_reset,
+                   dummy_aligned: bool = True):
         """
         :param dummy_instr:
         :param dummy_aligned:  (Default value = True)
@@ -89,23 +95,18 @@ class DebugBinary(microprobe.code.wrapper.Wrapper):
         """
         return ""
 
-    def wrap_ins(self, instr):
+    def wrap_ins(self, instr: Instruction):
         """
 
         :param instr:
 
         """
-        ins = []
+        ins: List[str] = []
         binary = instr.binary()
-        ins.append(
-            "\n".join(
-                [
-                    ".byte 0x%02x" % int(
-                        binary[i:i + 8], 2
-                    ) for i in range(0, len(binary), 8)
-                ]
-            )
-        )
+        ins.append("\n".join([
+            ".byte 0x%02x" % int(binary[i:i + 8], 2)
+            for i in range(0, len(binary), 8)
+        ]))
         return "\n".join(ins)
 
     def end_loop(self, dummy_instr):
@@ -151,16 +152,17 @@ class DebugBinary(microprobe.code.wrapper.Wrapper):
         return context
 
 
+@typeguard_testsuite
 class DebugBinaryDouble(DebugBinary):
     """ """
 
-    def wrap_ins(self, instr):
+    def wrap_ins(self, instr: Instruction):
         """
 
         :param instr:
 
         """
-        ins = []
+        ins: List[str] = []
         if not instr.disable_asm:
             ins.append(instr.assembly())
 
@@ -175,7 +177,7 @@ class DebugBinaryDouble(DebugBinary):
             else:
                 ins.insert(0, ".option norvc")
 
-        ins2 = []
+        ins2: List[str] = []
         binary = instr.binary()
 
         while len(binary) != 0:
@@ -185,9 +187,7 @@ class DebugBinaryDouble(DebugBinary):
                 mbinary = binary[0:8]
                 binary = binary[8:]
 
-                ins2.append(
-                    ".byte 0x%02x" % int(mbinary, 2)
-                )
+                ins2.append(".byte 0x%02x" % int(mbinary, 2))
 
             else:
 

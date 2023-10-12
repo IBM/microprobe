@@ -23,8 +23,6 @@ mpt file.
 from __future__ import absolute_import, print_function
 
 # Built-in modules
-import gzip
-import struct
 import sys
 
 # Third party modules
@@ -40,7 +38,6 @@ from microprobe.utils.misc import open_generic_fd
 from microprobe.utils.mpt import mpt_configuration_factory, \
     mpt_parser_factory, variable_to_test_definition
 from microprobe.utils.objdump import interpret_objdump
-
 
 # Constants
 
@@ -78,25 +75,19 @@ def dump_mpt(input_file_fd, target, arguments):
 
     print_info("Input file parsed")
 
-    print_info(
-        "%d instructions processed from the input file" % len(instr_defs)
-    )
+    print_info("%d instructions processed from the input file" %
+               len(instr_defs))
 
     if var_defs != []:
-        print_info(
-            "Variables referenced and detected in the dump: %s" %
-            ','.join([var.name for var in var_defs])
-        )
+        print_info("Variables referenced and detected in the dump: %s" %
+                   ','.join([var.name for var in var_defs]))
 
     if req_defs != []:
         print_warning(
             "Variables referenced and *NOT* detected in the dump: %s" %
-            ','.join([var.name for var in req_defs])
-        )
-        print_warning(
-            "You might need to edit the generated MPT to fix the"
-            " declaration of such variables"
-        )
+            ','.join([var.name for var in req_defs]))
+        print_warning("You might need to edit the generated MPT to fix the"
+                      " declaration of such variables")
 
     print_info("Generating the MPT contents...")
 
@@ -119,15 +110,11 @@ def dump_mpt(input_file_fd, target, arguments):
             kwargs["stack_name"] = arguments["stack_name"]
         if "stack_address" in arguments:
             kwargs["stack_address"] = Address(
-                base_address="code",
-                displacement=arguments["stack_address"]
-            )
+                base_address="code", displacement=arguments["stack_address"])
 
         variables, instructions = target.elf_abi(
-            arguments["stack_size"], arguments.get(
-                "start_symbol", None
-            ), **kwargs
-        )
+            arguments["stack_size"], arguments.get("start_symbol", None),
+            **kwargs)
 
         for variable in variables:
             req_defs.append(variable_to_test_definition(variable))
@@ -138,14 +125,10 @@ def dump_mpt(input_file_fd, target, arguments):
             address -= instr.architecture_type.format.length
 
         if address.displacement < 0:
-            print_error(
-                "Default code address is below zero after"
-                " adding the initialization code."
-            )
-            print_error(
-                "Check/modify the objdump provided or do not use"
-                " the elf_abi flag."
-            )
+            print_error("Default code address is below zero after"
+                        " adding the initialization code.")
+            print_error("Check/modify the objdump provided or do not use"
+                        " the elf_abi flag.")
             exit(-1)
 
         mpt_config.set_default_code_address(address.displacement)
@@ -169,6 +152,7 @@ def dump_mpt(input_file_fd, target, arguments):
     mpt_parser = mpt_parser_factory()
     mpt_parser.dump_mpt_config(mpt_config, arguments['output_mpt_file'])
 
+
 # Main
 
 
@@ -177,17 +161,14 @@ def main():
     Program main
     """
     args = sys.argv[1:]
-    cmdline = CLI(
-        "Microprobe Objdump to MPT tool",
-        default_config_file="mp_objdump2mpt.cfg",
-        force_required=['target']
-    )
+    cmdline = CLI("Microprobe Objdump to MPT tool",
+                  default_config_file="mp_objdump2mpt.cfg",
+                  force_required=['target'])
 
     groupname = "Objdump to MPT arguments"
 
-    cmdline.add_group(
-        groupname, "Command arguments related to Objdump to MPT tool"
-    )
+    cmdline.add_group(groupname,
+                      "Command arguments related to Objdump to MPT tool")
 
     cmdline.add_option(
         "input-objdump-file",
@@ -197,132 +178,107 @@ def main():
         " standard input",
         group=groupname,
         opt_type=existing_file,
-        required=False
-    )
+        required=False)
 
-    cmdline.add_option(
-        "output-mpt-file",
-        "O",
-        None,
-        "Output file name",
-        group=groupname,
-        opt_type=new_file_ext(".mpt"),
-        required=True
-    )
+    cmdline.add_option("output-mpt-file",
+                       "O",
+                       None,
+                       "Output file name",
+                       group=groupname,
+                       opt_type=new_file_ext(".mpt"),
+                       required=True)
 
     cmdline.add_flag(
         "strict",
-        "S",
-        "Be strict when parsing objdump input, if not set, silently skip "
+        "S", "Be strict when parsing objdump input, if not set, silently skip "
         "unparsed elements",
-        group=groupname
-    )
+        group=groupname)
 
-    cmdline.add_option(
-        "sections",
-        "s", ['.text'],
-        "Space separated CODE section names to interpret. "
-        "(default: '.text' section)",
-        group=groupname,
-        nargs='+',
-        required=False
-    )
+    cmdline.add_option("sections",
+                       "s", ['.text'],
+                       "Space separated CODE section names to interpret. "
+                       "(default: '.text' section)",
+                       group=groupname,
+                       nargs='+',
+                       required=False)
 
-    cmdline.add_option(
-        "from-address",
-        "f",
-        0x0,
-        "If set, start interpreting from this address",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("from-address",
+                       "f",
+                       0x0,
+                       "If set, start interpreting from this address",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
-    cmdline.add_option(
-        "to-address",
-        "t",
-        float('+inf'),
-        "If set, end interpreting at this address",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("to-address",
+                       "t",
+                       float('+inf'),
+                       "If set, end interpreting at this address",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
-    cmdline.add_option(
-        "default-code-address",
-        "X",
-        None,
-        "Default code address",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("default-code-address",
+                       "X",
+                       None,
+                       "Default code address",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
-    cmdline.add_option(
-        "default-data-address",
-        "D",
-        None,
-        "Default data address",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("default-data-address",
+                       "D",
+                       None,
+                       "Default data address",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
     cmdline.add_flag(
         "elf-abi",
         None,
         "Ensure ELF Application Binary Interface (e.g. define stack, stack"
         " pointer, etc.)",
-        group=groupname
-    )
+        group=groupname)
 
-    cmdline.add_option(
-        "stack-size",
-        None,
-        4096,
-        "Stack size in bytes (Default: 4096)",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("stack-size",
+                       None,
+                       4096,
+                       "Stack size in bytes (Default: 4096)",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
-    cmdline.add_option(
-        "stack-name",
-        None,
-        None,
-        "Stack name (Default: microprobe_stack)",
-        group=groupname,
-        opt_type=str,
-        required=False
-    )
+    cmdline.add_option("stack-name",
+                       None,
+                       None,
+                       "Stack name (Default: microprobe_stack)",
+                       group=groupname,
+                       opt_type=str,
+                       required=False)
 
-    cmdline.add_option(
-        "stack-address",
-        None,
-        None,
-        "Stack address (Default: allocated in the data area)",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("stack-address",
+                       None,
+                       None,
+                       "Stack address (Default: allocated in the data area)",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
     cmdline.add_option(
         "start-symbol",
         None,
-        None,
-        "Symbol to call after initializing the stack. If not specified, "
+        None, "Symbol to call after initializing the stack. If not specified, "
         "no call is performed",
         group=groupname,
         opt_type=str,
-        required=False
-    )
+        required=False)
 
     cmdline.add_flag(
         "end-branch-to-itself",
         None,
         "A branch to itself instruction will be added at the end of the test",
-        group=groupname
-    )
+        group=groupname)
 
     print_info("Processing input arguments...")
     cmdline.main(args, _main)

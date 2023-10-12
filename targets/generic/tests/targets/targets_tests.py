@@ -23,11 +23,11 @@ import os
 import random
 import types
 from tempfile import SpooledTemporaryFile, mkstemp
+from typing import Any, Callable, List, Tuple, Union
 from unittest import TestCase, TestSuite, main, skipIf, skipUnless
 
 # Third party modules
 import six
-from six.moves import range, zip
 
 # Own modules
 import microprobe.code
@@ -40,16 +40,11 @@ import microprobe.passes.symbol
 from microprobe.target import Target
 from microprobe.target.env import import_env_definition
 from microprobe.target.isa import import_isa_definition
+from microprobe.target.isa.instruction import InstructionType
 from microprobe.utils.asm import interpret_asm
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.logger import get_logger, set_log_level
-
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-    from exceptions import AssertionError  # pylint: disable=import-error
-else:
-    import subprocess  # @Reimport
-
+import subprocess
 
 # Constants
 LOG = get_logger(__name__)
@@ -80,10 +75,9 @@ else:
 
 
 # Functions
-def copy_func(f, name=None):
-    return types.FunctionType(f.__code__, copy.copy(f.__globals__),
-                              name or f.__name__,
-                              f.__defaults__, f.__closure__)
+def copy_func(f: Callable[[Any], Any], name: Union[str, None] = None):
+    return types.FunctionType(f.__code__, copy.copy(f.__globals__), name
+                              or f.__name__, f.__defaults__, f.__closure__)
 
 
 def _rnd():
@@ -93,7 +87,7 @@ def _rnd():
     return random.randint(0, (2**32))
 
 
-def subins(instructions):
+def subins(instructions: List[InstructionType]):
     """
 
     :param instructions:
@@ -101,13 +95,12 @@ def subins(instructions):
     """
 
     if MP_TESTING_INSTR is not None:
-        return [ins for ins in instructions
-                if ins.name == MP_TESTING_INSTR]
+        return [ins for ins in instructions if ins.name == MP_TESTING_INSTR]
 
     if MP_TESTING_ARCH is not None and MP_CI is None:
         return instructions
 
-    myins = []
+    myins: List[InstructionType] = []
 
     for instr in instructions:
 
@@ -154,30 +147,20 @@ def riscv_v22_function(self):
 
     synth = microprobe.code.Synthesizer(target, cwrapper(), value=_rnd)
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=_rnd
-        )
-    )
+        microprobe.passes.initialization.InitializeRegistersPass(value=_rnd))
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(
-            BENCH_SIZE
-        )
-    )
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCH_SIZE))
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence
-        )
-    )
+            sequence))
     # synth.add_pass(microprobe.passes.branch.BranchNextPass())
     synth.add_pass(microprobe.passes.register.RandomAllocationPass())
     # synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     # synth.add_pass(
     #    microprobe.passes.register.DefaultRegisterAllocationPass(
     #        dd=99))
-    synth.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass())
-    synth.add_pass(
-        microprobe.passes.symbol.ResolveSymbolicReferencesPass())
+    synth.add_pass(microprobe.passes.address.UpdateInstructionAddressesPass())
+    synth.add_pass(microprobe.passes.symbol.ResolveSymbolicReferencesPass())
     bench = synth.synthesize()
 
     filename = self.filename[0][:-2]
@@ -210,10 +193,9 @@ def compile_benchmark(self, function):
     tfile = SpooledTemporaryFile()
 
     try:
-        error_code = subprocess.check_call(
-            cmd, stdout=tfile,
-            stderr=subprocess.STDOUT
-        )
+        error_code = subprocess.check_call(cmd,
+                                           stdout=tfile,
+                                           stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as exc:
         error_code = exc.returncode
 
@@ -260,17 +242,11 @@ def compile_benchmark(self, function):
     if cmd_output.find("Error: unrecognized opcode:") > -1:
         # Compiler not new enough or check compilation options
         # DO NOT REPORT FAILURE but not PASS
-        self.fail(
-            msg="Update your toolchain: %s not supported\n%s" % (
-                self.instr_name, _process_as_output(cmd_output)
-            )
-        )
+        self.fail(msg="Update your toolchain: %s not supported\n%s" %
+                  (self.instr_name, _process_as_output(cmd_output)))
 
-    self.fail(
-        msg="Error compiling using cmd: %s. Output: %s" % (
-            cmd, _process_as_output(cmd_output)
-        )
-    )
+    self.fail(msg="Error compiling using cmd: %s. Output: %s" %
+              (cmd, _process_as_output(cmd_output)))
 
 
 def binary_benchmark(self, function):
@@ -294,10 +270,9 @@ def binary_benchmark(self, function):
 
     tfile = SpooledTemporaryFile()
 
-    error_code = subprocess.check_call(
-        cmd, stdout=tfile,
-        stderr=subprocess.STDOUT
-    )
+    error_code = subprocess.check_call(cmd,
+                                       stdout=tfile,
+                                       stderr=subprocess.STDOUT)
 
     if error_code != 0:
         tfile.seek(0)
@@ -381,23 +356,18 @@ def self_codification_function(self):
                 print("Codification: 0x%s" % codification)
                 print("Assembly: %s" % instruction.assembly())
 
-                instr_def = interpret_bin(
-                    codification,
-                    target,
-                    single=True
-                )[0]
+                instr_def = interpret_bin(codification, target, single=True)[0]
                 print("%s == %s ?" % (instr, instr_def.instruction_type))
 
                 self.assertEqual(instr.mnemonic,
                                  instr_def.instruction_type.mnemonic)
 
-                for orig_operand, new_operand in zip(
-                        instruction.operands(), instr_def.operands
-                        ):
+                for orig_operand, new_operand in zip(instruction.operands(),
+                                                     instr_def.operands):
 
                     print("%s == %s ?" % (orig_operand.value, new_operand))
-                    print("%s == %s ?" % (type(orig_operand.value),
-                                          type(new_operand)))
+                    print("%s == %s ?" %
+                          (type(orig_operand.value), type(new_operand)))
                     self.assertEqual(orig_operand.value, new_operand)
 
                 print("CODE OK")
@@ -452,9 +422,8 @@ def self_assembly_function(self):
                 if trial == TRIALS - 1:
                     self.assertEqual(instr, instr_def.instruction_type)
 
-        for orig_operand, new_operand in zip(
-            instruction.operands(), instr_def.operands
-        ):
+        for orig_operand, new_operand in zip(instruction.operands(),
+                                             instr_def.operands):
 
             print("%s == %s ?" % (orig_operand.value, new_operand))
             self.assertEqual(orig_operand.value, new_operand)
@@ -488,7 +457,7 @@ def _check_executable(env_name):
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
 
-def _process_as_output(input_str):
+def _process_as_output(input_str: str):
     """
 
     :param input_str:
@@ -517,13 +486,8 @@ def _process_as_output(input_str):
 
         asm_line = asm_lines[int(number) - 1][:-1]
 
-        output_lines.append(
-            " : ".join(
-                [
-                    asm_file, number, as_type, as_string, asm_line
-                ]
-            )
-        )
+        output_lines.append(" : ".join(
+            [asm_file, number, as_type, as_string, asm_line]))
 
     return "\n".join(output_lines)
 
@@ -552,30 +516,20 @@ def load_tests(loader, dummy_tests, dummy_pattern):
 
 
 # Classes
-TARGETS = []
+TARGETS: List[Tuple[str, Callable[[Any], Any], str, str, List[str],
+                    List[str]]] = []
 
 if MP_TESTING_ARCH in ["RISCV", None]:
-    TARGETS = [('riscv_v22',
-                riscv_v22_function,
-                os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             "..",
-                             "..",
-                             "..",
-                             "riscv",
-                             "isa",
-                             "riscv-v2_2"),
-                os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             "..",
-                             "..",
-                             "..",
-                             "riscv",
-                             "env",
-                             "riscv_linux_gcc.py"),
-                ["BEQ_V0", "BGEU_V0", "BGE_V0", "BLTU_V0", "BLT_V0", "BNE_V0",
-                 "C.BEQZ_V0", "C.BNEZ_V0", "C.J_V0", "JAL_V0"],
-                [])
-               ]
-
+    TARGETS = [('riscv_v22', riscv_v22_function,
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                             "..", "..", "riscv", "isa", "riscv-v2_2"),
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
+                             "..", "..", "riscv", "env",
+                             "riscv_linux_gcc.py"), [
+                                 "BEQ_V0", "BGEU_V0", "BGE_V0", "BLTU_V0",
+                                 "BLT_V0", "BNE_V0", "C.BEQZ_V0", "C.BNEZ_V0",
+                                 "C.J_V0", "JAL_V0"
+                             ], [])]
 
 TEST_CLASSES = []
 for name, gen_function, isa_path, env_path, \
@@ -618,12 +572,9 @@ for name, gen_function, isa_path, env_path, \
             pass
 
         def setUp(self):
-            tempfile = mkstemp(
-                prefix="microprobe_%s_%s_" % (
-                    self.name, self.instr_name
-                ),
-                suffix=".s"
-            )
+            tempfile = mkstemp(prefix="microprobe_%s_%s_" %
+                               (self.name, self.instr_name),
+                               suffix=".s")
             os.close(tempfile[0])
             self.filename = [tempfile[1]]
 
@@ -631,29 +582,26 @@ for name, gen_function, isa_path, env_path, \
             for filename in self.filename:
                 os.unlink(filename)
 
-    newclass = type(
-        "isa_%s" % name, TestTarget.__bases__, dict(TestTarget.__dict__)
-    )
+    newclass = type("isa_%s" % name, TestTarget.__bases__,
+                    dict(TestTarget.__dict__))
 
     globals().pop("TestTarget")
 
     for instr_name in [
-            elem.name for elem in subins(
-            list(isa_obj.instructions.values()))]:
+            elem.name for elem in subins(list(isa_obj.instructions.values()))
+    ]:
 
         if not SKIPGENERATION:
             #
             # Generation function
             #
             f1name = "test_%s_instruction_%s_001_generation" % (
-                name, instr_name.replace(".", "_")
-            )
+                name, instr_name.replace(".", "_"))
 
             @skipIf(
                 instr_name in unsupported,
                 "Unsupported instruction (implement in microprobe when time "
-                "permits)"
-            )
+                "permits)")
             def function_1(self):
                 """
                 function_1
@@ -666,10 +614,7 @@ for name, gen_function, isa_path, env_path, \
                 mfunc = getattr(getattr(newclass, f1name), "__func__")
             else:
                 mfunc = getattr(newclass, f1name)
-            setattr(mfunc, "__doc__", "%s %s Generation" % (
-                    name, instr_name
-                    )
-                    )
+            setattr(mfunc, "__doc__", "%s %s Generation" % (name, instr_name))
             mfunc.__name__ = f1name
 
             globals().pop("mfunc")
@@ -681,36 +626,30 @@ for name, gen_function, isa_path, env_path, \
             # Compilation function
             #
             f2name = "test_%s_instruction_%s_002_compilation" % (
-                name, instr_name.replace(".", "_")
-            )
+                name, instr_name.replace(".", "_"))
 
             @skipUnless(
-                _check_env(
-                    newclass.compiler_bin  # pylint: disable=no-member
-                ),
+                _check_env(newclass.compiler_bin  # type: ignore
+                           ),
                 "Requires environment variable %s to be set" %
-                newclass.compiler_bin  # pylint: disable=no-member
+                newclass.compiler_bin  # type: ignore
             )
             @skipUnless(
-                _check_executable(
-                    newclass.compiler_bin  # pylint: disable=no-member
-                ),
+                _check_executable(newclass.compiler_bin),  # type: ignore
                 "Environment variable %s not set to a correct executable" %
-                newclass.compiler_bin  # pylint: disable=no-member
+                newclass.compiler_bin  # type: ignore
             )
             @skipIf(
                 instr_name in expected_fails,
                 "Tool-chain does not support this instruction. Update it or "
-                "send a bug report"
-            )
+                "send a bug report")
             def function_2(xinstr):
                 """
                 function_2
                 """
                 return compile_benchmark(
                     xinstr, "test_%s_instruction_%s_001_generation" %
-                    (xinstr.name, xinstr.instr_name.replace(".", "_"))
-                )
+                    (xinstr.name, xinstr.instr_name.replace(".", "_")))
 
             setattr(newclass, f2name, copy_func(function_2, f2name))
 
@@ -719,10 +658,7 @@ for name, gen_function, isa_path, env_path, \
             else:
                 mfunc = getattr(newclass, f2name)
 
-            setattr(mfunc, "__doc__", "%s %s Compilation" % (
-                    name, instr_name
-                    )
-                    )
+            setattr(mfunc, "__doc__", "%s %s Compilation" % (name, instr_name))
             mfunc.__name__ = f2name
 
             globals().pop("mfunc")
@@ -735,8 +671,7 @@ for name, gen_function, isa_path, env_path, \
             #
             #
             f3name = "test_%s_instruction_%s_003_codification" % (
-                name, instr_name.replace(".", "_")
-            )
+                name, instr_name.replace(".", "_"))
             setattr(
                 newclass, f3name, lambda x: binary_benchmark(
                     x, "test_%s_instruction_%s_002_compilation" %
@@ -747,10 +682,8 @@ for name, gen_function, isa_path, env_path, \
             else:
                 mfunc = getattr(newclass, f3name)
 
-            setattr(mfunc, "__doc__", "%s %s Codification" % (
-                    name, instr_name
-                    )
-                    )
+            setattr(mfunc, "__doc__",
+                    "%s %s Codification" % (name, instr_name))
 
             mfunc.__name__ = f3name
             globals().pop("f3name")
@@ -761,14 +694,12 @@ for name, gen_function, isa_path, env_path, \
             # Self codification function
             #
             f4name = "test_%s_instruction_%s_004_self_codification" % (
-                name, instr_name.replace(".", "_")
-            )
+                name, instr_name.replace(".", "_"))
 
             @skipIf(
                 instr_name in unsupported,
                 "Unsupported instruction (implement in microprobe when time "
-                "permits)"
-            )
+                "permits)")
             def function_4(self):
                 """
                 function_4
@@ -782,10 +713,8 @@ for name, gen_function, isa_path, env_path, \
             else:
                 mfunc = getattr(newclass, f4name)
 
-            setattr(mfunc, "__doc__", "%s %s Self-Codification" % (
-                    name, instr_name
-                    )
-                    )
+            setattr(mfunc, "__doc__",
+                    "%s %s Self-Codification" % (name, instr_name))
             mfunc.__name__ = f4name
 
             globals().pop("f4name")
@@ -797,14 +726,12 @@ for name, gen_function, isa_path, env_path, \
             # Self assembly function
             #
             f5name = "test_%s_instruction_%s_005_self_assembly" % (
-                name, instr_name.replace(".", "_")
-            )
+                name, instr_name.replace(".", "_"))
 
             @skipIf(
                 instr_name in unsupported,
                 "Unsupported instruction (implement in microprobe when time "
-                "permits)"
-            )
+                "permits)")
             def function_5(self):
                 """
                 function_5
@@ -818,10 +745,8 @@ for name, gen_function, isa_path, env_path, \
             else:
                 mfunc = getattr(newclass, f5name)
 
-            setattr(mfunc, "__doc__", "%s %s Self-Assembly" % (
-                    name, instr_name
-                    )
-                    )
+            setattr(mfunc, "__doc__",
+                    "%s %s Self-Assembly" % (name, instr_name))
             mfunc.__name__ = f5name
 
             globals().pop("mfunc")
@@ -829,10 +754,7 @@ for name, gen_function, isa_path, env_path, \
             globals().pop("function_5")
 
     TEST_CLASSES.append(
-        type(
-            "isa_%s" % name, newclass.__bases__, dict(newclass.__dict__)
-        )
-    )
+        type("isa_%s" % name, newclass.__bases__, dict(newclass.__dict__)))
     globals().pop("newclass")
 
 for test_class in TEST_CLASSES:

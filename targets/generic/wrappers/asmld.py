@@ -19,44 +19,47 @@ from __future__ import absolute_import
 
 # Built-in modules
 import itertools
+from typing import List, Union
 import six
 from random import Random
 
 # Own modules
 import microprobe.code.wrapper
 from microprobe.code.context import Context
+from microprobe.code.ins import Instruction
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import getnextf
 from microprobe.utils.ieee import ieee_float_to_int64
 from microprobe.exceptions import MicroprobeCodeGenerationError
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
+from microprobe.code.var import Variable, VariableArray
+from microprobe.target import Target
 
 # Constants
 LOG = get_logger(__name__)
-__all__ = [
-        "AsmLd"
-]
+__all__ = ["AsmLd"]
 
 # Functions
 
 
 # Classes
+@typeguard_testsuite
 class AsmLd(microprobe.code.wrapper.Wrapper):
     """:class:`Wrapper` to generate assembly (.s) files."""
 
     def __init__(
-            self,
-            init_code_address=0x0000100000,
-            init_data_address=0x0010000000,
-            ):
+        self,
+        init_code_address: int = 0x0000100000,
+        init_data_address: int = 0x0010000000,
+    ):
         """Initialization abstract method."""
         super(AsmLd, self).__init__()
         self._current_address = None
-        self._instr_ant = None
+        self._instr_ant: Union[Instruction, None] = None
         self._init_code_address = init_code_address
         self._init_data_address = init_data_address
 
-    def outputname(self, name):
+    def outputname(self, name: str):
         """
 
         :param name:
@@ -74,7 +77,7 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         """ """
         return ""
 
-    def declare_global_var(self, var):
+    def declare_global_var(self, var: Variable):
         """
 
         :param var:
@@ -97,6 +100,8 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         random = Random()
         random.seed(10)
 
+        assert isinstance(var, VariableArray)
+
         if var.array():
             typesize = var.size // var.elems
         else:
@@ -107,19 +112,20 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         myvalue = var.value
         if myvalue is None:
             if var.array():
-                myvalue = [random.randint(0, (2**(typesize*8)-1))
-                           for elem in range(0, var.elems)]
+                myvalue = [
+                    random.randint(0, (2**(typesize * 8) - 1))
+                    for elem in range(0, var.elems)
+                ]
             else:
-                myvalue = random.randint(0, (2**(typesize*8)-1))
+                myvalue = random.randint(0, (2**(typesize * 8) - 1))
 
-        if not var.array:
+        if not var.array():
             if not isinstance(myvalue, list):
                 value = myvalue
             else:
                 LOG.warning(
                     "Multiple initial values specified for a "
-                    "single element variable. Var: '%s'", var
-                )
+                    "single element variable. Var: '%s'", var)
                 value = myvalue[0]
             values = [value]
         else:
@@ -127,8 +133,7 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
             if not isinstance(myvalue, list):
                 values = [myvalue] * elems
             else:
-                values = (myvalue * ((len(myvalue) // elems) + 1))[
-                         0:elems]
+                values = (myvalue * ((len(myvalue) // elems) + 1))[0:elems]
 
         for idx, value in enumerate(values):
             if callable(value):
@@ -141,16 +146,15 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
             else:
                 raise MicroprobeCodeGenerationError(
                     "Unable to initialize variable var: '%s' "
-                    "to value '%s'" % (myvalue, type(myvalue))
-                )
+                    "to value '%s'" % (myvalue, type(myvalue)))
 
-        value_str = [str_fmt % value for value in values]
-        value_str = "".join(value_str)
-        value_str = ["0x%s" % value_str[i:i+2]
-                     for i in range(0, len(value_str), 2)]
-        value_str = ".byte %s" % ",".join(value_str)
+        value_str = "".join([str_fmt % value for value in values])
+        value_list = [
+            "0x%s" % value_str[i:i + 2] for i in range(0, len(value_str), 2)
+        ]
+        value_str = ".byte %s" % ",".join(value_list)
 
-        astr = []
+        astr: List[str] = []
         if False:
             if var.array():
 
@@ -209,7 +213,10 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         """ """
         return ".text\n"
 
-    def start_loop(self, dummy_instr, dummy_instr_reset, dummy_aligned=True):
+    def start_loop(self,
+                   dummy_instr,
+                   dummy_instr_reset,
+                   dummy_aligned: bool = True):
         """
 
         :param dummy_instr:
@@ -218,13 +225,13 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         """
         return ""
 
-    def wrap_ins(self, instr):
+    def wrap_ins(self, instr: Union[str, Instruction]):
         """
 
         :param instr:
 
         """
-        ins = []
+        ins: List[str] = []
 
         if isinstance(instr, str):
             return (instr)
@@ -278,26 +285,24 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
                 ins.append("main:")
 
         if instr.name == "raw" or instr.disable_asm or instr.unsupported:
-            asm = []
+            asm_list: List[str] = []
             if instr.label is not None:
-                asm.append(instr.label + ":")
+                asm_list.append(instr.label + ":")
 
-            fmtstr = "%%0%dx" % (len(instr.binary())/4)
+            fmtstr = "%%0%dx" % (len(instr.binary()) / 4)
             hstr = fmtstr % int(instr.binary(), 2)
 
             if self.target.isa.name.startswith("power"):
-                asm.append(
-                    ".byte " +
-                    ",".join(["0x%s" % hstr[idx:idx + 2]
-                              for idx in reversed(range(2, len(hstr), 2))])
-                )
+                asm_list.append(".byte " + ",".join([
+                    "0x%s" % hstr[idx:idx + 2]
+                    for idx in reversed(range(2, len(hstr), 2))
+                ]))
             else:
-                asm.append(
-                    ".byte " +
-                    ",".join(["0x%s" % hstr[idx:idx + 2]
-                              for idx in reversed(range(0, len(hstr), 2))])
-                )
-            asm = " ".join(asm)
+                asm_list.append(".byte " + ",".join([
+                    "0x%s" % hstr[idx:idx + 2]
+                    for idx in reversed(range(0, len(hstr), 2))
+                ]))
+            asm = " ".join(asm_list)
         else:
             asm = instr.assembly()
 
@@ -320,14 +325,14 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
             # instruction to prevent GCC from using the wrong instruction.
 
             if instr.architecture_type.mnemonic.startswith("C."):
-                ins.insert(len(ins)-1, ".option rvc")
+                ins.insert(len(ins) - 1, ".option rvc")
             else:
-                ins.insert(len(ins)-1, ".option norvc")
+                ins.insert(len(ins) - 1, ".option norvc")
 
         self._instr_ant = instr
 
-        ins = "\n".join(ins)
-        return ins + "\n"
+        ins_str = "\n".join(ins)
+        return ins_str + "\n"
 
     def end_loop(self, dummy_instr):
         """
@@ -349,7 +354,7 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         """ """
         return False
 
-    def reserved_registers(self, dummy_reserved, dummy_target):
+    def reserved_registers(self, dummy_reserved, dummy_target: Target):
         """
 
         :param dummy_reserved:
