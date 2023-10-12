@@ -42,7 +42,7 @@ class GenericModel(object):
     Base class to represent different types of models.
     """
 
-    def __init__(self, name, description):
+    def __init__(self, name: str, description: str):
         """
 
         :param name:

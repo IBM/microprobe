@@ -17,9 +17,7 @@
 
 # Futures
 from __future__ import absolute_import, division, print_function
-
-# Third party modules
-from six.moves import range, zip
+from typing import Dict, List, Tuple, Union
 
 # Own modules
 from microprobe.code.address import Address
@@ -28,7 +26,8 @@ from microprobe.exceptions import MicroprobeModelError
 from microprobe.model import GenericModel
 from microprobe.utils.distrib import shuffle, weighted_choice
 from microprobe.utils.logger import get_logger
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
+from microprobe.target.uarch.cache import SetAssociativeCache
 
 # Constants
 LOG = get_logger(__name__)
@@ -38,15 +37,16 @@ __all__ = ["EndlessLoopInstructionMemoryModel", "EndlessLoopDataMemoryModel"]
 
 
 # Classes
+@typeguard_testsuite
 class EndlessLoopInstructionMemoryModel(GenericModel):
     """ """
 
     def __init__(self,
-                 name,
-                 cache_hierarchy,
-                 percentages,
-                 minimum_chunks=None,
-                 minimum_displacement=None):
+                 name: str,
+                 cache_hierarchy: List[SetAssociativeCache],
+                 percentages: List[int],
+                 minimum_chunks: Union[int, None] = None,
+                 minimum_displacement: Union[int, None] = None):
         """
 
         :param name:
@@ -66,9 +66,9 @@ class EndlessLoopInstructionMemoryModel(GenericModel):
         assert sum(percentages) == 100, \
             "The memory access model is not complete"
 
-        cache_ant = None
-        displacements = []
-        number_of_chunks = []
+        cache_ant: Union[SetAssociativeCache, None] = None
+        displacements: List[int] = []
+        number_of_chunks: List[int] = []
         for cache, ratio in zip(cache_hierarchy, percentages):
             if cache_ant is None and ratio > 0:
                 displacements.append(0)
@@ -77,6 +77,7 @@ class EndlessLoopInstructionMemoryModel(GenericModel):
                 displacements.append(0)
                 number_of_chunks.append(0)
             elif ratio > 0:
+                assert cache_ant is not None
                 displacements.append(2**(cache_ant.bits_x_set + 1 +
                                          cache_ant.bits_x_offset))
                 number_of_chunks.append(cache_ant.ways + 1)
@@ -91,10 +92,9 @@ class EndlessLoopInstructionMemoryModel(GenericModel):
             assert [x for x in number_of_chunks
                     if x >= 0][-1] < minimum_chunks, \
                 "Minimum chunks forced, but more chunks are needed."
-            number_of_chunks[
-                [
-                    x[0] for x in enumerate(number_of_chunks) if x[1] > 0
-                ][-1]] = minimum_chunks
+            number_of_chunks[[
+                x[0] for x in enumerate(number_of_chunks) if x[1] > 0
+            ][-1]] = minimum_chunks
 
         if minimum_displacement is not None:
             for idx, displacement in enumerate(displacements):
@@ -103,46 +103,42 @@ class EndlessLoopInstructionMemoryModel(GenericModel):
 
         iterations = [1] * len(number_of_chunks)
 
-        def get_percentages(iterations, number_chunks):
+        def get_percentages(iterations: List[int], number_chunks: List[int]):
             """
 
             :param iterations:
             :param number_chunks:
 
             """
-            total_count = sum([
-                x * y for x, y in zip(iterations, number_chunks)
-            ])
-            return [
-                ((x * y) / total_count) * 100
-                for x, y in zip(iterations, number_chunks)
-            ]
+            total_count = sum(
+                [x * y for x, y in zip(iterations, number_chunks)])
+            return [((x * y) / total_count) * 100
+                    for x, y in zip(iterations, number_chunks)]
 
-        def max_percentage_diff(percentages, target_percentages):
+        def max_percentage_diff(percentages: List[float],
+                                target_percentages: List[int]):
             """
 
             :param percentages:
             :param target_percentages:
 
             """
-            return max([
-                abs(x - y) for x, y in zip(percentages, target_percentages)
-            ])
+            return max(
+                [abs(x - y) for x, y in zip(percentages, target_percentages)])
 
-        def min_percentage_idx(percentages, target_percentages):
+        def min_percentage_idx(percentages: List[float],
+                               target_percentages: List[int]):
             """
 
             :param percentages:
             :param target_percentages:
 
             """
-            min_value = min([
-                (x - y) for x, y in zip(percentages, target_percentages)
-            ])
+            min_value = min([(x - y)
+                             for x, y in zip(percentages, target_percentages)])
             return [
-                idx
-                for idx, elem in enumerate(zip(percentages,
-                                               target_percentages))
+                idx for idx, elem in enumerate(
+                    zip(percentages, target_percentages))
                 if (elem[0] - elem[1]) == min_value
             ][0]
 
@@ -150,16 +146,15 @@ class EndlessLoopInstructionMemoryModel(GenericModel):
         while max_percentage_diff(current_percentages,
                                   self._percentages) > 0.1:
 
-            iterations[
-                min_percentage_idx(current_percentages,
-                                   self._percentages)] += 1
+            iterations[min_percentage_idx(current_percentages,
+                                          self._percentages)] += 1
 
             current_percentages = get_percentages(iterations, number_of_chunks)
 
         descriptors = list(zip(number_of_chunks, displacements, iterations))
         self._descriptors = descriptors
 
-    def __call__(self, bbl_size):
+    def __call__(self, bbl_size: int):
         """
 
         :param bbl_size:
@@ -172,16 +167,19 @@ class EndlessLoopInstructionMemoryModel(GenericModel):
         ]:
             # print(elem, bbl_size)
             if bbl_size > elem:
-                raise MicroprobeModelError("Basic block size ('%d') is too "
-                                           "large for the model" % bbl_size)
+                raise MicroprobeModelError(
+                    f"Basic block size ('{bbl_size}') is too "
+                    "large for the model")
 
         return self._descriptors
 
 
+@typeguard_testsuite
 class EndlessLoopDataMemoryModel(GenericModel):
     """ """
 
-    def __init__(self, name, cache_hierarchy, percentages):
+    def __init__(self, name: str, cache_hierarchy: List[SetAssociativeCache],
+                 percentages: List[int]):
         """
 
         :param name:
@@ -197,11 +195,11 @@ class EndlessLoopDataMemoryModel(GenericModel):
 
         assert len(cache_hierarchy) == len(percentages)
 
-        items = []
+        items: List[Tuple[SetAssociativeCache, int]] = []
         all_ratio = 0
         accum = 100
-        mcomp_ants = []
-        sets_dict = {}
+        mcomp_ants: List[SetAssociativeCache] = []
+        sets_dict: Dict[SetAssociativeCache, List[int]] = {}
 
         for mcomp, ratio in zip(cache_hierarchy, percentages):
 
@@ -220,9 +218,8 @@ class EndlessLoopDataMemoryModel(GenericModel):
                 setm = [1] * len(sets)
                 for mcomp_ant in mcomp_ants:
                     # sets = mcomp.setsways()
-                    sets_ant = (elem & ((1 << mcomp_ant.set_ways_bits) - 1)
-                                for elem in sets)
-                    sets_ant = list(sets_ant)
+                    sets_ant = list(elem & ((1 << mcomp_ant.set_ways_bits) - 1)
+                                    for elem in sets)
                     # zipping = zip(sets, sets_ant)
                     # fset = frozenset(sets_dict[mcomp_ant])
                     # sets = [s1 for s1, s2 in zipping if s2 not in fset]
@@ -232,8 +229,7 @@ class EndlessLoopDataMemoryModel(GenericModel):
                     if len(sets_dict[mcomp_ant]) > 0:
 
                         fset = frozenset(sets_dict[mcomp_ant])
-                        idxes = (idx
-                                 for idx in range(0, sets_length)
+                        idxes = (idx for idx in range(0, sets_length)
                                  if setm[idx] != 0)
                         for idx in idxes:
                             # print(idx, sets_length)
@@ -254,7 +250,7 @@ class EndlessLoopDataMemoryModel(GenericModel):
             accum = accum - ratio
             mcomp_ants.append(mcomp)
 
-        mcomp_ant = None
+        mcomp_ant_iter = None
 
         for mcomp, ratio in zip(cache_hierarchy, percentages):
 
@@ -263,27 +259,28 @@ class EndlessLoopDataMemoryModel(GenericModel):
             # TODO: strided parameter or random or pseudorandom (32k ranges)
             # TODO: shuffle function too slow for pseudorandom
 
-            if mcomp_ant is None:
-                mcomp_ant = mcomp
+            if mcomp_ant_iter is None:
+                mcomp_ant_iter = mcomp
 
             if False:
                 slist = shuffle(slist, 32768)
             elif False:
                 slist = shuffle(slist, -1)
             elif False:
-                slist = shuffle(slist, mcomp_ant.size)
+                slist = shuffle(slist, mcomp_ant_iter.size)
 
             if len(slist) > 0:
-                tlist = []
+                tlist: List[int] = []
                 tlist.append(slist[0])
                 tlist.append(slist[-1])
 
             sets_dict[mcomp] = slist
-            mcomp_ant = mcomp
+            mcomp_ant_iter = mcomp
 
         self._sets = sets_dict
         self._func = weighted_choice(dict(items))
-        self._state = {}
+        self._state: Dict[SetAssociativeCache, Tuple[VariableArray, int, int,
+                                                     int, List[int]]] = {}
 
         assert all_ratio == 100, "The memory access model is not complete"
         assert accum == 0, "Something wrong"
@@ -292,11 +289,10 @@ class EndlessLoopDataMemoryModel(GenericModel):
         """ """
         mant = None
         for elem in self._cache_hierarchy:
-            var = VariableArray(
-                elem.name.replace(" ", "_"),
-                "char",
-                elem.size,
-                align=256 * 1024)
+            var = VariableArray(elem.name.replace(" ", "_"),
+                                "char",
+                                elem.size,
+                                align=256 * 1024)
             count = 0
             max_value = 0
 
@@ -313,24 +309,25 @@ class EndlessLoopDataMemoryModel(GenericModel):
     def finalize_model(self):
         """ """
 
-        actions = []
-        cache_ant = None
+        actions: List[Tuple[VariableArray, int, int]] = []
+        cache_ant: Union[SetAssociativeCache, None] = None
         for cache, ratio in zip(self._cache_hierarchy, self._percentages):
 
             var, count, max_value, \
-                dummy_module, dummy_cca = self._state[cache]
+                _dummy_module, _dummy_cca = self._state[cache]
 
             # General checks
             if count == 0 and ratio > 0:
                 raise MicroprobeModelError(
                     "Zero accesses generated to the"
-                    " cache level '%s' and '%d%%' of all accesses"
-                    " are required." % (cache, ratio))
+                    f" cache level '{cache}' and '{ratio}' of all accesses"
+                    " are required.")
 
             if count > 0 and ratio == 0:
-                raise MicroprobeModelError("%d accesses generated to the"
-                                           " cache level '%s' and not accesses"
-                                           " are required." % (count, cache))
+                raise MicroprobeModelError(
+                    f"{count} accesses generated to the"
+                    f" cache level '{cache}' and not accesses"
+                    " are required.")
 
             if cache_ant is None or ratio == 0:
                 cache_ant = cache
@@ -346,12 +343,12 @@ class EndlessLoopDataMemoryModel(GenericModel):
 
             guard = cache.size // incsize
 
-            LOG.debug("Level: %s", cache)
-            LOG.debug("  Accesses: %d", count)
-            LOG.debug("  Max.Value: %d", max_value)
-            LOG.debug("  Previous level size: %d", real_size)
-            LOG.debug("  Increment size: %d", incsize)
-            LOG.debug("  Iterations: %d", guard)
+            LOG.debug(f"Level: {cache}")
+            LOG.debug(f"  Accesses: {count}")
+            LOG.debug(f"  Max.Value: {max_value}")
+            LOG.debug(f"  Previous level size: {real_size}")
+            LOG.debug(f"  Increment size: {incsize}")
+            LOG.debug(f"  Iterations: {guard}")
 
             if (guard * count) < (2 * real_size):
                 # Too few accesses that we can not overflow the previous
@@ -363,9 +360,10 @@ class EndlessLoopDataMemoryModel(GenericModel):
                     "Consider increasing the number of accesses to this"
                     " level (more %% of accesses or larger benchmark size)."
                     " You need '%d' more accesses. Accesses: %s ;"
-                    " Iterations: %s ; Size: %s " % (cache, cache_ant, (
-                        (2 * real_size) - (guard * count)) // guard, count,
-                        guard, real_size))
+                    " Iterations: %s ; Size: %s " %
+                    (cache, cache_ant,
+                     ((2 * real_size) -
+                      (guard * count)) // guard, count, guard, real_size))
 
             if count > size or count > (2 * real_size):
                 # No action required
@@ -386,16 +384,16 @@ class EndlessLoopDataMemoryModel(GenericModel):
                 if elem1 == elem2:
                     continue
 
-                intr = set(self._state[elem1][4]).intersection((self._state[
-                    elem2][4]))
+                intr = set(self._state[elem1][4]).intersection(
+                    (self._state[elem2][4]))
 
                 if len(intr) > 0:
-                    LOG.debug("%s, %s", elem1, self._state[elem1][4])
-                    LOG.debug("%s, %s", elem2, self._state[elem1][4])
+                    LOG.debug(f"{elem1}, {self._state[elem1][4]}")
+                    LOG.debug(f"{elem2}, {self._state[elem1][4]}")
                     LOG.critical("MEMORY MODEL NOT IMPLEMENTED CORRECTLY")
                     exit(-1)
 
-    def __call__(self, lengths):
+    def __call__(self, lengths: List[int]):
         """
 
         :param lengths:
