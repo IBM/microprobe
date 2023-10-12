@@ -16,11 +16,14 @@ This is the asm module documentation
 """
 # Futures
 from __future__ import absolute_import
+from typing import List, Union
+from microprobe.code.ins import Instruction
 
 # Own modules
 import microprobe.code.wrapper
 from microprobe.utils.logger import get_logger
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
+from microprobe.target import Target
 
 # Constants
 LOG = get_logger(__name__)
@@ -31,6 +34,7 @@ __all__ = ["Assembly"]
 # Classes
 
 
+@typeguard_testsuite
 class Assembly(microprobe.code.wrapper.Wrapper):
     """:class:`Wrapper` to generate assembly (.s) files."""
 
@@ -38,7 +42,7 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         """Initialization abstract method."""
         super(Assembly, self).__init__()
 
-    def outputname(self, name):
+    def outputname(self, name: str):
         """
 
         :param name:
@@ -81,7 +85,10 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         """ """
         return ""
 
-    def start_loop(self, dummy_instr, dummy_instr_reset, dummy_aligned=True):
+    def start_loop(self,
+                   dummy_instr,
+                   dummy_instr_reset,
+                   dummy_aligned: bool = True):
         """
 
         :param dummy_instr:
@@ -90,13 +97,13 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         """
         return ""
 
-    def wrap_ins(self, instr):
+    def wrap_ins(self, instr: Union[str, Instruction]):
         """
 
         :param instr:
 
         """
-        ins = []
+        ins: List[str] = []
 
         if isinstance(instr, str):
             return (instr)
@@ -147,7 +154,7 @@ class Assembly(microprobe.code.wrapper.Wrapper):
         """ """
         return False
 
-    def reserved_registers(self, dummy_reserved, dummy_target):
+    def reserved_registers(self, dummy_reserved, dummy_target: Target):
         """
 
         :param dummy_reserved:

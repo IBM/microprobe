@@ -20,20 +20,13 @@ from __future__ import absolute_import, print_function
 # Built-in modules
 import os
 from tempfile import SpooledTemporaryFile, mkstemp
+from typing import Union
 from unittest import TestCase, main, skipIf
-
-# Third party modules
-import six
-from six.moves import range
 
 # Own modules
 import microprobe
 
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    import subprocess  # @Reimport
-
+import subprocess
 
 # Constants
 BASEPATH = os.path.join(os.path.dirname(microprobe.__file__), "..", "..")
@@ -49,8 +42,9 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
 
     name = "mp_mpt2test"
     description = "mp_mpt2test tool tests"
-    cmd = [os.path.join(BASEPATH,
-                        "targets", "generic", "tools", "mp_mpt2test.py")]
+    cmd = [
+        os.path.join(BASEPATH, "targets", "generic", "tools", "mp_mpt2test.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -70,7 +64,7 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
 
     def tearDown(self):
         for filename in [
-            fname for fname in self.filenames if os.path.isfile(fname)
+                fname for fname in self.filenames if os.path.isfile(fname)
         ]:
             os.unlink(filename)
 
@@ -80,13 +74,14 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
         mp_mpt2test - test010 on riscv_v22-riscv_generic-riscv64_linux_gcc
         """
         self._wrapper(
-            "riscv_v22-riscv_generic-riscv64_linux_gcc", os.path.join(
-                BASEPATH, "targets", "generic", "tests", "tools",
-                "mpt2test_test010.mpt"
-            )
-        )
+            "riscv_v22-riscv_generic-riscv64_linux_gcc",
+            os.path.join(BASEPATH, "targets", "generic", "tests", "tools",
+                         "mpt2test_test010.mpt"))
 
-    def _wrapper(self, target, filename, extra=None):
+    def _wrapper(self,
+                 target: str,
+                 filename: str,
+                 extra: Union[str, None] = None):
         """
         Common execution wrapper
         """
@@ -105,11 +100,9 @@ class mpt2test(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

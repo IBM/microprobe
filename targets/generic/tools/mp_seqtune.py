@@ -24,16 +24,12 @@ behavior and replacement of instructions.
 from __future__ import absolute_import, division, print_function
 
 # Built-in modules
-import errno
 import hashlib
 import itertools
 import multiprocessing as mp
 import os
 import sys
 import warnings
-
-# Third party modules
-from six.moves import range, zip
 
 # Own modules
 from microprobe import MICROPROBE_RC

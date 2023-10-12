@@ -24,26 +24,25 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import argparse
-import errno
 import hashlib
 import itertools
 import multiprocessing as mp
 import os
 import sys
-
-# Third party modules
-from six.moves import range
+from typing import Any, List, Tuple
 
 # Own modules
 from microprobe import MICROPROBE_RC
 from microprobe.code import get_wrapper
 from microprobe.exceptions import MicroprobeException, MicroprobeValueError
-from microprobe.target import import_definition
+from microprobe.target import Target, import_definition
+from microprobe.target.isa.instruction import InstructionType
 from microprobe.utils.cmdline import CLI, existing_dir, float_type, \
     int_type, new_file, parse_instruction_list, print_error, print_info
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import findfiles, iter_flatten, move_file
 from microprobe.utils.policy import find_policy
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 LOG = get_logger(__name__)
@@ -52,7 +51,7 @@ _BALANCE_EXECUTION = False
 
 
 # Functions
-def _get_wrapper(name):
+def _get_wrapper(name: str):
     try:
         return get_wrapper(name)
     except MicroprobeValueError as exc:
@@ -63,7 +62,9 @@ def _get_wrapper(name):
             (name, str(exc)))
 
 
-def _generic_policy_wrapper(all_arguments):
+@typeguard_testsuite
+def _generic_policy_wrapper(all_arguments: Tuple[List[InstructionType], str,
+                                                 str, Target, Any]):
 
     instructions, outputdir, outputname, target, kwargs = all_arguments
 
@@ -102,8 +103,8 @@ def _generic_policy_wrapper(all_arguments):
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(os.path.basename(
             outputfile.replace("%EXT%", extension)),
-            endless=kwargs['endless'],
-            reset=kwargs['reset'])
+                                endless=kwargs['endless'],
+                                reset=kwargs['reset'])
 
     elif target.name.endswith("riscv64_test_p"):
 
@@ -191,6 +192,7 @@ def _generic_policy_wrapper(all_arguments):
 
 
 # Main
+@typeguard_testsuite
 def main():
     """
     Program main
@@ -387,8 +389,10 @@ def main():
     cmdline.main(args, _main)
 
 
-def _generate_sequences(slots, instruction_groups, instruction_map, group_max,
-                        group_min, base_seq):
+@typeguard_testsuite
+def _generate_sequences(slots: int, instruction_groups, instruction_map,
+                        group_max: List[int], group_min: List[int],
+                        base_seq: List[InstructionType]):
 
     instr_names = []
     instr_objs = []
@@ -427,8 +431,8 @@ def _generate_sequences(slots, instruction_groups, instruction_map, group_max,
 
     print_info("\tGroup constraints per sequence:")
     for idx, igroup in enumerate(instruction_groups):
-        print_info("\t\tGroup %s:\tMin instr: %d\tMax intr: %d" %
-                   (idx + 1, group_min[idx], group_max[idx]))
+        print_info(f"\t\tGroup {idx + 1}:\tMin instr: {group_min[idx]}"
+                   f"\tMax intr: {group_max[idx]}")
     print_info("")
 
     for seq in itertools.product(*[descr[1] for descr in slot_dsrc]):
@@ -459,6 +463,7 @@ def _generate_sequences(slots, instruction_groups, instruction_map, group_max,
             yield base_seq + sequence
 
 
+@typeguard_testsuite
 def _main(arguments):
     """
     Program main, after processing the command line arguments

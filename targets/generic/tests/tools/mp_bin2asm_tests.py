@@ -22,18 +22,10 @@ import os
 from tempfile import SpooledTemporaryFile
 from unittest import TestCase, main, skipIf
 
-# Third party modules
-import six
-from six.moves import range
-
 # Own modules
 import microprobe
 
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    import subprocess  # @Reimport
-
+import subprocess
 
 # Constants
 BASEPATH = os.path.join(os.path.dirname(microprobe.__file__), "..", "..")
@@ -50,8 +42,9 @@ class bin2asm(TestCase):  # pylint: disable-msg=invalid-name
 
     name = "mp_bin2asm"
     description = "mp_bin2asm tool tests"
-    cmd = [os.path.join(BASEPATH, "targets", "generic", "tools",
-                        "mp_bin2asm.py")]
+    cmd = [
+        os.path.join(BASEPATH, "targets", "generic", "tools", "mp_bin2asm.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -95,11 +88,9 @@ class bin2asm(TestCase):  # pylint: disable-msg=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

@@ -28,7 +28,6 @@ import sys
 from microprobe.target import import_definition
 from microprobe.utils.cmdline import CLI, parse_instruction_list, print_info
 
-
 # Constants
 
 
@@ -67,16 +66,13 @@ def main():
     Program main
     """
     args = sys.argv[1:]
-    cmdline = CLI(
-        "Microprobe Target definition query tool",
-        default_config_file="mp_target.cfg",
-        force_required=['target']
-    )
+    cmdline = CLI("Microprobe Target definition query tool",
+                  default_config_file="mp_target.cfg",
+                  force_required=['target'])
 
     groupname = "Instruction"
-    cmdline.add_group(
-        groupname, "Command arguments related to instruction information"
-    )
+    cmdline.add_group(groupname,
+                      "Command arguments related to instruction information")
 
     cmdline.add_option(
         "instructions",
@@ -85,8 +81,7 @@ def main():
         "Comma separated list of instructions to obtain information",
         group=groupname,
         opt_type=str,
-        required=False
-    )
+        required=False)
 
     print_info("Processing input arguments...")
     cmdline.main(args, _main)
@@ -109,8 +104,7 @@ def _main(arguments):
     else:
 
         arguments['instructions'] = parse_instruction_list(
-            target, arguments['instructions']
-        )
+            target, arguments['instructions'])
 
         for instruction in arguments['instructions']:
             print_instruction_info(instruction, None)

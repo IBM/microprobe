@@ -33,7 +33,6 @@ from tempfile import mkstemp
 
 # Third party modules
 import six
-from six.moves import range
 
 # Own modules
 from microprobe import MICROPROBE_RC
@@ -49,7 +48,7 @@ from microprobe.utils.mpt import MicroprobeTestVariableDefinition, \
 from microprobe.utils.objdump import interpret_objdump
 from microprobe.utils.run import run_cmd, \
     run_cmd_output, run_cmd_output_redirect
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 _RM_FILES = []
@@ -74,7 +73,8 @@ def c2mpt(target, arguments):
     dump_mpt(objdump_file, target, data_init, arguments)
 
 
-def c2mpt_local_run(input_file, arguments):
+@typeguard_testsuite
+def c2mpt_local_run(input_file: str, arguments):
     """
 
     :param input_file:
@@ -87,10 +87,9 @@ def c2mpt_local_run(input_file, arguments):
 
     cprog = arguments["host_c_compiler"]
     cflags = " -std=c99"
-    cflags += " -DMPT_BASE_ADDRESS=%d" % arguments.get("host_displacement",
-                                                       0)
-    cflags += " ".join([" -I \"" + elem + "\""
-                        for elem in MICROPROBE_RC['template_paths']])
+    cflags += " -DMPT_BASE_ADDRESS=%d" % arguments.get("host_displacement", 0)
+    cflags += " ".join(
+        [" -I \"" + elem + "\"" for elem in MICROPROBE_RC['template_paths']])
     cflags += " \"%s\"" % findfiles(MICROPROBE_RC['template_paths'],
                                     "c2mpt.c$")[0]
     cflags += " -Wl,--section-start,microprobe.text="
@@ -106,9 +105,8 @@ def c2mpt_local_run(input_file, arguments):
         compile_file = _temp_file(suffix=suffix)
         _RM_FILES.append(compile_file)
 
-    cmd = "\"%s\" %s \"%s\" -o \"%s\"" % (
-        cprog, cflags, input_file, compile_file
-    )
+    cmd = "\"%s\" %s \"%s\" -o \"%s\"" % (cprog, cflags, input_file,
+                                          compile_file)
 
     print_info("Executing compilation command")
     run_cmd(cmd)
@@ -119,7 +117,8 @@ def c2mpt_local_run(input_file, arguments):
     return vardefinitions
 
 
-def c2mpt_objdump(input_file, arguments):
+@typeguard_testsuite
+def c2mpt_objdump(input_file: str, arguments):
     """
 
     :param input_file:
@@ -132,8 +131,8 @@ def c2mpt_objdump(input_file, arguments):
 
     cprog = arguments["target_c_compiler"]
     cflags = " -std=c99"
-    cflags += " ".join([" -I \"" + elem + "\""
-                        for elem in MICROPROBE_RC['template_paths']])
+    cflags += " ".join(
+        [" -I \"" + elem + "\"" for elem in MICROPROBE_RC['template_paths']])
     cflags += " \"%s\"" % findfiles(MICROPROBE_RC['template_paths'],
                                     "c2mpt.c$")[0]
     cflags += " -Wl,--section-start,microprobe.text="
@@ -149,9 +148,8 @@ def c2mpt_objdump(input_file, arguments):
         compile_file = _temp_file(suffix=suffix)
         _RM_FILES.append(compile_file)
 
-    cmd = "\"%s\" %s \"%s\" -o \"%s\"" % (
-        cprog, cflags, input_file, compile_file
-    )
+    cmd = "\"%s\" %s \"%s\" -o \"%s\"" % (cprog, cflags, input_file,
+                                          compile_file)
     print_info("Executing compilation command")
     run_cmd(cmd)
 
@@ -171,6 +169,7 @@ def c2mpt_objdump(input_file, arguments):
     return objdump_file
 
 
+@typeguard_testsuite
 def dump_mpt(input_file, target, init_data, arguments):
     """
 
@@ -201,25 +200,19 @@ def dump_mpt(input_file, target, init_data, arguments):
 
     print_info("Input file parsed")
 
-    print_info(
-        "%d instructions processed from the input file" % len(instr_defs)
-    )
+    print_info("%d instructions processed from the input file" %
+               len(instr_defs))
 
     if var_defs != []:
-        print_info(
-            "Variables referenced and detected in the dump: %s" %
-            ','.join([var.name for var in var_defs])
-        )
+        print_info("Variables referenced and detected in the dump: %s" %
+                   ','.join([var.name for var in var_defs]))
 
     if req_defs != []:
         print_warning(
             "Variables referenced and *NOT* detected in the dump: %s" %
-            ','.join([var.name for var in req_defs])
-        )
-        print_warning(
-            "You might need to edit the generated MPT to fix the"
-            " declaration of such variables"
-        )
+            ','.join([var.name for var in req_defs]))
+        print_warning("You might need to edit the generated MPT to fix the"
+                      " declaration of such variables")
 
     print_info("Generating the MPT contents...")
 
@@ -233,13 +226,10 @@ def dump_mpt(input_file, target, init_data, arguments):
         kwargs["stack_name"] = arguments["stack_name"]
     if "stack_address" in arguments:
         kwargs["stack_address"] = Address(
-            base_address="code",
-            displacement=arguments["stack_address"]
-        )
+            base_address="code", displacement=arguments["stack_address"])
 
-    variables, instructions = target.elf_abi(
-        arguments["stack_size"], "c2mpt_function", **kwargs
-    )
+    variables, instructions = target.elf_abi(arguments["stack_size"],
+                                             "c2mpt_function", **kwargs)
 
     for variable in variables:
         req_defs.append(variable_to_test_definition(variable))
@@ -250,14 +240,10 @@ def dump_mpt(input_file, target, init_data, arguments):
         address -= instr.architecture_type.format.length
 
     if address.displacement < 0:
-        print_error(
-            "Default code address is below zero after"
-            " adding the initialization code."
-        )
-        print_error(
-            "Check/modify the objdump provided or do not use"
-            " the elf_abi flag."
-        )
+        print_error("Default code address is below zero after"
+                    " adding the initialization code.")
+        print_error("Check/modify the objdump provided or do not use"
+                    " the elf_abi flag.")
         _exit(-1)
 
     if "end_branch_to_itself" in arguments:
@@ -291,14 +277,11 @@ def dump_mpt(input_file, target, init_data, arguments):
             # TODO: this is unsafe. We should compute the real size
             maxdisplacement = values[2] + (values[1] * 8)
         else:
-            mindisplacement = min(values[2],
-                                  mindisplacement)
-            maxdisplacement = max(values[2] + (values[1] * 8),
-                                  maxdisplacement)
+            mindisplacement = min(values[2], mindisplacement)
+            maxdisplacement = max(values[2] + (values[1] * 8), maxdisplacement)
 
     if "host_displacement" in arguments:
-        mindisplacement = arguments.get("host_displacement",
-                                        mindisplacement)
+        mindisplacement = arguments.get("host_displacement", mindisplacement)
 
     for name, values in initialized_variables.items():
         values[2] = values[2] - mindisplacement + \
@@ -314,17 +297,14 @@ def dump_mpt(input_file, target, init_data, arguments):
                             arguments['default_data_address']
                     new_values.append(value)
                 values[4] = new_values
-            elif "*" in values[0] and isinstance(values[4],
-                                                 six.integer_types):
-                if (values[4] <= maxdisplacement and
-                        values[4] >= mindisplacement):
+            elif "*" in values[0] and isinstance(values[4], six.integer_types):
+                if (values[4] <= maxdisplacement
+                        and values[4] >= mindisplacement):
                     values[4] = values[4] - mindisplacement + \
                         arguments['default_data_address']
             elif values[0] == "uint8_t" and isinstance(values[4], list):
                 if len(values[4]) > 8:
-                    new_values = "".join(
-                        ["%02x" % elem for elem in values[4]]
-                    )
+                    new_values = "".join(["%02x" % elem for elem in values[4]])
 
                     # Enable this for testing switched endianness
                     # new_values = [new_values[idx:idx + 2]
@@ -332,31 +312,26 @@ def dump_mpt(input_file, target, init_data, arguments):
                     # new_values = new_values[::-1]
                     # new_values = "".join(new_values)
 
-                    new_values = _fix_displacement(new_values,
-                                                   mindisplacement,
-                                                   maxdisplacement,
-                                                   arguments)
+                    new_values = _fix_displacement(new_values, mindisplacement,
+                                                   maxdisplacement, arguments)
 
-                    values[4] = [int(new_values[idx:idx + 2], 16)
-                                 for idx in range(0, len(new_values), 2)]
+                    values[4] = [
+                        int(new_values[idx:idx + 2], 16)
+                        for idx in range(0, len(new_values), 2)
+                    ]
 
     for name, values in initialized_variables.items():
 
         mpt_config.register_variable_definition(
-            MicroprobeTestVariableDefinition(
-                name, *values
-            )
-        )
+            MicroprobeTestVariableDefinition(name, *values))
         print_info("Init values for variable '%s' parsed" % name)
 
     for var in var_defs + req_defs:
         if var.name in list(initialized_variables.keys()):
             continue
         if var.name != arguments["stack_name"]:
-            print_warning(
-                "Variable '%s' not registered in the C file "
-                "using the macros provided!" % var.name
-            )
+            print_warning("Variable '%s' not registered in the C file "
+                          "using the macros provided!" % var.name)
         mpt_config.register_variable_definition(var)
 
     mpt_config.register_instruction_definitions(instr_defs)
@@ -366,6 +341,7 @@ def dump_mpt(input_file, target, init_data, arguments):
     mpt_parser.dump_mpt_config(mpt_config, arguments['output_mpt_file'])
 
 
+@typeguard_testsuite
 def _fix_displacement(value_str, mindisp, maxdisp, arguments):
     next_idx = None
     for idx in range(0, len(value_str) - 16):
@@ -391,6 +367,7 @@ def _fix_displacement(value_str, mindisp, maxdisp, arguments):
     return value_str
 
 
+@typeguard_testsuite
 def dump_c2mpt_template(arguments):
     """
 
@@ -416,15 +393,14 @@ def dump_c2mpt_template(arguments):
     try:
         shutil.copy(template_file, output_file)
     except IOError:
-        print_error(
-            "Something wron when copying '%s' to '%s'\nError: %s " %
-            (template_file, output_file, IOError)
-        )
+        print_error("Something wron when copying '%s' to '%s'\nError: %s " %
+                    (template_file, output_file, IOError))
         _exit(-1)
 
     print_info("Done! You can start editing %s " % output_file)
 
 
+@typeguard_testsuite
 def _exit(value):
 
     if len(_RM_FILES) > 0:
@@ -437,6 +413,7 @@ def _exit(value):
 
 
 # Main
+@typeguard_testsuite
 def main():
     """
     Program main
@@ -453,63 +430,51 @@ def main():
 
     cmdline.add_group(groupname, "Command arguments related to C to MPT tool")
 
-    cmdline.add_option(
-        "input-c-file",
-        "i",
-        None,
-        "C file to process",
-        group=groupname,
-        opt_type=existing_file_ext(".c"),
-        required=False
-    )
+    cmdline.add_option("input-c-file",
+                       "i",
+                       None,
+                       "C file to process",
+                       group=groupname,
+                       opt_type=existing_file_ext(".c"),
+                       required=False)
 
-    cmdline.add_option(
-        "output-mpt-file",
-        "O",
-        None,
-        "Output file name",
-        group=groupname,
-        opt_type=new_file_ext(".mpt"),
-        required=True
-    )
+    cmdline.add_option("output-mpt-file",
+                       "O",
+                       None,
+                       "Output file name",
+                       group=groupname,
+                       opt_type=new_file_ext(".mpt"),
+                       required=True)
 
     cmdline.add_flag(
         "strict",
-        "S",
-        "Be strict when parsing objdump input, if not set, silently skip "
+        "S", "Be strict when parsing objdump input, if not set, silently skip "
         "unparsed elements",
-        group=groupname
-    )
+        group=groupname)
 
-    cmdline.add_option(
-        "default-code-address",
-        "X",
-        0x10030000,
-        "Default code address (default: 0x10030000)",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("default-code-address",
+                       "X",
+                       0x10030000,
+                       "Default code address (default: 0x10030000)",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
-    cmdline.add_option(
-        "default-data-address",
-        "D",
-        0x10040000,
-        "Default data address (default: 0x10040000)",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("default-data-address",
+                       "D",
+                       0x10040000,
+                       "Default data address (default: 0x10040000)",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
-    cmdline.add_option(
-        "stack-size",
-        None,
-        4096,
-        "Stack size in bytes (Default: 4096)",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("stack-size",
+                       None,
+                       4096,
+                       "Stack size in bytes (Default: 4096)",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
     cmdline.add_option(
         "host-displacement",
@@ -519,8 +484,7 @@ def main():
         "host. Default computed automatically",
         group=groupname,
         opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+        required=False)
 
     cmdline.add_flag(
         "fix-displacement",
@@ -531,35 +495,29 @@ def main():
         group=groupname,
     )
 
-    cmdline.add_option(
-        "stack-name",
-        None,
-        "microprobe_stack",
-        "Stack name (Default: microprobe_stack)",
-        group=groupname,
-        opt_type=str,
-        required=False
-    )
+    cmdline.add_option("stack-name",
+                       None,
+                       "microprobe_stack",
+                       "Stack name (Default: microprobe_stack)",
+                       group=groupname,
+                       opt_type=str,
+                       required=False)
 
-    cmdline.add_option(
-        "stack-address",
-        None,
-        None,
-        "Stack address (Default: allocated in the data area)",
-        group=groupname,
-        opt_type=int_type(0, float('+inf')),
-        required=False
-    )
+    cmdline.add_option("stack-address",
+                       None,
+                       None,
+                       "Stack address (Default: allocated in the data area)",
+                       group=groupname,
+                       opt_type=int_type(0, float('+inf')),
+                       required=False)
 
     cmdline.add_flag(
         "no-data-initialization",
-        None,
-        "Do not run the compiled code locally to get the contents of"
+        None, "Do not run the compiled code locally to get the contents of"
         " registered variables before executing the *c2mpt_function*. Only "
         "statically specified variable contents will be dumped in the MPT"
         " generated",
-        group=groupname
-    )
+        group=groupname)
 
     cmdline.add_flag(
         "save-temps",
@@ -567,28 +525,26 @@ def main():
         "Store the generated intermediate files permanently; place them in "
         "the input source file directory and name them based on the source "
         "file",
-        group=groupname
-    )
+        group=groupname)
 
     cmdline.add_flag(
         "dump-c2mpt-template",
         None,
         "Dump a template C file, which can be used afterwards as an input "
         "file",
-        group=groupname
-    )
+        group=groupname)
 
     cmdline.add_flag(
         "end-branch-to-itself",
         None,
         "A branch to itself instruction will be added at the end of the test",
-        group=groupname
-    )
+        group=groupname)
 
     print_info("Processing input arguments...")
     cmdline.main(args, _main)
 
 
+@typeguard_testsuite
 def _main(arguments):
     """
     Program main, after processing the command line arguments
@@ -612,6 +568,7 @@ def _main(arguments):
     c2mpt(target, arguments)
 
 
+@typeguard_testsuite
 def _temp_file(suffix=None):
     tempfile = mkstemp(prefix="microprobe_c2mpt_", suffix=suffix)
     os.close(tempfile[0])

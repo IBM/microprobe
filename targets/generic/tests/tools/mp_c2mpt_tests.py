@@ -20,20 +20,13 @@ from __future__ import absolute_import, print_function
 # Built-in modules
 import os
 from tempfile import SpooledTemporaryFile, mkstemp
+from typing import Union
 from unittest import TestCase, main, skipIf
-
-# Third party modules
-import six
-from six.moves import range
 
 # Own modules
 import microprobe
 
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    import subprocess  # @Reimport
-
+import subprocess
 
 # Constants
 BASEPATH = os.path.join(os.path.dirname(microprobe.__file__), "..", "..")
@@ -49,8 +42,9 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
 
     name = "mp_c2mpt"
     description = "mp_c2mpt tool tests"
-    cmd = [os.path.join(BASEPATH,
-                        "targets", "generic", "tools", "mp_c2mpt.py")]
+    cmd = [
+        os.path.join(BASEPATH, "targets", "generic", "tools", "mp_c2mpt.py")
+    ]
     target = os.path.join(BASEPATH, "targets")
     trials = 3
 
@@ -71,7 +65,7 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
     def tearDown(self):
 
         for filename in [
-            fname for fname in self.filenames if os.path.isfile(fname)
+                fname for fname in self.filenames if os.path.isfile(fname)
         ]:
             os.unlink(filename)
 
@@ -83,13 +77,8 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "riscv_v22-riscv_generic-riscv64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "generic",
-                "tests",
-                "tools",
-                "c2mpt_test001.c"),
+            os.path.join(BASEPATH, "targets", "generic", "tests", "tools",
+                         "c2mpt_test001.c"),
         )
 
     @skipIf(MP_TESTING_ARCH != "RISCV", "TBD: Enable test")
@@ -100,15 +89,13 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper(
             "riscv_v22-riscv_generic-riscv64_linux_gcc",
-            os.path.join(
-                BASEPATH,
-                "targets",
-                "generic",
-                "tests",
-                "tools",
-                "c2mpt_test002.c"))
+            os.path.join(BASEPATH, "targets", "generic", "tests", "tools",
+                         "c2mpt_test002.c"))
 
-    def _wrapper(self, target, filename, extra=None):
+    def _wrapper(self,
+                 target: str,
+                 filename: str,
+                 extra: Union[str, None] = None):
         """
         Common execution wrapper
         """
@@ -127,23 +114,22 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
             test_cmd.extend([
                 "--target-c-compiler",
                 os.environ.get("MP_TESTING_COMPILER_RISCV",
-                               "riscv64-linux-gnu-gcc-8")])
-            test_cmd.extend(
-                ["--target-objdump",
-                 os.environ.get(
-                     "MP_TESTING_COMPILER_RISCV",
-                     "riscv64-linux-gnu-gcc-8").replace("gcc-8",
-                                                        "objdump")])
+                               "riscv64-linux-gnu-gcc-8")
+            ])
+            test_cmd.extend([
+                "--target-objdump",
+                os.environ.get("MP_TESTING_COMPILER_RISCV",
+                               "riscv64-linux-gnu-gcc-8").replace(
+                                   "gcc-8", "objdump")
+            ])
         print(" ".join(test_cmd))
 
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

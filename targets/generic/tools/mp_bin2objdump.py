@@ -24,6 +24,7 @@ from __future__ import absolute_import, division, print_function
 # Built-in modules
 import os
 import sys
+from typing import List, Union
 
 # Third party modules
 from six.moves import range
@@ -32,19 +33,21 @@ import six
 # Own modules
 from microprobe.code.address import Address
 from microprobe.code.ins import instruction_from_definition
-from microprobe.target import import_definition
+from microprobe.target import Target, import_definition
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.cmdline import CLI, existing_file, \
     int_type, print_error, print_warning
 from microprobe.utils.misc import RejectingOrderedDict, which
 from microprobe.utils.run import run_cmd_output
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 
 
 # Functions
-def dump_objdump(target, arguments):
+@typeguard_testsuite
+def dump_objdump(target: Target, input_bin_file: str, od_bin: str,
+                 strict: bool, start_address: int):
     """
 
     :param target:
@@ -53,28 +56,19 @@ def dump_objdump(target, arguments):
     :type arguments:
     """
 
-    cmd = "'%s' -Ax -tx1 -v '%s'" % (
-        arguments['od_bin'], arguments['input_bin_file'])
+    cmd = f"'{od_bin}' -Ax -tx1 -v '{input_bin_file}'"
     text_string = run_cmd_output(cmd)
-    bintext = []
+    bintext: List[str] = []
     for line in text_string.split('\n'):
         if line == "":
             continue
         bintext.append("".join(line.split(' ')[1:]))
 
-    instrs = interpret_bin(
-        "".join(bintext), target,
-        safe=not arguments['strict']
-    )
+    instrs = interpret_bin("".join(bintext), target, safe=not strict)
 
     print("")
-    print(
-        "%s:\tfile format raw %s" % (
-            os.path.basename(
-                arguments['input_bin_file']
-            ), target.isa.name
-        )
-    )
+    print("%s:\tfile format raw %s" %
+          (os.path.basename(input_bin_file), target.isa.name))
     print("")
     print("")
     print("Disassembly of section .raw:")
@@ -85,14 +79,13 @@ def dump_objdump(target, arguments):
         maxlen = maxlen + 1
     maxlen += maxlen // 2
 
-    counter = arguments['start_address']
+    counter = start_address
 
     label_dict = RejectingOrderedDict()
     instr_dict = RejectingOrderedDict()
 
     for instr_def in instrs:
-        instr = instruction_from_definition(instr_def,
-                                            fix_relative=False)
+        instr = instruction_from_definition(instr_def, fix_relative=False)
         asm = instr.assembly().lower()
 
         relative = None
@@ -163,7 +156,7 @@ def dump_objdump(target, arguments):
         counter = counter + len(masm) // 2
 
     str_format = "%8s:\t%-" + str(maxlen) + "s\t%s"
-    addresses = []
+    addresses: List[Union[str, int]] = []
     for counter, values in instr_dict.items():
 
         binary, asm, label, rtarget, atarget = values
@@ -186,67 +179,59 @@ def dump_objdump(target, arguments):
             print_warning("Target address '%s' not in the objdump" % hex(key))
             error = True
 
-    if error and arguments['strict']:
+    if error and strict:
         print_error("Check target addresses of relative branches")
         exit(-1)
 
 
 # Main
+@typeguard_testsuite
 def main():
     """
     Program main
     """
     args = sys.argv[1:]
-    cmdline = CLI(
-        "Microprobe Binary to Objdump tool",
-        default_config_file="mp_bin2objdump.cfg",
-        force_required=['target']
-    )
+    cmdline = CLI("Microprobe Binary to Objdump tool",
+                  default_config_file="mp_bin2objdump.cfg",
+                  force_required=['target'])
 
     groupname = "Binary to Objdump arguments"
 
-    cmdline.add_group(
-        groupname, "Command arguments related to Binary to Objdump tool"
-    )
+    cmdline.add_group(groupname,
+                      "Command arguments related to Binary to Objdump tool")
 
-    cmdline.add_option(
-        "input-bin-file",
-        "i",
-        None,
-        "Binary file to process",
-        group=groupname,
-        opt_type=existing_file,
-        required=True
-    )
+    cmdline.add_option("input-bin-file",
+                       "i",
+                       None,
+                       "Binary file to process",
+                       group=groupname,
+                       opt_type=existing_file,
+                       required=True)
 
-    cmdline.add_option(
-        "od-bin",
-        "ob",
-        which("od"),
-        "'od' dump utility. Default: %s" % which("od"),
-        group=groupname,
-        opt_type=existing_file
-    )
+    cmdline.add_option("od-bin",
+                       "ob",
+                       which("od"),
+                       "'od' dump utility. Default: %s" % which("od"),
+                       group=groupname,
+                       opt_type=existing_file)
 
-    cmdline.add_option(
-        "start-address",
-        "X",
-        0x0,
-        "Start address. Default: 0x0",
-        group=groupname,
-        opt_type=int_type(0, float("+inf"))
-    )
+    cmdline.add_option("start-address",
+                       "X",
+                       0x0,
+                       "Start address. Default: 0x0",
+                       group=groupname,
+                       opt_type=int_type(0, float("+inf")))
 
     cmdline.add_flag(
         "strict",
         "S",
         "Check relative branches correctness and all instructions valid.",
-        group=groupname
-    )
+        group=groupname)
 
     cmdline.main(args, _main)
 
 
+@typeguard_testsuite
 def _main(arguments):
     """
     Program main, after processing the command line arguments
@@ -257,16 +242,15 @@ def _main(arguments):
     target = import_definition(arguments['target'])
 
     if arguments['od_bin'] is None:
-        print_error(
-            "Unable to find a 'od' utility. Edit your $PATH or use"
-            " the --od-bin parameter"
-        )
+        print_error("Unable to find a 'od' utility. Edit your $PATH or use"
+                    " the --od-bin parameter")
         exit(-1)
 
     if "strict" not in arguments:
         arguments["strict"] = False
 
-    dump_objdump(target, arguments)
+    dump_objdump(target, arguments["input_bin_file"], arguments["od_bin"],
+                 arguments["strict"], arguments['start_address'])
 
 
 if __name__ == '__main__':  # run main if executed from the command line

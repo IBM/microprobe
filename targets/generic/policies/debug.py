@@ -26,8 +26,8 @@ import microprobe.passes.register
 import microprobe.passes.structure
 import microprobe.passes.symbol
 from microprobe.exceptions import MicroprobePolicyError
+from microprobe.target import Target
 from microprobe.utils.logger import get_logger
-
 
 # Constants
 LOG = get_logger(__name__)
@@ -35,13 +35,11 @@ __all__ = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
 
 NAME = "debug"
 DESCRIPTION = "Debug generation policy"
-SUPPORTED_TARGETS = [
-    "all"
-]
+SUPPORTED_TARGETS = ["all"]
 
 
 # Functions
-def policy(target, wrapper, **kwargs):
+def policy(target: Target, wrapper, **kwargs):
     """
     Benchmark generation policy.
 
@@ -58,38 +56,29 @@ def policy(target, wrapper, **kwargs):
     :type wrapper: :class:`wrapper`
     """
 
-    if (target.name not in SUPPORTED_TARGETS and
-            "all" not in SUPPORTED_TARGETS):
+    if (target.name not in SUPPORTED_TARGETS
+            and "all" not in SUPPORTED_TARGETS):
         raise MicroprobePolicyError(
             "Policy '%s' not valid for target '%s'. Supported targets are:"
-            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS))
-        )
+            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS)))
 
     sequence = [kwargs['instruction']]
     synth = microprobe.code.Synthesizer(target, wrapper)
     synth.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
-            value=0b0101010
-        )
-    )
+            value=0b0101010))
     synth.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
-            kwargs['benchmark_size']
-        )
-    )
+            kwargs['benchmark_size']))
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence
-        )
-    )
+            sequence))
 
     synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=99, relax=True))
-    synth.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass())
-    synth.add_pass(
-        microprobe.passes.symbol.ResolveSymbolicReferencesPass())
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=99,
+                                                                 relax=True))
+    synth.add_pass(microprobe.passes.address.UpdateInstructionAddressesPass())
+    synth.add_pass(microprobe.passes.symbol.ResolveSymbolicReferencesPass())
 
     return synth

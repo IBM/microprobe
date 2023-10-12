@@ -23,22 +23,24 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import sys
+from typing import List
 
 # Own modules
 from microprobe.code.ins import instruction_from_definition
-from microprobe.target import import_definition
+from microprobe.target import Target, import_definition
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.cmdline import CLI, \
     existing_file, print_error, print_info
 from microprobe.utils.misc import which
 from microprobe.utils.run import run_cmd_output
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 
 
 # Functions
-def dump_bin(target, arguments):
+@typeguard_testsuite
+def dump_bin(target: Target, input_bin_file: str, safe: bool):
     """
 
     :param target:
@@ -49,72 +51,61 @@ def dump_bin(target, arguments):
 
     print_info("Parsing input file...")
 
-    cmd = "od -Ax -tx1 -v '%s'" % arguments['input_bin_file']
+    cmd = f"od -Ax -tx1 -v '{input_bin_file}'"
     text_string = run_cmd_output(cmd)
-    bintext = []
+    bintext: List[str] = []
     for line in text_string.split('\n'):
         if line == "":
             continue
         bintext.append("".join(line.split(' ')[1:]))
 
-    instrs = interpret_bin(
-        "".join(bintext),
-        target,
-        safe=arguments['safe']
-    )
+    instrs = interpret_bin("".join(bintext), target, safe=safe)
 
     for instr in instrs:
         print(instruction_from_definition(instr).assembly())
 
 
 # Main
+@typeguard_testsuite
 def main():
     """
     Program main
     """
     args = sys.argv[1:]
-    cmdline = CLI(
-        "Microprobe Binary to Assembly tool",
-        default_config_file="mp_bin2asm.cfg",
-        force_required=['target']
-    )
+    cmdline = CLI("Microprobe Binary to Assembly tool",
+                  default_config_file="mp_bin2asm.cfg",
+                  force_required=['target'])
 
     groupname = "Binary to Assembly arguments"
 
-    cmdline.add_group(
-        groupname, "Command arguments related to Binary to Assembly tool"
-    )
+    cmdline.add_group(groupname,
+                      "Command arguments related to Binary to Assembly tool")
 
-    cmdline.add_option(
-        "input-bin-file",
-        "i",
-        None,
-        "Binary file to process",
-        group=groupname,
-        opt_type=existing_file,
-        required=True
-    )
+    cmdline.add_option("input-bin-file",
+                       "i",
+                       None,
+                       "Binary file to process",
+                       group=groupname,
+                       opt_type=existing_file,
+                       required=True)
 
-    cmdline.add_option(
-        "od-bin",
-        "ob",
-        which("od"),
-        "'od' dump utility. Default: %s" % which("od"),
-        group=groupname,
-        opt_type=existing_file
-    )
+    cmdline.add_option("od-bin",
+                       "ob",
+                       which("od"),
+                       "'od' dump utility. Default: %s" % which("od"),
+                       group=groupname,
+                       opt_type=existing_file)
 
-    cmdline.add_flag(
-        "safe",
-        "S",
-        "Do not fail on unknown decoded binaries",
-        group=groupname
-    )
+    cmdline.add_flag("safe",
+                     "S",
+                     "Do not fail on unknown decoded binaries",
+                     group=groupname)
 
     print_info("Processing input arguments...")
     cmdline.main(args, _main)
 
 
+@typeguard_testsuite
 def _main(arguments):
     """
     Program main, after processing the command line arguments
@@ -128,16 +119,14 @@ def _main(arguments):
     target = import_definition(arguments['target'])
 
     if arguments['od_bin'] is None:
-        print_error(
-            "Unable to find a 'od' utility. Edit your $PATH or use"
-            " the --od-bin parameter"
-        )
+        print_error("Unable to find a 'od' utility. Edit your $PATH or use"
+                    " the --od-bin parameter")
         exit(-1)
 
     if 'safe' not in arguments:
         arguments['safe'] = False
 
-    dump_bin(target, arguments)
+    dump_bin(target, arguments["input_bin_file"], arguments["safe"])
 
 
 if __name__ == '__main__':  # run main if executed from the command line

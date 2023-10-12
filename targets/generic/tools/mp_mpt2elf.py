@@ -23,6 +23,7 @@ from __future__ import absolute_import, print_function
 # Built-in modules
 import os.path
 import sys
+from typing import List
 
 # Third party modules
 import six
@@ -75,10 +76,9 @@ from microprobe.utils.misc import Progress, twocs_to_int, findfiles
 from microprobe.utils.mpt import MicroprobeTestRegisterDefinition
 from microprobe.utils.run import run_cmd
 
-
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
-__credits__ = []
+__credits__: List[str] = []
 __license__ = "IBM (c) 2011-2021 All rights reserved"
 __version__ = "0.5"
 __maintainer__ = "Ramon Bertran"
@@ -117,8 +117,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
         # Address order might have changed after mapping
         test_definition.set_instruction_definitions(
-            sorted(test_definition.code, key=lambda x: x.address)
-        )
+            sorted(test_definition.code, key=lambda x: x.address))
 
         # remove not translated addresses (needed?)
         # variables = [var for var in test_definition.variables
@@ -130,17 +129,14 @@ def generate(test_definition, output_file, target, **kwargs):
 
         # Address order might have changed after mapping
         test_definition.set_variables_definition(
-            sorted(test_definition.variables, key=lambda x: x.address)
-        )
+            sorted(test_definition.variables, key=lambda x: x.address))
 
         if test_definition.default_code_address != 0:
             test_definition.default_code_address = dat.translate(
-                test_definition.default_code_address, rev=True
-            )
+                test_definition.default_code_address, rev=True)
         if test_definition.default_data_address != 0:
             test_definition.default_data_address = dat.translate(
-                test_definition.default_data_address, rev=True
-            )
+                test_definition.default_data_address, rev=True)
         for access in test_definition.roi_memory_access_trace:
             access.address = dat.translate(access.address, rev=True)
 
@@ -166,38 +162,31 @@ def generate(test_definition, output_file, target, **kwargs):
 
         for entry in test_definition.code:
             if not entry.assembly.upper().startswith(
-                "0X"
-            ) and not entry.assembly.upper().startswith("0B"):
+                    "0X") and not entry.assembly.upper().startswith("0B"):
                 raise MicroprobeMPTFormatError(
                     "This is not a RAW dump as it contains "
-                    "assembly (%s)" % entry.assembly
-                )
+                    "assembly (%s)" % entry.assembly)
 
             if entry.label is not None:
                 raise MicroprobeMPTFormatError(
                     "This is not a RAW dump as it contains "
-                    "labels (%s)" % entry.label
-                )
+                    "labels (%s)" % entry.label)
 
             if entry.decorators not in ["", " ", None, []]:
                 raise MicroprobeMPTFormatError(
                     "This is not a RAW dump as it contains "
-                    "decorators (%s)" % entry.decorators
-                )
+                    "decorators (%s)" % entry.decorators)
 
             if entry.comments not in ["", " ", None, []]:
                 raise MicroprobeMPTFormatError(
                     "This is not a RAW dump as it contains "
-                    "comments (%s)" % entry.comments
-                )
+                    "comments (%s)" % entry.comments)
 
             if entry.address is not None:
                 current_address = entry.address + displ
 
-            if (
-                len(executed_code) > 0
-                and ((current_address // align) * align) not in executed_code
-            ):
+            if (len(executed_code) > 0 and
+                    ((current_address // align) * align) not in executed_code):
                 continue
 
             if current_address not in raw_dict:
@@ -207,8 +196,7 @@ def generate(test_definition, output_file, target, **kwargs):
             if len(entry.assembly) != 10:
                 raise MicroprobeMPTFormatError(
                     "This is not a RAW 4-byte dump as it contains "
-                    "lines with other formats (%s)" % entry.assembly
-                )
+                    "lines with other formats (%s)" % entry.assembly)
 
             raw_dict[current_address] += entry.assembly[2:]
 
@@ -280,9 +268,8 @@ def generate(test_definition, output_file, target, **kwargs):
                     if elem.address is not None and elem.address >= 2**32:
                         elements_outside_range.append(elem)
 
-            elements_outside_range = sorted(
-                elements_outside_range, key=lambda el: el.address
-            )
+            elements_outside_range = sorted(elements_outside_range,
+                                            key=lambda el: el.address)
 
             print(len(elements_outside_range))
 
@@ -308,10 +295,8 @@ def generate(test_definition, output_file, target, **kwargs):
                 prev_mapped_address = next_address
                 prev_address = elem.address
 
-            print_info(
-                "Address of last section: 0x%X "
-                % (mapping[elements_outside_range[-1].address])
-            )
+            print_info("Address of last section: 0x%X " %
+                       (mapping[elements_outside_range[-1].address]))
             print_info("Shifting %d elements " % (len(mapping)))
 
             for elem in test_definition.code:
@@ -325,9 +310,8 @@ def generate(test_definition, output_file, target, **kwargs):
                     elem.address = mapping[elem.address]
 
                 for index in range(0, elem.num_elements, 8):
-                    value = int.from_bytes(
-                        elem.init_value[index: index + 8], "little"
-                    )
+                    value = int.from_bytes(elem.init_value[index:index + 8],
+                                           "little")
                     page_addr = value & ~0xFFF
                     if page_addr in mapping:
                         new_value = mapping[page_addr] + (value & 0xFFF)
@@ -348,14 +332,12 @@ def generate(test_definition, output_file, target, **kwargs):
                         register.value = mapping[register.value]
                     elif register.value & ~0xFFF in mapping:
                         register.value = mapping[register.value & ~0xFFF] + (
-                            register.value & 0xFFF
-                        )
+                            register.value & 0xFFF)
                     else:
                         print_warning(
                             "Register %s's value is more than 32 bits but "
-                            "is not in mapping: %X"
-                            % (register.name, register.value)
-                        )
+                            "is not in mapping: %X" %
+                            (register.name, register.value))
                         closest_addr = None
                         closest_dist = 8 * 1024  # Only consider mappings
                         # 16kb apart
@@ -367,16 +349,13 @@ def generate(test_definition, output_file, target, **kwargs):
                         if closest_addr is not None:
                             print_warning(
                                 "  Closest mapped address: %X (distance: %d "
-                                "bytes). Applying shift. Final address: %X"
-                                % (
+                                "bytes). Applying shift. Final address: %X" % (
                                     closest_addr,
                                     closest_dist,
                                     mapping[closest_addr] + closest_dist,
-                                )
-                            )
-                            register.value = (
-                                mapping[closest_addr] + closest_dist
-                            )
+                                ))
+                            register.value = (mapping[closest_addr] +
+                                              closest_dist)
 
             for access in test_definition.roi_memory_access_trace:
                 if access.address in mapping:
@@ -384,45 +363,36 @@ def generate(test_definition, output_file, target, **kwargs):
                 else:
                     page_addr = access.address & ~0xFFF
                     if page_addr in mapping:
-                        access.address = mapping[page_addr] + (
-                            access.address & 0xFFF
-                        )
+                        access.address = mapping[page_addr] + (access.address
+                                                               & 0xFFF)
                     elif page_addr > 2**32:
-                        print_warning(
-                            "Access is more than 32 bits but is "
-                            "not in mapping: %x" % access.address
-                        )
+                        print_warning("Access is more than 32 bits but is "
+                                      "not in mapping: %x" % access.address)
 
         displacements = []
         for elem in test_definition.code:
             if elem.address is not None:
                 if len(displacements) == 0:
                     displacements.append(
-                        (elem.address, 4 * 1024, elem.address - init_address)
-                    )
+                        (elem.address, 4 * 1024, elem.address - init_address))
                 else:
-                    displacements.append(
-                        (
-                            elem.address,
-                            elem.address - displacements[-1][0],
-                            elem.address - init_address,
-                        )
-                    )
+                    displacements.append((
+                        elem.address,
+                        elem.address - displacements[-1][0],
+                        elem.address - init_address,
+                    ))
 
         # Get ranges with enough space to put init code
         # Assuming 4K space is enough
         displacements = [
-            displ
-            for displ in displacements
+            displ for displ in displacements
             if displ[1] >= 4 * 1024 and displ[2] <= 0
         ]
 
         if len(displacements) == 0:
-            print_error(
-                "Unable to find space for the initialization code. "
-                "Check the mpt initial code address or state of PC "
-                "for correctness."
-            )
+            print_error("Unable to find space for the initialization code. "
+                        "Check the mpt initial code address or state of PC "
+                        "for correctness.")
             exit(-1)
 
         displ_fixed = False
@@ -450,11 +420,9 @@ def generate(test_definition, output_file, target, **kwargs):
                 break
 
         if not init_found:
-            print_error(
-                "Initial instruction address (%s) not found. This can "
-                "be related to wrong MPT format or decoding missmatch "
-                "during raw bin interpretation." % hex(init_address)
-            )
+            print_error("Initial instruction address (%s) not found. This can "
+                        "be related to wrong MPT format or decoding missmatch "
+                        "during raw bin interpretation." % hex(init_address))
             exit(-1)
 
         if start_symbol is None:
@@ -470,8 +438,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
         if "wrap_endless" in kwargs and "reset" in kwargs:
             target.scratch_var.set_address(
-                Address(base_address=target.scratch_var.name)
-            )
+                Address(base_address=target.scratch_var.name))
 
             new_ins, overhead, reset_steps = _compute_reset_code(
                 target,
@@ -486,8 +453,7 @@ def generate(test_definition, output_file, target, **kwargs):
             instructions += target.function_call(init_address, long_jump=True)
         else:
             instructions += target.function_call(
-                ("%s" % start_symbol).replace("+0x-", "-0x"),
-            )
+                ("%s" % start_symbol).replace("+0x-", "-0x"), )
 
         instructions += target.hook_after_test_instructions()
 
@@ -502,9 +468,8 @@ def generate(test_definition, output_file, target, **kwargs):
             instruction.set_label(None)
 
             if not displ_fixed:
-                displacement = (
-                    displacement - instruction.architecture_type.format.length
-                )
+                displacement = (displacement -
+                                instruction.architecture_type.format.length)
 
             current_instruction = MicroprobeAsmInstructionDefinition(
                 instruction.assembly(),
@@ -519,9 +484,8 @@ def generate(test_definition, output_file, target, **kwargs):
         instruction.set_label(None)
 
         if not displ_fixed:
-            displacement = (
-                displacement - instruction.architecture_type.format.length
-            )
+            displacement = (displacement -
+                            instruction.architecture_type.format.length)
 
         # To avoid overlaps
         if not displ_fixed:
@@ -549,8 +513,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
         if not displ_fixed:
             test_definition.set_default_code_address(
-                test_definition.default_code_address + displacement,
-            )
+                test_definition.default_code_address + displacement, )
 
             for elem in test_definition.code:
                 if elem.address is not None:
@@ -564,8 +527,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
     variables = test_definition.variables
     variables = [
-        var
-        for var in test_definition.variables
+        var for var in test_definition.variables
         if var.address is None or var.address >= 0x00100000
     ]
 
@@ -583,13 +545,11 @@ def generate(test_definition, output_file, target, **kwargs):
     if len(sequence_orig) < 1:
         raise MicroprobeMPTFormatError(
             "No instructions found in the 'instructions' entry of the MPT"
-            " file. Check the input file.",
-        )
+            " file. Check the input file.", )
 
     raw = test_definition.raw
-    raw["FILE_FOOTER"] = (
-        "# mp_mpt2elf: Wrapping overhead: %03.2f %%" % overhead
-    )
+    raw["FILE_FOOTER"] = ("# mp_mpt2elf: Wrapping overhead: %03.2f %%" %
+                          overhead)
 
     # end_address = end_address_orig
     ckwargs = {
@@ -613,8 +573,7 @@ def generate(test_definition, output_file, target, **kwargs):
             "Wrapper '%s' not available. Check if you have the wrappers"
             " of the target installed or set up an appropriate "
             "MICROPROBEWRAPPERS environment variable. Original error "
-            "was: %s" % (wrapper_name, str(exc)),
-        )
+            "was: %s" % (wrapper_name, str(exc)), )
 
     wrapper = code_wrapper(**ckwargs)
 
@@ -632,9 +591,7 @@ def generate(test_definition, output_file, target, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.initialization.AddInitializationInstructionsPass(
-            target.hook_test_init_instructions()
-        ),
-    )
+            target.hook_test_init_instructions()), )
 
     if len(registers) >= 0:
         cr_reg = [register for register in registers if register.name == "CR"]
@@ -659,29 +616,20 @@ def generate(test_definition, output_file, target, **kwargs):
                 warn_unknown=True,
                 skip_control=True,
                 force_reserved=True,
-            ),
-        )
+            ), )
 
     synthesizer.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(
-            len(sequence),
-        ),
-    )
+        microprobe.passes.structure.SimpleBuildingBlockPass(len(sequence), ), )
 
     synthesizer.add_pass(
-        microprobe.passes.variable.DeclareVariablesPass(
-            variables,
-        ),
-    )
+        microprobe.passes.variable.DeclareVariablesPass(variables, ), )
 
     synthesizer.add_pass(
-        microprobe.passes.instruction.ReproduceSequencePass(sequence),
-    )
+        microprobe.passes.instruction.ReproduceSequencePass(sequence), )
 
     if target.name.startswith("power"):
         fix_branches = [
-            instr.name
-            for instr in target.instructions.values()
+            instr.name for instr in target.instructions.values()
             if instr.branch_conditional
         ]
 
@@ -691,18 +639,17 @@ def generate(test_definition, output_file, target, **kwargs):
             for orig in [21, 17, 19]:
                 synthesizer.add_pass(
                     microprobe.passes.instruction.DisableAsmByOpcodePass(
-                        fix_branches, 0, ifval=orig
-                    )
-                )
+                        fix_branches, 0, ifval=orig))
         else:
             # We know what is code and what is data, so we can safely
             # fix the branch instructions
             for new, orig in [(20, 21), (16, 17), (18, 19)]:
                 synthesizer.add_pass(
-                    SetInstructionOperandsByOpcodePass(
-                        fix_branches, 0, new, force=True, ifval=orig
-                    )
-                )
+                    SetInstructionOperandsByOpcodePass(fix_branches,
+                                                       0,
+                                                       new,
+                                                       force=True,
+                                                       ifval=orig))
 
     if kwargs.get("fix_memory_registers", False):
         kwargs["fix_memory_references"] = True
@@ -712,63 +659,48 @@ def generate(test_definition, output_file, target, **kwargs):
 
         synthesizer.add_pass(
             microprobe.passes.memory.FixMemoryReferencesPass(
-                reset_registers=kwargs.get("fix_memory_registers", False),
-            ),
-        )
+                reset_registers=kwargs.get("fix_memory_registers", False), ), )
 
         synthesizer.add_pass(
-            microprobe.passes.register.FixRegistersPass(
-                forbid_writes=["GPR3"],
-            ),
-        )
+            microprobe.passes.register.FixRegistersPass(forbid_writes=["GPR3"
+                                                                       ], ), )
 
     if kwargs.get("fix_memory_registers", False):
         print_info("Fix memory registers: On")
         synthesizer.add_pass(
-            microprobe.passes.register.NoHazardsAllocationPass(),
-        )
+            microprobe.passes.register.NoHazardsAllocationPass(), )
 
     if kwargs.get("fix_branch_next", False):
         print_info("Force branch to next: On")
         synthesizer.add_pass(
             microprobe.passes.address.UpdateInstructionAddressesPass(
-                force="fix_flatten_code" in kwargs, noinit=True
-            )
-        )
+                force="fix_flatten_code" in kwargs, noinit=True))
         synthesizer.add_pass(
-            microprobe.passes.branch.BranchNextPass(force=True),
-        )
+            microprobe.passes.branch.BranchNextPass(force=True), )
 
     if kwargs.get("fix_indirect_branches", False):
         print_info("Fix indirect branches: On")
         synthesizer.add_pass(
             microprobe.passes.address.UpdateInstructionAddressesPass(
-                noinit=True
-            ),
-        )
+                noinit=True), )
         synthesizer.add_pass(
-            microprobe.passes.branch.FixIndirectBranchPass(),
-        )
+            microprobe.passes.branch.FixIndirectBranchPass(), )
 
     if displ_fixed:
         synthesizer.add_pass(
-            microprobe.passes.address.SetInitAddressPass(displacement)
-        )
+            microprobe.passes.address.SetInitAddressPass(displacement))
 
     synthesizer.add_pass(
         microprobe.passes.address.UpdateInstructionAddressesPass(
             noinit=True,
             init_from_first=not displ_fixed,
-        ),
-    )
+        ), )
 
     synthesizer.add_pass(
-        microprobe.passes.variable.UpdateVariableAddressesPass(),
-    )
+        microprobe.passes.variable.UpdateVariableAddressesPass(), )
 
     synthesizer.add_pass(
-        microprobe.passes.symbol.ResolveSymbolicReferencesPass(onlyraw=True),
-    )
+        microprobe.passes.symbol.ResolveSymbolicReferencesPass(onlyraw=True), )
 
     print_info("Start synthesizer ...")
     bench = synthesizer.synthesize()
@@ -809,21 +741,18 @@ def _compile(filename, target, **kwargs):
     fdin.close()
 
     try:
-        baseldscriptname = findfiles(
-            MICROPROBE_RC["template_paths"], "%s.ldscript" % target.name
-        )[0]
+        baseldscriptname = findfiles(MICROPROBE_RC["template_paths"],
+                                     "%s.ldscript" % target.name)[0]
     except IndexError:
-        print_error(
-            "Unable to find template ld script: %s.ldscript" % target.name
-        )
+        print_error("Unable to find template ld script: %s.ldscript" %
+                    target.name)
         exit(-1)
 
     routines_name = None
 
     try:
-        routines_name = findfiles(
-            MICROPROBE_RC["template_paths"], "%s_routines.s" % target.name
-        )[0]
+        routines_name = findfiles(MICROPROBE_RC["template_paths"],
+                                  "%s_routines.s" % target.name)[0]
     except IndexError:
         pass
 
@@ -855,10 +784,8 @@ def _compile(filename, target, **kwargs):
             run_cmd(cmd)
             print_info("'%s' generated!" % outputname)
         except MicroprobeRunCmdError:
-            print_info(
-                "'%s' not generated due compilation"
-                " issues. Try manual compilation." % outputname
-            )
+            print_info("'%s' not generated due compilation"
+                       " issues. Try manual compilation." % outputname)
 
 
 def _compute_reset_code(target, test_def, args):
@@ -884,9 +811,8 @@ def _compute_reset_code(target, test_def, args):
         progress()
         if instr.address is not None:
             if instr.address.base_address == "code":
-                address = (
-                    test_def.default_code_address + instr.address.displacement
-                )
+                address = (test_def.default_code_address +
+                           instr.address.displacement)
                 instr.set_address(address)
         else:
             address = address + instr.architecture_type.format.length
@@ -919,8 +845,7 @@ def _compute_reset_code(target, test_def, args):
             print_error(
                 "Access to from instruction at address "
                 "0x%016X registered but such instruction is not"
-                " present in the definition." % access.address,
-            )
+                " present in the definition." % access.address, )
             exit(1)
 
         # POWER Calls
@@ -934,9 +859,8 @@ def _compute_reset_code(target, test_def, args):
 
         # POWER Returns
         if instr.mnemonic == "BCLR":
-            if ((instr.operands()[0].value & 0b10100) == 20) and (
-                instr.operands()[2].value == 0
-            ):
+            if ((instr.operands()[0].value & 0b10100)
+                    == 20) and (instr.operands()[2].value == 0):
                 level -= 1
 
         # Z Calls
@@ -949,9 +873,9 @@ def _compute_reset_code(target, test_def, args):
 
         # Z Returns
         if instr.mnemonic == "BCR":
-            if (instr.operands()[1].value == target.registers["GR14"]) and (
-                instr.operands()[0].value == 15
-            ):
+            if (instr.operands()[1].value
+                    == target.registers["GR14"]) and (instr.operands()[0].value
+                                                      == 15):
                 level -= 1
 
         # TODO: this should include RISCV instructions for call
@@ -971,8 +895,7 @@ def _compute_reset_code(target, test_def, args):
                 written_after_read_regs.append(reg)
 
         reset_regs = set(read_regs).intersection(
-            set(written_after_read_regs),
-        )
+            set(written_after_read_regs), )
 
     reset_regs = sorted(reset_regs)
 
@@ -989,13 +912,11 @@ def _compute_reset_code(target, test_def, args):
 
     if len(reset_regs) == 0 and len(test_def.roi_memory_access_trace) == 0:
         print_info(
-            "No memory access trace found. Resetting volatile registers."
-        )
+            "No memory access trace found. Resetting volatile registers.")
         reset_regs = target.volatile_registers
 
     unused_regs = sorted(
-        (reg for reg in target.registers.values() if reg not in read_regs),
-    )
+        (reg for reg in target.registers.values() if reg not in read_regs), )
 
     #
     # Make sure scratch registers are reset last
@@ -1043,20 +964,19 @@ def _compute_reset_code(target, test_def, args):
                 end_address = var.address + var.num_elements * elem_size
                 if var.address <= address < end_address:
                     offset = int((address - var.address) / elem_size)
-                    svalue = var.init_value[
-                        offset:offset + int(value[0] / elem_size)
-                    ]
+                    svalue = var.init_value[offset:offset +
+                                            int(value[0] / elem_size)]
                     svalue = "".join(
-                        reversed(["%02X" % tval for tval in svalue])
-                    )  # TODO: Reverse ONLY on little endian archs
+                        reversed([
+                            "%02X" % tval for tval in svalue
+                        ]))  # TODO: Reverse ONLY on little endian archs
                     wvalue = int(svalue, 16)
                     break
 
             if wvalue is None:
                 print_error(
-                    "Unable to restore original value for address 0x%X"
-                    % address,
-                )
+                    "Unable to restore original value for address 0x%X" %
+                    address, )
                 exit(1)
 
             if value[0] <= 8:
@@ -1082,16 +1002,13 @@ def _compute_reset_code(target, test_def, args):
         #
         print_info("Adding instructions to reset memory state")
         reset_registers = [
-            reg
-            for reg in free_regs
+            reg for reg in free_regs
             if reg.type.used_for_address_arithmetic and reg.name != "GPR0"
         ]
 
         if len(reset_registers) == 0:
-            print_error(
-                "No free register available for resetting memory"
-                " contentents."
-            )
+            print_error("No free register available for resetting memory"
+                        " contentents.")
             exit(1)
 
         reset_register = reset_registers[0]
@@ -1109,9 +1026,8 @@ def _compute_reset_code(target, test_def, args):
             )
             for ins in new_instructions:
                 ins.add_comment(
-                    "Reset code. Setting %s to 0X%016X"
-                    % (zero_register.name, 0),
-                )
+                    "Reset code. Setting %s to 0X%016X" %
+                    (zero_register.name, 0), )
             reset_steps.append([new_instructions[:], zero_register, 0])
             context.set_register_value(zero_register, 0)
             new_ins.extend(new_instructions)
@@ -1127,9 +1043,8 @@ def _compute_reset_code(target, test_def, args):
 
             for ins in new_instructions:
                 ins.add_comment(
-                    "Reset code. Setting %s to 0X%016X"
-                    % (reset_register.name, value),
-                )
+                    "Reset code. Setting %s to 0X%016X" %
+                    (reset_register.name, value), )
 
             reset_steps.append([new_instructions[:], reset_register, value])
             context.set_register_value(reset_register, value)
@@ -1143,17 +1058,13 @@ def _compute_reset_code(target, test_def, args):
                 )
                 new_instructions += store_ins
                 reset_steps.append(
-                    [store_ins, reset_register, address_obj, length],
-                )
+                    [store_ins, reset_register, address_obj, length], )
 
             except MicroprobeCodeGenerationError:
                 areg = [
-                    reg
-                    for reg in free_regs
-                    if reg.type.used_for_address_arithmetic
-                    and reg.name != "GPR0"
-                    and reg != reset_register
-                    and reg != zero_register
+                    reg for reg in free_regs
+                    if reg.type.used_for_address_arithmetic and reg.name !=
+                    "GPR0" and reg != reset_register and reg != zero_register
                 ][0]
 
                 set_ins = target.set_register(
@@ -1175,19 +1086,16 @@ def _compute_reset_code(target, test_def, args):
                 )
                 new_instructions += store_ins
                 reset_steps.append(
-                    [store_ins, reset_register, address_obj, length],
-                )
+                    [store_ins, reset_register, address_obj, length], )
 
                 for ins in set_ins:
                     ins.add_comment(
-                        "Reset code. Setting %s to 0X%016X"
-                        % (areg.name, address),
-                    )
+                        "Reset code. Setting %s to 0X%016X" %
+                        (areg.name, address), )
 
             for ins in store_ins:
                 ins.add_comment(
-                    "Reset code. Setting mem content in 0X%016X" % (address),
-                )
+                    "Reset code. Setting mem content in 0X%016X" % (address), )
 
             new_ins.extend(new_instructions)
 
@@ -1195,8 +1103,7 @@ def _compute_reset_code(target, test_def, args):
     for reset_register in reset_regs:
         try:
             value = [
-                reg
-                for reg in test_def.registers
+                reg for reg in test_def.registers
                 if reg.name == reset_register.name
             ][0].value
         except IndexError:
@@ -1213,30 +1120,22 @@ def _compute_reset_code(target, test_def, args):
 
         for ins in new_instructions:
             ins.add_comment(
-                "Reset code. Setting %s to 0X%016X"
-                % (reset_register.name, value),
-            )
+                "Reset code. Setting %s to 0X%016X" %
+                (reset_register.name, value), )
 
         new_ins.extend(new_instructions)
 
     try:
         overhead = ((len(new_ins) * 1.0) / dynamic_count) * 100
     except ZeroDivisionError:
-        print_warning(
-            "Unable to compute overhead. Zero dynamic instruction " "count"
-        )
+        print_warning("Unable to compute overhead. Zero dynamic instruction "
+                      "count")
         overhead = 0
 
-    print_info(
-        "%03.2f%% overhead added by resetting code" % overhead,
-    )
+    print_info("%03.2f%% overhead added by resetting code" % overhead, )
     if overhead > args["wrap_endless_threshold"]:
-        print_error(
-            "Instructions added: %d" % len(new_ins),
-        )
-        print_error(
-            "Total instructions: %d" % dynamic_count,
-        )
+        print_error("Instructions added: %d" % len(new_ins), )
+        print_error("Total instructions: %d" % dynamic_count, )
         print_error(
             "Reset code above --wrap-endless-threshold. Stopping generation.",
         )
@@ -1323,7 +1222,8 @@ def main():
     cmdline.add_flag(
         "fix-branch-next",
         None,
-        "Force target of branches to be the next " "sequential instruction",
+        "Force target of branches to be the next "
+        "sequential instruction",
         group_name,
     )
     cmdline.add_flag(
@@ -1473,10 +1373,8 @@ def _main(arguments):
         arguments["fix_32bit_address"] = None
 
     if "no_wrap_test" in arguments and "wrap_endless" in arguments:
-        print_error(
-            "--no-wrap-test specified and --wrap-endless specified. "
-            "Incompatible options."
-        )
+        print_error("--no-wrap-test specified and --wrap-endless specified. "
+                    "Incompatible options.")
 
     target = import_definition(arguments.pop("target"))
     test_definition = arguments["mpt_definition"]

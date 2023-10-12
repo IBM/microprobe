@@ -19,16 +19,15 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import struct
-
-# Third party modules
-from six.moves import range
+from typing import List, Union
+from microprobe.code.ins import Instruction
 
 # Own modules
 import microprobe.code.wrapper
 from microprobe.code.address import Address, InstructionAddress
 from microprobe.code.context import Context
 from microprobe.utils.logger import get_logger
-
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 LOG = get_logger(__name__)
@@ -40,6 +39,7 @@ __all__ = [
 
 
 # Classes
+@typeguard_testsuite
 class Binary(microprobe.code.wrapper.Wrapper):
     """:class:`Wrapper` to generate binary files (.bin).
 
@@ -48,15 +48,13 @@ class Binary(microprobe.code.wrapper.Wrapper):
 
     """
 
-    def __init__(
-        self,
-        init_code_address=0x01500000,
-        init_data_address=0x01600000,
-        reset=False,
-        dithering=0,
-        endless=False,
-        delay=0
-    ):
+    def __init__(self,
+                 init_code_address: int = 0x01500000,
+                 init_data_address: int = 0x01600000,
+                 reset: bool = False,
+                 dithering: int = 0,
+                 endless: bool = False,
+                 delay: int = 0):
         """Initialization abstract method.
 
         :param init_code_address:  (Default value = None)
@@ -67,14 +65,14 @@ class Binary(microprobe.code.wrapper.Wrapper):
         super(Binary, self).__init__()
         self._init_code_address = init_code_address
         self._init_data_address = init_data_address
-        self._start_address = None
+        self._start_address: Union[Instruction, None] = None
         self._reset_state = reset
         self._dithering = dithering
         self._delay = delay
         self._endless = endless
         self._init_loop_pad = None
 
-    def outputname(self, name):
+    def outputname(self, name: str):
         """
 
         :param name:
@@ -92,7 +90,7 @@ class Binary(microprobe.code.wrapper.Wrapper):
         """ """
         return ""
 
-    def declare_global_var(self, dummy_var):
+    def declare_global_var(self, _dummy_var):
         """
 
         :param dummy_var:
@@ -100,7 +98,7 @@ class Binary(microprobe.code.wrapper.Wrapper):
         """
         return ""
 
-    def init_global_var(self, dummy_var, dummy_value):
+    def init_global_var(self, _dummy_var, _dummy_value):
         """
 
         :param dummy_var:
@@ -117,7 +115,10 @@ class Binary(microprobe.code.wrapper.Wrapper):
         """ """
         return ""
 
-    def start_loop(self, instr, instr_reset, dummy_aligned=True):
+    def start_loop(self,
+                   instr: Instruction,
+                   instr_reset: Instruction,
+                   dummy_aligned: bool = True):
         """
 
         :param instr:
@@ -132,7 +133,7 @@ class Binary(microprobe.code.wrapper.Wrapper):
             self._start_address = instr
 
         instrs = []
-        for dummy in range(0, self._delay):
+        for _dummy in range(0, self._delay):
             instrs.append(self.target.nop())
 
         if not instrs:
@@ -157,13 +158,13 @@ class Binary(microprobe.code.wrapper.Wrapper):
 
         return self._init_loop_pad
 
-    def wrap_ins(self, instr):
+    def wrap_ins(self, instr: Instruction):
         """
 
         :param instr:
 
         """
-        ins = []
+        ins: List[bytes] = []
 
         binary = instr.binary()
 
@@ -181,7 +182,7 @@ class Binary(microprobe.code.wrapper.Wrapper):
 
         return binall
 
-    def end_loop(self, instr):
+    def end_loop(self, instr: Instruction):
         """
 
         :param instr:
@@ -189,21 +190,19 @@ class Binary(microprobe.code.wrapper.Wrapper):
         """
 
         padding = 0
-        instrs = []
-        for dummy in range(0, self._dithering):
+        instrs: List[Instruction] = []
+        for _dummy in range(0, self._dithering):
             instrs.append(self.target.nop())
             padding += self.target.nop().architecture_type.format.length
 
-        source = InstructionAddress(
-            base_address="code",
-            displacement=instr.address.displacement + padding +
-            instr.architecture_type.format.length
-        )
+        source = InstructionAddress(base_address="code",
+                                    displacement=instr.address.displacement +
+                                    padding +
+                                    instr.architecture_type.format.length)
 
         if self._endless:
             branch = self.target.branch_unconditional_relative(
-                source, self._start_address
-            )
+                source, self._start_address)
             instrs.append(branch)
 
         end = [self.wrap_ins(elem) for elem in instrs]

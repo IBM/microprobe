@@ -21,20 +21,13 @@ from __future__ import absolute_import, print_function
 import os
 import shutil
 from tempfile import SpooledTemporaryFile, mkdtemp
+from typing import Union
 from unittest import TestCase, main, skipIf
-
-# Third party modules
-import six
-from six.moves import range
 
 # Own modules
 import microprobe
 
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    import subprocess  # @Reimport
-
+import subprocess
 
 # Constants
 BASEPATH = os.path.join(os.path.dirname(microprobe.__file__), "..", "..")
@@ -77,7 +70,7 @@ class seq(TestCase):  # pylint: disable=invalid-name
         """
         self._wrapper("none", "-h")
 
-    def _wrapper(self, target, extra=None):
+    def _wrapper(self, target: str, extra: Union[str, None] = None):
         """
         Common execution wrapper
         """
@@ -97,11 +90,9 @@ class seq(TestCase):  # pylint: disable=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
             if error_code == 0:
                 break
 

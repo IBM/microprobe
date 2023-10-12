@@ -23,21 +23,17 @@ import itertools
 import os
 import types
 from tempfile import SpooledTemporaryFile, mkstemp
+from typing import Union
 from unittest import TestCase, main
 
 # Third party modules
 import six
-from six.moves import range
 
 # Own modules
 import microprobe
 from microprobe.target import import_definition
 
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    import subprocess  # @Reimport
-
+import subprocess  # @Reimport
 
 # Constants
 BASEPATH = os.path.join(os.path.dirname(microprobe.__file__), "..", "..")
@@ -46,9 +42,8 @@ MP_CI = os.environ.get("TRAVIS", None)
 
 
 def copy_func(f, name=None):
-    return types.FunctionType(f.__code__, copy.copy(f.__globals__),
-                              name or f.__name__,
-                              f.__defaults__, f.__closure__)
+    return types.FunctionType(f.__code__, copy.copy(f.__globals__), name
+                              or f.__name__, f.__defaults__, f.__closure__)
 
 
 def variations(basestr, params):
@@ -136,7 +131,11 @@ class epi(TestCase):  # pylint: disable-msg=invalid-name
         if os.path.isfile(self.filename):
             os.unlink(self.filename)
 
-    def wrapper(self, target, oformat, instr, extra=None):
+    def wrapper(self,
+                target: str,
+                oformat: str,
+                instr: str,
+                extra: Union[str, None] = None):
         """
         Common execution wrapper
         """
@@ -159,11 +158,9 @@ class epi(TestCase):  # pylint: disable-msg=invalid-name
         for trial in range(0, self.trials):
             print("Trial %s" % trial)
             tfile = SpooledTemporaryFile()
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
 
             if error_code == 0:
                 break
@@ -178,19 +175,19 @@ class epi(TestCase):  # pylint: disable-msg=invalid-name
 
             print("Checking BIN...")
 
-            test_cmd = [os.path.join(BASEPATH, "targets", "generic", "tools",
-                                     "mp_bin2objdump.py")]
+            test_cmd = [
+                os.path.join(BASEPATH, "targets", "generic", "tools",
+                             "mp_bin2objdump.py")
+            ]
             test_cmd.extend(['-T', target])
             test_cmd.extend(['-i', self.filename])
             test_cmd.append("-S")
 
             tfile = SpooledTemporaryFile()
 
-            error_code = subprocess.call(
-                test_cmd,
-                stdout=tfile,
-                stderr=subprocess.STDOUT
-            )
+            error_code = subprocess.call(test_cmd,
+                                         stdout=tfile,
+                                         stderr=subprocess.STDOUT)
 
             if error_code != 0:
                 tfile.seek(0)
@@ -206,37 +203,32 @@ if MP_TESTING_ARCH is None:
     _PARAM2 = ['']
     _PARAM3 = ['-B 5']
 
-    TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
-                         "c",
-                         ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
-                          "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
-                          "C.SDSP_V0", "JALR_V0"]))
-    TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p",
-                         "S",
-                         ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
-                          "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
-                          "C.SDSP_V0", "JALR_V0"]))
+    TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc", "c", [
+        "C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0", "C.LWSP_V0", "C.LW_V0",
+        "C.SWSP_V0", "C.SDSP_V0", "JALR_V0"
+    ]))
+    TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p", "S", [
+        "C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0", "C.LWSP_V0", "C.LW_V0",
+        "C.SWSP_V0", "C.SDSP_V0", "JALR_V0"
+    ]))
 else:
     _PARAM1 = ['', '-dd 1']
     _PARAM2 = ['', '-R']
     _PARAM3 = ['-B 5']
 
     if MP_TESTING_ARCH == "RISCV":
-        TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_linux_gcc",
-                             "c",
-                             ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
-                              "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
-                              "C.SDSP_V0", "JALR_V0"]))
-        TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p",
-                             "S",
-                             ["C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0",
-                              "C.LWSP_V0", "C.LW_V0", "C.SWSP_V0",
-                              "C.SDSP_V0", "JALR_V0"]))
+        TEST_TARGETS.append(
+            ("riscv_v22-riscv_generic-riscv64_linux_gcc", "c", [
+                "C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0", "C.LWSP_V0", "C.LW_V0",
+                "C.SWSP_V0", "C.SDSP_V0", "JALR_V0"
+            ]))
+        TEST_TARGETS.append(("riscv_v22-riscv_generic-riscv64_test_p", "S", [
+            "C.FSDSP_V0", "C.JALR_V0", "C.LDSP_V0", "C.LWSP_V0", "C.LW_V0",
+            "C.SWSP_V0", "C.SDSP_V0", "JALR_V0"
+        ]))
 
 TEST_FLAGS = []
-TEST_FLAGS.extend(
-    variations("", [_PARAM1, _PARAM2, _PARAM3])
-)
+TEST_FLAGS.extend(variations("", [_PARAM1, _PARAM2, _PARAM3]))
 
 _TEST_NUMBER = 1
 for _TEST_TARGET in TEST_TARGETS:
@@ -244,8 +236,9 @@ for _TEST_TARGET in TEST_TARGETS:
     _TARGET = import_definition(_TEST_TARGET[0])
 
     for _TEST_INSTR in [
-        my_instr.name for my_instr in subins(
-            list(_TARGET.isa.instructions.values()))]:
+            my_instr.name
+            for my_instr in subins(list(_TARGET.isa.instructions.values()))
+    ]:
 
         if _TEST_INSTR in _TEST_TARGET[2]:
             continue
@@ -254,17 +247,16 @@ for _TEST_TARGET in TEST_TARGETS:
 
             def test_function(self):
                 """ test_function """
-                self.wrapper(
-                    _TEST_TARGET[0],
-                    _TEST_TARGET[1],
-                    _TEST_INSTR,
-                    extra=_TEST_FLAG)
+                self.wrapper(_TEST_TARGET[0],
+                             _TEST_TARGET[1],
+                             _TEST_INSTR,
+                             extra=_TEST_FLAG)
 
-            func_name = "test_%s_%03d" % (
-                _TEST_INSTR.replace(".", "x"), _TEST_NUMBER)
+            func_name = "test_%s_%03d" % (_TEST_INSTR.replace(
+                ".", "x"), _TEST_NUMBER)
             func_doc = "epi_test_%s_%03d on %s flags: %s" % (
-                _TEST_INSTR.replace(".", "x"), _TEST_NUMBER, _TEST_TARGET[0],
-                _TEST_FLAG)
+                _TEST_INSTR.replace(
+                    ".", "x"), _TEST_NUMBER, _TEST_TARGET[0], _TEST_FLAG)
 
             setattr(epi, func_name, copy_func(test_function, func_name))
 
@@ -279,7 +271,6 @@ for _TEST_TARGET in TEST_TARGETS:
             globals().pop("mfunc")
             globals().pop("test_function")
             _TEST_NUMBER += 1
-
 
 TEST_CLASSES = [epi]
 
