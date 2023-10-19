@@ -98,6 +98,10 @@
   Description: 5-bit immediate (signed)
   Min: -16
   Max: 15
+- Name: soimm5
+  Description: 5-bit immediate offset by 1 (signed)
+  Min: -15
+  Max: 16
 - Name: simm6
   Description: 6-bit immediate (signed)
   Min: -32
@@ -553,3 +557,76 @@
     - 0xffffd
     - 0xffffe
     - 0xfffff
+- Name: vreg
+  Description: Vector Registers
+  Registers:
+    V0 : ['V0']
+    V1 : ['V1']
+    V2 : ['V2']
+    V3 : ['V3']
+    V4 : ['V4']
+    V5 : ['V5']
+    V6 : ['V6']
+    V7 : ['V7']
+    V8 : ['V8']
+    V9 : ['V9']
+    V10 : ['V10']
+    V11 : ['V11']
+    V12 : ['V12']
+    V13 : ['V13']
+    V14 : ['V14']
+    V15 : ['V15']
+    V16 : ['V16']
+    V17 : ['V17']
+    V18 : ['V18']
+    V19 : ['V19']
+    V20 : ['V20']
+    V21 : ['V21']
+    V22 : ['V22']
+    V23 : ['V23']
+    V24 : ['V24']
+    V25 : ['V25']
+    V26 : ['V26']
+    V27 : ['V27']
+    V28 : ['V28']
+    V29 : ['V29']
+    V30 : ['V30']
+    V31 : ['V31']
+- Name: vnotmask
+  Description: Vector Registers excluding mask
+  Registers:
+    V1 : ['V1']
+    V2 : ['V2']
+    V3 : ['V3']
+    V4 : ['V4']
+    V5 : ['V5']
+    V6 : ['V6']
+    V7 : ['V7']
+    V8 : ['V8']
+    V9 : ['V9']
+    V10 : ['V10']
+    V11 : ['V11']
+    V12 : ['V12']
+    V13 : ['V13']
+    V14 : ['V14']
+    V15 : ['V15']
+    V16 : ['V16']
+    V17 : ['V17']
+    V18 : ['V18']
+    V19 : ['V19']
+    V20 : ['V20']
+    V21 : ['V21']
+    V22 : ['V22']
+    V23 : ['V23']
+    V24 : ['V24']
+    V25 : ['V25']
+    V26 : ['V26']
+    V27 : ['V27']
+    V28 : ['V28']
+    V29 : ['V29']
+    V30 : ['V30']
+    V31 : ['V31']
+- Name: vmask
+  Description: Vector mask
+  Registers:
+    V0 : ['V0']
