@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeTargetDefinitionError
+=====================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeTargetDefinitionError
+
+   
+
+   
+   
+
+   
+   
+   

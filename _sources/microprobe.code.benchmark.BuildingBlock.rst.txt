@@ -1,0 +1,50 @@
+microprobe.code.benchmark.BuildingBlock
+=======================================
+
+.. currentmodule:: microprobe.code.benchmark
+
+.. autoclass:: BuildingBlock
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BuildingBlock.__init__
+      ~BuildingBlock.add_info
+      ~BuildingBlock.add_pass_info
+      ~BuildingBlock.add_requirement
+      ~BuildingBlock.add_warning
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BuildingBlock.info
+      ~BuildingBlock.pass_info
+      ~BuildingBlock.requirements
+      ~BuildingBlock.warnings
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

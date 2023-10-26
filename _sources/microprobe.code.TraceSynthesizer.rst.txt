@@ -1,0 +1,48 @@
+microprobe.code.TraceSynthesizer
+================================
+
+.. currentmodule:: microprobe.code
+
+.. autoclass:: TraceSynthesizer
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TraceSynthesizer.__init__
+      ~TraceSynthesizer.add_pass
+      ~TraceSynthesizer.save
+      ~TraceSynthesizer.set_current_thread
+      ~TraceSynthesizer.synthesize
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~TraceSynthesizer.target
+      ~TraceSynthesizer.wrapper
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,55 @@
+﻿===========================
+microprobe.passes.structure
+===========================
+
+.. automodule:: microprobe.passes.structure
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      GenericCodeStructurePass
+      SimpleBuildingBlockPass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  GenericCodeStructurePass  SimpleBuildingBlockPass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

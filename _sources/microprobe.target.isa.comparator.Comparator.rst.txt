@@ -1,0 +1,46 @@
+microprobe.target.isa.comparator.Comparator
+===========================================
+
+.. currentmodule:: microprobe.target.isa.comparator
+
+.. autoclass:: Comparator
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Comparator.__init__
+      ~Comparator.check
+      ~Comparator.generate
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Comparator.arch
+      ~Comparator.instr_name
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

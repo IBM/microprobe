@@ -1,0 +1,45 @@
+microprobe.code.address.MemoryValue
+===================================
+
+.. currentmodule:: microprobe.code.address
+
+.. autoclass:: MemoryValue
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MemoryValue.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MemoryValue.address
+      ~MemoryValue.length
+      ~MemoryValue.value
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

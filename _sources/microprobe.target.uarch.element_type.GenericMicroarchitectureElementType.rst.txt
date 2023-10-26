@@ -1,0 +1,48 @@
+microprobe.target.uarch.element_type.GenericMicroarchitectureElementType
+========================================================================
+
+.. currentmodule:: microprobe.target.uarch.element_type
+
+.. autoclass:: GenericMicroarchitectureElementType
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GenericMicroarchitectureElementType.__init__
+      ~GenericMicroarchitectureElementType.list_properties
+      ~GenericMicroarchitectureElementType.register_property
+      ~GenericMicroarchitectureElementType.unregister_property
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GenericMicroarchitectureElementType.description
+      ~GenericMicroarchitectureElementType.name
+      ~GenericMicroarchitectureElementType.properties
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

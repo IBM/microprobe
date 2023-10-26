@@ -1,0 +1,41 @@
+microprobe.passes.instruction.ReplaceLoadInstructionsPass
+=========================================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: ReplaceLoadInstructionsPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ReplaceLoadInstructionsPass.__init__
+      ~ReplaceLoadInstructionsPass.check
+      ~ReplaceLoadInstructionsPass.info
+      ~ReplaceLoadInstructionsPass.report
+      ~ReplaceLoadInstructionsPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

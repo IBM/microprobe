@@ -1,0 +1,41 @@
+microprobe.passes.structure.SimpleBuildingBlockPass
+===================================================
+
+.. currentmodule:: microprobe.passes.structure
+
+.. autoclass:: SimpleBuildingBlockPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SimpleBuildingBlockPass.__init__
+      ~SimpleBuildingBlockPass.check
+      ~SimpleBuildingBlockPass.info
+      ~SimpleBuildingBlockPass.report
+      ~SimpleBuildingBlockPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

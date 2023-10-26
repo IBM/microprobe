@@ -1,0 +1,51 @@
+microprobe.code.var.VariableArray
+=================================
+
+.. currentmodule:: microprobe.code.var
+
+.. autoclass:: VariableArray
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~VariableArray.__init__
+      ~VariableArray.array
+      ~VariableArray.set_address
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~VariableArray.address
+      ~VariableArray.align
+      ~VariableArray.elems
+      ~VariableArray.name
+      ~VariableArray.size
+      ~VariableArray.type
+      ~VariableArray.value
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

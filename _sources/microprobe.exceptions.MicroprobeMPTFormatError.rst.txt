@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeMPTFormatError
+==============================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeMPTFormatError
+
+   
+
+   
+   
+
+   
+   
+   

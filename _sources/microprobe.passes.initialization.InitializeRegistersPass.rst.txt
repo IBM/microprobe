@@ -1,0 +1,41 @@
+microprobe.passes.initialization.InitializeRegistersPass
+========================================================
+
+.. currentmodule:: microprobe.passes.initialization
+
+.. autoclass:: InitializeRegistersPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InitializeRegistersPass.__init__
+      ~InitializeRegistersPass.check
+      ~InitializeRegistersPass.info
+      ~InitializeRegistersPass.report
+      ~InitializeRegistersPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

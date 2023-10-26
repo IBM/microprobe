@@ -1,0 +1,47 @@
+microprobe.target.isa.register.GenericRegister
+==============================================
+
+.. currentmodule:: microprobe.target.isa.register
+
+.. autoclass:: GenericRegister
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GenericRegister.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GenericRegister.codification
+      ~GenericRegister.description
+      ~GenericRegister.name
+      ~GenericRegister.representation
+      ~GenericRegister.type
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

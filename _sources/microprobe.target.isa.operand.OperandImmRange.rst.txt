@@ -1,0 +1,66 @@
+microprobe.target.isa.operand.OperandImmRange
+=============================================
+
+.. currentmodule:: microprobe.target.isa.operand
+
+.. autoclass:: OperandImmRange
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OperandImmRange.__init__
+      ~OperandImmRange.access
+      ~OperandImmRange.check
+      ~OperandImmRange.codification
+      ~OperandImmRange.copy
+      ~OperandImmRange.random_value
+      ~OperandImmRange.representation
+      ~OperandImmRange.set_valid_values
+      ~OperandImmRange.values
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~OperandImmRange.add
+      ~OperandImmRange.address_absolute
+      ~OperandImmRange.address_base
+      ~OperandImmRange.address_immediate
+      ~OperandImmRange.address_index
+      ~OperandImmRange.address_relative
+      ~OperandImmRange.constant
+      ~OperandImmRange.description
+      ~OperandImmRange.float
+      ~OperandImmRange.immediate
+      ~OperandImmRange.max
+      ~OperandImmRange.min
+      ~OperandImmRange.name
+      ~OperandImmRange.shift
+      ~OperandImmRange.step
+      ~OperandImmRange.vector
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,54 @@
+microprobe.target.uarch.GenericCPUMicroarchitecture
+===================================================
+
+.. currentmodule:: microprobe.target.uarch
+
+.. autoclass:: GenericCPUMicroarchitecture
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GenericCPUMicroarchitecture.__init__
+      ~GenericCPUMicroarchitecture.add_properties_to_isa
+      ~GenericCPUMicroarchitecture.full_report
+      ~GenericCPUMicroarchitecture.list_properties
+      ~GenericCPUMicroarchitecture.register_property
+      ~GenericCPUMicroarchitecture.set_target
+      ~GenericCPUMicroarchitecture.unregister_property
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GenericCPUMicroarchitecture.cache_hierarchy
+      ~GenericCPUMicroarchitecture.description
+      ~GenericCPUMicroarchitecture.elements
+      ~GenericCPUMicroarchitecture.name
+      ~GenericCPUMicroarchitecture.properties
+      ~GenericCPUMicroarchitecture.target
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

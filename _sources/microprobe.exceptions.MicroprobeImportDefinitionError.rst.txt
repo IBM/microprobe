@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeImportDefinitionError
+=====================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeImportDefinitionError
+
+   
+
+   
+   
+
+   
+   
+   

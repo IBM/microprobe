@@ -1,0 +1,68 @@
+﻿====================
+microprobe.utils.asm
+====================
+
+.. automodule:: microprobe.utils.asm
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      instruction_to_asm_definition
+      interpret_asm
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      MicroprobeAsmInstructionDefinition
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  MicroprobeAsmInstructionDefinition 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: instruction_to_asm_definition
+   .. autofunction:: interpret_asm
+   

@@ -1,0 +1,55 @@
+﻿=========================
+microprobe.passes.address
+=========================
+
+.. automodule:: microprobe.passes.address
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      SetInitAddressPass
+      UpdateInstructionAddressesPass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  SetInitAddressPass  UpdateInstructionAddressesPass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
