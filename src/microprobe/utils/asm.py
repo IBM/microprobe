@@ -42,8 +42,6 @@ import string
 
 # Third party modules
 import cachetools
-import six
-from six.moves import range, zip
 
 # Own modules
 import microprobe.code.ins
@@ -174,7 +172,7 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
 
         for instr_def in code:
 
-            if isinstance(instr_def, six.string_types):
+            if isinstance(instr_def, str):
                 instr_def = _str_to_asmdef(instr_def)
 
             # if instr_def.label.upper() in def_labels:
@@ -203,7 +201,7 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
             if show_progress:
                 progress()
 
-            if isinstance(instr_def, six.string_types):
+            if isinstance(instr_def, str):
 
                 if instr_def.strip() == "":
                     # empty, string, continue
@@ -238,7 +236,7 @@ def interpret_asm(code, target, labels, log=True, show_progress=False,
                 "%20s\t%20s\t%25s\t%s", "-" * 20, "-" * 20, "-" * 25, "-" * 20
             )
             for instr in code:
-                if isinstance(instr, six.string_types):
+                if isinstance(instr, str):
                     instr = _str_to_asmdef(instr)
 
                 address = "--"
@@ -890,9 +888,9 @@ def _check_assembly_string(base_asm, instr_type, target, operands):
 
     relocation_mode = False
     for idx, operand in enumerate(operands):
-        if isinstance(operand, six.string_types) and "@" not in operand:
+        if isinstance(operand, str) and "@" not in operand:
             operands[idx] = Address(base_address=operand)
-        if isinstance(operand, six.string_types) and "@" in operand:
+        if isinstance(operand, str) and "@" in operand:
             relocation_mode = True
 
     instruction = target.new_instruction(instr_type.name)
@@ -986,7 +984,7 @@ def _validate_operands(operand_values, instruction):
 
         LOG.debug("Validating: '%s' <-> '%s'", operand_value, operand)
 
-        if isinstance(operand_value, six.string_types):
+        if isinstance(operand_value, str):
 
             LOG.debug("Value is a string")
 
@@ -1004,7 +1002,7 @@ def _validate_operands(operand_values, instruction):
             LOG.debug("Value is not a string")
             if (
                 isinstance(operand.type, InstructionAddressRelativeOperand) and
-                not isinstance(operand_value, six.integer_types)
+                not isinstance(operand_value, int)
             ):
                 LOG.debug("Invalid: A not int in a relative operand")
                 return False
@@ -1027,7 +1025,7 @@ def _validate_operands(operand_values, instruction):
                         operand.type, (
                             OperandImmRange, OperandConst, OperandValueSet
                         )
-                    ) and not isinstance(operand_value, six.integer_types)
+                    ) and not isinstance(operand_value, int)
                 ):
 
                     LOG.debug("Checking not int value: %s", operand_value)
@@ -1036,7 +1034,7 @@ def _validate_operands(operand_values, instruction):
                 elif (
                     isinstance(
                         operand.type, (InstructionAddressRelativeOperand)
-                    ) and isinstance(operand_value, six.integer_types)
+                    ) and isinstance(operand_value, int)
                 ):
 
                     LOG.debug("Checking relative int value: %s", operand_value)
@@ -1233,17 +1231,17 @@ def _filter_operands_by_type(candidates, instruction):
             LOG.debug("Operand option: %s", operand_option)
 
             if (
-                isinstance(operand_option, six.string_types) and ('label' in [
+                isinstance(operand_option, str) and ('label' in [
                     oper for oper in operand_types
-                    if isinstance(oper, six.string_types)
+                    if isinstance(oper, str)
                 ] or "@" in operand_option)
             ):
                 operand_candidates.append(operand_option)
             elif (
-                isinstance(operand_option, six.string_types) and
+                isinstance(operand_option, str) and
                     'label' not in [
                     oper for oper in operand_types
-                    if isinstance(oper, six.string_types)
+                    if isinstance(oper, str)
                 ]
             ):
                 raise MicroprobeAsmError(
@@ -1251,7 +1249,7 @@ def _filter_operands_by_type(candidates, instruction):
                     "instruction '%s'. Check the assembly provided " %
                     instruction.name
                 )
-            elif isinstance(operand_option, six.integer_types):
+            elif isinstance(operand_option, int):
                 # and
                 # 'value' in [oper for oper in operand_types
                 #            if isinstance(oper, str)]):
@@ -1260,9 +1258,9 @@ def _filter_operands_by_type(candidates, instruction):
                     [list(oper.values())[0].type
                      for oper in operand_types if
                      not isinstance(oper,
-                                    tuple([str] + list(six.integer_types))) and
+                                    tuple([str, int])) and
                      not isinstance(list(oper.values())[0],
-                                    six.integer_types)]:
+                                    int)]:
                 operand_candidates.append(operand_option)
             else:
 
@@ -1272,10 +1270,9 @@ def _filter_operands_by_type(candidates, instruction):
                         list(oper.values())[0].type.name
                         for oper in operand_types
                         if not isinstance(oper,
-                                          tuple([str] +
-                                                list(six.integer_types)))
+                                          tuple([str, int]))
                         and not isinstance(
-                            list(oper.values())[0], six.integer_types
+                            list(oper.values())[0], int
                         )
                     ]
                 )

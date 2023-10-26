@@ -26,7 +26,6 @@ import sys
 from typing import List
 
 # Third party modules
-import six
 
 # Own modules
 import microprobe.code

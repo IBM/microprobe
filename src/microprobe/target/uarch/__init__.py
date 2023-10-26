@@ -37,7 +37,6 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import findfiles
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
-import six
 
 # Local modules
 
@@ -231,7 +230,7 @@ def find_microarchitecture_definitions(paths: List[str] | None = None):
 
 # Classes
 @typeguard_testsuite
-class Microarchitecture(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
+class Microarchitecture(PropertyHolder, metaclass=abc.ABCMeta):
     """ """
 
     @abc.abstractmethod

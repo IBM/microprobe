@@ -25,8 +25,6 @@ import re
 from typing import Union
 
 # Third party modules
-import six
-from six.moves import zip
 
 # Own modules
 import microprobe.passes
@@ -71,7 +69,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
             raise NotImplementedError("Feature changed need to be"
                                       " reimplemented")
 
-        if isinstance(dd, six.integer_types):
+        if isinstance(dd, int):
             self._dd = lambda: dd  # Dependency distance
         elif isinstance(dd, float):
             self._dd = microprobe.utils.distrib.discrete_average(dd)
@@ -586,7 +584,6 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
     write after read (WAR), an anti-dependency
     write after write (WAW), an output dependency
 
-
     """
 
     def __init__(self):
@@ -595,7 +592,7 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
         self._description = "Perform register allocation avoiding RAW, WAR "\
                             "and WAR dependency hazards"
 
-    def __call__(self, building_block, dummy_target):
+    def __call__(self, building_block, target):
         """
 
         :param building_block:
@@ -938,7 +935,8 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                                           operand)
                         for reg in operand.sets():
                             if not instr.allows(reg):
-                                instr.add_allow_registe([reg])
+                                instr.add_allow_register([reg])
+
                         continue
                     elif len(regs) == 0:
                         LOG.debug("Operand forced to: %s",
@@ -948,7 +946,7 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                                           operand)
                         for reg in operand.sets():
                             if not instr.allows(reg):
-                                instr.add_allow_registe([reg])
+                                instr.add_allow_register([reg])
                         continue
 
                     if len(regs) == 0:

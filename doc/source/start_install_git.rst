@@ -35,7 +35,7 @@ Required commands
 -----------------
 
 * **git**
-* **python** 2.7 or >=3.6
+* **python** >=3.7
 * **virtualenv**: https://virtualenv.pypa.io/en/stable/
 
 -----------------

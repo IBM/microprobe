@@ -21,7 +21,6 @@ from __future__ import absolute_import, annotations
 from typing import TYPE_CHECKING, List
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 from microprobe.code.ins import Instruction

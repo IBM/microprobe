@@ -26,7 +26,6 @@ from typing import Union
 from unittest import TestCase, main
 
 # Third party modules
-import six
 
 # Own modules
 import microprobe
@@ -138,10 +137,7 @@ for target in TARGETS:
 
     setattr(newclass, fname, copy_func(test_function, fname))
 
-    if six.PY2:
-        mfunc = getattr(getattr(newclass, fname), "__func__")
-    else:
-        mfunc = getattr(newclass, fname)
+    mfunc = getattr(newclass, fname)
 
     setattr(mfunc, "__doc__", "mp_target - full report of '%s' " % target)
     mfunc.__name__ = fname

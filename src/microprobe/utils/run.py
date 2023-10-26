@@ -23,8 +23,6 @@ import shlex
 import subprocess
 
 # Third party modules
-import six
-from six.moves import range
 
 # Own modules
 from microprobe.exceptions import MicroprobeCalledProcessError, \
@@ -58,10 +56,7 @@ def run_cmd(scmd, trials=1, _return_output=False):
         )
 
     if _return_output:
-        if six.PY2:
-            return cmd_output.encode("ascii")
-        elif six.PY3:
-            return cmd_output.decode()
+        return cmd_output.decode()
 
 
 def run_cmd_output(cmd, trials=1):

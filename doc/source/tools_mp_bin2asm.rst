@@ -34,3 +34,17 @@ Full usage
 
 .. program-output:: ../../targets/generic/tools/mp_bin2asm.py --help
 
+---------------
+Example outputs
+---------------
+
+.. rubric:: Example 1:
+
+Command::
+
+   > mp_bin2asm -T z13-z13-z64_mesa_st -i input.bin 
+   
+Output:
+
+.. program-output:: ../../targets/generic/tools/mp_bin2asm.py -P ../../targets/ -T z13-z13-z64_mesa_st -i ../../targets/z/tests/tools/bin2asm_test001.bin
+  

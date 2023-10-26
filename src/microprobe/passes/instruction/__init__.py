@@ -361,6 +361,9 @@ class SetRandomInstructionTypePass(microprobe.passes.Pass):
         """
         super(SetRandomInstructionTypePass, self).__init__()
         self._instrs = instructions
+        if rand is None:
+            rand = random.Random()
+            rand.seed(13)
         self._func = rand.choice
 
     def __call__(self, building_block, target):

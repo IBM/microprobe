@@ -21,22 +21,15 @@ from __future__ import absolute_import, print_function
 import copy
 import os
 import types
+import subprocess
 from tempfile import SpooledTemporaryFile
 from unittest import TestCase, main
 
 # Third party modules
-import six
-from six.moves import range
 
 # Own modules
 import microprobe
 
-if six.PY2:
-    # Third party modules
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    # Built-in modules
-    import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -161,10 +154,7 @@ for target in TARGETS:
 
     setattr(newclass, fname, copy_func(test_function, fname))
 
-    if six.PY2:
-        mfunc = getattr(getattr(newclass, fname), "__func__")
-    else:
-        mfunc = getattr(newclass, fname)
+    mfunc = getattr(newclass, fname)
 
     setattr(mfunc, "__doc__", "mp_target - full report of '%s' " % target)
     mfunc.__name__ = fname

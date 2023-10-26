@@ -21,8 +21,6 @@ from __future__ import absolute_import, division, print_function
 import os
 
 # Third party modules
-# This party modules
-import six
 
 # Own modules
 from microprobe.code.address import Address, InstructionAddress
@@ -741,7 +739,7 @@ class PowerISA(GenericISA):
         instrs = []
 
         if register.type.name == "GPR" and isinstance(value,
-                                                      six.integer_types):
+                                                      int):
 
             origreg = None
             if register.name == "GPR0":
@@ -802,7 +800,7 @@ class PowerISA(GenericISA):
 
         instrs = []
 
-        if isinstance(val1, Register) and isinstance(val2, six.integer_types):
+        if isinstance(val1, Register) and isinstance(val2, int):
 
             cmpi_ins = self.new_instruction("CMPI_V0")
             cmpi_ins.set_operands([self.scratch_registers[6], 1, val1, val2])

@@ -76,13 +76,12 @@ setup(
             'mp_target = microprobe.definitions.generic.tools.mp_target:main',
         ]},
     install_requires=[
-        'ordereddict',
         'PyYAML',
         'rxjson',
         'argparse',
         'fasteners',
         'cachetools',
-        'six'],
+        ],
     long_description=read(
         os.path.join(
             ".",

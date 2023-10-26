@@ -101,6 +101,19 @@ if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
     export MP_TESTING_COMPILER_POWER_V300
     MP_TESTING_COMPILER_POWER_V310=$(command -v powerpc64le-linux-gnu-gcc)
     export MP_TESTING_COMPILER_POWER_V310
+elif [ "$(uname -m)" = "ppc64le" ]; then
+    set +e
+    MP_TESTING_COMPILER_POWER=$(command -v gcc)
+    export MP_TESTING_COMPILER_POWER
+    MP_TESTING_COMPILER_POWER_V206=$(command -v gcc)
+    export MP_TESTING_COMPILER_POWER_V206
+    MP_TESTING_COMPILER_POWER_V207=$(command -v gcc)
+    export MP_TESTING_COMPILER_POWER_V207
+    MP_TESTING_COMPILER_POWER_V300=$(command -v gcc)
+    export MP_TESTING_COMPILER_POWER_V300
+    MP_TESTING_COMPILER_POWER_V310=$(command -v gcc)
+    export MP_TESTING_COMPILER_POWER_V310
+    set -e
 else
     set +e
     MP_TESTING_COMPILER_POWER=$(command -v powerpc64le-linux-gnu-gcc)

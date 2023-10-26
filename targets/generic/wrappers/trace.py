@@ -23,7 +23,6 @@ from time import localtime, strftime
 from typing import List, Union
 
 # This party modules
-import six
 from microprobe.code.ins import Instruction
 
 # Own modules
@@ -101,8 +100,7 @@ class QTrace(microprobe.code.wrapper.Wrapper):
         header.append(struct.pack(">Q", address))
         header.append(struct.pack(">H", len(comment)))
 
-        if six.PY3:
-            comment = comment.encode()
+        comment = comment.encode()
 
         header.append(struct.pack(">%ss" % len(comment), comment))
 

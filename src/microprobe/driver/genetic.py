@@ -15,6 +15,8 @@
 
 """
 
+# TODO: This module is deprecated. Need to reimplement for python 3
+
 # Futures
 from __future__ import absolute_import, division, print_function
 
@@ -28,20 +30,20 @@ import tempfile
 import time as runtime
 
 # Third party modules
-import six
+
 
 # Own modules
 from microprobe.exceptions import MicroprobeError
 from microprobe.utils.logger import get_logger
 
-if six.PY2:
-    # pylint: disable=E0401
-    import pyevolve.G1DList  # @UnresolvedImport
-    import pyevolve.GAllele  # @UnresolvedImport
-    import pyevolve.GSimpleGA  # @UnresolvedImport
-    import pyevolve.Initializators  # @UnresolvedImport
-    import pyevolve.Mutators  # @UnresolvedImport
-    # pylint: enable=E0401
+
+# pylint: disable=E0401
+# import pyevolve.G1DList  # @UnresolvedImport
+# import pyevolve.GAllele  # @UnresolvedImport
+# import pyevolve.GSimpleGA  # @UnresolvedImport
+# import pyevolve.Initializators  # @UnresolvedImport
+# import pyevolve.Mutators  # @UnresolvedImport
+# pylint: enable=E0401
 
 # Constants
 LOG = get_logger(__name__)

@@ -19,21 +19,15 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import os
+import subprocess
 import shutil
 from tempfile import SpooledTemporaryFile, mkdtemp
 from unittest import TestCase, main, skipIf
 
 # Third party modules
-import six
-from six.moves import range
 
 # Own modules
 import microprobe
-
-if six.PY2:
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    import subprocess  # @Reimport
 
 
 # Constants

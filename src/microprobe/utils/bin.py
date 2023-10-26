@@ -40,8 +40,6 @@ from typing import List
 
 # Third party modules
 import cachetools
-import six
-from six.moves import range, zip
 
 # Own modules
 import microprobe.code.ins
@@ -715,13 +713,13 @@ def _normalize_code(
             "Unknown format '%s'" % fmt
         )
 
-    if not isinstance(code, six.string_types):
+    if not isinstance(code, str):
         raise MicroprobeBinaryError(
             "Invalid input provided. Code is not a string"
         )
 
     for character in code:
-        if not isinstance(character, six.string_types):
+        if not isinstance(character, str):
             raise MicroprobeBinaryError(
                 "Invalid input provided. Not character provided"
             )

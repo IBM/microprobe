@@ -19,7 +19,6 @@ from __future__ import absolute_import
 from typing import List
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 import microprobe.code.wrapper

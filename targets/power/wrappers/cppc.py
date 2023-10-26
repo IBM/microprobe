@@ -22,7 +22,6 @@ from __future__ import absolute_import, division
 import os
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 from microprobe.code import get_wrapper

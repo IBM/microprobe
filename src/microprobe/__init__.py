@@ -119,9 +119,9 @@ from __future__ import absolute_import
 import ast
 import os
 import warnings
+import configparser
 
 # Third party modules
-import six.moves.configparser as configparser
 
 # Own modules
 from microprobe.utils.config import MicroprobeDefaultConfiguration

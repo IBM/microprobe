@@ -25,7 +25,6 @@ import abc
 
 # Own modules
 from microprobe.utils.logger import get_logger
-import six
 
 # Local modules
 
@@ -37,7 +36,7 @@ LOG = get_logger(__name__)
 
 
 # Classes
-class Pass(six.with_metaclass(abc.ABCMeta, object)):
+class Pass:
     """Class to represent a benchmak transformation pass.
 
     This object represents a transformation pass. Passes are applied on

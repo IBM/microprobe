@@ -35,6 +35,7 @@ tests_*.xml
 /cover*xml
 /venv*
 /pylint*.out
+/mypy*.out
 /doc.out
 /pycodestyle*.out
 /pycodestyle.err

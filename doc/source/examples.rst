@@ -11,3 +11,6 @@ for new users, so that we can extend the current set of examples.
 .. toctree::
    :maxdepth: 1
    
+   examples_power
+   examples_riscv
+   examples_z

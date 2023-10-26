@@ -22,7 +22,6 @@ from __future__ import absolute_import
 import os
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
@@ -314,26 +313,26 @@ class PropertyHolder(object):
         maxname = max(
             [
                 len(str(value.name)) for value in
-                six.itervalues(self._properties)
+                self._properties.values()
             ]
         ) + 2
         maxvalue = max(
             [
                 len(str(value.value)) for value in
-                six.itervalues(self._properties)
+                self._properties.values()
             ]
         )
         maxdesc = max(
             [
                 len(str(value.description))
-                for value in six.itervalues(self._properties)
+                for value in self._properties.values()
             ]
         )
 
         strfmt = "\t" * tabs
         strfmt += "%%-%ds:\t%%-%ds\t(%%-%ds)\n" % (maxname, maxvalue, maxdesc)
 
-        for key in sorted(six.iterkeys(self._properties)):
+        for key in sorted([mk for mk in self._properties]):
             value = self._properties[key]
             rstr += strfmt % (value.name, value.value, value.description)
         return rstr

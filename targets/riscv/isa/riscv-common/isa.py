@@ -23,7 +23,6 @@ import os
 from typing import TYPE_CHECKING, Dict, List
 
 # This party modules
-import six
 
 # Own modules
 from microprobe.code.address import Address, InstructionAddress
@@ -592,7 +591,7 @@ class RISCVISA(GenericISA):
     def add_to_register(self, register: Register, value: int):
         instrs: List[Instruction] = []
         if register.type.name == "ireg" and isinstance(
-            value, six.integer_types
+            value, int
         ):
             if value > 0:
                 while (value) > 0x7FF:
@@ -628,14 +627,14 @@ class RISCVISA(GenericISA):
         instrs: List[Instruction] = []
 
         # put all values into registers
-        if isinstance(val1, int) and isinstance(val1, six.integer_types):
+        if isinstance(val1, int) and isinstance(val1, int):
             raise NotImplementedError
-        elif isinstance(val1, six.integer_types):
+        elif isinstance(val1, int):
             instrs += self.set_register(
                 self.scratch_registers[0], val1, context
             )
             val1 = self.scratch_registers[0]
-        elif isinstance(val2, six.integer_types):
+        elif isinstance(val2, int):
             instrs += self.set_register(
                 self.scratch_registers[0], val2, context
             )

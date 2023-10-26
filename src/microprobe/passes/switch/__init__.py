@@ -24,7 +24,6 @@ import random
 import re
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 import microprobe.passes

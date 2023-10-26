@@ -21,10 +21,9 @@ from __future__ import absolute_import
 # Built-in modules
 import multiprocessing as mp
 import os
+import configparser
 
 # Third party modules
-import six
-import six.moves.configparser as configparser
 
 # Own modules
 from microprobe.utils.logger import DEBUG, DISABLE, INFO, set_log_level
@@ -168,7 +167,7 @@ class DuplicateConfigParser(configparser.ConfigParser, object):
 
         Return list of successfully read files.
         """
-        if isinstance(filenames, six.string_types):
+        if isinstance(filenames, str):
             filenames = [filenames]
         read_ok = []
         for filename in filenames:

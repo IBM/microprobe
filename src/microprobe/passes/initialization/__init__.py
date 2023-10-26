@@ -18,36 +18,32 @@
 # Futures
 from __future__ import absolute_import, print_function
 
-# Built-in modules
-
 # Third party modules
-from six.moves import zip
 
 # Own modules
 import microprobe.code
 import microprobe.passes
 from microprobe.code.ins import instruction_set_def_properties
-from microprobe.exceptions import MicroprobeCodeGenerationError, \
-    MicroprobeDuplicatedValueError
+from microprobe.exceptions import (
+    MicroprobeCodeGenerationError,
+    MicroprobeDuplicatedValueError,
+)
 from microprobe.utils.asm import interpret_asm
 from microprobe.utils.cmdline import print_warning
 from microprobe.utils.ieee import ieee_float_to_int64
 from microprobe.utils.logger import get_logger
 
-# Local modules
-
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = [
-    'AutoAlignPass',
-    'AddInitializationAssemblyPass',
-    'AddFinalizationAssemblyPass',
-    'AddInitializationInstructionsPass',
-    'InitializeRegistersPass',
-    'InitializeRegisterPass',
-    'ReserveRegistersPass',
-    'UnReserveRegistersPass',
+    "AutoAlignPass",
+    "AddInitializationAssemblyPass",
+    "AddFinalizationAssemblyPass",
+    "AddInitializationInstructionsPass",
+    "InitializeRegistersPass",
+    "InitializeRegisterPass",
+    "ReserveRegistersPass",
+    "UnReserveRegistersPass",
 ]
 
 # Functions
@@ -55,9 +51,7 @@ __all__ = [
 
 # Classes
 class AddInitializationAssemblyPass(microprobe.passes.Pass):
-    """AddInitializationAssemblyPass pass.
-
-    """
+    """AddInitializationAssemblyPass pass."""
 
     def __init__(self, assembly, allow_registers=None):
         """
@@ -66,55 +60,14 @@ class AddInitializationAssemblyPass(microprobe.passes.Pass):
         :type assembly:
         """
 
-        super(AddInitializationAssemblyPass, self).__init__()
+        super().__init__()
         self._asm = assembly
         self._aregs = allow_registers
 
-        self._description = "Append the '%s' instructions at the init of the"\
+        self._description = (
+            "Append the '%s' instructions at the init of the"
             "building block." % ";".join(assembly)
-
-    def __call__(self, building_block, target):
-        """
-
-        :param building_block:
-        :param target:
-
-        """
-
-        instructions_def = interpret_asm(self._asm.split("\n"), target,
-                                         building_block.labels)
-
-        instructions = []
-        for definition in instructions_def:
-            instruction = microprobe.code.ins.Instruction()
-            instruction_set_def_properties(instruction,
-                                           definition,
-                                           building_block=building_block,
-                                           target=target,
-                                           allowed_registers=self._aregs)
-            instructions.append(instruction)
-
-        building_block.add_init(instructions)
-
-
-class AddFinalizationAssemblyPass(microprobe.passes.Pass):
-    """AddFinalizationAssemblyPass pass.
-
-    """
-
-    def __init__(self, assembly, allow_registers=None):
-        """
-
-        :param assembly:
-        :type assembly:
-        """
-
-        super(AddFinalizationAssemblyPass, self).__init__()
-        self._asm = assembly
-        self._aregs = allow_registers
-
-        self._description = "Append the '%s' instructions at the init of the"\
-            "building block." % ";".join(assembly)
+        )
 
     def __call__(self, building_block, target):
         """
@@ -136,7 +89,53 @@ class AddFinalizationAssemblyPass(microprobe.passes.Pass):
                 definition,
                 building_block=building_block,
                 target=target,
-                allowed_registers=self._aregs
+                allowed_registers=self._aregs,
+            )
+            instructions.append(instruction)
+
+        building_block.add_init(instructions)
+
+
+class AddFinalizationAssemblyPass(microprobe.passes.Pass):
+    """AddFinalizationAssemblyPass pass."""
+
+    def __init__(self, assembly, allow_registers=None):
+        """
+
+        :param assembly:
+        :type assembly:
+        """
+
+        super().__init__()
+        self._asm = assembly
+        self._aregs = allow_registers
+
+        self._description = (
+            "Append the '%s' instructions at the init of the"
+            "building block." % ";".join(assembly)
+        )
+
+    def __call__(self, building_block, target):
+        """
+
+        :param building_block:
+        :param target:
+
+        """
+
+        instructions_def = interpret_asm(
+            self._asm.split("\n"), target, building_block.labels
+        )
+
+        instructions = []
+        for definition in instructions_def:
+            instruction = microprobe.code.ins.Instruction()
+            instruction_set_def_properties(
+                instruction,
+                definition,
+                building_block=building_block,
+                target=target,
+                allowed_registers=self._aregs,
             )
             instructions.append(instruction)
 
@@ -144,9 +143,7 @@ class AddFinalizationAssemblyPass(microprobe.passes.Pass):
 
 
 class ReserveRegistersPass(microprobe.passes.Pass):
-    """ReserveRegistersPass pass.
-
-    """
+    """ReserveRegistersPass pass."""
 
     def __init__(self, register_names):
         """
@@ -155,27 +152,24 @@ class ReserveRegistersPass(microprobe.passes.Pass):
         :type register_names:
         """
 
-        super(ReserveRegistersPass, self).__init__()
+        super().__init__()
         self._register_names = register_names
-        self._description = "Reserve registers '%s'" \
-                            % (self._register_names)
+        self._description = f"Reserve registers '{self._register_names}'"
 
     def __call__(self, building_block, target):
-
         for register_name in self._register_names:
             try:
                 register = target.registers[register_name]
-            except KeyError:
+            except KeyError as exc:
                 raise MicroprobeCodeGenerationError(
-                    "Unknown register '%s'. Known registers: %s" %
-                    (register_name, list(target.registers.keys())))
+                    "Unknown register '%s'. Known registers: %s"
+                    % (register_name, list(target.registers.keys()))
+                ) from exc
             building_block.context.add_reserved_registers([register])
 
 
 class UnReserveRegistersPass(microprobe.passes.Pass):
-    """UnReserveRegistersPass pass.
-
-    """
+    """UnReserveRegistersPass pass."""
 
     def __init__(self, register_names):
         """
@@ -184,27 +178,24 @@ class UnReserveRegistersPass(microprobe.passes.Pass):
         :type register_names:
         """
 
-        super(UnReserveRegistersPass, self).__init__()
+        super().__init__()
         self._register_names = register_names
-        self._description = "Reserve registers '%s'" \
-                            % (self._register_names)
+        self._description = f"Reserve registers '{self._register_names}'"
 
     def __call__(self, building_block, target):
-
         for register_name in self._register_names:
             try:
                 register = target.registers[register_name]
-            except KeyError:
+            except KeyError as exc:
                 raise MicroprobeCodeGenerationError(
-                    "Unknown register '%s'. Known registers: %s" %
-                    (register_name, list(target.registers.keys())))
+                    "Unknown register '%s'. Known registers: %s"
+                    % (register_name, list(target.registers.keys()))
+                ) from exc
             building_block.context.remove_reserved_registers([register])
 
 
 class InitializeRegistersPass(microprobe.passes.Pass):
-    """InitializeRegistersPass pass.
-
-    """
+    """InitializeRegistersPass pass."""
 
     def __init__(self, *args, **kwargs):
         """
@@ -214,7 +205,7 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         :param v_value:  (Default value = None)
 
         """
-        super(InitializeRegistersPass, self).__init__()
+        super().__init__()
 
         value = kwargs.get("value", None)
         fp_value = kwargs.get("fp_value", None)
@@ -224,9 +215,9 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         self._force_code = kwargs.get("force_code", False)
 
         if len(args) == 1:
-            self._reg_dict = dict([
-                (elem.name, elem.value) for elem in args[0]
-            ])
+            self._reg_dict = dict(
+                [(elem.name, elem.value) for elem in args[0]]
+            )
             self._priolist = [elem.name for elem in args[0]]
         else:
             self._reg_dict = {}
@@ -244,11 +235,12 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         if v_value is not None:
             self._vect_value, self._vect_elemsize = v_value
 
-        self._description = "Initialize general registers to: " \
-                            " '%s' and FP registers to '%s' and" \
-                            " Vector register to '%s' " % (self._value,
-                                                           self._fp_value,
-                                                           v_value)
+        self._description = (
+            "Initialize general registers to: "
+            " '%s' and FP registers to '%s' and"
+            " Vector register to '%s' "
+            % (self._value, self._fp_value, v_value)
+        )
 
     def __call__(self, building_block, target):
         """
@@ -261,19 +253,24 @@ class InitializeRegistersPass(microprobe.passes.Pass):
             for register_name in self._reg_dict:
                 if register_name not in list(target.registers.keys()):
                     raise MicroprobeCodeGenerationError(
-                        "Unknown register name: '%s'. Unable to set it" %
-                        register_name)
+                        f"Unknown register name: '{register_name}'. "
+                        "Unable to set it"
+                    )
 
         if self._warn_unknown:
             for register_name in self._reg_dict:
                 if register_name not in list(target.registers.keys()):
                     print_warning(
-                        "Unknown register name: '%s'. Unable to set it" %
-                        register_name)
+                        f"Unknown register name: '{register_name}'. "
+                        "Unable to set it"
+                    )
 
-        regs = sorted(target.registers.values(),
-                      key=lambda x: self._priolist.index(x.name)
-                      if x.name in self._priolist else 314159)
+        regs = sorted(
+            target.registers.values(),
+            key=lambda x: self._priolist.index(x.name)
+            if x.name in self._priolist
+            else 314159,
+        )
 
         #
         # Make sure scratch registers are set last
@@ -284,7 +281,6 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                 regs.append(reg)
 
         for reg in regs:
-
             value = None
             elemsize = None
             force_direct = False
@@ -294,12 +290,16 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                 self._reg_dict.pop(reg.name)
                 force_direct = True
 
-            if (reg in building_block.context.reserved_registers and
-                    not self._force_reserved):
+            if (
+                reg in building_block.context.reserved_registers
+                and not self._force_reserved
+            ):
                 LOG.debug("Skip reserved - %s", reg)
                 continue
-            elif (reg in target.control_registers and
-                    (value is None or self._skip_control)):
+
+            if reg in target.control_registers and (
+                value is None or self._skip_control
+            ):
                 LOG.debug("Skip control - %s", reg)
                 continue
 
@@ -309,15 +309,17 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                         value = self._vect_value
                         elemsize = self._vect_elemsize
                     else:
-                        LOG.debug("Skip no vector default value provided - %s",
-                                  reg)
+                        LOG.debug(
+                            "Skip no vector default value provided - %s", reg
+                        )
                         continue
                 elif reg.used_for_float_arithmetic:
                     if self._fp_value is not None:
                         value = self._fp_value
                     else:
-                        LOG.debug("Skip no float default value provided - %s",
-                                  reg)
+                        LOG.debug(
+                            "Skip no float default value provided - %s", reg
+                        )
                         continue
                 else:
                     if self._value is not None:
@@ -330,7 +332,7 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                     value = value()
 
                 if isinstance(value, int):
-                    value = value & ((2**reg.size)-1)
+                    value = value & ((2**reg.size) - 1)
 
                 if reg.used_for_float_arithmetic:
                     value = ieee_float_to_int64(float(value))
@@ -340,8 +342,9 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                         if elemsize != 64:
                             raise MicroprobeCodeGenerationError(
                                 "Unable to initialize '%s' to '%s'. Only 64bit"
-                                " vector element initialization is supported" %
-                                (reg.name, (value, elemsize)))
+                                " vector element initialization is supported"
+                                % (reg.name, (value, elemsize))
+                            )
                         value = ieee_float_to_int64(float(value))
                         value = "%d_%d" % (value, elemsize)
                     else:
@@ -349,8 +352,10 @@ class InitializeRegistersPass(microprobe.passes.Pass):
 
             LOG.debug("Setting reg %s to val %s", reg, value)
 
-            if (target.wrapper.direct_initialization_support and
-                    not self._force_code):
+            if (
+                target.wrapper.direct_initialization_support
+                and not self._force_code
+            ):
                 try:
                     target.wrapper.register_direct_init(
                         reg, value, force=force_direct
@@ -360,14 +365,16 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                     else:
                         LOG.debug("Direct set of '%s' to '0x%x'", reg, value)
                 except MicroprobeCodeGenerationError:
-                    building_block.add_init(target.set_register(
-                        reg, value, building_block.context))
+                    building_block.add_init(
+                        target.set_register(reg, value, building_block.context)
+                    )
                     LOG.debug("Set '%s' to '0x%x'", reg, value)
                 except MicroprobeDuplicatedValueError:
                     LOG.debug("Skip already set - %s", reg)
             else:
-                building_block.add_init(target.set_register(
-                    reg, value, building_block.context))
+                building_block.add_init(
+                    target.set_register(reg, value, building_block.context)
+                )
             building_block.context.set_register_value(reg, value)
 
     def check(self, building_block, target):
@@ -381,17 +388,18 @@ class InitializeRegistersPass(microprobe.passes.Pass):
 
 
 class InitializeRegisterPass(microprobe.passes.Pass):
-    """InitializeRegisterPass pass.
+    """InitializeRegisterPass pass."""
 
-    """
-
-    def __init__(self,
-                 register_name,
-                 value,
-                 reserve=None,
-                 force=False,
-                 force_code=False,
-                 force_control=False):
+    def __init__(
+        self,
+        register_name,
+        value,
+        reserve=None,
+        force=False,
+        force_code=False,
+        force_value=False,
+        force_control=False,
+    ):
         """
 
         :param register_name:
@@ -399,16 +407,19 @@ class InitializeRegisterPass(microprobe.passes.Pass):
         :param reserve:  (Default value = False)
 
         """
-        super(InitializeRegisterPass, self).__init__()
+        super().__init__()
         self._value = value
         self._register_name = register_name
         self._reserve = reserve
         self._force = force
         self._force_code = force_code
+        self._force_value = force_value
         self._force_control = force_control
 
-        self._description = "Initialize register '%s' to " \
-                            "'%s'" % (self._register_name, self._value)
+        self._description = "Initialize register '%s' to " "'%s'" % (
+            self._register_name,
+            self._value,
+        )
 
     def __call__(self, building_block, target):
         """
@@ -426,33 +437,38 @@ class InitializeRegisterPass(microprobe.passes.Pass):
 
         value = self._value
 
-        if (reg in building_block.context.reserved_registers and
-                self._reserve):
-            raise MicroprobeCodeGenerationError("Register '%s' already"
-                                                " reserved" % str(reg))
+        if reg in building_block.context.reserved_registers and self._reserve:
+            raise MicroprobeCodeGenerationError(
+                f"Register '{str(reg)}' already reserved"
+            )
 
         if reg in target.control_registers and self._force_control is False:
             raise MicroprobeCodeGenerationError(
-                "Register '%s' in Target definition control"
-                " registers" % str(reg))
+                f"Register '{str(reg)}' in Target definition control registers"
+            )
 
         if callable(value):
             value = value()
 
-        if reg.used_for_float_arithmetic:
+        if reg.used_for_float_arithmetic and not self._force_value:
             value = ieee_float_to_int64(float(value))
 
-        if (target.wrapper.direct_initialization_support and
-                not self._force_code):
+        if (
+            target.wrapper.direct_initialization_support
+            and not self._force_code
+        ):
             target.wrapper.register_direct_init(reg, value, force=self._force)
         else:
-            building_block.add_init(target.set_register(
-                reg, value, building_block.context))
+            building_block.add_init(
+                target.set_register(reg, value, building_block.context)
+            )
 
         building_block.context.set_register_value(reg, value)
 
-        if (self._reserve is not False and
-                reg not in building_block.context.reserved_registers):
+        if (
+            self._reserve is not False
+            and reg not in building_block.context.reserved_registers
+        ):
             building_block.context.add_reserved_registers([reg])
 
     def check(self, building_block, target):
@@ -466,9 +482,7 @@ class InitializeRegisterPass(microprobe.passes.Pass):
 
 
 class AddInitializationInstructionsPass(microprobe.passes.Pass):
-    """AddInitializationInstructionsPass pass.
-
-    """
+    """AddInitializationInstructionsPass pass."""
 
     def __init__(self, instr, operands=None):
         """
@@ -477,11 +491,12 @@ class AddInitializationInstructionsPass(microprobe.passes.Pass):
         :param operands:
 
         """
-        super(AddInitializationInstructionsPass, self).__init__()
+        super().__init__()
         self._instr = instr
         self._operands = operands
-        self._description = "Add %s in the init sequence with " \
-            "operands: %s" % (instr, operands)
+        self._description = (
+            f"Add {instr} in the init sequence with operands: {operands}"
+        )
 
         # TODO: improve description string
 
@@ -508,9 +523,7 @@ class AddInitializationInstructionsPass(microprobe.passes.Pass):
 
 
 class AutoAlignPass(microprobe.passes.Pass):
-    """AutoAlignPass pass.
-
-    """
+    """AutoAlignPass pass."""
 
     def __init__(self, instr, operands, mod):
         """
@@ -522,12 +535,14 @@ class AutoAlignPass(microprobe.passes.Pass):
         :param mod:
         :type mod:
         """
-        super(AutoAlignPass, self).__init__()
+        super().__init__()
         self._instr = instr
         self._operands = operands
         self._mod = mod
-        self._description = "Align the loop to be module '%s' using '%s'" \
+        self._description = (
+            "Align the loop to be module '%s' using '%s'"
             " instruction with '%s' operands" % (mod, instr, operands)
+        )
 
     def __call__(self, building_block, dummy_target):
         """
@@ -537,15 +552,18 @@ class AutoAlignPass(microprobe.passes.Pass):
 
         """
 
-        displacement = building_block.init[-1].address.displacement
+        displacement = (
+            building_block.init[-1].address.displacement
+            + building_block.init[-1].format.length
+        )
         while ((displacement) % self._mod) != 0:
             for instr, operands in zip(self._instr, self._operands):
                 newinstr = microprobe.code.ins.Instruction()
                 newinstr.set_arch_type(instr)
                 newinstr.set_operands(operands)
-                displacement += newinstr.format.length
 
                 if ((displacement) % self._mod) == 0:
                     break
 
+                displacement += newinstr.format.length
                 building_block.add_init([newinstr])

@@ -22,12 +22,11 @@ import copy
 import os
 import random
 import types
+import subprocess
 from tempfile import SpooledTemporaryFile, mkstemp
 from unittest import TestCase, TestSuite, main, skipIf, skipUnless
 
 # Third party modules
-import six
-from six.moves import range, zip
 
 # Own modules
 import microprobe.code
@@ -44,13 +43,6 @@ from microprobe.utils.asm import interpret_asm
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.logger import get_logger, set_log_level
 
-if six.PY2:
-    # Third party modules
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-    from exceptions import AssertionError  # pylint: disable=import-error
-else:
-    # Built-in modules
-    import subprocess  # @Reimport
 
 # Constants
 LOG = get_logger(__name__)
@@ -308,8 +300,7 @@ def compile_benchmark(self, function):
         error_code = exc.returncode
         cmd_output = exc.output
 
-    if six.PY3:
-        cmd_output = cmd_output.decode()
+    cmd_output = cmd_output.decode()
 
     if error_code == 0:
         self.filename.append(self.filename[0].replace(".s", ".o"))
@@ -370,8 +361,7 @@ def binary_benchmark(self, function):
 
     cmd = [disassembler] + flags
     output = subprocess.check_output(cmd)
-    if six.PY3:
-        output = output.decode()
+    output = output.decode()
     output_lines = output.split("\n")
 
     asmline = ""
@@ -748,10 +738,7 @@ for name, gen_function, isa_path, env_path, \
 
             setattr(newclass, f1name, copy_func(function_1, f1name))
 
-            if six.PY2:
-                mfunc = getattr(getattr(newclass, f1name), "__func__")
-            else:
-                mfunc = getattr(newclass, f1name)
+            mfunc = getattr(newclass, f1name)
 
             setattr(mfunc, "__doc__", "%s %s Generation" % (name, instr_name))
             mfunc.__name__ = f1name
@@ -796,10 +783,7 @@ for name, gen_function, isa_path, env_path, \
 
             setattr(newclass, f2name, copy_func(function_2, f2name))
 
-            if six.PY2:
-                mfunc = getattr(getattr(newclass, f2name), "__func__")
-            else:
-                mfunc = getattr(newclass, f2name)
+            mfunc = getattr(newclass, f2name)
 
             setattr(mfunc, "__doc__", "%s %s Compilation" % (name, instr_name))
             mfunc.__name__ = f2name
@@ -819,10 +803,7 @@ for name, gen_function, isa_path, env_path, \
                     x, "test_%s_instruction_%s_002_compilation" %
                     (x.name, x.instr_name.replace(".", "_"))))
 
-            if six.PY2:
-                mfunc = getattr(getattr(newclass, f3name), "__func__")
-            else:
-                mfunc = getattr(newclass, f3name)
+            mfunc = getattr(newclass, f3name)
 
             setattr(mfunc, "__doc__",
                     "%s %s Codification" % (name, instr_name))
@@ -850,10 +831,7 @@ for name, gen_function, isa_path, env_path, \
 
             setattr(newclass, f4name, copy_func(function_4, f4name))
 
-            if six.PY2:
-                mfunc = getattr(getattr(newclass, f4name), "__func__")
-            else:
-                mfunc = getattr(newclass, f4name)
+            mfunc = getattr(newclass, f4name)
 
             setattr(mfunc, "__doc__",
                     "%s %s Self-Codification" % (name, instr_name))
@@ -882,10 +860,7 @@ for name, gen_function, isa_path, env_path, \
 
             setattr(newclass, f5name, copy_func(function_5, f5name))
 
-            if six.PY2:
-                mfunc = getattr(getattr(newclass, f5name), "__func__")
-            else:
-                mfunc = getattr(newclass, f5name)
+            mfunc = getattr(newclass, f5name)
 
             setattr(mfunc, "__doc__",
                     "%s %s Self-Assembly" % (name, instr_name))

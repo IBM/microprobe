@@ -149,6 +149,10 @@ def _generic_policy_wrapper(all_arguments):
         print_info("%s already generated!" % outputfile)
         return False
 
+    if kwargs['skip'] and os.path.isfile(outputfile + ".gz"):
+        print_info("%s already generated! (compressed)" % outputfile + ".gz")
+        return False
+
     outputfile = new_file(wrapper.outputname(outputfile), internal=True)
     synth = policy.apply(target, wrapper, **extra_arguments)
 

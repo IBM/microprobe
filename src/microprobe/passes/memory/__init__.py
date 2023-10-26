@@ -23,47 +23,49 @@ import collections
 import itertools
 
 # Third party modules
-import six
-from six.moves import range
-from six.moves import zip
 
 # Own modules
 import microprobe.code.var
 import microprobe.passes
 import microprobe.utils.distrib
 from microprobe.code.address import Address, InstructionAddress
-from microprobe.exceptions import MicroprobeCodeGenerationError, \
-        MicroprobeValueError
-from microprobe.target.isa.operand import OperandConst, \
-    OperandConstReg, OperandDescriptor, OperandReg
+from microprobe.exceptions import (
+    MicroprobeCodeGenerationError,
+    MicroprobeValueError,
+)
 from microprobe.passes.address import UpdateInstructionAddressesPass
+from microprobe.target.isa.operand import (
+    OperandConst,
+    OperandConstReg,
+    OperandDescriptor,
+    OperandReg,
+)
 from microprobe.utils.distrib import regular_seq
 from microprobe.utils.logger import get_logger, set_log_level
-from microprobe.utils.misc import longest_common_substr, range_to_sequence, \
-    getnextf
-
-# Local modules
-
+from microprobe.utils.misc import (
+    getnextf,
+    longest_common_substr,
+    range_to_sequence,
+)
 
 # Constants
 LOG = get_logger(__name__)
 __all__ = [
-    'GenericMemoryModelPass',
-    'GenericOldMemoryModelPass',
-    'SetMemoryOperandByOpcodePass',
-    'SingleMemoryStreamPass',
-    'FixMemoryReferencesPass',
-    'GenericMemoryStreamsPass',
-    'InitializeMemoryDecorator']
+    "GenericMemoryModelPass",
+    "GenericOldMemoryModelPass",
+    "SetMemoryOperandByOpcodePass",
+    "SingleMemoryStreamPass",
+    "FixMemoryReferencesPass",
+    "GenericMemoryStreamsPass",
+    "InitializeMemoryDecorator",
+]
 
 # Functions
 
 
 # Classes
 class GenericMemoryModelPass(microprobe.passes.Pass):
-    """GenericMemoryModelPass pass.
-
-    """
+    """GenericMemoryModelPass pass."""
 
     def __init__(self, model):
         """
@@ -73,8 +75,7 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
         """
         super(GenericMemoryModelPass, self).__init__()
         self._model = model
-        self._description = "Generic memory model pass. "\
-                            "Using model: %s" % model
+        self._description = f"Generic memory model pass. Using model: {model}"
 
     def __call__(self, building_block, target):
         """
@@ -89,9 +90,7 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                 building_block.context
             )
             building_block.add_init(
-                target.set_register(
-                    reg, 0, building_block.context
-                )
+                target.set_register(reg, 0, building_block.context)
             )
 
             building_block.context.set_register_value(reg, 0)
@@ -106,13 +105,11 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
         for bbl in building_block.cfg.bbls:
             last_instr = None
             for instr in bbl.instrs:
-
                 if not instr.access_storage:
                     last_instr = instr
                     continue
 
                 for memoperand in instr.memory_operands():
-
                     if memoperand.address is not None:
                         continue
 
@@ -123,10 +120,10 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                         memoperand.possible_addresses(building_block.context)
                         is not None
                     ):
-
                         LOG.critical(
                             "Constrained operands for instruction"
-                            " %s . Not implemented", instr.mnemonic
+                            " %s . Not implemented",
+                            instr.mnemonic,
                         )
                         raise NotImplementedError
 
@@ -139,7 +136,6 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                     var = address.base_address
 
                     if var not in building_block.registered_global_vars():
-
                         building_block.register_var(
                             var, building_block.context
                         )
@@ -152,7 +148,7 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                             target.set_register_to_address(
                                 reg,
                                 Address(base_address=var),
-                                building_block.context
+                                building_block.context,
                             )
                         )
 
@@ -176,31 +172,29 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                         building_block.context.add_reserved_registers([treg])
 
                         LOG.debug(
-                            "Reserving '%s' for displacement "
-                            "computations", treg
+                            "Reserving '%s' for displacement " "computations",
+                            treg,
                         )
 
                         base_displ[var] = 0
 
                     alignment = memoperand.alignment()
                     if alignment is not None:
-
                         if address.displacement % alignment != 0:
-                            newdisplacement = int(
-                                address.displacement // alignment
-                            ) * alignment
+                            newdisplacement = (
+                                int(address.displacement // alignment)
+                                * alignment
+                            )
                             address = Address(
                                 base_address=address.base_address,
-                                displacement=newdisplacement
+                                displacement=newdisplacement,
                             )
 
                     try:
-
                         LOG.debug("First trial, using default context")
                         memoperand.set_address(address, building_block.context)
 
                     except MicroprobeCodeGenerationError:
-
                         LOG.debug(
                             "Unable to generate the address. Fixing "
                             "Context to allow the generation"
@@ -213,33 +207,29 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                         LOG.debug("Register displacement: %s", regdisp.name)
 
                         new_ins_displ = target.set_register(
-                            regdisp, address.displacement - base_displ[var],
-                            building_block.context
+                            regdisp,
+                            address.displacement - base_displ[var],
+                            building_block.context,
                         )
 
                         new_ins_all = target.set_register_to_address(
                             regbase,
                             address,
                             building_block.context,
-                            force_relative=True
+                            force_relative=True,
                         )
 
-                        if (
-                            (len(new_ins_all) < len(new_ins_displ)) or (
-                                (len(new_ins_all) == len(new_ins_displ)) and
-                                address.displacement <= abs(
-                                    base_displ[var] - address.displacement
-                                )
-                            )
+                        if (len(new_ins_all) < len(new_ins_displ)) or (
+                            (len(new_ins_all) == len(new_ins_displ))
+                            and address.displacement
+                            <= abs(base_displ[var] - address.displacement)
                         ):
-
                             new_ins = new_ins_all
                             reg_value = address
                             reg = regbase
                             base_displ[var] = address.displacement
 
                         else:
-
                             new_ins = new_ins_displ
                             reg_value = address.displacement - base_displ[var]
                             reg = regdisp
@@ -251,16 +241,13 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                         )
 
                         try:
-
                             LOG.debug("Second trial, after fixing the context")
                             memoperand.set_address(
                                 address, building_block.context
                             )
 
                             building_block.add_instructions(
-                                new_ins,
-                                after=last_instr,
-                                before=instr
+                                new_ins, after=last_instr, before=instr
                             )
 
                             for nins in new_ins:
@@ -281,7 +268,7 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                                 regbase,
                                 address,
                                 building_block.context,
-                                force_relative=True
+                                force_relative=True,
                             )
 
                             base_displ[var] = address.displacement
@@ -299,16 +286,14 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                             )
 
                             building_block.add_instructions(
-                                new_ins,
-                                after=last_instr,
-                                before=instr
+                                new_ins, after=last_instr, before=instr
                             )
 
                     if memoperand.variable_length:
                         memoperand.set_length(length, building_block.context)
 
                     LOG.debug("%s --> %s Done!", instr, address)
-                    instr.add_comment("Address: %s" % address)
+                    instr.add_comment(f"Address: {address}")
 
                     last_instr = instr
 
@@ -327,14 +312,12 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                 )
 
                 LOG.debug(
-                    "Using register %s for counting the guard "
-                    "iterations", reg.name
+                    "Using register %s for counting the guard " "iterations",
+                    reg.name,
                 )
 
                 building_block.add_init(
-                    target.set_register(
-                        reg, 0, building_block.context
-                    )
+                    target.set_register(reg, 0, building_block.context)
                 )
 
                 building_block.context.add_reserved_registers([reg])
@@ -354,9 +337,11 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
 
                 building_block.add_fini(
                     target.compare_and_branch(
-                        reg, guard, "<", "mem_guard_%d" % (
-                            idx + 1
-                        ), building_block.context
+                        reg,
+                        guard,
+                        "<",
+                        "mem_guard_%d" % (idx + 1),
+                        building_block.context,
                     )
                 )
 
@@ -368,15 +353,13 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                     target.set_register_to_address(
                         vregs[var],
                         Address(base_address=var),
-                        building_block.context
+                        building_block.context,
                     )
                 )
 
                 # and reset the counter
                 building_block.add_fini(
-                    target.set_register(
-                        reg, 0, building_block.context
-                    )
+                    target.set_register(reg, 0, building_block.context)
                 )
 
                 building_block.context.set_register_value(
@@ -390,7 +373,6 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
 
         # remove all index registers from context if they have been used
         for treg in tregs.values():
-
             if building_block.context.get_register_value(treg) is None:
                 continue
 
@@ -413,7 +395,7 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
                 target.set_register_to_address(
                     vregs[var],
                     Address(base_address=var),
-                    building_block.context
+                    building_block.context,
                 )
             )
 
@@ -433,9 +415,7 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
 
 
 class GenericOldMemoryModelPass(microprobe.passes.Pass):
-    """GenericOldMemoryModelPass pass.
-
-    """
+    """GenericOldMemoryModelPass pass."""
 
     def __init__(self, model, strict=True, loadsonly=False, storesonly=False):
         """
@@ -468,7 +448,7 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
             elif mcomp_ant is None:
                 sets = mcomp.setsways()
                 lsets = len(sets)
-                sets = sets[0:int(lsets * ratio // accum)]
+                sets = sets[0: int(lsets * ratio // accum)]
             else:
                 sets = mcomp.setsways()
                 sets_ant = [
@@ -481,7 +461,7 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                 sets = [s1 for s1, s2 in zipping if s2 not in fset]
 
                 lsets = len(sets)
-                sets = sets[0:int(lsets * ratio // accum)]
+                sets = sets[0: int(lsets * ratio // accum)]
 
             sets_dict[mcomp] = sets
             accum = accum - ratio
@@ -490,7 +470,6 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
         mcomp_ant = None
 
         for mcomp, ratio in self._model:
-
             slist = [elem << mcomp.offset_bits() for elem in sets_dict[mcomp]]
 
             # TODO: shuffle function too slow for pseudorandom
@@ -501,11 +480,11 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
             # TODO: strided parameter or random or pseudorandom (32k ranges)
             shuffle_type = None
 
-            if shuffle_type == '32k':
+            if shuffle_type == "32k":
                 slist = microprobe.utils.distrib.shuffle(slist, 32768)
-            elif shuffle_type == 'all':
+            elif shuffle_type == "all":
                 slist = microprobe.utils.distrib.shuffle(slist, -1)
-            elif shuffle_type == 'mcomp_ant':
+            elif shuffle_type == "mcomp_ant":
                 slist = microprobe.utils.distrib.shuffle(slist, mcomp_ant.size)
 
             if len(slist) > 0:
@@ -536,11 +515,8 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
 
         mant = None
         for mcomp, ratio in self._model:
-
             var = microprobe.code.var.VariableArray(
-                mcomp.name,
-                "char", mcomp.size,
-                align=256 * 1024 * 1024
+                mcomp.name, "char", mcomp.size, align=256 * 1024 * 1024
             )
 
             building_block.register_var(var, building_block.context)
@@ -561,39 +537,65 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                 else:
                     module = min(
                         int(
-                            4 * (
-                                len(mant.setsways()) - len(self._sets[mant])
-                            )
-                        ), len(self._sets[mcomp])
+                            4 * (len(mant.setsways()) - len(self._sets[mant]))
+                        ),
+                        len(self._sets[mcomp]),
                     )
 
                 descriptors[mcomp] = [
-                    var, reg_base, 0, reg_idx, 0, calc_instrs, last_instr,
-                    count, module, reduced, max_value
+                    var,
+                    reg_base,
+                    0,
+                    reg_idx,
+                    0,
+                    calc_instrs,
+                    last_instr,
+                    count,
+                    module,
+                    reduced,
+                    max_value,
                 ]
 
             mant = mcomp
 
-        for var, reg_base, reg_base_val, reg_idx, reg_idx_val, calc_instrs, \
-                last_instr, count, module, reduced, \
-                max_value in six.itervalues(descriptors):
-
+        for (
+            var,
+            reg_base,
+            reg_base_val,
+            reg_idx,
+            reg_idx_val,
+            calc_instrs,
+            last_instr,
+            count,
+            module,
+            reduced,
+            max_value,
+        ) in descriptors.values():
             building_block.add_init(target.load_var_address(reg_base, var))
             building_block.add_init(target.set_register(reg_idx, 0))
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-
                 if (
-                    instr.mem() and not (instr.store() and self._lo) and
-                    not (instr.load() and self._so)
+                    instr.mem()
+                    and not (instr.store() and self._lo)
+                    and not (instr.load() and self._so)
                 ):
-
                     mcomp = self._func()
 
-                    var, reg_base, reg_base_val, reg_idx, reg_idx_val, \
-                        calc_instrs, last_instr, count, module, reduced, \
-                        max_value = descriptors[mcomp]
+                    (
+                        var,
+                        reg_base,
+                        reg_base_val,
+                        reg_idx,
+                        reg_idx_val,
+                        calc_instrs,
+                        last_instr,
+                        count,
+                        module,
+                        reduced,
+                        max_value,
+                    ) = descriptors[mcomp]
 
                     if reg_base not in rregs:
                         rregs.append(reg_base)
@@ -624,11 +626,20 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                     #    self._sets[mcomp] = self._sets[mcomp][jump:]
 
                     values = target.generate_address(
-                        value, instr, reg_base, reg_base_val, reg_idx,
-                        reg_idx_val, calc_instrs
+                        value,
+                        instr,
+                        reg_base,
+                        reg_base_val,
+                        reg_idx,
+                        reg_idx_val,
+                        calc_instrs,
                     )
-                    reg_base_val_new, reg_idx_val_new, tinstrs, \
-                        new_instrs = values
+                    (
+                        reg_base_val_new,
+                        reg_idx_val_new,
+                        tinstrs,
+                        new_instrs,
+                    ) = values
 
                     for k, dummy in descriptors.items():
                         if k == mcomp:
@@ -640,19 +651,35 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                             # operation uses an immediate (and does not touch
                             # anything).
                             if (
-                                reg_base_val == reg_base_val_new and
-                                reg_idx_val == reg_idx_val_new
+                                reg_base_val == reg_base_val_new
+                                and reg_idx_val == reg_idx_val_new
                             ):
                                 descriptors[mcomp] = [
-                                    var, reg_base, reg_base_val_new, reg_idx,
-                                    reg_idx_val_new, calc_instrs, instr, count,
-                                    module, reduced, max_value
+                                    var,
+                                    reg_base,
+                                    reg_base_val_new,
+                                    reg_idx,
+                                    reg_idx_val_new,
+                                    calc_instrs,
+                                    instr,
+                                    count,
+                                    module,
+                                    reduced,
+                                    max_value,
                                 ]
                             else:
                                 descriptors[mcomp] = [
-                                    var, reg_base, reg_base_val_new, reg_idx,
-                                    reg_idx_val_new, [], instr, count, module,
-                                    reduced, max_value
+                                    var,
+                                    reg_base,
+                                    reg_base_val_new,
+                                    reg_idx,
+                                    reg_idx_val_new,
+                                    [],
+                                    instr,
+                                    count,
+                                    module,
+                                    reduced,
+                                    max_value,
                                 ]
                         else:
                             for tinstr in tinstrs:
@@ -665,11 +692,8 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                             tinstr.add_allow_register(reg_idx)
 
                     if len(new_instrs) > 0:
-
                         building_block.add_instructions(
-                            new_instrs,
-                            after=last_instr,
-                            before=instr
+                            new_instrs, after=last_instr, before=instr
                         )
                         for new_instr in new_instrs:
                             new_instr.add_allow_register(reg_base)
@@ -695,9 +719,7 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                             target.load_var_address(reg_base, var)
                         )
                         building_block.add_init(
-                            target.set_register(
-                                reg_idx, 0
-                            )
+                            target.set_register(reg_idx, 0)
                         )
 
                 else:
@@ -711,9 +733,19 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                 mcomp_ant = mcomp
 
                 if mcomp in descriptors:
-                    var, reg_base, reg_base_val, reg_idx, reg_idx_val, \
-                        calc_instrs, last_instr, count, module, reduced, \
-                        max_value = descriptors[mcomp]
+                    (
+                        var,
+                        reg_base,
+                        reg_base_val,
+                        reg_idx,
+                        reg_idx_val,
+                        calc_instrs,
+                        last_instr,
+                        count,
+                        module,
+                        reduced,
+                        max_value,
+                    ) = descriptors[mcomp]
 
                     # Init everything: reg base to the start of the array var,
                     # register idx to zero and register of the constant to
@@ -729,9 +761,19 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                 continue
 
             if mcomp in descriptors:
-                var, reg_base, reg_base_val, reg_idx, reg_idx_val, \
-                    calc_instrs, last_instr, count, module, reduced, \
-                    max_value = descriptors[mcomp]
+                (
+                    var,
+                    reg_base,
+                    reg_base_val,
+                    reg_idx,
+                    reg_idx_val,
+                    calc_instrs,
+                    last_instr,
+                    count,
+                    module,
+                    reduced,
+                    max_value,
+                ) = descriptors[mcomp]
             else:
                 mcomp_ant = mcomp
                 continue
@@ -739,7 +781,7 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
             size = len(self._sets[mcomp])
             rsize = len(mcomp_ant.setsways()) - len(self._sets[mcomp_ant])
 
-            incsize = (max_value // mcomp_ant.size)
+            incsize = max_value // mcomp_ant.size
             if max_value % mcomp_ant.size:
                 incsize += 1
             incsize = mcomp_ant.size * incsize
@@ -751,13 +793,11 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
             if self._strict:
                 if count == 0 and ratio > 0:
                     raise NotImplementedError(
-                        "Not access generated to %s, "
-                        "increase the size" % mcomp
+                        f"Not access generated to {mcomp}, increase the size"
                     )
                 if count > 0 and ratio == 0:
                     raise NotImplementedError(
-                        "Access generated to %s which is"
-                        " not modeled!" % mcomp
+                        f"Access generated to {mcomp} which is not modeled!"
                     )
 
                 if (guard * count) < (2 * rsize):
@@ -812,7 +852,8 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                         "the final memory behavior of the generated benchmark."
                         " To increase accuracy, you can increase the number "
                         "of references by incrementing the weight of this "
-                        "component or the benchmark size.", mcomp.name
+                        "component or the benchmark size.",
+                        mcomp.name,
                     )
 
                 # register the counter control constant (reserving a register)
@@ -871,7 +912,7 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
 
                 # Add the conditional branch
                 new_instrs = target.conditional_branch(
-                    reg_constant, "<", guard, "%sguard" % mcomp.name
+                    reg_constant, "<", guard, f"{mcomp.name}guard"
                 )
                 for new_instr in new_instrs:
                     new_instr.add_allow_register(reg_constant)
@@ -879,7 +920,7 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
                 building_block.add_fini(new_instrs)
 
                 # Set the label for in case the next component needs it
-                blabel = "%sguard" % mcomp.name
+                blabel = f"{mcomp.name}guard"
 
                 # Init everything: reg base to the start of the array var,
                 # register idx to zero and register of the constant to zero.
@@ -906,14 +947,19 @@ class GenericOldMemoryModelPass(microprobe.passes.Pass):
 
 
 class SingleMemoryStreamPass(microprobe.passes.Pass):
-    """SingleMemoryStreamPass pass.
-
-    """
+    """SingleMemoryStreamPass pass."""
 
     _ids = itertools.count(0)
 
-    def __init__(self, size, stride, length=None, align=None,
-                 warmstores=False, value="random"):
+    def __init__(
+        self,
+        size,
+        stride,
+        length=None,
+        align=None,
+        warmstores=False,
+        value="random",
+    ):
         """
 
         :param size:
@@ -936,24 +982,27 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
         self._var = microprobe.code.var.VariableArray(
             "ST_%d_%d_%d" % (self._size, self._stride, next(self._ids)),
-            "char", (self._size + 1) * max(self._stride, 1),
-            align=self._align, value=value
+            "char",
+            (self._size + 1) * max(self._stride, 1),
+            align=self._align,
+            value=value,
         )
 
         addresses = []
         for idx in range(0, self._size):
             addresses.append(
                 Address(
-                    base_address=self._var,
-                    displacement=idx * self._stride
+                    base_address=self._var, displacement=idx * self._stride
                 )
             )
 
         self._addresses = addresses
-        self._description = "Access to '%s' different memory locations in a" \
-                            " round-robin fashion. Stride between locations:" \
-                            " '%s' bytes. Length of the memory accesses: '%s'"\
-                            " bytes" % (self._size, self._stride, self._length)
+        self._description = (
+            "Access to '%s' different memory locations in a"
+            " round-robin fashion. Stride between locations:"
+            " '%s' bytes. Length of the memory accesses: '%s'"
+            " bytes" % (self._size, self._stride, self._length)
+        )
 
     def __call__(self, building_block, target):
         """
@@ -964,15 +1013,12 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
         """
 
         if not building_block.context.register_has_value(0):
-
             reg = target.get_register_for_address_arithmetic(
                 building_block.context
             )
 
             building_block.add_init(
-                target.set_register(
-                    reg, 0, building_block.context
-                )
+                target.set_register(reg, 0, building_block.context)
             )
 
             building_block.context.set_register_value(reg, 0)
@@ -988,15 +1034,12 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-
                 if not instr.access_storage:
                     continue
 
-                LOG.debug("Memory instruction: %s",
-                          instr)
+                LOG.debug("Memory instruction: %s", instr)
 
                 for memoperand in instr.memory_operands():
-
                     if memoperand.address is not None:
                         continue
 
@@ -1008,7 +1051,6 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
                     # initialize the variable the first time used
                     if not_initialized:
-
                         building_block.register_var(
                             self._var, building_block.context
                         )
@@ -1019,9 +1061,9 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
                         building_block.add_init(
                             target.set_register_to_address(
-                                reg, self._addresses[
-                                    idx
-                                ], building_block.context
+                                reg,
+                                self._addresses[idx],
+                                building_block.context,
                             )
                         )
 
@@ -1036,7 +1078,6 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
                         memoperand.possible_addresses(building_block.context)
                         is not None
                     ):
-
                         paddresses = memoperand.possible_addresses(
                             building_block.context
                         )
@@ -1044,8 +1085,9 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
                         LOG.warning(
                             "Memory operand constrained, generating"
-                            " address: %s , instead of: %s", taddress,
-                            self._addresses[idx]
+                            " address: %s , instead of: %s",
+                            taddress,
+                            self._addresses[idx],
                         )
 
                     else:
@@ -1055,24 +1097,23 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
                     if alignment is not None:
                         if taddress.displacement % alignment != 0:
-                            newdisplacement = int(
-                                taddress.displacement // alignment
-                            ) * alignment
+                            newdisplacement = (
+                                int(taddress.displacement // alignment)
+                                * alignment
+                            )
                             taddress = Address(
                                 base_address=taddress.base_address,
-                                displacement=newdisplacement
+                                displacement=newdisplacement,
                             )
 
                     # Set address of the memory operand
                     try:
-
                         LOG.debug("Target address: %s", taddress)
                         memoperand.set_address(
                             taddress, building_block.context
                         )
 
                     except MicroprobeCodeGenerationError:
-
                         reg = target.get_register_for_address_arithmetic(
                             building_block.context
                         )
@@ -1092,7 +1133,6 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
                         building_block.context.add_reserved_registers([reg])
 
                         try:
-
                             LOG.debug("Target address 2: %s", taddress)
                             memoperand.set_address(
                                 taddress, building_block.context
@@ -1101,14 +1141,13 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
                         except MicroprobeCodeGenerationError as exc:
                             raise exc
 
-                    instr.add_comment("Address: %s" % taddress)
+                    instr.add_comment(f"Address: {taddress}")
 
                     # Set length of the memory operand --> default maximum
                     if memoperand.variable_length:
                         length = self._length
 
                         if length is None:
-
                             length = max(
                                 memoperand.possible_lengths(
                                     building_block.context
@@ -1120,21 +1159,21 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
                     assert memoperand.length is not None
 
-                    if (self._warmstores and memoperand.is_store and
-                            taddress not in warmed):
+                    if (
+                        self._warmstores
+                        and memoperand.is_store
+                        and taddress not in warmed
+                    ):
                         # Warm stores
                         mycontext = target.wrapper.context()
                         ninstr = target.set_register_to_address(
-                            target.scratch_registers[0],
-                            taddress,
-                            mycontext)
+                            target.scratch_registers[0], taddress, mycontext
+                        )
                         mycontext.set_register_value(
-                            target.scratch_registers[0],
-                            taddress)
+                            target.scratch_registers[0], taddress
+                        )
                         ninstr += target.load(
-                            target.scratch_registers[0],
-                            taddress,
-                            mycontext
+                            target.scratch_registers[0], taddress, mycontext
                         )
                         building_block.add_init(ninstr)
                         warmed.append(taddress)
@@ -1156,8 +1195,7 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
         if needs_reset:
             building_block.add_fini(
                 target.set_register_to_address(
-                    reset_reg, self._addresses[0],
-                    building_block.context
+                    reset_reg, self._addresses[0], building_block.context
                 )
             )
 
@@ -1172,20 +1210,18 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
 
 
 class FixMemoryReferencesPass(microprobe.passes.Pass):
-    """FixMemoryReferencesPass pass.
-
-    """
+    """FixMemoryReferencesPass pass."""
 
     _ref_with_updates_map = {}
 
     def __init__(self, reset_registers=False):
-        """
-
-        """
+        """ """
         super(FixMemoryReferencesPass, self).__init__()
 
-        self._description = "Fix the memory references avoid segmenation" \
+        self._description = (
+            "Fix the memory references avoid segmenation"
             "faults during execution"
+        )
         self._reset_regs = reset_registers
 
     def __call__(self, building_block, target):
@@ -1201,14 +1237,13 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-
                 LOG.debug("Fixing %s", instr)
                 # LOG.debug("Asm: %s", instr.assembly())
                 set_regs += [
                     elem
                     for elem in instr.sets()
-                    if elem not in set_regs and elem in
-                    target.address_registers
+                    if elem not in set_regs
+                    and elem in target.address_registers
                 ]
 
                 if not instr.access_storage:
@@ -1220,7 +1255,6 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     self._fix_with_update(instr, target)
 
                 for memoperand in instr.memory_operands():
-
                     LOG.debug("Memory operand: %s", memoperand)
 
                     if memoperand.is_agen:
@@ -1234,7 +1268,6 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     index_operand_value = None
 
                     for operand in memoperand.operands:
-
                         LOG.debug("Operand: %s", operand)
 
                         if operand.type.address_relative:
@@ -1242,7 +1275,6 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                             continue
 
                         if operand.value is not None:
-
                             LOG.debug("Value is: %s", operand.value)
 
                             if operand.type.immediate:
@@ -1252,16 +1284,15 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                                         operand.type.description,
                                         operand.value,
                                         aim=operand.type.address_immediate,
-                                        arel=operand.type.address_relative
+                                        arel=operand.type.address_relative,
                                     ),
                                     operand.is_input,
-                                    operand.is_output
+                                    operand.is_output,
                                 )
 
                                 max_value = abs(operand.value)
 
                             else:
-
                                 descriptor = OperandDescriptor(
                                     OperandConstReg(
                                         operand.type.name,
@@ -1269,8 +1300,11 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                                         operand.value,
                                         operand.type.address_base,
                                         operand.type.address_index,
-                                        operand.type.float, operand.type.vector
-                                    ), operand.is_input, operand.is_output
+                                        operand.type.float,
+                                        operand.type.vector,
+                                    ),
+                                    operand.is_input,
+                                    operand.is_output,
                                 )
 
                                 if operand.type.address_base:
@@ -1288,8 +1322,8 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     LOG.debug("Index operand: %s", index_operand_value)
 
                     if (
-                        base_operand_value is None and
-                        index_operand_value is None
+                        base_operand_value is None
+                        and index_operand_value is None
                     ):
                         LOG.debug("All none. Skip")
                         continue
@@ -1308,47 +1342,57 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     # C. Otherwise choose the key direction that minimizes the
                     # required modifications afterwards
                     if (
-                        key[1] is not None and key[0] in [
+                        key[1] is not None
+                        and key[0]
+                        in [
                             elem[1]
-                            for elem in fixlist.keys() if elem[1] is not None
-                        ] and key[1] not in [
-                            elem[0] for elem in fixlist.keys()
+                            for elem in fixlist.keys()
+                            if elem[1] is not None
                         ]
+                        and key[1] not in [elem[0] for elem in fixlist.keys()]
                     ):
                         LOG.debug(
                             "Switch: base used as index, "
-                            "index not used as base")
+                            "index not used as base"
+                        )
                         key = (key[1], key[0])
-                        base_operand_value, index_operand_value = \
-                            index_operand_value, base_operand_value
+                        base_operand_value, index_operand_value = (
+                            index_operand_value,
+                            base_operand_value,
+                        )
 
                     elif (
-                        key[1] is not None and
-                        key[1] in [elem[0] for elem in fixlist.keys()] and
-                        key[0] not in [elem[0] for elem in fixlist.keys()]
+                        key[1] is not None
+                        and key[1] in [elem[0] for elem in fixlist.keys()]
+                        and key[0] not in [elem[0] for elem in fixlist.keys()]
                     ):
                         LOG.debug(
                             "Switch: index used as base, "
-                            "and base not used as base")
+                            "and base not used as base"
+                        )
                         key = (key[1], key[0])
-                        base_operand_value, index_operand_value = \
-                            index_operand_value, base_operand_value
+                        base_operand_value, index_operand_value = (
+                            index_operand_value,
+                            base_operand_value,
+                        )
                     elif (
-                        key[1] is not None and key in fixlist and
-                        (key[1], key[0]) in fixlist
+                        key[1] is not None
+                        and key in fixlist
+                        and (key[1], key[0]) in fixlist
                     ):
                         LOG.debug("Both already")
-                        if len(fixlist[key][2]) < \
-                                len(fixlist[(key[1], key[0])][2]):
+                        if len(fixlist[key][2]) < len(
+                            fixlist[(key[1], key[0])][2]
+                        ):
                             LOG.debug("Switch to minimize")
                             key = (key[1], key[0])
-                            base_operand_value, index_operand_value = \
-                                index_operand_value, base_operand_value
+                            base_operand_value, index_operand_value = (
+                                index_operand_value,
+                                base_operand_value,
+                            )
 
                     max_length = max(
-                        memoperand.possible_lengths(
-                            building_block.context
-                        )
+                        memoperand.possible_lengths(building_block.context)
                     )
 
                     LOG.debug("KEY: %s - %s", key[0], key[1])
@@ -1365,16 +1409,20 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     if key in fixlist:
                         LOG.debug("Key already in fix list")
                         fixlist[key] = (
-                            fixlist[key][0], fixlist[key][1],
+                            fixlist[key][0],
+                            fixlist[key][1],
                             fixlist[key][2] + [memoperand],
                             max(fixlist[key][3], max_value),
-                            max(fixlist[key][4], max_length)
+                            max(fixlist[key][4], max_length),
                         )
                     else:
                         LOG.debug("New key added to the fix list")
                         fixlist[key] = (
-                            base_operand_value, index_operand_value,
-                            [memoperand], max_value, max_length
+                            base_operand_value,
+                            index_operand_value,
+                            [memoperand],
+                            max_value,
+                            max_length,
                         )
 
         fix_number = 0
@@ -1386,7 +1434,9 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
         max_value_dict = {}
         for key, value in fixlist.items():
             base_operand, max_value, max_length = (
-                value[0], value[3], value[4]
+                value[0],
+                value[3],
+                value[4],
             )
 
             if base_operand in max_length_dict:
@@ -1404,9 +1454,13 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                 max_value_dict[base_operand] = max_value
 
         for value in fixlist.values():
-
-            base_operand_value, index_operand_value, \
-                memoperands, max_value, max_length = value
+            (
+                base_operand_value,
+                index_operand_value,
+                memoperands,
+                max_value,
+                max_length,
+            ) = value
 
             max_value = max_value_dict[base_operand_value]
             max_length = max_length_dict[base_operand_value]
@@ -1421,21 +1475,19 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
             LOG.debug("Maximum length: %s", max_length)
 
             if (
-                base_operand_value is not None and
-                base_operand_value not in fix_base_registers
+                base_operand_value is not None
+                and base_operand_value not in fix_base_registers
             ):
-
                 if base_operand_value in fix_index_registers:
-
                     if base_operand_value not in switch_registers:
                         switch_registers.append(base_operand_value)
 
                 else:
-
                     variable = microprobe.code.var.VariableArray(
-                        "MEMACCESS_FIX_%s" % fix_number,
-                        "char", (max_value + max_length) * 2,
-                        align=max_length
+                        f"MEMACCESS_FIX_{fix_number}",
+                        "char",
+                        (max_value + max_length) * 2,
+                        align=max_length,
                     )
 
                     building_block.register_var(
@@ -1444,39 +1496,38 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
                     building_block.add_init(
                         target.set_register_to_address(
-                            base_operand_value, variable.address + max_value +
-                            max_length, building_block.context
+                            base_operand_value,
+                            variable.address + max_value + max_length,
+                            building_block.context,
                         )
                     )
 
                     building_block.context.set_register_value(
                         base_operand_value,
-                        variable.address + max_value + max_length
+                        variable.address + max_value + max_length,
                     )
 
                     fix_base_registers.append(base_operand_value)
 
                     fix_number = fix_number + 1
 
-                    if base_operand_value not in \
-                            building_block.context.reserved_registers:
-
+                    if (
+                        base_operand_value
+                        not in building_block.context.reserved_registers
+                    ):
                         building_block.context.add_reserved_registers(
                             [base_operand_value]
                         )
 
             if (
-                index_operand_value is not None and
-                index_operand_value not in fix_index_registers
+                index_operand_value is not None
+                and index_operand_value not in fix_index_registers
             ):
-
                 if index_operand_value in fix_base_registers:
-
                     if index_operand_value not in switch_registers:
                         switch_registers.append(index_operand_value)
 
                 else:
-
                     building_block.add_init(
                         target.set_register(
                             index_operand_value, 0, building_block.context
@@ -1489,9 +1540,10 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
                     fix_index_registers.append(index_operand_value)
 
-                    if index_operand_value not in \
-                            building_block.context.reserved_registers:
-
+                    if (
+                        index_operand_value
+                        not in building_block.context.reserved_registers
+                    ):
                         building_block.context.add_reserved_registers(
                             [index_operand_value]
                         )
@@ -1522,18 +1574,14 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                 reg = pregs[0]
 
             building_block.add_init(
-                target.set_register(
-                    reg, 0, building_block.context
-                )
+                target.set_register(reg, 0, building_block.context)
             )
 
             building_block.context.set_register_value(reg, 0)
 
             fix_index_registers.append(reg)
 
-            if reg not in \
-                    building_block.context.reserved_registers:
-
+            if reg not in building_block.context.reserved_registers:
                 building_block.context.add_reserved_registers([reg])
 
         assert set(fix_index_registers).isdisjoint(set(fix_base_registers))
@@ -1543,30 +1591,26 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
         fix_base_registers = sorted(fix_base_registers)
 
         for bbl in building_block.cfg.bbls:
-
             for instr in bbl.instrs:
-
                 set_registers = set(instr.sets())
 
                 if not set_registers.isdisjoint(fix_registers):
-
                     registers = set_registers.intersection(fix_registers)
                     for operand in instr.operands():
                         if operand.value in registers and operand.is_output:
                             operand.unset_value()
 
                 for operand in instr.operands():
-
                     if operand.type.immediate or operand.value is None:
                         continue
                     elif (
-                        operand.value in switch_registers and
-                        operand.type.address_base
+                        operand.value in switch_registers
+                        and operand.type.address_base
                     ):
                         valid_values = fix_base_registers
                     elif (
-                        operand.value in switch_registers and
-                        operand.type.address_index
+                        operand.value in switch_registers
+                        and operand.type.address_index
                     ):
                         valid_values = fix_index_registers
                     else:
@@ -1586,16 +1630,20 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
                     descriptor = OperandDescriptor(
                         OperandReg(
-                            operand.type.name, operand.type.description,
-                            valid_values, operand.type.address_base,
-                            operand.type.address_index, operand.type.float,
-                            operand.type.vector
-                        ), operand.is_input, operand.is_output
+                            operand.type.name,
+                            operand.type.description,
+                            valid_values,
+                            operand.type.address_base,
+                            operand.type.address_index,
+                            operand.type.float,
+                            operand.type.vector,
+                        ),
+                        operand.is_input,
+                        operand.is_output,
                     )
                     operand.set_descriptor(descriptor)
 
                 if instr.access_storage:
-
                     base_operand = None
                     index_operand = None
                     sorted_base_operand_values = None
@@ -1610,21 +1658,24 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                             continue
                         if operand.type.address_base:
                             base_operand = operand
-                            sorted_base_operand_values = \
-                                sorted(base_operand.type.values())
+                            sorted_base_operand_values = sorted(
+                                base_operand.type.values()
+                            )
                         if operand.type.address_index:
                             index_operand = operand
-                            sorted_index_operand_values = \
-                                sorted(index_operand.type.values())
+                            sorted_index_operand_values = sorted(
+                                index_operand.type.values()
+                            )
 
                     if base_operand is None and index_operand is None:
                         continue
 
                     elif base_operand is not None and index_operand is None:
-
                         if base_operand.value is None:
-                            if sorted_base_operand_values != \
-                                    fix_base_registers:
+                            if (
+                                sorted_base_operand_values
+                                != fix_base_registers
+                            ):
                                 needs_fix = True
                                 fix_only_base = True
 
@@ -1637,26 +1688,24 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                     elif (
                         base_operand is not None and index_operand is not None
                     ):
-
                         if (
-                            base_operand.value is None and
-                            index_operand.value is None
+                            base_operand.value is None
+                            and index_operand.value is None
                         ):
-
                             if not (
                                 (
-                                    sorted_base_operand_values ==
-                                    fix_base_registers and
-                                    sorted_index_operand_values ==
-                                    fix_index_registers
-                                ) or (
-                                    sorted_base_operand_values ==
-                                    fix_index_registers and
-                                    sorted_index_operand_values ==
-                                    fix_base_registers
+                                    sorted_base_operand_values
+                                    == fix_base_registers
+                                    and sorted_index_operand_values
+                                    == fix_index_registers
+                                )
+                                or (
+                                    sorted_base_operand_values
+                                    == fix_index_registers
+                                    and sorted_index_operand_values
+                                    == fix_base_registers
                                 )
                             ):
-
                                 needs_fix = True
 
                         elif base_operand.value is None:
@@ -1712,7 +1761,6 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                                 needs_fix = True
 
                         if needs_fix:
-
                             assert len(fix_base_registers) > 0
 
                             base_operand.unset_value()
@@ -1733,14 +1781,14 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                                     base_operand.type.address_base,
                                     base_operand.type.address_index,
                                     base_operand.type.float,
-                                    base_operand.type.vector
-                                ), base_operand.is_input,
-                                base_operand.is_output
+                                    base_operand.type.vector,
+                                ),
+                                base_operand.is_input,
+                                base_operand.is_output,
                             )
                             base_operand.set_descriptor(descriptor)
 
                         if needs_fix and not fix_only_base:
-
                             assert len(fix_index_registers) > 0
 
                             index_operand.unset_value()
@@ -1761,9 +1809,10 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
                                     index_operand.type.address_base,
                                     index_operand.type.address_index,
                                     index_operand.type.float,
-                                    index_operand.type.vector
-                                ), index_operand.is_input,
-                                index_operand.is_output
+                                    index_operand.type.vector,
+                                ),
+                                index_operand.is_input,
+                                index_operand.is_output,
                             )
                             index_operand.set_descriptor(descriptor)
 
@@ -1776,7 +1825,6 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
     @classmethod
     def _fix_with_update(cls, instr, target):
-
         if instr.architecture_type in cls._ref_with_updates_map:
             new_arch_type = cls._ref_with_updates_map[instr.architecture_type]
         else:
@@ -1794,27 +1842,23 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
     @staticmethod
     def _similar_type_without_update(instr, target):
-
         orig_arch_type = instr.architecture_type
         arch_types = [
             arch_type
             for arch_type in target.instructions.values()
-            if arch_type.access_storage and
-            not arch_type.access_storage_with_update
+            if arch_type.access_storage
+            and not arch_type.access_storage_with_update
         ]
 
         arch_types = [
             arch_type
             for arch_type in arch_types
-            if arch_type != orig_arch_type and len(arch_type.operands) == len(
-                orig_arch_type.operands
-            ) and len(
-                arch_type.implicit_operands
-            ) == len(
-                orig_arch_type.implicit_operands
-            ) and len(arch_type.memory_operand_descriptors) == len(
-                orig_arch_type.memory_operand_descriptors
-            )
+            if arch_type != orig_arch_type
+            and len(arch_type.operands) == len(orig_arch_type.operands)
+            and len(arch_type.implicit_operands)
+            == len(orig_arch_type.implicit_operands)
+            and len(arch_type.memory_operand_descriptors)
+            == len(orig_arch_type.memory_operand_descriptors)
         ]
 
         LOG.debug("Similar architecture types found:")
@@ -1824,13 +1868,16 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
         def _check_memory_operand(arch_type):
             for op1, op2 in zip(
                 orig_arch_type.memory_operand_descriptors,
-                arch_type.memory_operand_descriptors
+                arch_type.memory_operand_descriptors,
             ):
                 for elem in [
-                    'is_load', 'is_store', 'is_agen', 'is_prefetch',
-                    'is_branch_target', 'bit_rate'
+                    "is_load",
+                    "is_store",
+                    "is_agen",
+                    "is_prefetch",
+                    "is_branch_target",
+                    "bit_rate",
                 ]:
-
                     if getattr(op1, elem) != getattr(op2, elem):
                         return False
             return True
@@ -1839,17 +1886,16 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
             prop_orig = orig_arch_type.properties
             prop_new = arch_type.properties
 
-            del prop_orig['access_storage_with_update']
-            del prop_new['access_storage_with_update']
+            del prop_orig["access_storage_with_update"]
+            del prop_new["access_storage_with_update"]
 
             return prop_orig == prop_new
 
         arch_types = [
             arch_type
             for arch_type in arch_types
-            if _check_memory_operand(arch_type) and _check_properties(
-                arch_type
-            )
+            if _check_memory_operand(arch_type)
+            and _check_properties(arch_type)
         ]
 
         LOG.debug(
@@ -1861,8 +1907,7 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
         if len(arch_types) == 0:
             raise MicroprobeCodeGenerationError(
-                "Unable to fix instruction type '%s'." %
-                instr.architecture_type
+                f"Unable to fix instruction type '{instr.architecture_type}'."
             )
 
         if len(arch_types) > 1:
@@ -1870,8 +1915,11 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
             LOG.debug("Take the most closest one (by name)")
 
             def sort_key(elem):
-                return len(longest_common_substr(
-                    instr.architecture_type.mnemonic, elem.mnemonic))
+                return len(
+                    longest_common_substr(
+                        instr.architecture_type.mnemonic, elem.mnemonic
+                    )
+                )
 
             arch_types = sorted(arch_types, key=sort_key, reverse=True)
 
@@ -1879,9 +1927,7 @@ class FixMemoryReferencesPass(microprobe.passes.Pass):
 
 
 class GenericMemoryStreamsPass(microprobe.passes.Pass):
-    """GenericMemoryStreamsPass pass.
-
-    """
+    """GenericMemoryStreamsPass pass."""
 
     def __init__(
         self,
@@ -1891,7 +1937,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         storesonly=False,
         switch_stores=False,
         shift_streams=0,
-        warmstores=False
+        warmstores=False,
     ):
         """
 
@@ -1936,7 +1982,6 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 )
 
         for sid, size, ratio, stride, streams, shuffle, loc in self._model:
-
             items.append((sid, ratio))
             all_ratio += ratio
             accum = accum - ratio
@@ -1947,7 +1992,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 values = [(value + shift) for value in range(0, size, stride)]
                 values = microprobe.utils.distrib.shuffle(values, shuffle)
                 values = microprobe.utils.distrib.locality(
-                    values, (loc[0], loc[1]+1)
+                    values, (loc[0], loc[1] + 1)
                 )
 
             sets_dict[sid] = values
@@ -1955,14 +2000,14 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
             if streams <= 0:
                 raise MicroprobeCodeGenerationError(
-                    "Number of streams should be 1 "
-                    "or higher on stream id: %s" % sid
+                    "Number of streams should be 1 or "
+                    f"higher on stream id: {sid}"
                 )
 
         self._sets = sets_dict
         self._func = regular_seq(dict(items))
 
-        self._description = "Create generic streams: %s" % self._model
+        self._description = f"Create generic streams: {self._model}"
 
     def __call__(self, building_block, target):
         """
@@ -1975,9 +2020,15 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         descriptors = {}
         descriptors2 = {}
 
-        for (sid, size, ratio, dummy_stride,
-             streams, shuffle, loc) in self._model:
-
+        for (
+            sid,
+            size,
+            ratio,
+            dummy_stride,
+            streams,
+            shuffle,
+            loc,
+        ) in self._model:
             var = microprobe.code.var.VariableArray(
                 "stream%d" % sid, "char", size, align=4 * 1024
             )
@@ -2009,29 +2060,47 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 module = len(self._sets[sid])
 
                 descriptors[sid] = [
-                    var, reg_basel, [0] * streams, reg_idxl, [0] * streams,
-                    calc_instrsl, last_instr, count, module, reduced,
-                    max_value, 0
+                    var,
+                    reg_basel,
+                    [0] * streams,
+                    reg_idxl,
+                    [0] * streams,
+                    calc_instrsl,
+                    last_instr,
+                    count,
+                    module,
+                    reduced,
+                    max_value,
+                    0,
                 ]
                 descriptors2[sid] = [0]
 
-        for var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall, \
-                calc_instrsl, last_instr, count, module, reduced, \
-                max_value, sind in six.itervalues(descriptors):
-
+        for (
+            var,
+            reg_basel,
+            reg_base_vall,
+            reg_idxl,
+            reg_idx_vall,
+            calc_instrsl,
+            last_instr,
+            count,
+            module,
+            reduced,
+            max_value,
+            sind,
+        ) in descriptors.values():
             for sind in range(0, len(reg_base_vall)):
                 building_block.add_init(
                     target.set_register_to_address(
                         reg_basel[sind],
                         Address(base_address=var),
-                        building_block.context
+                        building_block.context,
                     )
                 )
 
                 building_block.context.set_register_value(
-                    reg_basel[sind],
-                    Address(
-                        base_address=var))
+                    reg_basel[sind], Address(base_address=var)
+                )
                 # building_block.context.add_reserved_registers([reg_idxl[sind]])
 
                 building_block.add_init(
@@ -2041,8 +2110,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 )
 
                 instr = target.set_register(
-                        reg_idxl[sind], 0, building_block.context
-                    )[0]
+                    reg_idxl[sind], 0, building_block.context
+                )[0]
 
                 building_block.context.set_register_value(reg_idxl[sind], 0)
                 # building_block.context.add_reserved_registers([reg_idxl[sind]])
@@ -2051,11 +2120,11 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         ones = None
         extra_switch = []
         warmed = []
+        to_warm = []
         prev_instr = None
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-
                 is_load = False
                 is_store = False
                 is_agen = False
@@ -2079,16 +2148,26 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 if is_branch:
                     continue
 
-                if instr.access_storage and not (
-                    is_store and self._lo
-                ) and not (
-                    is_load and self._so
+                if (
+                    instr.access_storage
+                    and not (is_store and self._lo)
+                    and not (is_load and self._so)
                 ):
-
                     mcomp = self._func()
-                    var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall, \
-                        calc_instrsl, last_instr, count, module, reduced, \
-                        max_value, sind = descriptors[mcomp]
+                    (
+                        var,
+                        reg_basel,
+                        reg_base_vall,
+                        reg_idxl,
+                        reg_idx_vall,
+                        calc_instrsl,
+                        last_instr,
+                        count,
+                        module,
+                        reduced,
+                        max_value,
+                        sind,
+                    ) = descriptors[mcomp]
 
                     reg_base = reg_basel[sind]
                     reg_base_val = reg_base_vall[sind]
@@ -2096,14 +2175,18 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     reg_idx_val = reg_idx_vall[sind]
                     calc_instrs = calc_instrsl[sind]
 
-                    if reg_base not in \
-                            building_block.context.reserved_registers:
+                    if (
+                        reg_base
+                        not in building_block.context.reserved_registers
+                    ):
                         building_block.context.add_reserved_registers(
                             [reg_base]
                         )
 
-                    if reg_idx not in \
-                            building_block.context.reserved_registers:
+                    if (
+                        reg_idx
+                        not in building_block.context.reserved_registers
+                    ):
                         building_block.context.add_reserved_registers(
                             [reg_idx]
                         )
@@ -2116,12 +2199,9 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     max_value = max(value, max_value)
 
                     memoperand = instr.memory_operands()[0]
-                    address = Address(
-                        base_address=var,
-                        displacement=value
-                    )
+                    address = Address(base_address=var, displacement=value)
 
-                    instr.add_comment("Address: %s" % address)
+                    instr.add_comment(f"Address: {address}")
                     try:
                         memoperand.set_address(address, building_block.context)
                         reg_base_val_new = reg_base_val
@@ -2131,17 +2211,25 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         if mcomp > 0:
                             last_instr = instr
                     except MicroprobeCodeGenerationError:
-                        diff = address.displacement - \
-                            reg_base_val - reg_idx_val
+                        diff = (
+                            address.displacement - reg_base_val - reg_idx_val
+                        )
 
                         tinstrs = []
                         new_instrs = []
 
                         # sometimes we don't have index operands,
                         # so we should update the base value
-                        has_index = len([operand for operand in
-                                         instr.operands() if
-                                         operand.type.address_index]) > 0
+                        has_index = (
+                            len(
+                                [
+                                    operand
+                                    for operand in instr.operands()
+                                    if operand.type.address_index
+                                ]
+                            )
+                            > 0
+                        )
 
                         if has_index:
                             update_reg = reg_idx
@@ -2151,6 +2239,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         add_instructions = target.add_to_register(
                             update_reg, diff
                         )
+                        # print('A', len(add_instructions), len(calc_instrs))
 
                         prev_instr = last_instr
                         to_modify = []
@@ -2168,58 +2257,58 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                                     break
 
                         reset_instructions = target.set_register_to_address(
-                            update_reg,
-                            address,
-                            building_block.context
+                            update_reg, address, building_block.context
                         )
 
-                        # print(len(reset_instructions),len(add_instructions))
-                        # print([i.assembly() for i in reset_instructions])
-                        # print([i.assembly() for i in add_instructions])
-
                         if len(reset_instructions) <= len(add_instructions):
-
                             for elem in reset_instructions:
                                 elem.add_comment(
-                                    "Added to compute address: %s" % address
+                                    f"Added to compute address: {address}"
                                 )
 
                             bbl.insert_instr(
-                                reset_instructions, before=instr,
-                                after=prev_instr
+                                reset_instructions,
+                                before=instr,
+                                after=prev_instr,
                             )
 
                             new_instrs = reset_instructions
 
                         elif len(add_instructions) > 0:
-
                             for elem, vals in to_modify:
-                                elem.set_values(vals)
+                                elem.set_operands(vals)
                                 elem.add_comment(
-                                    "Reused to compute address: %s" % address
+                                    f"Reused to compute address: {address}"
                                 )
                                 tinstrs.append(elem)
                                 prev_instr = elem
 
                             bbl.insert_instr(
-                                add_instructions, before=instr,
-                                after=prev_instr
+                                add_instructions,
+                                before=instr,
+                                after=prev_instr,
                             )
                             for elem in add_instructions:
                                 elem.add_comment(
-                                    "Added to compute address: %s" % address
+                                    f"Added to compute address: {address}"
                                 )
 
                             new_instrs = add_instructions
 
+                        elif len(add_instructions) == 0 and len(to_modify) > 0:
+                            for elem, vals in to_modify:
+                                elem.set_operands(vals)
+                                elem.add_comment(
+                                    f"Reused to compute address: {address}"
+                                )
+                                tinstrs.append(elem)
+                                prev_instr = elem
+
                         building_block.context.set_register_value(
-                            update_reg,
-                            address
+                            update_reg, address
                         )
 
-                        memoperand.set_address(
-                            address,
-                            building_block.context)
+                        memoperand.set_address(address, building_block.context)
 
                         if has_index:
                             reg_base_val_new = reg_base_val
@@ -2231,25 +2320,29 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         if mcomp > 0:
                             last_instr = instr
 
+                    if memoperand.variable_length:
+                        length = max(
+                            memoperand.possible_lengths(building_block.context)
+                        )
+                        memoperand.set_length(length, building_block.context)
+
+                    if len(instr.memory_operands()) > 1:
+                        # SS instructions, avoid overlappeing
+                        memoperand2 = instr.memory_operands()[1]
+                        # TODO: this is a hack (access to the same loaded line)
+                        memoperand2._possible_addresses = None
+                        memoperand2.set_address(
+                            memoperand.address + 16, building_block.context
+                        )
+
                     count = count + 1
 
-                    if (self._warmstores and memoperand.is_store and
-                            address not in warmed):
-                        # Warm stores
-                        mycontext = target.wrapper.context()
-                        ninstr = target.set_register_to_address(
-                            target.scratch_registers[0],
-                            address,
-                            mycontext)
-                        mycontext.set_register_value(
-                            target.scratch_registers[0],
-                            address)
-                        ninstr += target.load(
-                            target.scratch_registers[0],
-                            address,
-                            mycontext
-                        )
-                        building_block.add_init(ninstr)
+                    if (
+                        self._warmstores
+                        and memoperand.is_store
+                        and address not in warmed
+                    ):
+                        to_warm.append(address)
                         warmed.append(address)
 
                     # values = target.generate_address(
@@ -2262,29 +2355,45 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
                     for key, value in descriptors.items():
                         if key == mcomp:
-
                             reg_base_vall[sind] = reg_base_val_new
                             reg_idx_vall[sind] = reg_idx_val_new
 
                             if (
-                                reg_base_val == reg_base_val_new and
-                                reg_idx_val == reg_idx_val_new
+                                reg_base_val == reg_base_val_new
+                                and reg_idx_val == reg_idx_val_new
                             ):
-
                                 calc_instrsl[sind] = []
                                 sind = (sind + 1) % len(reg_base_vall)
                                 descriptors[mcomp] = [
-                                    var, reg_basel, reg_base_vall, reg_idxl,
-                                    reg_idx_vall, calc_instrsl, instr, count,
-                                    module, reduced, max_value, sind
+                                    var,
+                                    reg_basel,
+                                    reg_base_vall,
+                                    reg_idxl,
+                                    reg_idx_vall,
+                                    calc_instrsl,
+                                    instr,
+                                    count,
+                                    module,
+                                    reduced,
+                                    max_value,
+                                    sind,
                                 ]
                             else:
                                 calc_instrsl[sind] = []
                                 sind = (sind + 1) % len(reg_base_vall)
                                 descriptors[mcomp] = [
-                                    var, reg_basel, reg_base_vall, reg_idxl,
-                                    reg_idx_vall, calc_instrsl, instr, count,
-                                    module, reduced, max_value, sind
+                                    var,
+                                    reg_basel,
+                                    reg_base_vall,
+                                    reg_idxl,
+                                    reg_idx_vall,
+                                    calc_instrsl,
+                                    instr,
+                                    count,
+                                    module,
+                                    reduced,
+                                    max_value,
+                                    sind,
                                 ]
 
                         # Remove touched instructions from all the streams
@@ -2294,7 +2403,6 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             calc_instrs_new = []
 
                             for calcins in descriptors[key][5][stream]:
-
                                 if len(tinstrs) == 0:
                                     calc_instrs_new.append(calcins)
                                     continue
@@ -2318,7 +2426,11 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             tinstr.add_allow_register(reg_base)
                             tinstr.add_allow_register(reg_idx)
 
-                    if self._switch and memoperand.is_store:
+                    if (
+                        self._switch
+                        and memoperand.is_store
+                        and len(instr.memory_operands()) == 1
+                    ):
                         dcount = descriptors2[mcomp][0]
 
                         if zeros is None:
@@ -2341,9 +2453,12 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                                 "Not enough free registers available"
                             )
 
-                        valid_type = valid_value.type
+                        is_imm = instr.operands()[0].type.immediate
+                        valid_type = None
+                        if not is_imm:
+                            valid_type = valid_value.type
 
-                        if valid_type not in zeros:
+                        if valid_type not in zeros and not is_imm:
                             building_block.context.add_reserved_registers(
                                 [valid_value]
                             )
@@ -2358,29 +2473,26 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
                             if valid_value.type.name == "FPR":
                                 extra_reg = target.registers[
-                                    "FPR%d" % (
-                                        int(
-                                            valid_value.assembly()
-                                        ) + 1
-                                    )
+                                    "FPR%d" % (int(valid_value.assembly()) + 1)
                                 ]
-                                building_block.add_init(target.set_register(
-                                    extra_reg, value, building_block.context))
+                                building_block.add_init(
+                                    target.set_register(
+                                        extra_reg,
+                                        value,
+                                        building_block.context,
+                                    )
+                                )
                                 building_block.context.add_reserved_registers(
                                     [extra_reg]
                                 )
                                 extra_reg2 = target.registers[
-                                    "VSR%d" % (
-                                        int(
-                                            valid_value.assembly()
-                                        )
-                                    )
+                                    "VSR%d" % (int(valid_value.assembly()))
                                 ]
                                 building_block.context.add_reserved_registers(
                                     [extra_reg2]
                                 )
 
-                        else:
+                        elif not is_imm:
                             valid_zero = zeros[valid_type]
 
                         valid_values = set(
@@ -2389,9 +2501,11 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                             set(building_block.context.reserved_registers)
                         )
                         valid_value = list(valid_values)[-1]
-                        valid_type = valid_value.type
 
-                        if valid_type not in ones:
+                        if not is_imm:
+                            valid_type = valid_value.type
+
+                        if valid_type not in ones and not is_imm:
                             building_block.context.add_reserved_registers(
                                 [valid_value]
                             )
@@ -2406,77 +2520,119 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
                             if valid_value.type.name == "FPR":
                                 extra_reg = target.registers[
-                                    "FPR%d" % (
-                                        int(
-                                            valid_value.assembly()
-                                        ) + 1
-                                    )
+                                    "FPR%d" % (int(valid_value.assembly()) + 1)
                                 ]
-                                building_block.add_init(target.set_register(
-                                    extra_reg, value, building_block.context))
+                                building_block.add_init(
+                                    target.set_register(
+                                        extra_reg,
+                                        value,
+                                        building_block.context,
+                                    )
+                                )
                                 building_block.context.add_reserved_registers(
                                     [extra_reg]
                                 )
                                 extra_reg2 = target.registers[
-                                    "VSR%d" % (
-                                        int(
-                                            valid_value.assembly()
-                                        )
-                                    )
+                                    "VSR%d" % (int(valid_value.assembly()))
                                 ]
                                 building_block.context.add_reserved_registers(
                                     [extra_reg2]
                                 )
 
-                        else:
+                        elif not is_imm:
                             valid_one = ones[valid_type]
 
-                        if (dcount % 2) == 0:
-                            instr.operands()[0].set_value(valid_zero)
-                            instr.add_allow_register(valid_zero)
+                        if is_imm:
+                            if max(valid_values) > 127:
+                                raise NotImplementedError
 
+                            if instr.operands()[0].value is None:
+                                if (dcount % 2) == 0:
+                                    instr.operands()[0].set_value(0b01010101)
+                                else:
+                                    instr.operands()[0].set_value(0b00101010)
                         else:
-                            instr.operands()[0].set_value(valid_one)
-                            instr.add_allow_register(valid_one)
+                            if (dcount % 2) == 0:
+                                instr.operands()[0].set_value(valid_zero)
+                                instr.add_allow_register(valid_zero)
+                            else:
+                                instr.operands()[0].set_value(valid_one)
+                                instr.add_allow_register(valid_one)
 
                         for mkreg in instr.sets():
                             if not instr.allows(mkreg):
                                 instr.add_allow_register(mkreg)
 
-                            if mkreg not in \
-                                    building_block.context.reserved_registers:
+                            if (
+                                mkreg not
+                                in building_block.context.reserved_registers
+                            ):
                                 building_block.context.add_reserved_registers(
                                     [mkreg]
                                 )
 
-                        extra_switch.extend(
-                            instr.operands()[0].uses()
-                        )
+                        extra_switch.extend(instr.operands()[0].uses())
 
-                        extra_switch.extend(
-                            instr.operands()[0].sets()
-                        )
+                        extra_switch.extend(instr.operands()[0].sets())
 
                         descriptors2[mcomp][0] = dcount + 1
 
                 else:
-
-                    # TODO: This is not target generic, fix
+                    #
+                    # Update calculation instruction list
+                    #
+                    # TODO: This is not target generic, fix (POWER)
                     if instr.name == "ADDI_V0":
                         for key, value in descriptors.items():
                             for stream in range(0, len(descriptors[key][1])):
                                 descriptors[key][5][stream].append(instr)
 
+                    if instr.name in ["AGFI_V0", "AGHIK_V0"]:
+                        for key, value in descriptors.items():
+                            for stream in range(0, len(descriptors[key][1])):
+                                descriptors[key][5][stream].append(instr)
+
+        mycontext = target.wrapper.context()
+
+        fregs = [
+            reg
+            for reg in target.registers.values()
+            if reg not in building_block.context.reserved_registers
+            and reg.type == target.scratch_registers[0].type
+        ]
+
+        for address in sorted(to_warm):
+            try:
+                ninstr = target.load(fregs[-1], address, mycontext)
+
+            except MicroprobeCodeGenerationError:
+                ninstr = target.set_register_to_address(
+                    target.scratch_registers[0], address, mycontext
+                )
+                mycontext.set_register_value(
+                    target.scratch_registers[0], address
+                )
+                if not mycontext.register_has_value(0):
+                    ninstr += target.set_register(
+                        target.scratch_registers[1], 0, mycontext
+                    )
+                    mycontext.set_register_value(
+                        target.scratch_registers[1], 0
+                    )
+                ninstr += target.load(fregs[-1], address, mycontext)
+
+            for elem in ninstr:
+                elem.add_comment(f"Warmup store {address}")
+
+            building_block.add_init(ninstr)
+
         if zeros is not None and ones is not None:
             for register in set(
-                    list(
-                        zeros.values()) +
-                    list(
-                        ones.values()) +
-                    extra_switch):
+                list(zeros.values()) + list(ones.values()) + extra_switch
+            ):
                 new_instrs = target.negate_register(
-                    register,
-                    building_block.context)
+                    register, building_block.context
+                )
                 building_block.add_fini(new_instrs)
 
                 if register not in building_block.context.reserved_registers:
@@ -2487,9 +2643,20 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         emptycontext = target.wrapper.context()
 
         for sid, size, ratio, stride, streams, shuffle, loc in self._model:
-            var, reg_basel, reg_base_vall, reg_idxl, reg_idx_vall, \
-                calc_instrs, last_instr, count, module, reduced, \
-                max_value, sind = descriptors[sid]
+            (
+                var,
+                reg_basel,
+                reg_base_vall,
+                reg_idxl,
+                reg_idx_vall,
+                calc_instrs,
+                last_instr,
+                count,
+                module,
+                reduced,
+                max_value,
+                sind,
+            ) = descriptors[sid]
 
             if max_value == 0:
                 continue
@@ -2507,10 +2674,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     # new_instrs = target.load_var_address(reg_base, var)
 
                     new_instrs = target.set_register_to_address(
-                        reg_base,
-                        Address(
-                            base_address=var),
-                        emptycontext)
+                        reg_base, Address(base_address=var), emptycontext
+                    )
 
                     if blabel is not None:
                         if new_instrs[0].label is not None:
@@ -2532,12 +2697,14 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         blabelins = None
 
                     assert len(new_instrs) > 0
-                    new_instrs = new_instrs + \
-                        target.set_register(reg_idx, 0, emptycontext)
+                    new_instrs = new_instrs + target.set_register(
+                        reg_idx, 0, emptycontext
+                    )
                     for new_instr in new_instrs:
                         new_instr.add_allow_register(reg_base)
                         new_instr.add_allow_register(reg_idx)
                     building_block.add_fini(new_instrs)
+
                 continue
 
             # Always set the index register to zero
@@ -2568,9 +2735,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
             # Set it to zero during initialization
             new_instrs = target.set_register(
-                reg_constant,
-                0,
-                building_block.context)
+                reg_constant, 0, building_block.context
+            )
             for new_instr in new_instrs:
                 new_instr.add_allow_register(reg_constant)
 
@@ -2590,7 +2756,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 reg_idx_val = reg_idx_vall[sind]
 
                 new_instrs = target.add_to_register(
-                    reg_base, max_value-reg_base_val+stride
+                    reg_base, max_value - reg_base_val + stride
                 )
                 for new_instr in new_instrs:
                     new_instr.add_allow_register(reg_base)
@@ -2598,10 +2764,10 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 building_block.add_fini(new_instrs)
 
             # Add the conditional branch
-            guard = (size // (max_value + stride))
+            guard = size // (max_value + stride)
 
             # Set the label for in case the next component needs it
-            blabel = "stream%sguard" % sid
+            blabel = f"stream{sid}guard"
 
             new_instrs = target.compare_and_branch(
                 reg_constant, guard, "<", blabel, building_block.context
@@ -2620,15 +2786,14 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 reg_idx_val = reg_idx_vall[sind]
 
                 new_instrs = target.set_register_to_address(
-                    reg_base,
-                    Address(
-                        base_address=var),
-                    emptycontext)
+                    reg_base, Address(base_address=var), emptycontext
+                )
 
                 assert len(new_instrs) > 0
 
-                new_instrs = new_instrs + \
-                    target.set_register(reg_constant, 0, emptycontext)
+                new_instrs = new_instrs + target.set_register(
+                    reg_constant, 0, emptycontext
+                )
 
                 for new_instr in new_instrs:
                     new_instr.add_allow_register(reg_base)
@@ -2646,9 +2811,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
 
 class SetMemoryOperandByOpcodePass(microprobe.passes.Pass):
-    """SetMemoryOperandByOpcodePass pass.
-
-    """
+    """SetMemoryOperandByOpcodePass pass."""
 
     def __init__(self, opcode, operand_pos, value):
         """
@@ -2659,10 +2822,11 @@ class SetMemoryOperandByOpcodePass(microprobe.passes.Pass):
 
         """
         super(SetMemoryOperandByOpcodePass, self).__init__()
-        self._description = "Set memory operand %d of instructions with " \
-                            "opcode " \
-                            "'%s' to value: '%s'" % (operand_pos, opcode,
-                                                     value)
+        self._description = (
+            "Set memory operand %d of instructions with "
+            "opcode "
+            "'%s' to value: '%s'" % (operand_pos, opcode, value)
+        )
         self._opcode = opcode
         self._pos = operand_pos
         self._base_value = value
@@ -2676,7 +2840,6 @@ class SetMemoryOperandByOpcodePass(microprobe.passes.Pass):
             valuef = idem
 
         else:
-
             valuef = getnextf(itertools.cycle(value))
 
         self._value = valuef
@@ -2697,28 +2860,25 @@ class SetMemoryOperandByOpcodePass(microprobe.passes.Pass):
                             if instr.label != "":
                                 value = InstructionAddress(
                                     base_address=instr.label,
-                                    displacement=value
+                                    displacement=value,
                                 )
                             else:
                                 value = InstructionAddress(
-                                    base_address="ins_id_%s" % id(instr),
-                                    displacement=value
+                                    base_address=f"ins_id_{id(instr)}",
+                                    displacement=value,
                                 )
-                                instr.set_label("ins_id_%s" % id(instr))
+                                instr.set_label(f"ins_id_{id(instr)}")
 
                         assert isinstance(value, InstructionAddress)
                     else:
                         if not isinstance(value, Address):
                             value = Address(
-                                base_address="data",
-                                displacement=value
+                                base_address="data", displacement=value
                             )
 
                         assert isinstance(value, Address)
 
-                    instr.memory_operands()[
-                        self._pos
-                    ].set_address(
+                    instr.memory_operands()[self._pos].set_address(
                         value, building_block.context
                     )
 
@@ -2736,34 +2896,31 @@ class SetMemoryOperandByOpcodePass(microprobe.passes.Pass):
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
                 if instr.opcode == self._opcode:
-                    if instr.memory_operands()[
-                        self._pos
-                    ].value != self._value():
+                    if (
+                        instr.memory_operands()[self._pos].value
+                        != self._value()
+                    ):
                         return False
 
         return True
 
 
 class InitializeMemoryDecorator(microprobe.passes.Pass):
-    """InitializeMemoryDecoratorPass pass.
+    """InitializeMemoryDecoratorPass pass."""
 
-    """
-
-    _error_class = collections.namedtuple("LateErrorClass", ['next'])
+    _error_class = collections.namedtuple("LateErrorClass", ["next"])
 
     def __init__(self, default=None):
-
         self._default = default
-        self._description = "Initialize memory decorator. Default: %s" \
-            % self._default
+        self._description = (
+            f"Initialize memory decorator. Default: {self._default}"
+        )
 
     def __call__(self, building_block, dummy_target):
-
         default = None
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-
                 is_agen = False
 
                 for moperand in instr.memory_operands():
@@ -2777,21 +2934,19 @@ class InitializeMemoryDecorator(microprobe.passes.Pass):
                     continue
 
                 if "MA" in instr.decorators:
-                    value = instr.decorators['MA']['value']
+                    value = instr.decorators["MA"]["value"]
                     value = self._normalize_value(
-                        instr, value[:],
-                        building_block
+                        instr, value[:], building_block
                     )
                     instr.decorators["MA"]["value"] = value
                 else:
                     if default is None:
-                        default = self._normalize_value(instr,
-                                                        self._default,
-                                                        building_block)
+                        default = self._normalize_value(
+                            instr, self._default, building_block
+                        )
                     instr.add_decorator("MA", default)
 
     def _normalize_value(self, instr, value, building_block):
-
         if value is None:
 
             def function():
@@ -2811,33 +2966,33 @@ class InitializeMemoryDecorator(microprobe.passes.Pass):
 
         value_list = []
         for elem in value:
-
             if elem is None:
                 continue
 
-            if isinstance(elem, six.integer_types):
+            if isinstance(elem, int):
                 value_list.append(
                     Address(
-                        base_address="data",
-                        displacement=elem -
-                        data_segment))
+                        base_address="data", displacement=elem - data_segment
+                    )
+                )
             elif isinstance(elem, Address):
                 value_list.append(elem)
             elif isinstance(elem, str):
-
                 int_elem = [int(selem, 0) for selem in elem.split("-")]
 
                 for elem2 in range_to_sequence(*int_elem):
                     value_list.append(
                         Address(
                             base_address="data",
-                            displacement=elem2 -
-                            data_segment))
+                            displacement=elem2 - data_segment,
+                        )
+                    )
             else:
                 raise MicroprobeCodeGenerationError(
                     "Unable to interpret decorator MA decorator"
-                    " with value '%s' in instruction '%s' at %s" %
-                    (value, instr.assembly(), instr.address))
+                    " with value '%s' in instruction '%s' at %s"
+                    % (value, instr.assembly(), instr.address)
+                )
 
         value = itertools.cycle(value_list)
         return value

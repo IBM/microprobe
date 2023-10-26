@@ -23,7 +23,6 @@ import abc
 from typing import TYPE_CHECKING, List
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe import MICROPROBE_RC
@@ -156,7 +155,7 @@ def find_env_definitions(paths: List[str] | None = None):
 
 # Classes
 @typeguard_testsuite
-class Environment(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
+class Environment(PropertyHolder, metaclass=abc.ABCMeta):
     """ """
 
     @abc.abstractmethod

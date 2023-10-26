@@ -20,11 +20,11 @@ from __future__ import absolute_import
 
 # Built-in modules
 import os.path
+import pickle
 
 # Third party modules
 import cachetools
 import fasteners
-import six.moves.cPickle as pickle  # pylint: disable=E0401,E0611
 
 # Own modules
 from microprobe import MICROPROBE_RC

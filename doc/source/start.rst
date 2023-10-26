@@ -11,3 +11,4 @@ Getting started
    start_install
    start_update
    start_check
+   start_quick_private

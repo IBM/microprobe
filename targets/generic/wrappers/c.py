@@ -23,7 +23,6 @@ from time import localtime, strftime
 from typing import Any, Callable, List, Union
 
 # Third party modules
-import six
 
 # Own modules
 import microprobe.code.var
@@ -196,7 +195,7 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
                         self._max_array_var = var
                         self._max_array_var_value = value
                         return string
-                    elif isinstance(value, six.integer_types):
+                    elif isinstance(value, int):
                         value = min(value, 2**31)
                         value = max(value, -2**31)
                         return "{memset(&%s, %d, %d);}\n" % (var.name, value,
@@ -245,7 +244,7 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
                                 var.size, cgdc,
                                 var.name, varant.name, cgdc)
 
-                    elif isinstance(value, six.integer_types):
+                    elif isinstance(value, int):
                         value = min(value, 2**31)
                         value = max(value, -2**31)
                         return f"{{memset(&{var.name}, {value}, " \
@@ -257,7 +256,7 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
 
         else:
 
-            if isinstance(value, six.integer_types):
+            if isinstance(value, int):
                 return "%s = %d;\n" % (var.name, value)
             elif value == 'random':
                 return "%s = %d;\n" % (var.name, 0)

@@ -23,7 +23,6 @@ import math
 from typing import TYPE_CHECKING, Dict, List
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError

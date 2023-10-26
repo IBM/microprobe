@@ -108,5 +108,5 @@ instructions =
     BCLR 20, 0, 0                      @ BT=0x10020004 BP=T
   <ELF_ABI_EXIT>:
     ORI 0, 0, 0                       
-    ATTN                           ; ATTN instructio ends the trace generation
+    ATTN                           ; ATTN instruction ends the trace generation
                                    ; process

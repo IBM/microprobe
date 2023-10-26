@@ -31,3 +31,14 @@ sections for further details:
    tools_mp_seq
    tools_mp_seqtune
    tools_mp_target
+   tools_mp_mpt2tst
+   tools_mp_tst_join
+   tools_integration
+   tools_mp_bin2dma
+   tools_mp_coblst2mpt
+   tools_mp_didt
+   tools_mp_dma2objdump
+   tools_mp_mesa2mpt
+   tools_mp_objdump2dma
+   tools_mp_mpt2avp
+   tools_mp_zaiu

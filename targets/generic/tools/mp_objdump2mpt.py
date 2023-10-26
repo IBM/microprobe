@@ -26,7 +26,6 @@ from __future__ import absolute_import, print_function
 import sys
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.code.address import Address
@@ -56,7 +55,7 @@ def dump_mpt(input_file_fd, target, arguments):
 
     try:
         contents = input_file_fd.read()
-        if six.PY3 and not isinstance(contents, str):
+        if not isinstance(contents, str):
             contents = contents.decode()
     except KeyboardInterrupt:
         print_info("No input data provided. Exiting...")

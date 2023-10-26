@@ -26,10 +26,9 @@ import collections
 import io
 import os
 import re
+import configparser
 
 # Third party modules
-import six.moves.configparser
-from six.moves import range
 
 # Own modules
 from microprobe.code.var import VariableSingle
@@ -288,7 +287,7 @@ class MicroprobeTestMemoryAccessDefinition(object):
         self.access_type = rw
         self.address = address
         self.length = length
-        assert isinstance(length, six.integer_types)
+        assert isinstance(length, int)
 
     def to_str(self):
         return "%s %s 0X%016X %03d" % (self.data_type, self.access_type,
@@ -302,7 +301,7 @@ class MicroprobeTestMemoryAccessDefinition(object):
         return copy.deepcopy(self)
 
 
-class MicroprobeTestDefinition(six.with_metaclass(abc.ABCMeta, object)):
+class MicroprobeTestDefinition(metaclass=abc.ABCMeta):
     """Abstract class to represent a Microprobe Test configuration."""
 
     @abc.abstractmethod
@@ -647,7 +646,7 @@ class MicroprobeTestDefinitionV0x5(MicroprobeTestDefinitionDefault):
     version = 0.5
 
 
-class MicroprobeTestParser(six.with_metaclass(abc.ABCMeta, object)):
+class MicroprobeTestParser(metaclass=abc.ABCMeta):
     """Abstract class to represent a Microprobe Test configuration parser."""
 
     @abc.abstractmethod
@@ -693,7 +692,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
     def __init__(self):
         """ """
         super(MicroprobeTestParserDefault, self).__init__()
-        self._configparser_cls = six.moves.configparser.SafeConfigParser
+        self._configparser_cls = configparser.SafeConfigParser
         self._configparser_default = {}
         self._configparser_dict = OrderedDict
 
@@ -716,7 +715,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
         try:
             parser = self._parse_contents(contents)
-        except six.moves.configparser.ParsingError as exc:
+        except configparser.ParsingError as exc:
             raise MicroprobeMPTFormatError(
                 exc.message.replace(
                     "???", filename
@@ -1288,7 +1287,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
                     for line in lines:
                         progress()
 
-                        if isinstance(line, six.binary_type):
+                        if isinstance(line, bytes):
                             line = line.decode()
 
                         # Remove comments
@@ -1841,7 +1840,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
 
         address = "None"
         if var.address is not None:
-            if isinstance(var.address, six.integer_types):
+            if isinstance(var.address, int):
                 address = "0x%016X" % var.address
             else:
                 assert var.address.base_address == "code"
@@ -2016,7 +2015,7 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         with open_generic_fd(ofile, "w") as ofd:
             for access in memtrace:
                 straccess = access.to_str()
-                if isinstance(straccess, six.string_types) and six.PY3:
+                if isinstance(straccess, str):
                     ofd.write(straccess.encode())
                     ofd.write('\n'.encode())
                 else:
@@ -2115,18 +2114,14 @@ class MicroprobeTestParserDefault(MicroprobeTestParser):
         """ """
 
         kwargs = {}
-        if six.PY3:
-            kwargs["inline_comment_prefixes"] = ";"
+        kwargs["inline_comment_prefixes"] = ";"
 
         parser = self._configparser_cls(
             self._configparser_default, self._configparser_dict,
             **kwargs
         )
 
-        if six.PY2:
-            parser.readfp(io.BytesIO(contents))
-        elif six.PY3:
-            parser.readfp(io.StringIO(contents))
+        parser.readfp(io.StringIO(contents))
 
         return parser
 

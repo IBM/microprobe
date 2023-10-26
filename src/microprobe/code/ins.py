@@ -24,8 +24,7 @@ from itertools import product
 from typing import TYPE_CHECKING, Callable, List
 
 # Third party modules
-import six
-from six.moves import range, zip
+
 
 # Own modules
 from microprobe.code.address import Address, InstructionAddress
@@ -179,7 +178,7 @@ def instruction_set_def_properties(instr,
         for idx, operand in enumerate(operands):
             LOG.debug("Fixing operands: %s", operand)
 
-            if (isinstance(operand, six.integer_types)
+            if (isinstance(operand, int)
                     and instr.operands()[idx].type.address_relative
                     and fix_relative):
                 LOG.debug("Hardcoded displacement")
@@ -601,7 +600,7 @@ class InstructionMemoryOperandValue(Pickable):
                     return True
                 elif not isinstance(
                         list(operand.type.values())[0],
-                        tuple([str] + list(six.integer_types))):
+                        tuple([str, int])):
                     return True
 
         return False
@@ -611,7 +610,7 @@ class InstructionMemoryOperandValue(Pickable):
 
         length = 0
         for operand in self._length_values:
-            if isinstance(operand, six.integer_types):
+            if isinstance(operand, int):
                 length = length + operand
             elif operand == "Unknown":
                 LOG.warning("Unknown length (assume 0) for memory operand")
@@ -863,8 +862,8 @@ class InstructionMemoryOperandValue(Pickable):
 
             for length in lengths:
 
-                if isinstance(operand_constant, six.integer_types):
-                    if isinstance(lengths[length], six.integer_types):
+                if isinstance(operand_constant, int):
+                    if isinstance(lengths[length], int):
                         lengths[length] += operand_constant
                     else:
                         raise NotImplementedError
@@ -917,9 +916,9 @@ class InstructionMemoryOperandValue(Pickable):
                             # greater than the max value
                             lengths[length] = maxvalue
 
-                        elif isinstance(lengths[length], six.integer_types):
+                        elif isinstance(lengths[length], int):
 
-                            if isinstance(length, six.integer_types):
+                            if isinstance(length, int):
 
                                 if length > maxvalue:
                                     lengths_to_remove.append(length)
@@ -934,7 +933,7 @@ class InstructionMemoryOperandValue(Pickable):
 
                                 elif (isinstance(length[0], Register)
                                       and isinstance(length[1],
-                                                     six.integer_types)):
+                                                     int)):
 
                                     if lengths[length] > maxvalue:
                                         # TODO: Assuming that min value is
@@ -989,7 +988,7 @@ class InstructionMemoryOperandValue(Pickable):
         assert "reg_range" not in list(lengths.values()), lengths
         assert len(lengths) > 0
         for elem in lengths.values():
-            assert isinstance(elem, six.integer_types), elem
+            assert isinstance(elem, int), elem
 
         self._possible_lengths = lengths
 
@@ -1080,7 +1079,7 @@ class InstructionMemoryOperandValue(Pickable):
         """
 
         LOG.debug("Start set length: %s", length)
-        assert isinstance(length, six.integer_types), length
+        assert isinstance(length, int), length
 
         if self._unset_length_function is not None:
             self._unset_length_function()
@@ -1115,7 +1114,7 @@ class InstructionMemoryOperandValue(Pickable):
                     operands.append(operand[2])
                 else:
                     raise NotImplementedError
-            elif isinstance(operand, six.integer_types):
+            elif isinstance(operand, int):
                 continue
             elif operand.startswith("*") and operand[1:].isdigit():
                 continue

@@ -1,5 +1,4 @@
 PyYAML
-ordereddict
 argparse
 rxjson
 six

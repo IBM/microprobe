@@ -36,3 +36,17 @@ Full usage
 
 .. program-output:: ../../targets/generic/tools/mp_bin2objdump.py --help
 
+---------------
+Example outputs
+---------------
+
+.. rubric:: Example 1:
+
+Command::
+
+   > mp_bin2objdump -T z13-z13-z64_mesa_st -i input.bin 
+   
+Output:
+
+.. program-output:: ../../targets/generic/tools/mp_bin2objdump.py -P ../../targets/ -T z13-z13-z64_mesa_st -i ../../targets/z/tests/tools/bin2objdump_test001.bin
+  

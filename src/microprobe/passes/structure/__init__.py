@@ -21,7 +21,6 @@ from __future__ import absolute_import, division
 # Built-in modules
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 import microprobe.passes

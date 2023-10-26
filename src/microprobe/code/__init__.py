@@ -48,7 +48,7 @@ from time import time
 from typing import TYPE_CHECKING, Dict, List, Type
 
 # Third party modules
-import six
+
 
 # Own modules
 import microprobe.code.wrapper
@@ -338,7 +338,7 @@ class Synthesizer:
         for elem in program_str:
             if elem == []:
                 continue
-            if isinstance(elem, six.string_types) and six.PY3:
+            if isinstance(elem, str):
                 elem = elem.encode()
             fdx.write(elem)
 

@@ -26,7 +26,6 @@ import sys
 from typing import List, Tuple
 
 # Third party modules
-import six
 
 # Own modules
 import microprobe.code
@@ -529,7 +528,7 @@ def _shift_and_fix_code(
 
         if len(reset_step) == 3:
             rins, reset_register, value = reset_step
-            if not isinstance(value, six.integer_types):
+            if not isinstance(value, int):
                 # All addresses should be offset
                 value += offset
                 nins = target.set_register(
@@ -584,7 +583,7 @@ def _shift_and_fix_code(
 
         for ins in nins:
             if len(reset_step) == 3:
-                if not isinstance(value, six.integer_types):
+                if not isinstance(value, int):
                     value = value.displacement
                 ins.add_comment(
                     "Reset code. Setting %s to 0X%016X" %

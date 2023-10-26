@@ -21,7 +21,6 @@ from __future__ import absolute_import, print_function
 # Built-in modules
 
 # Third party modules
-from six.moves import zip
 
 # Own modules
 from microprobe.code.ins import InstructionOperandValue

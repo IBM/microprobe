@@ -159,7 +159,7 @@ class BranchNextPass(Pass):
                                 "Branch relative, existing label: '%s'", label
                             )
 
-                    elif rregs < 5:
+                    elif len(labels) == 0:
 
                         if instr.label is None:
                             label = "abs_branch_%d" % counter
@@ -176,7 +176,7 @@ class BranchNextPass(Pass):
 
                         label_instruction_map[label] = instr
                     else:
-                        label = labels[counter % 5]
+                        label = labels[0]
 
                     assert label is not None
 

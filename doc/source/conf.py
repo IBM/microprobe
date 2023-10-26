@@ -337,7 +337,7 @@ epub_copyright = u'2011-2020, IBM Corporation'
 # intersphinx_mapping = {'http://docs.python.org/': None}
 
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/2.7/', None),
+    'python': ('http://docs.python.org/3.9/', None),
 }
 
 autogen_output_path = "_rsts"

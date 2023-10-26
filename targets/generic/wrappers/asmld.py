@@ -20,7 +20,6 @@ from __future__ import absolute_import
 # Built-in modules
 import itertools
 from typing import List, Union
-import six
 from random import Random
 
 # Own modules
@@ -141,7 +140,7 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
             if isinstance(value, float):
                 values[idx] = ieee_float_to_int64(value)
                 assert var.type in ["float", "double"]
-            elif isinstance(value, six.integer_types):
+            elif isinstance(value, int):
                 values[idx] = value
             else:
                 raise MicroprobeCodeGenerationError(

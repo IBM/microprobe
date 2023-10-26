@@ -29,7 +29,6 @@ import sys
 import traceback
 
 # Third party modules
-from six.moves import map, range
 
 # Own modules
 import microprobe.code.ins

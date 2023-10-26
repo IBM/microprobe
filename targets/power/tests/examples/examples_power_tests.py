@@ -23,22 +23,15 @@ import os
 import shutil
 import signal
 import time
+import subprocess
 from tempfile import SpooledTemporaryFile, mkdtemp
 from unittest import TestCase, main, skipIf
 
 # Third party modules
-import six
-from six.moves import range
 
 # Own modules
 import microprobe
 
-if six.PY2:
-    # Third party modules
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    # Built-in modules
-    import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -68,7 +61,7 @@ def _get_child_processes(parent_pid):
     if retcode == 1:
         return []
     elif retcode == 0:
-        if isinstance(ps_output, six.binary_type):
+        if isinstance(ps_output, bytes):
             ps_output = ps_output.decode()
         pids = ps_output.split("\n")[:-1]
         for pid_str in ps_output.split("\n")[:-1]:

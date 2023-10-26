@@ -22,7 +22,6 @@ from __future__ import absolute_import
 import struct
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.utils.logger import get_logger
@@ -42,10 +41,7 @@ def ieee_float_to_int64(float_val):
     """
     binary = struct.pack('>d', float_val)
 
-    if six.PY2:
-        string = ''.join('{0:08b}'.format(ord(b)) for b in binary)
-    elif six.PY3:
-        string = ''.join('{0:08b}'.format(b) for b in binary)
+    string = ''.join('{0:08b}'.format(b) for b in binary)
 
     # strip off leading zeros
     for idx, char in enumerate(string):

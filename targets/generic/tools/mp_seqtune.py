@@ -36,9 +36,18 @@ from microprobe import MICROPROBE_RC
 from microprobe.code import get_wrapper
 from microprobe.exceptions import MicroprobeException, MicroprobeValueError
 from microprobe.target import import_definition
-from microprobe.utils.cmdline import CLI, existing_dir, float_type, \
-    int_range, int_type, new_file, parse_instruction_list, \
-    print_error, print_info, string_with_fields
+from microprobe.utils.cmdline import (
+    CLI,
+    existing_dir,
+    float_type,
+    int_range,
+    int_type,
+    new_file,
+    parse_instruction_list,
+    print_error,
+    print_info,
+    string_with_fields,
+)
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import iter_flatten, move_file
 from microprobe.utils.policy import find_policy
@@ -55,124 +64,150 @@ def _get_wrapper(name):
         raise MicroprobeException(
             "Wrapper '%s' not available. Check if you have the wrappers "
             "of the target installed or set up an appropriate "
-            "MICROPROBEWRAPPERS environment variable. Original error was: %s" %
-            (name, str(exc)))
+            "MICROPROBEWRAPPERS environment variable. Original error was: %s"
+            % (name, str(exc))
+        )
 
 
 def _generic_policy_wrapper(all_arguments):
-
     configuration, outputdir, outputname, target, kwargs = all_arguments
 
-    instructions, mem_switch, data_switch, switch_branch, branch_pattern, \
-        replace_every, add_every, memory_streams, \
-        benchmark_size = configuration
+    (
+        instructions,
+        mem_switch,
+        data_switch,
+        switch_branch,
+        branch_pattern,
+        replace_every,
+        add_every,
+        memory_streams,
+        benchmark_size,
+    ) = configuration
 
     extrapath = []
     extrapath.append("BS_%d" % benchmark_size)
     extrapath.append("MS_%d" % mem_switch)
     extrapath.append("DS_%d" % data_switch)
-    extrapath.append("BP_%s" % branch_pattern)
+    extrapath.append(f"BP_{branch_pattern}")
     extrapath.append("SB_%d" % switch_branch)
 
     for repl in replace_every:
-        extrapath.append("RE_%d_%s_%s" % (repl[2], repl[0].name, repl[1].name))
+        if repl[2] > 0:
+            extrapath.append(
+                "RE_%d_%s_%s" % (repl[2], repl[0].name, repl[1].name)
+            )
 
     for addl in add_every:
-        extrapath.append("AE_%d_%s" %
-                         (addl[1], "_".join([elem.name for elem in addl[0]])))
+        if addl[1] > 0:
+            extrapath.append(
+                "AE_%d_%s"
+                % (addl[1], "_".join([elem.name for elem in addl[0]]))
+            )
 
     for mems in memory_streams:
-        extrapath.append("ME_%d_%d_%d_%d_%d_%d_%d_%d" %
-                         (mems[0], mems[1], mems[2], mems[3], mems[4], mems[5],
-                          mems[6][0], mems[6][1]))
+        extrapath.append(
+            "ME_%d_%d_%d_%d_%d_%d_%d_%d"
+            % (
+                mems[0],
+                mems[1],
+                mems[2],
+                mems[3],
+                mems[4],
+                mems[5],
+                mems[6][0],
+                mems[6][1],
+            )
+        )
 
     outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
     outputfile = outputfile.replace(
         "%DIRTREE%",
-        os.path.join(*([instr.name for instr in instructions] + extrapath)))
+        os.path.join(*([instr.name for instr in instructions] + extrapath)),
+    )
 
-    if kwargs['shortnames']:
+    if kwargs["shortnames"]:
         outputfile = outputfile.replace(
-            "%BASENAME%", "mp_seqtune_%s" % hashlib.sha1("_".join(
-                instr.name
-                for instr in instructions).encode()).hexdigest()[0:10] + "#" +
-            "#".join(extrapath))
+            "%BASENAME%",
+            "mp_seqtune_%s"
+            % hashlib.sha1(
+                "_".join(
+                    [instr.name for instr in instructions] + extrapath
+                ).encode()
+            ).hexdigest()[0:70],
+        )
     else:
         outputfile = outputfile.replace(
             "%BASENAME%",
-            "_".join(instr.name
-                     for instr in instructions) + "#" + "#".join(extrapath))
+            f"{'_'.join(instr.name for instr in instructions)}"
+            f"#{'#'.join(extrapath)}",
+        )
 
     extension = ""
     if target.name.endswith("linux_gcc"):
-
         wrapper_name = "CInfGen"
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(reset=kwargs['reset'])
+        wrapper = wrapper_class(reset=kwargs["reset"])
         extension = "c"
 
     elif target.name.endswith("cronus"):
-
         wrapper_name = "Cronus"
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
-            reset=kwargs['reset'],
-            endless=kwargs['endless'],
+            reset=kwargs["reset"],
+            endless=kwargs["endless"],
         )
         extension = "bin"
 
     elif target.name.endswith("mesa"):
-
         wrapper_name = "Tst"
         extension = "tst"
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
             os.path.basename(outputfile.replace("%EXT%", extension)),
-            reset=kwargs['reset'],
-            endless=kwargs['endless'],
+            reset=kwargs["reset"],
+            endless=kwargs["endless"],
         )
 
     elif target.name.endswith("riscv64_test_p"):
-
         wrapper_name = "RiscvTestsP"
         extension = "S"
         wrapper_class = _get_wrapper(wrapper_name)
         wrapper = wrapper_class(
-            reset=kwargs['reset'],
-            endless=kwargs['endless'],
+            reset=kwargs["reset"],
+            endless=kwargs["endless"],
         )
 
     elif target.environment.default_wrapper:
-
         wrapper_name = target.environment.default_wrapper
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(endless=kwargs['endless'],
-                                reset=kwargs['reset'])
+        wrapper = wrapper_class(
+            endless=kwargs["endless"], reset=kwargs["reset"]
+        )
 
         outputfile = outputfile.replace(".%EXT%", "")
         outputfile = wrapper.outputname(outputfile)
 
     else:
-        raise NotImplementedError("Unsupported configuration '%s'" %
-                                  target.name)
+        raise NotImplementedError(f"Unsupported configuration '{target.name}'")
 
-    if MICROPROBE_RC['debugwrapper']:
+    if MICROPROBE_RC["debugwrapper"]:
         extension = "s"
 
     outputfile = outputfile.replace("%EXT%", extension)
 
-    if kwargs['skip']:
+    if kwargs["skip"]:
         if os.path.exists(outputfile):
-            print_info("%s already exists!" % outputfile)
+            print_info(f"{outputfile} already exists!")
             return
 
-        if kwargs["compress"] and os.path.exists("%s.gz" % outputfile):
-            print_info("%s.gz already exists!" % outputfile)
+        if kwargs["compress"] and os.path.exists(f"{outputfile}.gz"):
+            print_info(f"{outputfile}.gz already exists!")
             return
 
     if len(memory_streams) == 0:
-        warnings.warn("No memory streams provided "
-                      "using 1K stream stride 64 bytes")
+        warnings.warn(
+            "No memory streams provided " "using 1K stream stride 64 bytes"
+        )
         memory_streams = [(1, 4096, 1, 256, 1, 0, (0, 0))]
 
     streamid = 0
@@ -182,64 +217,67 @@ def _generic_policy_wrapper(all_arguments):
             new_memory_streams.append([streamid] + list(stream)[1:])
             streamid += 1
 
+    if len(new_memory_streams) == 0:
+        new_memory_streams = memory_streams
+
     extra_arguments = {}
-    extra_arguments['instructions'] = instructions
-    extra_arguments['benchmark_size'] = benchmark_size
-    extra_arguments['dependency_distance'] = kwargs['dependency_distance']
-    extra_arguments['mem_switch'] = mem_switch
-    extra_arguments['data_switch'] = data_switch
-    extra_arguments['branch_pattern'] = branch_pattern
-    extra_arguments['replace_every'] = replace_every
-    extra_arguments['add_every'] = add_every
-    extra_arguments['memory_streams'] = new_memory_streams
-    extra_arguments['branch_switch'] = switch_branch
+    extra_arguments["instructions"] = instructions
+    extra_arguments["benchmark_size"] = benchmark_size
+    extra_arguments["dependency_distance"] = kwargs["dependency_distance"]
+    extra_arguments["mem_switch"] = mem_switch
+    extra_arguments["data_switch"] = data_switch
+    extra_arguments["branch_pattern"] = branch_pattern
+    extra_arguments["replace_every"] = replace_every
+    extra_arguments["add_every"] = add_every
+    extra_arguments["memory_streams"] = new_memory_streams
+    extra_arguments["branch_switch"] = switch_branch
 
     if wrapper.outputname(outputfile) != outputfile:
-        print_error("Fix outputname to have a proper extension. E.g. '%s'" %
-                    wrapper.outputname(outputfile))
+        print_error(
+            "Fix outputname to have a proper extension. E.g. '%s'"
+            % wrapper.outputname(outputfile)
+        )
         exit(-1)
 
     for instr in instructions:
         if instr.unsupported:
-            print_info("%s not supported!" % instr.name)
+            print_info(f"{instr.name} not supported!")
             return
 
-    policy = find_policy(target.name, 'seqtune')
+    policy = find_policy(target.name, "seqtune")
 
     if not os.path.exists(os.path.dirname(outputfile)):
         os.makedirs(os.path.dirname(outputfile))
 
     outputfile = new_file(wrapper.outputname(outputfile), internal=True)
 
-    print_info("Generating %s..." % outputfile)
+    print_info(f"Generating {outputfile}...")
     synth = policy.apply(target, wrapper, **extra_arguments)
 
     if not kwargs["ignore_errors"]:
         bench = synth.synthesize()
     else:
-
-        if os.path.exists("%s.fail" % outputfile):
-            print_error("%s failed before. Not generating" % outputfile)
+        if os.path.exists(f"{outputfile}.fail"):
+            print_error(f"{outputfile} failed before. Not generating")
             return
 
         try:
             bench = synth.synthesize()
         except Exception as exc:
+            with open(f"{outputfile}.fail", "a"):
+                os.utime(f"{outputfile}.fail", None)
 
-            with open("%s.fail" % outputfile, 'a'):
-                os.utime("%s.fail" % outputfile, None)
-
-            print_error("%s" % exc)
+            print_error(f"{exc}")
             print_error("Generation failed for current configuration.")
             print_error("Generating next configurations.")
             return
 
     synth.save(outputfile, bench=bench)
-    print_info("%s generated!" % outputfile)
+    print_info(f"{outputfile} generated!")
 
-    if kwargs['compress']:
-        move_file(outputfile, "%s.gz" % outputfile)
-        print_info("%s compressed to %s.gz" % (outputfile, outputfile))
+    if kwargs["compress"]:
+        move_file(outputfile, f"{outputfile}.gz")
+        print_info(f"{outputfile} compressed to {outputfile}.gz")
 
     return
 
@@ -250,32 +288,39 @@ def main():
     Program main
     """
     args = sys.argv[1:]
-    cmdline = CLI("Microprobe seqtune tool",
-                  default_config_file="mp_seqtune.cfg",
-                  force_required=['target'])
+    cmdline = CLI(
+        "Microprobe seqtune tool",
+        default_config_file="mp_seqtune.cfg",
+        force_required=["target"],
+    )
 
     groupname = "SEQTUNE arguments"
-    cmdline.add_group(groupname,
-                      "Command arguments related to Sequence tuner generator")
+    cmdline.add_group(
+        groupname, "Command arguments related to Sequence tuner generator"
+    )
 
-    cmdline.add_option("seq-output-dir",
-                       "D",
-                       None,
-                       "Output directory name",
-                       group=groupname,
-                       opt_type=existing_dir,
-                       required=True)
+    cmdline.add_option(
+        "seq-output-dir",
+        "D",
+        None,
+        "Output directory name",
+        group=groupname,
+        opt_type=existing_dir,
+        required=True,
+    )
 
     cmdline.add_option(
         "sequence",
         "seq",
-        None, "Base instruction sequence to modify (command separated list of "
+        None,
+        "Base instruction sequence to modify (command separated list of "
         "instructions). If multiple sequences are provided (separated by"
         " a space) they are combined (product).",
         group=groupname,
         opt_type=str,
         required=True,
-        nargs="+")
+        nargs="+",
+    )
 
     cmdline.add_option(
         "repeat",
@@ -291,31 +336,36 @@ def main():
     cmdline.add_option(
         "replace-every",
         "re",
-        None, "Replace every. String with the format 'INSTR1:INSTR2:RANGE' to "
+        None,
+        "Replace every. String with the format 'INSTR1:INSTR2:RANGE' to "
         "specfy that INSTR1 will be replaced by INSTR2 every RANGE "
         "instructions. Range can be just an integer or a RANGE specifier of "
         "the form: #1:#2 to generate a range from #1 to #2, or #1:#2:#3 to "
         "generate a range between #1 to #2 with step #3. E.g. 10:20 generates "
         "10, 11, 12 ... 19, 20 and 10:20:2 generates 10, 12, 14, ... 18, 20.",
         group=groupname,
-        opt_type=string_with_fields(":", 3, 3,
-                                    [str, str, int_range(1, 10000)]),
+        opt_type=string_with_fields(
+            ":", 3, 3, [str, str, int_range(0, 10000)]
+        ),
         required=False,
-        action="append")
+        action="append",
+    )
 
     cmdline.add_option(
         "add-every",
         "ae",
-        None, "Add every. String with the format 'INSTR1:RANGE' to "
+        None,
+        "Add every. String with the format 'INSTR1:RANGE' to "
         "specfy that INSTR1 will be added to the sequence every RANGE "
         "instructions. Range can be just an integer or a RANGE specifier of "
         "the form: #1-#2 to generate a range from #1 to #2, or #1-#2-#3 to "
         "generate a range between #1 to #2 with step #3. E.g. 10:20 generates "
         "10, 11, 12 ... 19, 20 and 10:20:2 generates 10, 12, 14, ... 18, 20.",
         group=groupname,
-        opt_type=string_with_fields(":", 2, 2, [str, int_range(1, 10000)]),
+        opt_type=string_with_fields(":", 2, 2, [str, int_range(0, 10000)]),
         required=False,
-        action="append")
+        action="append",
+    )
 
     cmdline.add_option(
         "branch-every",
@@ -326,7 +376,8 @@ def main():
         group=groupname,
         opt_type=int_range(1, 10000),
         required=False,
-        action="append")
+        action="append",
+    )
 
     cmdline.add_option(
         "branch-pattern",
@@ -340,7 +391,8 @@ def main():
         group=groupname,
         opt_type=str,
         required=False,
-        action="append")
+        action="append",
+    )
 
     cmdline.add_flag(
         "data-switch",
@@ -368,7 +420,8 @@ def main():
     cmdline.add_option(
         "memory-stream",
         "me",
-        None, "Memory stream definition. String with the format "
+        None,
+        "Memory stream definition. String with the format "
         "NUM:SIZE:WEIGHT:STRIDE:REGS:RND:LOC1:LOC2 where NUM is the number "
         "of streams of "
         "this type, SIZE is the working set size of the stream in bytes, "
@@ -391,18 +444,24 @@ def main():
         "(start-end) or (start-end-step). This flag can be specified "
         "multiple times",
         group=groupname,
-        opt_type=string_with_fields(":", 8, 8, [
-            int_range(1, 100),
-            int_range(1, 2**32),
-            int_range(1, 10000),
-            int_range(1, 2**32),
-            int_range(1, 10),
-            int_range(-1, 2**32),
-            int_range(1, 2**32),
-            int_range(0, 2**32),
-        ]),
+        opt_type=string_with_fields(
+            ":",
+            8,
+            8,
+            [
+                int_range(0, 100),
+                int_range(1, 2**32),
+                int_range(1, 10000),
+                int_range(1, 2**32),
+                int_range(1, 10),
+                int_range(-1, 2**32),
+                int_range(0, 2**32),
+                int_range(0, 2**32),
+            ],
+        ),
         required=False,
-        action="append")
+        action="append",
+    )
 
     cmdline.add_option(
         "benchmark-size",
@@ -416,11 +475,13 @@ def main():
     cmdline.add_option(
         "dependency-distance",
         "dd",
-        0, "Average dependency distance between instructions. A value"
+        0,
+        "Average dependency distance between instructions. A value"
         " below 1 means not dependency between instructions. A value of "
         "1 means a chain of dependent instructions.",
         group=groupname,
-        opt_type=float_type(0, 999999999999))
+        opt_type=float_type(0, 999999999999),
+    )
 
     cmdline.add_flag(
         "reset",
@@ -449,20 +510,24 @@ def main():
     cmdline.add_option(
         "batch-number",
         "bn",
-        1, "Batch number to generate. Check --num-batches option for more "
+        1,
+        "Batch number to generate. Check --num-batches option for more "
         "details",
         group=groupname,
-        opt_type=int_type(1, 10000))
+        opt_type=int_type(1, 10000),
+    )
 
     cmdline.add_option(
         "num-batches",
         "nb",
-        1, "Number of batches. The number of microbenchmark to generate "
+        1,
+        "Number of batches. The number of microbenchmark to generate "
         "is divided by this number, and the number the batch number "
         "specified using -bn option is generated. This is useful to "
         "split the generation of many test cases in various batches.",
         group=groupname,
-        opt_type=int_type(1, 10000))
+        opt_type=int_type(1, 10000),
+    )
 
     cmdline.add_flag(
         "skip",
@@ -493,19 +558,23 @@ def main():
         group=groupname,
     )
 
-    cmdline.add_option("max-memory",
-                       "Mm",
-                       999999999999,
-                       "Maximum memory for all the streams generated",
-                       group=groupname,
-                       opt_type=int_type(0, 999999999999))
+    cmdline.add_option(
+        "max-memory",
+        "Mm",
+        999999999999,
+        "Maximum memory for all the streams generated",
+        group=groupname,
+        opt_type=int_type(0, 999999999999),
+    )
 
-    cmdline.add_option("min-memory",
-                       "mm",
-                       0,
-                       "Minimum memory for all the streams generated",
-                       group=groupname,
-                       opt_type=int_type(0, 999999999999))
+    cmdline.add_option(
+        "min-memory",
+        "mm",
+        0,
+        "Minimum memory for all the streams generated",
+        group=groupname,
+        opt_type=int_type(0, 999999999999),
+    )
 
     cmdline.add_option(
         "max-regsets",
@@ -513,7 +582,8 @@ def main():
         999999999999,
         "Maximum number of regsets for all the streams generated",
         group=groupname,
-        opt_type=int_type(1, 999999999999))
+        opt_type=int_type(1, 999999999999),
+    )
 
     cmdline.add_flag(
         "ignore-errors",
@@ -528,10 +598,9 @@ def main():
 
 
 def _generate_configurations(arguments):
-
-    for relem in itertools.product(arguments["sequences"],
-                                   repeat=arguments["repeat"]):
-
+    for relem in itertools.product(
+        arguments["sequences"], repeat=arguments["repeat"]
+    ):
         relem = list(itertools.chain.from_iterable(relem))
         bconfig = []
         bconfig.append(relem)
@@ -539,13 +608,13 @@ def _generate_configurations(arguments):
         bconfig.append(arguments["data_switch"])
         bconfig.append(arguments["switch_branch"])
 
-        for pattern in arguments['branch_pattern']:
+        for pattern in arguments["branch_pattern"]:
             cconfig = bconfig[:]
             cconfig.append(pattern)
 
             rmap = []
             rcomb = []
-            for elem in arguments['replace_every']:
+            for elem in arguments["replace_every"]:
                 rmap.append((elem[0][0], elem[1][0]))
                 rcomb.append(elem[2])
 
@@ -553,11 +622,16 @@ def _generate_configurations(arguments):
                 rconfig = cconfig[:]
                 rconfig.append(
                     list(
-                        zip((elem[0] for elem in rmap),
-                            (elem[1] for elem in rmap), relem)))
+                        zip(
+                            (elem[0] for elem in rmap),
+                            (elem[1] for elem in rmap),
+                            relem,
+                        )
+                    )
+                )
 
                 for value in _generate_add_every(rconfig, arguments):
-                    for size in arguments['benchmark_size']:
+                    for size in arguments["benchmark_size"]:
                         yield value + [size]
 
 
@@ -566,7 +640,7 @@ def _generate_add_every(rconfig, arguments):
 
     rmap = []
     rcomb = []
-    for elem in arguments['add_every']:
+    for elem in arguments["add_every"]:
         rmap.append(elem[0])
         rcomb.append(elem[1])
 
@@ -574,8 +648,9 @@ def _generate_add_every(rconfig, arguments):
         cconfig = bconfig[:]
         cconfig.append(list(zip(rmap, relem)))
 
-        for value in _generate_mem_streams(bconfig + [list(zip(rmap, relem))],
-                                           arguments):
+        for value in _generate_mem_streams(
+            bconfig + [list(zip(rmap, relem))], arguments
+        ):
             yield value
 
 
@@ -584,20 +659,29 @@ def _generate_mem_streams(rconfig, arguments):
 
     rcomb = []
 
-    for elem in arguments['memory_stream']:
-        rcomb.append([[
-            val[0], val[1], val[2], val[3], val[4], val[5], (val[6], val[7])
-        ] for val in itertools.product(*elem)])
+    for elem in arguments["memory_stream"]:
+        rcomb.append(
+            [
+                [
+                    val[0],
+                    val[1],
+                    val[2],
+                    val[3],
+                    val[4],
+                    val[5],
+                    (val[6], val[7]),
+                ]
+                for val in itertools.product(*elem)
+            ]
+        )
 
     for relem in itertools.product(*rcomb):
-
         cconfig = bconfig[:]
         cconfig.append(list(relem))
         yield cconfig
 
 
 def _process_branch_pattern(patterns):
-
     rpattern = []
     for pattern in patterns:
         if pattern.replace("0", "").replace("1", "") == "":
@@ -611,12 +695,12 @@ def _process_branch_pattern(patterns):
                     for elem in range(0, 2**pattern_length)
                 ]
         else:
-            print_error("Wrong format for branch pattern '%s'." % pattern)
+            print_error(f"Wrong format for branch pattern '{pattern}'.")
             exit(-1)
 
     rpattern = sorted(
         list(set(rpattern)),
-        key=lambda x: len(x)  # pylint: disable=unnecessary-lambda
+        key=lambda x: len(x),  # pylint: disable=unnecessary-lambda
     )
     numbers = set([len(elem) for elem in rpattern])
     cmul = 1
@@ -640,12 +724,11 @@ def _process_branch_pattern(patterns):
 def _process_branch_every(every_list):
     rlist = []
     for every in iter_flatten(every_list):
-        rlist.append("0" * (every - 1) + "1")
+        rlist.append(f"{'0' * (every - 1)}1")
     return rlist
 
 
 def _filter_configurations(configurations, arguments):
-
     maxmem = arguments["max_memory"]
     maxregs = arguments["max_regsets"]
     minmem = arguments["min_memory"]
@@ -653,7 +736,6 @@ def _filter_configurations(configurations, arguments):
     fconfigs = []
 
     for config in configurations:
-
         memory = sum([elem[0] * elem[1] for elem in config[7]])
 
         if memory > maxmem:
@@ -690,43 +772,53 @@ def _main(arguments):
             arguments[flag] = False
 
     args = [
-        "replace_every", "add_every", "branch_every", "branch_pattern",
-        "memory_stream"
+        "replace_every",
+        "add_every",
+        "branch_every",
+        "branch_pattern",
+        "memory_stream",
     ]
     for arg in args:
         if arg not in arguments:
             arguments[arg] = []
 
-    if (len(arguments['branch_every']) > 0
-            and len(arguments['branch_pattern']) > 0):
-        print_error("--branch-every and --branch-pattern flags are "
-                    "mutually exclusive. Use only on of them.")
+    if (
+        len(arguments["branch_every"]) > 0
+        and len(arguments["branch_pattern"]) > 0
+    ):
+        print_error(
+            "--branch-every and --branch-pattern flags are "
+            "mutually exclusive. Use only on of them."
+        )
         exit(-1)
-    elif len(arguments['branch_pattern']) > 0:
-        arguments['branch_pattern'] = _process_branch_pattern(
-            arguments['branch_pattern'])
-    elif len(arguments['branch_every']) > 0:
-        arguments['branch_pattern'] = _process_branch_every(
-            arguments['branch_every'])
+    elif len(arguments["branch_pattern"]) > 0:
+        arguments["branch_pattern"] = _process_branch_pattern(
+            arguments["branch_pattern"]
+        )
+    elif len(arguments["branch_every"]) > 0:
+        arguments["branch_pattern"] = _process_branch_every(
+            arguments["branch_every"]
+        )
     else:
-        arguments['branch_pattern'] = ['0']
+        arguments["branch_pattern"] = ["0"]
 
     if arguments["num_batches"] < arguments["batch_number"]:
         print_error(
-            "Batch number should be within the number of batches specified")
+            "Batch number should be within the number of batches specified"
+        )
         exit(-1)
 
     print_info("Importing target definition...")
-    target = import_definition(arguments.pop('target'))
+    target = import_definition(arguments.pop("target"))
 
-    policy = find_policy(target.name, 'seqtune')
+    policy = find_policy(target.name, "seqtune")
 
     if policy is None:
         print_error("Target does not implement the default SEQTUNE policy")
         exit(-1)
 
-    arguments['sequences'] = [
-        parse_instruction_list(target, elem) for elem in arguments['sequence']
+    arguments["sequences"] = [
+        parse_instruction_list(target, elem) for elem in arguments["sequence"]
     ]
 
     for elem in arguments["replace_every"]:
@@ -739,59 +831,69 @@ def _main(arguments):
     configurations = _generate_configurations(arguments)
     configurations = _filter_configurations(configurations, arguments)
 
-    if 'count' in arguments:
-        print_info("Total number of variations defined : %s" %
-                   len(list(configurations)))
+    if "count" in arguments:
+        print_info(
+            f"Total number of variations defined: {len(list(configurations))}"
+        )
         exit(0)
 
-    outputdir = arguments['seq_output_dir']
+    outputdir = arguments["seq_output_dir"]
     outputname = "%BASENAME%.%EXT%"
 
-    if 'reset' not in arguments:
-        arguments['reset'] = False
+    if "reset" not in arguments:
+        arguments["reset"] = False
 
-    if 'skip' not in arguments:
-        arguments['skip'] = False
+    if "skip" not in arguments:
+        arguments["skip"] = False
 
-    if 'compress' not in arguments:
-        arguments['compress'] = False
+    if "compress" not in arguments:
+        arguments["compress"] = False
 
-    if 'endless' not in arguments:
-        arguments['endless'] = False
+    if "endless" not in arguments:
+        arguments["endless"] = False
 
-    if 'shortnames' not in arguments:
-        arguments['shortnames'] = False
+    if "shortnames" not in arguments:
+        arguments["shortnames"] = False
 
     # process batches
-    print_info("Num configurations difined: %d" % len(configurations))
+    print_info(f"Num configurations difined: {len(configurations)}")
     print_info("Number of batches: %d " % arguments["num_batches"])
     print_info("Batch number: %d " % arguments["batch_number"])
 
     size = len(configurations) // arguments["num_batches"]
     size = size + 1
 
-    configurations = configurations[(arguments["batch_number"] - 1) *
-                                    size:arguments["batch_number"] * size]
+    configurations = configurations[
+        (arguments["batch_number"] - 1)
+        * size: arguments["batch_number"]
+        * size
+    ]
 
-    if 'parallel' not in arguments:
+    if "parallel" not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")
         print_info("up the benchmark generation.")
         for params in configurations:
             _generic_policy_wrapper(
-                (params, outputdir, outputname, target, arguments))
+                (params, outputdir, outputname, target, arguments)
+            )
 
     else:
-        print_info("Start parallel generation. Threads: %s" %
-                   MICROPROBE_RC['cpus'])
-        pool = mp.Pool(processes=MICROPROBE_RC['cpus'])
-        pool.map(_generic_policy_wrapper,
-                 [(params, outputdir, outputname, target, arguments)
-                  for params in configurations])
+        print_info(
+            f"Start parallel generation. Threads: {MICROPROBE_RC['cpus']}"
+        )
+        pool = mp.Pool(processes=MICROPROBE_RC["cpus"])
+        pool.map(
+            _generic_policy_wrapper,
+            [
+                (params, outputdir, outputname, target, arguments)
+                for params in configurations
+            ],
+        )
 
 
-if __name__ == '__main__':  # run main if executed from the command line
+if __name__ == "__main__":  # run main if executed from the command line
     # and the main method exists
 
-    if callable(locals().get('main')):
+    if callable(locals().get("main")):
         main()
         exit(0)

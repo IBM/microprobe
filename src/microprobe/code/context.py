@@ -22,7 +22,6 @@ from __future__ import absolute_import, print_function, annotations
 from typing import TYPE_CHECKING, Tuple, Dict, List
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe.code.address import Address, InstructionAddress
@@ -148,7 +147,7 @@ class Context(object):  # pylint: disable=too-many-public-methods
         assert isinstance(
             value,
             tuple(
-                list(six.integer_types) +
+                [int] +
                 [float, Address, InstructionAddress, str])), type(value)
 
         if isinstance(value, str):

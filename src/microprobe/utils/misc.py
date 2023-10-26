@@ -339,6 +339,9 @@ def range_to_sequence(start, *args):
         )
     )
 
+    if end - 1 not in retval:
+        retval.append(end-1)
+
     return retval
 
 

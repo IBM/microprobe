@@ -27,7 +27,6 @@ from typing import Union
 from unittest import TestCase, main
 
 # Third party modules
-import six
 
 # Own modules
 import microprobe
@@ -260,10 +259,7 @@ for _TEST_TARGET in TEST_TARGETS:
 
             setattr(epi, func_name, copy_func(test_function, func_name))
 
-            if six.PY2:
-                mfunc = getattr(getattr(epi, func_name), "__func__")
-            else:
-                mfunc = getattr(epi, func_name)
+            mfunc = getattr(epi, func_name)
 
             setattr(mfunc, "__doc__", func_doc)
             mfunc.__name__ = func_name

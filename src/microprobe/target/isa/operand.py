@@ -24,8 +24,6 @@ import os
 import random
 
 # Third party modules
-import six
-from six.moves import range
 
 # Own modules
 from microprobe import MICROPROBE_RC
@@ -1011,7 +1009,7 @@ class OperandImmRange(Operand):
 
         """
 
-        if not isinstance(value, six.integer_types):
+        if not isinstance(value, int):
             raise MicroprobeValueError("Invalid operand value: '%s'. Integer"
                                        " required and '%s' provided" %
                                        (value, type(value)))
@@ -1416,8 +1414,8 @@ class InstructionAddressRelativeOperand(Operand):
         :param value:
 
         """
-        assert isinstance(value, tuple(list(six.integer_types) + [Address]))
-        if isinstance(value, six.integer_types):
+        assert isinstance(value, tuple([int, Address]))
+        if isinstance(value, int):
             # print(value, self._shift)
             # assert value % (self._shift + 1) == 0
             return _format_integer(self, value)
@@ -1460,7 +1458,7 @@ class InstructionAddressRelativeOperand(Operand):
 
         """
 
-        if isinstance(value, six.integer_types):
+        if isinstance(value, int):
             cvalue = value
         elif isinstance(value, Address):
             # Warning!
@@ -1490,7 +1488,7 @@ class InstructionAddressRelativeOperand(Operand):
 
         """
 
-        if isinstance(value, six.integer_types):
+        if isinstance(value, int):
             return str(value >> self._shift)
         elif isinstance(value, Address):
             raise MicroprobeCodeGenerationError("Unable to codify the"

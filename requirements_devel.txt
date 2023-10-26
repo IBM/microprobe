@@ -2,7 +2,6 @@ pip
 wheel
 setuptools
 PyYAML
-ordereddict
 argparse
 rxjson
 six
@@ -50,3 +49,5 @@ isort
 twine
 mypy
 typeguard
+black
+flynt

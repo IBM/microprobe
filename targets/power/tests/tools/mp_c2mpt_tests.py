@@ -19,22 +19,15 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import os
+import subprocess
 from tempfile import SpooledTemporaryFile, mkstemp
 from unittest import TestCase, main, skipIf
 
 # Third party modules
-import six
-from six.moves import range
 
 # Own modules
 import microprobe
 
-if six.PY2:
-    # Third party modules
-    import subprocess32 as subprocess  # @UnresolvedImport @UnusedImport
-else:
-    # Built-in modules
-    import subprocess  # @Reimport
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"

@@ -8,11 +8,14 @@ project. In case of doubt, please :doc:`support_contact` the main developers.
 Code format checker
 -------------------
 
-We use *pylint* and *pycodestyle* as our code checkers. These tools plus the
-auto-format-on-save feature included in Eclipse will keep the code style of
-the project. Below there are the parameters used to configure these
-tools correctly. The goal is to have zero errors and warnings, and also
-comply with all the conventions suggested by these tools.
+We use *pylint* and *pycodestyle* as our code checkers, as well as *black*
+and *flynt* to automatically help in the formatting of code. You can 
+automatically fix code formatting issues by issuing the following command::
+
+  > ./dev_tools/utils/check_fix_style.sh $file
+
+The goal is to have zero errors and warnings, and also comply with all the
+conventions suggested by these tools.
 
 .. note::
 
@@ -25,9 +28,11 @@ project files::
   > ./dev_tools/ci/code_conventions_001_pycodestyle.sh
   > ./dev_tools/ci/code_conventions_002_pylint.sh
   > ./dev_tools/ci/code_conventions_003_documentation.sh
+  > ./dev_tools/ci/code_conventions_004_mypy.sh
 
 You can run them locally and fix any errors reported before committing
-changes to the repository.
+changes to the repository. These scripts are executed as a part of our
+continuous integration framework, and they will fail if an error is reported.
 
 .. note::
 
@@ -52,124 +57,15 @@ Pycodestyle
 We also use `pycodestyle <https://pypi.python.org/pypi/pycodestyle>`_ to
 verify that the code written follows the python style guide.
 
-Eclipse formating rules
-^^^^^^^^^^^^^^^^^^^^^^^
+Auto-formatting with black anf flynt
+------------------------------------
 
-In case you use the *pydev* extension of eclipse IDE to develop Microprobe,
-you can find below screenshots of the formatting configurations used so that it
-is more easy to follow the conventions and avoid pylint/pycodestyle errors.
+*black* and *flynt* can be used as an auto-formatter tools. To do so, 
+you can use the following command::
 
-.. figure:: images/code_style_1.png
-   :alt: Code style tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
+  > ./dev_tools/utils/check_fix_style.sh $file
 
-   Code style tab
-
-.. figure:: images/code_style_2.png
-   :alt: Block comments tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Block comments tab
-
-.. figure:: images/code_style_3.png
-   :alt: Code formatter tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Code formatter tab
-
-.. figure:: images/code_style_4.png
-   :alt: Doctrings tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Docstrings tab
-
-.. figure:: images/code_style_5.png
-   :alt: Imports tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Imports tab
-
-.. figure:: images/code_style_6.png
-   :alt: Typing tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Typing tab
-
-.. figure:: images/code_style_7.png
-   :alt: Tabs tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Tabs tab
-
-.. figure:: images/code_style_8.png
-   :alt: Save actions tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Save actions tab
-
-.. figure:: images/code_style_9.png
-   :alt: Code analysis unused tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Code analysis unused tab
-
-.. figure:: images/code_style_10.png
-   :alt: Code analysis undefined tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Code analysis undefined tab
-
-.. figure:: images/code_style_11.png
-   :alt: Code analysis imports tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Code analysis imports tab
-
-.. figure:: images/code_style_12.png
-   :alt: Code analysis others tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Code analysis others tab
-
-.. figure:: images/code_style_13.png
-   :alt: Code analysis pep8 tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Code analysis pep8 tab
-
-.. figure:: images/code_style_14.png
-   :alt: Pylint tab
-   :width: 90 %
-   :figwidth: 90 %
-   :align: center
-
-   Pylint tab
+Then, you can manually fix any remaining errors and warnings.
 
 Templates
 ---------
@@ -472,6 +368,6 @@ Useful links
 ------------
 
 - `rst features <http://docutils.sourceforge.net/docs/user/rst/quickref.html>`_
-- `docstring format <http://www.python.org/dev/peps/pep-0257/>`_
+- `docstring format <http://www.python.org/dev/peps/pe3.9257/>`_
 - `Sphinx examples <http://packages.python.org/an_example_pypi_project/sphinx.html>`_
 - `Sphinx docstring format <http://sphinx.pocoo.org/markup/desc.html>`_

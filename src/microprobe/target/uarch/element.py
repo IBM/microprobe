@@ -24,8 +24,6 @@ import hashlib
 import os
 
 # Third party modules
-import six
-from six.moves import range
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
@@ -199,8 +197,7 @@ def import_definition(cls, filenames, element_types):
 
 # Classes
 @typeguard_testsuite
-class MicroarchitectureElement(six.with_metaclass(abc.ABCMeta,
-                                                  PropertyHolder)):
+class MicroarchitectureElement(PropertyHolder, metaclass=abc.ABCMeta):
     """ """
 
     @abc.abstractmethod

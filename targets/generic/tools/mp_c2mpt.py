@@ -32,7 +32,6 @@ import sys
 from tempfile import mkstemp
 
 # Third party modules
-import six
 
 # Own modules
 from microprobe import MICROPROBE_RC
@@ -186,11 +185,6 @@ def dump_mpt(input_file, target, init_data, arguments):
     input_file_fd = io.open(input_file, 'r')
     contents = input_file_fd.read()
 
-    if six.PY2:
-        contents = contents.encode("ascii")
-    elif six.PY3:
-        pass
-
     print_info("Parsing input file...")
 
     var_defs, req_defs, instr_defs = \
@@ -297,7 +291,7 @@ def dump_mpt(input_file, target, init_data, arguments):
                             arguments['default_data_address']
                     new_values.append(value)
                 values[4] = new_values
-            elif "*" in values[0] and isinstance(values[4], six.integer_types):
+            elif "*" in values[0] and isinstance(values[4], int):
                 if (values[4] <= maxdisplacement
                         and values[4] >= mindisplacement):
                     values[4] = values[4] - mindisplacement + \

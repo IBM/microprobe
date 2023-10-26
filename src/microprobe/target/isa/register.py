@@ -25,7 +25,6 @@ import os
 from typing import List, TYPE_CHECKING
 
 # Third party modules
-from six.moves import range
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError

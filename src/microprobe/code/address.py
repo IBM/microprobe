@@ -23,7 +23,7 @@ import hashlib
 from typing import TYPE_CHECKING, Union
 
 # Third party modules
-import six
+
 
 # Own modules
 from microprobe.code.var import Variable
@@ -69,7 +69,7 @@ class Address:
 
         if self._base_address is not None:
             assert isinstance(self._base_address,
-                              tuple(list(six.string_types) + [Variable]))
+                              tuple([str] + [Variable]))
 
         self._hash = None
 
@@ -108,7 +108,7 @@ class Address:
             return self.__class__(self.base_address,
                                   self.displacement + other.displacement)
 
-        elif isinstance(other, six.integer_types):
+        elif isinstance(other, int):
 
             return self.__class__(self.base_address, self.displacement + other)
 
@@ -218,7 +218,7 @@ class Address:
             return self.__class__(self.base_address,
                                   self.displacement + other.displacement)
 
-        elif isinstance(other, six.integer_types):
+        elif isinstance(other, int):
 
             return self.__class__(self.base_address, self.displacement + other)
 
@@ -242,9 +242,9 @@ class Address:
             return self.__class__(self.base_address,
                                   self.displacement + other.displacement)
 
-        elif isinstance(other, six.integer_types):
+        elif isinstance(other, int):
 
-            if isinstance(self._base_address, six.integer_types):
+            if isinstance(self._base_address, int):
                 return (self._base_address + self.displacement) % other
 
             return self.displacement % other
@@ -268,7 +268,7 @@ class Address:
             return self.__class__(self.base_address,
                                   self.displacement + other.displacement)
 
-        elif isinstance(other, six.integer_types):
+        elif isinstance(other, int):
             return self.__class__(self.base_address, self.displacement + other)
 
         else:
@@ -295,7 +295,7 @@ class Address:
 
             return other.displacement - self.displacement
 
-        elif isinstance(other, six.integer_types):
+        elif isinstance(other, int):
             return self.__class__(self.base_address, self.displacement - other)
         else:
             raise NotImplementedError(
@@ -322,7 +322,7 @@ class Address:
 
             return self.displacement - other.displacement
 
-        elif isinstance(other, six.integer_types):
+        elif isinstance(other, int):
             return self.__class__(self.base_address, self.displacement - other)
 
         else:

@@ -24,8 +24,6 @@ import itertools
 from random import Random
 
 # Third party modules
-import six
-from six.moves import range, zip
 
 # Own modules
 from microprobe.exceptions import MicroprobeValueError
@@ -278,7 +276,7 @@ def sort_by_usage(regs, lastdict, dummy_defdict):
 
     assert len(regs) > 0
 
-    for reg in six.iterkeys(lastdict):
+    for reg in lastdict:
         LOG.debug("Dict key: %s", reg)
         if reg in regs:
             LOG.debug("Last used register: %s", reg)

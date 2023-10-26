@@ -28,8 +28,6 @@ from inspect import getmembers, getmodule, isfunction
 from typing import TYPE_CHECKING, List
 
 # Third party modules
-import six
-from six.moves import range, zip
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError
@@ -291,7 +289,7 @@ def _translate_moperands(name, filename, operands, ioperands, moperands,
 
         for field in sformula:
 
-            if isinstance(field, six.integer_types):
+            if isinstance(field, int):
                 field = str(field)
 
             if field.startswith('@'):
@@ -320,7 +318,7 @@ def _translate_moperands(name, filename, operands, ioperands, moperands,
 
         for idx, field in enumerate(length):
             fname = "no_field_%s" % idx
-            if isinstance(field, six.integer_types):
+            if isinstance(field, int):
                 tlength.append((fname, field))
             elif (field.startswith("#") or field.startswith("min")
                   or field.startswith("max") or field.startswith("*")
@@ -1316,7 +1314,7 @@ for _key, _value in dict(getmembers(sys.modules[__name__],
 
 # Classes
 @typeguard_testsuite
-class InstructionType(six.with_metaclass(abc.ABCMeta, PropertyHolder)):
+class InstructionType(PropertyHolder, metaclass=abc.ABCMeta):
     """Abstract class to represent a machine instruction type."""
 
     @abc.abstractmethod

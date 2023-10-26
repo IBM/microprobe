@@ -32,7 +32,7 @@ Required commands
 -----------------
 
 * **git**
-* **python** (>=2.7, 3.6, 3.7, 3.8, 3.9)
+* **python** (>=3.7, 3.8, 3.9)
 * **virtualenv**: https://virtualenv.pypa.io/en/stable/
 
 -----------------

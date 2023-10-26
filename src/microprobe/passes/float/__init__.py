@@ -18,23 +18,17 @@
 # Futures
 from __future__ import absolute_import
 
-# Built-in modules
-
-# Third party modules
-
 # Own modules
 import microprobe.code.var
 import microprobe.passes
 from microprobe.code.address import Address, MemoryValue
+from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.ieee import ieee_float_to_int64
 from microprobe.utils.logger import get_logger
 
-# Local modules
-
-
 # Constants
 LOG = get_logger(__name__)
-__all__ = ['InitializeMemoryFloatPass']
+__all__ = ["InitializeMemoryFloatPass"]
 
 # Functions
 
@@ -49,18 +43,18 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
         :param value:  (Default value = 0)
 
         """
-        super(InitializeMemoryFloatPass, self).__init__()
+        super().__init__()
         self._var = microprobe.code.var.VariableSingle(
-            "FP_INITVAL", "double",
-            value="%.20f" % value
+            "FP_INITVAL", "double", value=f"{value:.20f}"
         )
         self._varaddress = Address(base_address=self._var)
 
         self._value = value
         self._memvalue = MemoryValue(self._varaddress, value, 8)
-        self._description = "Initialize all the memory location accessed by" \
-                            " binary floating point operations to value: '%s'"\
-                            "." % (self._value)
+        self._description = (
+            "Initialize all the memory location accessed by"
+            f" binary floating point operations to value: '{value}'."
+        )
 
     def __call__(self, building_block, target):
         """
@@ -72,17 +66,20 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
 
         variable_to_declare = False
         addresses_set = []
-        context = building_block.context
+        # context = building_block.context
+        context = target.wrapper.context()
+
+        if building_block.context.register_has_value(0):
+            reg = building_block.context.registers_get_value(0)[0]
+            context.set_register_value(reg, 0)
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-
                 # if not instr.hfp_exponent_overflow_exception:
                 #    continue
 
                 is_float = False
                 for operand in instr.operands():
-
                     if operand.type.float and operand.is_input:
                         is_float = True
 
@@ -90,64 +87,64 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
                     continue
 
                 for memoperand in instr.memory_operands():
-
                     if memoperand.address is None:
                         continue
 
                     if memoperand.address in addresses_set:
                         continue
 
-                    if memoperand.is_load:
+                    if not memoperand.is_load:
+                        continue
 
-                        if variable_to_declare is False:
+                    addresses_set.append(memoperand.address)
 
-                            variable_to_declare = True
+        addresses_set = sorted(addresses_set)
 
-                            reg2 = target.get_register_for_address_arithmetic(
-                                context
-                            )
+        for address in addresses_set:
+            if variable_to_declare is False:
+                variable_to_declare = True
+                reg2 = target.scratch_registers[0]
 
-                            instrs = target.set_register(
-                                reg2, ieee_float_to_int64(self._value), context
-                            )
+                instrs = target.set_register(
+                    reg2, ieee_float_to_int64(self._value), context
+                )
 
-                            building_block.add_init(instrs)
+                for instr in instrs:
+                    instr.add_comment("Initialize reg to float value")
 
-                            context.set_register_value(
-                                reg2, ieee_float_to_int64(self._value)
-                            )
+                building_block.add_init(instrs)
 
-                            context.add_reserved_registers([reg2])
+                context.set_register_value(
+                    reg2, ieee_float_to_int64(self._value)
+                )
 
-                            reg1 = target.get_register_for_address_arithmetic(
-                                context
-                            )
+                reg1 = target.scratch_registers[1]
 
-                            context.add_reserved_registers([reg1])
+                instrs = target.set_register_to_address(reg1, address, context)
+                context.set_register_value(reg1, address)
 
-                        instrs = target.set_register_to_address(
-                            reg1, memoperand.address, context
-                        )
+                building_block.add_init(instrs)
 
-                        context.set_register_value(reg1, memoperand.address)
+            try:
+                instrs = target.store_integer(reg2, address, 64, context)
 
-                        instrs += target.store_integer(
-                            reg2, memoperand.address, 64, context
-                        )
+            except MicroprobeCodeGenerationError:
+                instrs = target.set_register_to_address(reg1, address, context)
+                context.set_register_value(reg1, address)
 
-                        context.set_memory_value(
-                            MemoryValue(memoperand.address, self._value, 8)
-                        )
+                building_block.add_init(instrs)
 
-                        addresses_set.append(memoperand.address)
+                instrs = target.store_integer(reg2, address, 64, context)
 
-                        building_block.add_init(instrs)
+            context.set_memory_value(MemoryValue(address, self._value, 8))
 
-                        LOG.debug("Instruction: %s: %s", instr.address, instr)
-                        LOG.debug("Address: %s", memoperand.address)
+            for instr in instrs:
+                instr.add_comment(f"Initialize memory float: {address}")
 
-        if variable_to_declare:
-            context.remove_reserved_registers([reg1, reg2])
+            building_block.add_init(instrs)
+
+            LOG.debug("Instruction: %s: %s", instr.address, instr)
+            LOG.debug("Address: %s", address)
 
     def check(self, building_block, dummy_target):
         """
@@ -160,7 +157,6 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
         pass_ok = True
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
-
                 is_float = False
 
                 for operand in instr.operands():
@@ -171,7 +167,6 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
                     continue
 
                 for memoperand in instr.memory_operands():
-
                     if memoperand.address is None:
                         continue
 
@@ -193,8 +188,9 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
 
                     if memory_value.address != memoperand.address:
                         LOG.debug(
-                            "%s != %s", memory_value.address,
-                            memoperand.address
+                            "%s != %s",
+                            memory_value.address,
+                            memoperand.address,
                         )
                         return False
 
@@ -204,8 +200,9 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
 
                     if memory_value.value != self._value:
                         LOG.debug(
-                            "Invalid value: %d != %d", memory_value.value,
-                            self._value
+                            "Invalid value: %d != %d",
+                            memory_value.value,
+                            self._value,
                         )
                         return False
 
