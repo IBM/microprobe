@@ -21,6 +21,7 @@ from __future__ import absolute_import, annotations
 # Built-in modules
 import abc
 import os
+import random
 from typing import TYPE_CHECKING, List
 
 # Third party modules
@@ -148,7 +149,7 @@ def _read_yaml_definition(uarchdefs, path: str):
 
 
 @typeguard_testsuite
-def import_microarchitecture_definition(path: str):
+def import_microarchitecture_definition(path: str, rand: random.Random):
     """Imports a Microarchitecture definition given a path
 
     :param path:
@@ -165,7 +166,7 @@ def import_microarchitecture_definition(path: str):
 
     element_types, force = import_definition(
         uarchdef, os.path.join(path, "microarchitecture.yaml"), "Element_type",
-        getattr(microprobe.target.uarch, 'element_type'), None)
+        getattr(microprobe.target.uarch, 'element_type'), None, rand)
 
     element, force = import_definition(uarchdef,
                                        os.path.join(path,
@@ -174,6 +175,7 @@ def import_microarchitecture_definition(path: str):
                                        getattr(microprobe.target.uarch,
                                                'element'),
                                        element_types,
+                                       rand,
                                        force=force)
 
     uarch_cls = get_object_from_module(uarchdef["Microarchitecture"]["Class"],

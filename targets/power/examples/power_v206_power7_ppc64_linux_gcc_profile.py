@@ -25,6 +25,7 @@ from __future__ import absolute_import
 # Built-in modules
 import multiprocessing as mp
 import os
+import random
 import sys
 import traceback
 
@@ -286,6 +287,9 @@ def _generate_benchmark(args):
         instruction.set_arch_type(target.instructions[instr_name])
         sequence = [target.instructions[instr_name]]
 
+        rand = random.Random()
+        rand.seed(64)  # My favorite number :)
+
         # Get the wrapper object. The wrapper object is in charge of
         # translating the internal representation of the microbenchmark
         # to the final output format.
@@ -405,7 +409,7 @@ def _generate_benchmark(args):
         #######################################################################
         synth.add_pass(
             microprobe.passes.register.DefaultRegisterAllocationPass(
-                dd=distance))
+                dd=distance, rand=rand))
 
         # Synthesize the microbenchmark.The synthesize applies the set of
         # transformation passes added before and returns object representing

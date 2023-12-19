@@ -24,7 +24,9 @@ from __future__ import absolute_import, print_function
 # Built-in modules
 import multiprocessing as mp
 import os
+import random
 import sys
+from typing import Any, Tuple
 
 # Own modules
 from microprobe import MICROPROBE_RC
@@ -35,6 +37,7 @@ from microprobe.utils.cmdline import CLI, existing_dir, float_type, \
     int_type, new_file, parse_instruction_list, print_error, print_info
 from microprobe.utils.logger import get_logger
 from microprobe.utils.policy import find_policy
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 LOG = get_logger(__name__)
@@ -52,9 +55,10 @@ def _get_wrapper(name: str):
             (name, str(exc)))
 
 
-def _generic_policy_wrapper(all_arguments):
+@typeguard_testsuite
+def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, Any, random.Random]):
 
-    instruction, outputdir, outputname, target, kwargs, check = all_arguments
+    instruction, outputdir, outputname, target, kwargs, check, rand = all_arguments
 
     bname = instruction.name
     bname = bname + "#DD_%d" % kwargs['dependency_distance']
@@ -154,7 +158,7 @@ def _generic_policy_wrapper(all_arguments):
         return False
 
     outputfile = new_file(wrapper.outputname(outputfile), internal=True)
-    synth = policy.apply(target, wrapper, **extra_arguments)
+    synth = policy.apply(target, wrapper, rand=rand, **extra_arguments)
 
     if not kwargs["ignore_errors"]:
         print_info("Generating %s..." % outputfile)
@@ -363,21 +367,24 @@ def _main(arguments):
     if 'ignore_errors' not in arguments:
         arguments['ignore_errors'] = False
 
+    rand = random.Random()
+    rand.seed(64)  # My favorite number :)
+
     if 'parallel' not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")
         print_info("up the benchmark generation.")
         for instruction in arguments['instructions']:
             _generic_policy_wrapper(
-                (instruction, outputdir, outputname, target, arguments, False))
+                (instruction, outputdir, outputname, target, arguments, False, rand))
 
     else:
         print_info("Start parallel generation. Threads: %s" %
                    MICROPROBE_RC["cpus"])
         pool = mp.Pool(processes=MICROPROBE_RC["cpus"])
-        args = [(instruction, outputdir, outputname, target, arguments, True)
+        args = [(instruction, outputdir, outputname, target, arguments, True, rand)
                 for instruction in arguments['instructions']]
         regen = pool.map(_generic_policy_wrapper, args)
-        args = [(instruction, outputdir, outputname, target, arguments, False)
+        args = [(instruction, outputdir, outputname, target, arguments, False, rand)
                 for instruction in arguments['instructions']]
         args = [elem[0] for elem in zip(args, regen) if elem[1] is True]
         pool.map(_generic_policy_wrapper, args)

@@ -153,7 +153,7 @@ def riscv_v22_function(self):
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
             sequence))
     # synth.add_pass(microprobe.passes.branch.BranchNextPass())
-    synth.add_pass(microprobe.passes.register.RandomAllocationPass())
+    synth.add_pass(microprobe.passes.register.RandomAllocationPass(rand))
     # synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     # synth.add_pass(
     #    microprobe.passes.register.DefaultRegisterAllocationPass(
@@ -340,7 +340,7 @@ def self_codification_function(self):
 
                 for idx, operand in enumerate(instruction.operands()):
                     if idx >= len(values):
-                        values.append(operand.type.random_value())
+                        values.append(operand.type.random_value(rand))
                     operand.set_value(values[idx])
 
                 print("Operands to set: %s" % values)
@@ -396,7 +396,7 @@ def self_assembly_function(self):
         print(instruction)
 
         for operand in instruction.operands():
-            operand.set_value(operand.type.random_value())
+            operand.set_value(operand.type.random_value(rand))
             print(operand)
 
         assembly = instruction.assembly()
@@ -528,12 +528,15 @@ if MP_TESTING_ARCH in ["RISCV", None]:
                                  "C.J_V0", "JAL_V0"
                              ], [])]
 
+rand = random.Random()
+rand.seed(64)  # My favorite number :)
+
 TEST_CLASSES = []
 for name, gen_function, isa_path, env_path, \
         expected_fails, unsupported in TARGETS:
 
     # py2lint: disable=cell-var-from-loop
-    isa_obj = import_isa_definition(isa_path)
+    isa_obj = import_isa_definition(isa_path, rand)
 
     class TestTarget(TestCase):  # pylint: disable=too-many-public-methods
         """
@@ -560,7 +563,7 @@ for name, gen_function, isa_path, env_path, \
 
         @classmethod
         def setUpClass(cls):
-            cls.isa_obj = import_isa_definition(cls.isa_path)
+            cls.isa_obj = import_isa_definition(cls.isa_path, rand)
             cls.env_obj = import_env_definition(cls.env_path, cls.isa_obj)
             cls.target = Target(cls.isa_obj, env=cls.env_obj)
 

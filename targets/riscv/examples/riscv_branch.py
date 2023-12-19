@@ -315,7 +315,7 @@ class RiscvIpcTest(object):
         synth.add_pass(p)
 
         # Model dependency distance (no dependencies)
-        p = register.DefaultRegisterAllocationPass(dd=0)
+        p = register.DefaultRegisterAllocationPass(dd=0, rand=self._rand)
         synth.add_pass(p)
 
         # Set target of branches (regarless of taken not taken,

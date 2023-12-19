@@ -28,6 +28,7 @@ import hashlib
 import itertools
 import multiprocessing as mp
 import os
+import random
 import sys
 from typing import Any, List, Tuple
 
@@ -64,9 +65,9 @@ def _get_wrapper(name: str):
 
 @typeguard_testsuite
 def _generic_policy_wrapper(all_arguments: Tuple[List[InstructionType], str,
-                                                 str, Target, Any]):
+                                                 str, Target, Any, random.Random]):
 
-    instructions, outputdir, outputname, target, kwargs = all_arguments
+    instructions, outputdir, outputname, target, kwargs, rand = all_arguments
 
     outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
     outputfile = outputfile.replace(
@@ -177,7 +178,7 @@ def _generic_policy_wrapper(all_arguments: Tuple[List[InstructionType], str,
     outputfile = new_file(wrapper.outputname(outputfile), internal=True)
 
     print_info("Generating %s..." % outputfile)
-    synth = policy.apply(target, wrapper, **extra_arguments)
+    synth = policy.apply(target, wrapper, rand=rand, **extra_arguments)
     bench = synth.synthesize()
 
     synth.save(outputfile, bench=bench)
@@ -644,19 +645,22 @@ def _main(arguments):
     sequences = sequences[(arguments["batch_number"] - 1) *
                           size:arguments["batch_number"] * size]
 
+    rand = random.Random()
+    rand.seed(64)  # My favorite number :)
+
     if 'parallel' not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")
         print_info("up the benchmark generation.")
         for sequence in sequences:
             _generic_policy_wrapper(
-                (sequence, outputdir, outputname, target, arguments))
+                (sequence, outputdir, outputname, target, arguments, rand))
 
     else:
         print_info("Start parallel generation. Threads: %s" %
                    MICROPROBE_RC['cpus'])
         pool = mp.Pool(processes=MICROPROBE_RC['cpus'])
         pool.map(_generic_policy_wrapper,
-                 [(sequence, outputdir, outputname, target, arguments)
+                 [(sequence, outputdir, outputname, target, arguments, rand)
                   for sequence in sequences])
 
 

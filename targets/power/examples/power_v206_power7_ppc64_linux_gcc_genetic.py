@@ -50,6 +50,7 @@ from __future__ import absolute_import, division
 # Built-in modules
 import datetime
 import os
+import random
 import sys
 import time as runtime
 from typing import List, Tuple
@@ -148,6 +149,9 @@ def generate_genetic(compname: str, ipc: float):
 
     print_info(f"Going for IPC: {ipc} and Element: {compname}")
 
+    rand = random.Random()
+    rand.seed(64)  # My favorite number :)
+
     def generate(name: str, dist: float, latency: float):
         """Benchmark generation function.
 
@@ -170,7 +174,7 @@ def generate_genetic(compname: str, ipc: float):
                 avelatency=latency,
                 any_comp=any_comp))
         synth.add_pass(
-            microprobe.passes.register.DefaultRegisterAllocationPass(dd=dist))
+            microprobe.passes.register.DefaultRegisterAllocationPass(dd=dist, rand=rand))
         bench = synth.synthesize()
         synth.save(name, bench=bench)
 

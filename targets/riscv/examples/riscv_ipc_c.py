@@ -26,6 +26,7 @@ from __future__ import absolute_import
 # Built-in modules
 import os
 from random import Random
+import random
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
@@ -145,7 +146,7 @@ class RiscvIpcTest(object):
                     memory.GenericMemoryStreamsPass(
                         [[0, 1024, 1, 32, 1, 0, (1, 0)]]
                     ),
-                    register.DefaultRegisterAllocationPass(dd=d)
+                    register.DefaultRegisterAllocationPass(dd=d, rand=self._rand)
                 ]
 
                 for p in passes:

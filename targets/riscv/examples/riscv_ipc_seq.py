@@ -124,6 +124,8 @@ class RiscvIpcTest(object):
             str.format("{}-{}-{}",
                        self.args.isa, self.args.uarch, self.args.env)
         )
+        self._rand = random.Random()
+        self._rand.seed(64)  # My favorite number ;)
 
     def emit(self):
         # Do not touch pointer registers
@@ -203,7 +205,7 @@ class RiscvIpcTest(object):
                     memory.GenericMemoryStreamsPass(
                         [[0, 1024, 1, 32, 1, 0, (1, 0)]]
                     ),
-                    register.DefaultRegisterAllocationPass(dd=d)
+                    register.DefaultRegisterAllocationPass(dd=d, rand=self._rand)
                 ]
 
                 for p in passes:

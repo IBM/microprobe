@@ -174,10 +174,13 @@ def generate(model: Tuple[str, List[SetAssociativeCache], List[int]]):
     # generates an infinite loop in C using PowerPC embedded assembly.
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
 
+    rand = random.Random()
+    rand.seed(64)  # My favorite number :)
+
     # Define function to return random numbers (used afterwards)
     def rnd():
         """Return a random value. """
-        return random.randrange(0, (1 << 64) - 1)
+        return rand.randrange(0, (1 << 64) - 1)
 
     # Create the benchmark synthesizer
     synth = microprobe.code.Synthesizer(garch, cwrapper())
@@ -212,7 +215,7 @@ def generate(model: Tuple[str, List[SetAssociativeCache], List[int]]):
     # remaining undefined instruction operands (register allocation,...)
     synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=0))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=0, rand=rand))
 
     # Generate the benchmark (applies the passes).
     bench = synth.synthesize()

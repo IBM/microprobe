@@ -16,6 +16,7 @@ docstring
 """
 # Futures
 from __future__ import absolute_import
+import random
 
 # Own modules
 import microprobe.code
@@ -56,7 +57,7 @@ SUPPORTED_TARGETS = [
 
 
 # Functions
-def policy(target, wrapper, **kwargs):
+def policy(target, wrapper, rand: random.Random, **kwargs):
     """
     Benchmark generation policy.
 
@@ -195,7 +196,8 @@ def policy(target, wrapper, **kwargs):
     synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
 
     if kwargs["data_switch"]:
-        synthesizer.add_pass(microprobe.passes.switch.SwitchingInstructions())
+        synthesizer.add_pass(
+            microprobe.passes.switch.SwitchingInstructions(rand=rand))
 
     if kwargs['dependency_distance'] < 1:
         synthesizer.add_pass(
@@ -203,7 +205,7 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=kwargs['dependency_distance']))
+            dd=kwargs['dependency_distance'], rand=rand))
 
     synthesizer.add_pass(
         microprobe.passes.address.UpdateInstructionAddressesPass())

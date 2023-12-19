@@ -21,6 +21,7 @@ from __future__ import absolute_import
 # Built-in modules
 import abc
 import os
+import random
 from typing import List
 
 # Third party modules
@@ -44,7 +45,7 @@ __all__ = [
 
 # Functions
 @typeguard_testsuite
-def import_definition(cls, filenames: List[str], dummy):
+def import_definition(cls, filenames: List[str], dummy, _rand: random.Random):
     """
 
     :param cls:

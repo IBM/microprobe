@@ -209,7 +209,7 @@ def generate(name: str):
     #     distance is randomly picked
     synth.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=rand.randint(1, 20)))
+            dd=rand.randint(1, 20), rand=rand))
 
     # Generate the benchmark (applies the passes)
     # Since it is a randomly generated code, the generation might fail

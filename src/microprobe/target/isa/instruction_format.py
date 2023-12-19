@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, annotations
 # Built-in modules
 import abc
 import os
+import random
 from typing import TYPE_CHECKING, List, Tuple
 
 # Third party modules
@@ -47,7 +48,7 @@ __all__ = [
 
 # Functions
 @typeguard_testsuite
-def import_definition(cls, filenames, ifields):
+def import_definition(cls, filenames, ifields, _rand):
     """
 
     :param filenames:

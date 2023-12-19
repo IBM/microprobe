@@ -25,7 +25,7 @@ import os
 import random
 import sys
 from inspect import getmembers, getmodule, isfunction
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Dict, List
 
 # Third party modules
 
@@ -58,8 +58,7 @@ __all__ = [
 
 
 # Functions
-@typeguard_testsuite
-def import_definition(cls, filenames, args):
+def import_definition(cls, filenames, args, rand):
     """
 
     :param filenames:
@@ -106,7 +105,7 @@ def import_definition(cls, filenames, args):
                                        defined_operands)
 
             ioperands = _translate_ioperands(name, filename, ioperands,
-                                             defined_operands)
+                                             defined_operands, rand)
 
             moperands = _translate_moperands(name, filename, operands,
                                              ioperands, moperands,
@@ -369,7 +368,8 @@ def _translate_moperands(name, filename, operands, ioperands, moperands,
 
 
 @typeguard_testsuite
-def _translate_ioperands(name, filename, ioperands, defined_operands):
+def _translate_ioperands(name: str, filename: str, ioperands, defined_operands: Dict[str, Operand],
+                         rand: random.Random):
     """
 
     :param name:
@@ -393,7 +393,7 @@ def _translate_ioperands(name, filename, ioperands, defined_operands):
 
         try:
             if operand.constant:
-                reg = operand.random_value()
+                reg = operand.random_value(rand)
             else:
                 reg = [
                     value for value in operand.values()

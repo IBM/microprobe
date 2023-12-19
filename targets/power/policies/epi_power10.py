@@ -16,6 +16,7 @@ docstring
 """
 # Futures
 from __future__ import absolute_import
+import random
 
 # Own modules
 import microprobe.code
@@ -57,7 +58,7 @@ SUPPORTED_TARGETS = [
 
 
 # Functions
-def policy(target, wrapper, **kwargs):
+def policy(target, wrapper, rand: random.Random, **kwargs):
     """
     Benchmark generation policy.
 
@@ -204,7 +205,9 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=kwargs['dependency_distance'], value=kwargs['data_init']))
+            dd=kwargs['dependency_distance'],
+            value=kwargs['data_init'],
+            rand=rand))
 
     synthesizer.add_pass(
         microprobe.passes.address.UpdateInstructionAddressesPass(force=True))

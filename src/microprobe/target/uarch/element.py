@@ -22,6 +22,7 @@ from __future__ import absolute_import
 import abc
 import hashlib
 import os
+import random
 
 # Third party modules
 
@@ -46,7 +47,7 @@ __all__ = [
 
 # Functions
 @typeguard_testsuite
-def import_definition(cls, filenames, element_types):
+def import_definition(cls, filenames, element_types, _rand: random.Random):
     """ """
     LOG.debug("Start importing microarchitecture elements")
 

@@ -192,7 +192,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, replicate=1, strict=False):
+    def __init__(self, rand: random.Random, replicate=1, strict=False):
         """
 
         :param replicate:  (Default value = 1)
@@ -203,6 +203,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
                             "operands"
         self._replicate = replicate
         self._strict = strict
+        self._rand = rand
 
     def __call__(self, building_block, target):
         """
@@ -560,7 +561,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                     )
                                 else:
                                     opsize = \
-                                        operand.type.random_value().type.size
+                                        operand.type.random_value(self._rand).type.size
                                     assert opsize % size == 0
                                     mult = int(opsize / size)
                                     switch_input = prefix + switch_input * mult

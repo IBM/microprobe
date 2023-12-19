@@ -21,6 +21,7 @@ from __future__ import absolute_import, annotations
 # Built-in modules
 import abc
 import os
+import random
 from typing import TYPE_CHECKING, List, Dict
 
 # Third party modules
@@ -173,7 +174,7 @@ def _read_yaml_definition(isadefs: List[Dict[str, str]], path: str):
 
 
 @typeguard_testsuite
-def import_isa_definition(path: str):
+def import_isa_definition(path: str, rand: random.Random):
     """Imports a ISA definition given a path
 
     :param path:
@@ -189,7 +190,7 @@ def import_isa_definition(path: str):
     isadef = _read_yaml_definition([], path)
 
     regts, force = import_definition(isadef, os.path.join(path, "isa.yaml"),
-                                     "Register_type", register_type_mod, None)
+                                     "Register_type", register_type_mod, None, rand)
     regts = dict2OrderedDict(regts)
 
     regs, force = import_definition(isadef,
@@ -197,6 +198,7 @@ def import_isa_definition(path: str):
                                     "Register",
                                     register_mod,
                                     regts,
+                                    rand,
                                     force=force)
     regs = dict2OrderedDict(regs)
 
@@ -205,6 +207,7 @@ def import_isa_definition(path: str):
                                            "Operand",
                                            operand_mod,
                                            regs,
+                                           rand,
                                            force=force)
     ops = dict2OrderedDict(ops)
 
@@ -213,6 +216,7 @@ def import_isa_definition(path: str):
                                        "Instruction_field",
                                        ifield_mod,
                                        ops,
+                                       rand,
                                        force=force)
     ifields = dict2OrderedDict(ifields)
 
@@ -221,6 +225,7 @@ def import_isa_definition(path: str):
                                         "Instruction_format",
                                         iformat_mod,
                                         ifields,
+                                        rand,
                                         force=force)
 
     iformats = dict2OrderedDict(iformats)
@@ -229,6 +234,7 @@ def import_isa_definition(path: str):
                                    os.path.join(path, "isa.yaml"),
                                    "Instruction",
                                    instruction_mod, (iformats, ops),
+                                   rand,
                                    force=force)
     ins = dict2OrderedDict(ins)
 

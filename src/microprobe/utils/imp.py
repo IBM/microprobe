@@ -22,6 +22,7 @@ from __future__ import absolute_import
 import imp
 import inspect
 import os
+import random
 
 # Own modules
 from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
@@ -31,6 +32,7 @@ from microprobe.property import PropertyHolder, list_property_files
 from microprobe.utils.cache import cache_file, \
     read_cache_data, update_cache_needed, write_cache_data
 from microprobe.utils.logger import get_logger
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 
 # Constants
@@ -196,7 +198,8 @@ def load_source(name, path):
     return module
 
 
-def import_definition(defdict, yaml, key, base_module, args, force=False):
+@typeguard_testsuite
+def import_definition(defdict, yaml, key, base_module, args, rand: random.Random, force=False):
     """Import definition
 
     :param defdict:
@@ -238,7 +241,7 @@ def import_definition(defdict, yaml, key, base_module, args, force=False):
             LOG.debug("Cache error when reading class %s", cls.__name__)
 
     try:
-        data = base_module.import_definition(cls, entry["YAML"], args)
+        data = base_module.import_definition(cls, entry["YAML"], args, rand)
     except KeyError:
         raise MicroprobeArchitectureDefinitionError(
             "'%s' key in %s "
@@ -274,9 +277,10 @@ def import_cls_definition(isadef, yaml, key, base_module):
         )
 
 
+@typeguard_testsuite
 def import_operand_definition(
     defdict, yaml, key, base_module,
-    regs, force=False
+    regs, rand: random.Random, force=False
 ):
     """
 
@@ -315,7 +319,7 @@ def import_operand_definition(
             LOG.debug("Cache error when reading cache contents for Operand")
     try:
         data = base_module.import_definition(
-            entry["YAML"], entry["YAML_inherits"], regs
+            entry["YAML"], entry["YAML_inherits"], regs, rand
         )
     except KeyError:
         raise MicroprobeArchitectureDefinitionError(

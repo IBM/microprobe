@@ -22,6 +22,7 @@ from __future__ import absolute_import
 import abc
 import hashlib
 import os
+import random
 from typing import Dict, List, Tuple
 
 # Third party modules
@@ -41,8 +42,7 @@ __all__ = ["import_definition", "RegisterType", "GenericRegisterType"]
 # Functions
 
 
-@typeguard_testsuite
-def import_definition(cls, filenames, dummy):
+def import_definition(cls, filenames, dummy, _rand):
     """
 
     :param filenames:

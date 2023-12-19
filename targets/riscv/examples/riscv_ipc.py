@@ -26,6 +26,7 @@ from __future__ import absolute_import
 # Built-in modules
 import os
 from random import Random
+import random
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
@@ -126,6 +127,9 @@ class RiscvIpcTest(object):
             i for i in self.target.isa.instructions.values()
             if i.name in self.args.instructions]
 
+        rand = random.Random()
+        rand.seed(64)  # My favorite number :)
+
         microbenchmarks = []
         for instr in valid_instrs:
             for d in self.args.dependency_distances:
@@ -147,7 +151,7 @@ class RiscvIpcTest(object):
                     memory.GenericMemoryStreamsPass(
                         [[1, 4*1024*1024, 1, 128, 1, 0, (1, 0)]]
                     ),
-                    register.DefaultRegisterAllocationPass(dd=d)
+                    register.DefaultRegisterAllocationPass(dd=d, rand=rand)
                 ]
 
                 for p in passes:

@@ -39,6 +39,7 @@ from __future__ import absolute_import, annotations
 import copy
 import itertools
 import os
+import random
 from typing import TYPE_CHECKING, Tuple
 
 # Third party modules
@@ -53,6 +54,7 @@ from microprobe.target.uarch import find_microarchitecture_definitions, \
     import_microarchitecture_definition
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import Pickable
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Local modules
 
@@ -74,8 +76,9 @@ __all__ = [
 
 
 # Functions
+@typeguard_testsuite
 def import_definition(definition_tuple: str
-                      | Tuple[Definition, Definition, Definition]):
+                      | Tuple[Definition, Definition, Definition], rand: random.Random | None = None):
     """Return the target corresponding the to the given *definition_tuple*.
 
     Return the target object corresponding the to the given
@@ -99,13 +102,17 @@ def import_definition(definition_tuple: str
     # Type hinting needs some help here :)
     assert not isinstance(definition_tuple, str)
 
+    if rand is None:
+        rand = random.Random()
+        rand.seed(64) # My favorite number ;)
+
     isa_def, uarch_def, env_def = definition_tuple
-    isa = import_isa_definition(os.path.dirname(isa_def.filename))
+    isa = import_isa_definition(os.path.dirname(isa_def.filename), rand)
     env = import_env_definition(env_def.filename,
                                 isa,
                                 definition_name=env_def.name)
     uarch = import_microarchitecture_definition(
-        os.path.dirname(uarch_def.filename))
+        os.path.dirname(uarch_def.filename), rand)
 
     target = Target(isa, uarch=uarch, env=env)
     LOG.info("Target '%s-%s-%s' imported", isa_def.name, uarch_def.name,

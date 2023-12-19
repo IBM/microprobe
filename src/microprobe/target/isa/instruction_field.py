@@ -21,6 +21,7 @@ from __future__ import absolute_import, annotations
 # Built-in modules
 import abc
 import os
+import random
 from typing import TYPE_CHECKING, Dict, List, Tuple, cast
 
 # Third party modules
@@ -47,7 +48,8 @@ __all__ = ["import_definition", "InstructionField", "GenericInstructionField"]
 @typeguard_testsuite
 def import_definition(cls,
                       filenames: List[str],
-                      operands: Dict[str, "Operand"]):
+                      operands: Dict[str, "Operand"],
+                      _rand: random.Random):
     """
 
     :param filenames:

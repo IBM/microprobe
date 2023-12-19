@@ -23,6 +23,7 @@ from __future__ import absolute_import, print_function
 
 # Built-in modules
 import os
+import random
 
 # Own modules
 from microprobe.target.isa import find_isa_definitions, import_isa_definition
@@ -45,11 +46,14 @@ ISANAME = "power_v206"
 
 # Main
 
+rand = random.Random()
+rand.seed(64)  # My favorite number :)
+
 # Search and import definition
 ISADEF = import_isa_definition(
     os.path.dirname([
         isa for isa in find_isa_definitions() if isa.name == ISANAME
-    ][0].filename))
+    ][0].filename), rand=rand)
 
 # Print definition
 print((ISADEF.full_report()))

@@ -28,7 +28,9 @@ import hashlib
 import itertools
 import multiprocessing as mp
 import os
+import random
 import sys
+from typing import Tuple, Any
 import warnings
 
 # Own modules
@@ -51,6 +53,7 @@ from microprobe.utils.cmdline import (
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import iter_flatten, move_file
 from microprobe.utils.policy import find_policy
+from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Constants
 LOG = get_logger(__name__)
@@ -69,8 +72,9 @@ def _get_wrapper(name):
         )
 
 
-def _generic_policy_wrapper(all_arguments):
-    configuration, outputdir, outputname, target, kwargs = all_arguments
+@typeguard_testsuite
+def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, random.Random]):
+    configuration, outputdir, outputname, target, kwargs, rand = all_arguments
 
     (
         instructions,
@@ -252,7 +256,7 @@ def _generic_policy_wrapper(all_arguments):
     outputfile = new_file(wrapper.outputname(outputfile), internal=True)
 
     print_info(f"Generating {outputfile}...")
-    synth = policy.apply(target, wrapper, **extra_arguments)
+    synth = policy.apply(target, wrapper, rand=rand, **extra_arguments)
 
     if not kwargs["ignore_errors"]:
         bench = synth.synthesize()
@@ -869,12 +873,15 @@ def _main(arguments):
         * size
     ]
 
+    rand = random.Random()
+    rand.seed(64)  # My favorite number :)
+
     if "parallel" not in arguments:
         print_info("Start sequential generation. Use parallel flag to speed")
         print_info("up the benchmark generation.")
         for params in configurations:
             _generic_policy_wrapper(
-                (params, outputdir, outputname, target, arguments)
+                (params, outputdir, outputname, target, arguments, rand)
             )
 
     else:
@@ -885,7 +892,7 @@ def _main(arguments):
         pool.map(
             _generic_policy_wrapper,
             [
-                (params, outputdir, outputname, target, arguments)
+                (params, outputdir, outputname, target, arguments, rand)
                 for params in configurations
             ],
         )
