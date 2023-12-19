@@ -174,7 +174,8 @@ def generate_genetic(compname: str, ipc: float):
                 avelatency=latency,
                 any_comp=any_comp))
         synth.add_pass(
-            microprobe.passes.register.DefaultRegisterAllocationPass(dd=dist, rand=rand))
+            microprobe.passes.register.DefaultRegisterAllocationPass(
+                dd=dist, rand=rand))
         bench = synth.synthesize()
         synth.save(name, bench=bench)
 
@@ -184,8 +185,9 @@ def generate_genetic(compname: str, ipc: float):
     ga_params.append((2, 8, 0.05))  # Average instruction latency design space
 
     # Set up the search driver
-    driver = microprobe.driver.genetic.ExecCmdDriver(
-        generate, 20, 30, 30, f"'{COMMAND}' {ipc} ", ga_params)
+    driver = microprobe.driver.genetic.ExecCmdDriver(generate, 20, 30, 30,
+                                                     f"'{COMMAND}' {ipc} ",
+                                                     ga_params)
 
     starttime = runtime.time()
     print_info("Start search...")

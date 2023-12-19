@@ -48,7 +48,8 @@ __all__ = ["import_definition", "Register", "GenericRegister"]
 
 # Functions
 @typeguard_testsuite
-def import_definition(cls, filenames: List[str], regtypes, _rand: random.Random):
+def import_definition(cls, filenames: List[str], regtypes,
+                      _rand: random.Random):
     """
 
     :param filenames:

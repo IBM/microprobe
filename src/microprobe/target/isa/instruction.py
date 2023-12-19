@@ -368,8 +368,9 @@ def _translate_moperands(name, filename, operands, ioperands, moperands,
 
 
 @typeguard_testsuite
-def _translate_ioperands(name: str, filename: str, ioperands, defined_operands: Dict[str, Operand],
-                         rand: random.Random):
+def _translate_ioperands(name: str, filename: str, ioperands,
+                         defined_operands: Dict[str,
+                                                Operand], rand: random.Random):
     """
 
     :param name:

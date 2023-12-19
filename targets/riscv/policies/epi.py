@@ -31,7 +31,6 @@ import microprobe.passes.symbol
 from microprobe.exceptions import MicroprobePolicyError
 from microprobe.utils.logger import get_logger
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
@@ -65,8 +64,7 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
     if target.name not in SUPPORTED_TARGETS:
         raise MicroprobePolicyError(
             "Policy '%s' not valid for target '%s'. Supported targets are:"
-            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS))
-        )
+            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS)))
 
     instr = kwargs['instruction']
     sequence = [kwargs['instruction']]
@@ -87,9 +85,9 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
     #    if operand.type.vector:
     #        vector = True
 
-    synthesizer = microprobe.code.Synthesizer(
-        target, wrapper, value=0b01010101
-    )
+    synthesizer = microprobe.code.Synthesizer(target,
+                                              wrapper,
+                                              value=0b01010101)
 
     # synthesizer.add_pass(
     #     microprobe.passes.initialization.InitializeRegistersPass(
@@ -118,33 +116,24 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
-            kwargs['benchmark_size']
-        )
-    )
+            kwargs['benchmark_size']))
 
     synthesizer.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence
-        )
-    )
+            sequence))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
-            [[0, 512, 1, 32, 1, 0, (1, 0)]]
-        )
-    )
+            [[0, 512, 1, 32, 1, 0, (1, 0)]]))
 
     synthesizer.add_pass(
         microprobe.passes.float.InitializeMemoryFloatPass(
-            value=1.000000000000001
-        )
-    )
+            value=1.000000000000001))
 
     # synthesizer.add_pass(
     #    microprobe.passes.decimal.InitializeMemoryDecimalPass(
@@ -158,24 +147,18 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=kwargs['dependency_distance'], rand=rand
-        )
-    )
+            dd=kwargs['dependency_distance'], rand=rand))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     if instr.disable_asm:
         synthesizer.add_pass(
             microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-                instructions=[instr.name])
-        )
+                instructions=[instr.name]))
 
     if not synthesizer.wrapper.context().symbolic:
         synthesizer.add_pass(
-            microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-            )
-        )
+            microprobe.passes.symbol.ResolveSymbolicReferencesPass())
 
     return synthesizer

@@ -56,9 +56,11 @@ def _get_wrapper(name: str):
 
 
 @typeguard_testsuite
-def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, Any, random.Random]):
+def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, Any,
+                                                 random.Random]):
 
-    instruction, outputdir, outputname, target, kwargs, check, rand = all_arguments
+    instruction, outputdir, outputname, \
+        target, kwargs, check, rand = all_arguments
 
     bname = instruction.name
     bname = bname + "#DD_%d" % kwargs['dependency_distance']
@@ -374,18 +376,18 @@ def _main(arguments):
         print_info("Start sequential generation. Use parallel flag to speed")
         print_info("up the benchmark generation.")
         for instruction in arguments['instructions']:
-            _generic_policy_wrapper(
-                (instruction, outputdir, outputname, target, arguments, False, rand))
+            _generic_policy_wrapper((instruction, outputdir, outputname,
+                                     target, arguments, False, rand))
 
     else:
         print_info("Start parallel generation. Threads: %s" %
                    MICROPROBE_RC["cpus"])
         pool = mp.Pool(processes=MICROPROBE_RC["cpus"])
-        args = [(instruction, outputdir, outputname, target, arguments, True, rand)
-                for instruction in arguments['instructions']]
+        args = [(instruction, outputdir, outputname, target, arguments, True,
+                 rand) for instruction in arguments['instructions']]
         regen = pool.map(_generic_policy_wrapper, args)
-        args = [(instruction, outputdir, outputname, target, arguments, False, rand)
-                for instruction in arguments['instructions']]
+        args = [(instruction, outputdir, outputname, target, arguments, False,
+                 rand) for instruction in arguments['instructions']]
         args = [elem[0] for elem in zip(args, regen) if elem[1] is True]
         pool.map(_generic_policy_wrapper, args)
 

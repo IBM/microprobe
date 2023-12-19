@@ -67,13 +67,13 @@ def _get_wrapper(name):
         raise MicroprobeException(
             "Wrapper '%s' not available. Check if you have the wrappers "
             "of the target installed or set up an appropriate "
-            "MICROPROBEWRAPPERS environment variable. Original error was: %s"
-            % (name, str(exc))
-        )
+            "MICROPROBEWRAPPERS environment variable. Original error was: %s" %
+            (name, str(exc)))
 
 
 @typeguard_testsuite
-def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, random.Random]):
+def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any,
+                                                 random.Random]):
     configuration, outputdir, outputname, target, kwargs, rand = all_arguments
 
     (
@@ -97,31 +97,26 @@ def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, random
 
     for repl in replace_every:
         if repl[2] > 0:
-            extrapath.append(
-                "RE_%d_%s_%s" % (repl[2], repl[0].name, repl[1].name)
-            )
+            extrapath.append("RE_%d_%s_%s" %
+                             (repl[2], repl[0].name, repl[1].name))
 
     for addl in add_every:
         if addl[1] > 0:
             extrapath.append(
-                "AE_%d_%s"
-                % (addl[1], "_".join([elem.name for elem in addl[0]]))
-            )
+                "AE_%d_%s" %
+                (addl[1], "_".join([elem.name for elem in addl[0]])))
 
     for mems in memory_streams:
-        extrapath.append(
-            "ME_%d_%d_%d_%d_%d_%d_%d_%d"
-            % (
-                mems[0],
-                mems[1],
-                mems[2],
-                mems[3],
-                mems[4],
-                mems[5],
-                mems[6][0],
-                mems[6][1],
-            )
-        )
+        extrapath.append("ME_%d_%d_%d_%d_%d_%d_%d_%d" % (
+            mems[0],
+            mems[1],
+            mems[2],
+            mems[3],
+            mems[4],
+            mems[5],
+            mems[6][0],
+            mems[6][1],
+        ))
 
     outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
     outputfile = outputfile.replace(
@@ -132,12 +127,9 @@ def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, random
     if kwargs["shortnames"]:
         outputfile = outputfile.replace(
             "%BASENAME%",
-            "mp_seqtune_%s"
-            % hashlib.sha1(
-                "_".join(
-                    [instr.name for instr in instructions] + extrapath
-                ).encode()
-            ).hexdigest()[0:70],
+            "mp_seqtune_%s" %
+            hashlib.sha1("_".join([instr.name for instr in instructions] +
+                                  extrapath).encode()).hexdigest()[0:70],
         )
     else:
         outputfile = outputfile.replace(
@@ -184,9 +176,8 @@ def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, random
     elif target.environment.default_wrapper:
         wrapper_name = target.environment.default_wrapper
         wrapper_class = _get_wrapper(wrapper_name)
-        wrapper = wrapper_class(
-            endless=kwargs["endless"], reset=kwargs["reset"]
-        )
+        wrapper = wrapper_class(endless=kwargs["endless"],
+                                reset=kwargs["reset"])
 
         outputfile = outputfile.replace(".%EXT%", "")
         outputfile = wrapper.outputname(outputfile)
@@ -209,9 +200,8 @@ def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, random
             return
 
     if len(memory_streams) == 0:
-        warnings.warn(
-            "No memory streams provided " "using 1K stream stride 64 bytes"
-        )
+        warnings.warn("No memory streams provided "
+                      "using 1K stream stride 64 bytes")
         memory_streams = [(1, 4096, 1, 256, 1, 0, (0, 0))]
 
     streamid = 0
@@ -237,10 +227,8 @@ def _generic_policy_wrapper(all_arguments: Tuple[Any, Any, Any, Any, Any, random
     extra_arguments["branch_switch"] = switch_branch
 
     if wrapper.outputname(outputfile) != outputfile:
-        print_error(
-            "Fix outputname to have a proper extension. E.g. '%s'"
-            % wrapper.outputname(outputfile)
-        )
+        print_error("Fix outputname to have a proper extension. E.g. '%s'" %
+                    wrapper.outputname(outputfile))
         exit(-1)
 
     for instr in instructions:
@@ -299,9 +287,8 @@ def main():
     )
 
     groupname = "SEQTUNE arguments"
-    cmdline.add_group(
-        groupname, "Command arguments related to Sequence tuner generator"
-    )
+    cmdline.add_group(groupname,
+                      "Command arguments related to Sequence tuner generator")
 
     cmdline.add_option(
         "seq-output-dir",
@@ -348,9 +335,8 @@ def main():
         "generate a range between #1 to #2 with step #3. E.g. 10:20 generates "
         "10, 11, 12 ... 19, 20 and 10:20:2 generates 10, 12, 14, ... 18, 20.",
         group=groupname,
-        opt_type=string_with_fields(
-            ":", 3, 3, [str, str, int_range(0, 10000)]
-        ),
+        opt_type=string_with_fields(":", 3, 3,
+                                    [str, str, int_range(0, 10000)]),
         required=False,
         action="append",
     )
@@ -602,9 +588,8 @@ def main():
 
 
 def _generate_configurations(arguments):
-    for relem in itertools.product(
-        arguments["sequences"], repeat=arguments["repeat"]
-    ):
+    for relem in itertools.product(arguments["sequences"],
+                                   repeat=arguments["repeat"]):
         relem = list(itertools.chain.from_iterable(relem))
         bconfig = []
         bconfig.append(relem)
@@ -630,9 +615,7 @@ def _generate_configurations(arguments):
                             (elem[0] for elem in rmap),
                             (elem[1] for elem in rmap),
                             relem,
-                        )
-                    )
-                )
+                        )))
 
                 for value in _generate_add_every(rconfig, arguments):
                     for size in arguments["benchmark_size"]:
@@ -652,9 +635,8 @@ def _generate_add_every(rconfig, arguments):
         cconfig = bconfig[:]
         cconfig.append(list(zip(rmap, relem)))
 
-        for value in _generate_mem_streams(
-            bconfig + [list(zip(rmap, relem))], arguments
-        ):
+        for value in _generate_mem_streams(bconfig + [list(zip(rmap, relem))],
+                                           arguments):
             yield value
 
 
@@ -664,20 +646,15 @@ def _generate_mem_streams(rconfig, arguments):
     rcomb = []
 
     for elem in arguments["memory_stream"]:
-        rcomb.append(
-            [
-                [
-                    val[0],
-                    val[1],
-                    val[2],
-                    val[3],
-                    val[4],
-                    val[5],
-                    (val[6], val[7]),
-                ]
-                for val in itertools.product(*elem)
-            ]
-        )
+        rcomb.append([[
+            val[0],
+            val[1],
+            val[2],
+            val[3],
+            val[4],
+            val[5],
+            (val[6], val[7]),
+        ] for val in itertools.product(*elem)])
 
     for relem in itertools.product(*rcomb):
         cconfig = bconfig[:]
@@ -786,30 +763,23 @@ def _main(arguments):
         if arg not in arguments:
             arguments[arg] = []
 
-    if (
-        len(arguments["branch_every"]) > 0
-        and len(arguments["branch_pattern"]) > 0
-    ):
-        print_error(
-            "--branch-every and --branch-pattern flags are "
-            "mutually exclusive. Use only on of them."
-        )
+    if (len(arguments["branch_every"]) > 0
+            and len(arguments["branch_pattern"]) > 0):
+        print_error("--branch-every and --branch-pattern flags are "
+                    "mutually exclusive. Use only on of them.")
         exit(-1)
     elif len(arguments["branch_pattern"]) > 0:
         arguments["branch_pattern"] = _process_branch_pattern(
-            arguments["branch_pattern"]
-        )
+            arguments["branch_pattern"])
     elif len(arguments["branch_every"]) > 0:
         arguments["branch_pattern"] = _process_branch_every(
-            arguments["branch_every"]
-        )
+            arguments["branch_every"])
     else:
         arguments["branch_pattern"] = ["0"]
 
     if arguments["num_batches"] < arguments["batch_number"]:
         print_error(
-            "Batch number should be within the number of batches specified"
-        )
+            "Batch number should be within the number of batches specified")
         exit(-1)
 
     print_info("Importing target definition...")
@@ -837,8 +807,7 @@ def _main(arguments):
 
     if "count" in arguments:
         print_info(
-            f"Total number of variations defined: {len(list(configurations))}"
-        )
+            f"Total number of variations defined: {len(list(configurations))}")
         exit(0)
 
     outputdir = arguments["seq_output_dir"]
@@ -867,11 +836,8 @@ def _main(arguments):
     size = len(configurations) // arguments["num_batches"]
     size = size + 1
 
-    configurations = configurations[
-        (arguments["batch_number"] - 1)
-        * size: arguments["batch_number"]
-        * size
-    ]
+    configurations = configurations[(arguments["batch_number"] - 1) *
+                                    size:arguments["batch_number"] * size]
 
     rand = random.Random()
     rand.seed(64)  # My favorite number :)
@@ -881,20 +847,16 @@ def _main(arguments):
         print_info("up the benchmark generation.")
         for params in configurations:
             _generic_policy_wrapper(
-                (params, outputdir, outputname, target, arguments, rand)
-            )
+                (params, outputdir, outputname, target, arguments, rand))
 
     else:
         print_info(
-            f"Start parallel generation. Threads: {MICROPROBE_RC['cpus']}"
-        )
+            f"Start parallel generation. Threads: {MICROPROBE_RC['cpus']}")
         pool = mp.Pool(processes=MICROPROBE_RC["cpus"])
         pool.map(
             _generic_policy_wrapper,
-            [
-                (params, outputdir, outputname, target, arguments, rand)
-                for params in configurations
-            ],
+            [(params, outputdir, outputname, target, arguments, rand)
+             for params in configurations],
         )
 
 

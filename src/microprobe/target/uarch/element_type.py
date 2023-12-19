@@ -116,9 +116,8 @@ class MicroarchitectureElementType(PropertyHolder, metaclass=abc.ABCMeta):
 
 
 @typeguard_testsuite
-class GenericMicroarchitectureElementType(
-        MicroarchitectureElementType, metaclass=abc.ABCMeta
-        ):
+class GenericMicroarchitectureElementType(MicroarchitectureElementType,
+                                          metaclass=abc.ABCMeta):
     """Class to represent a generic microarchitecture element type."""
 
     def __init__(self, name, description):

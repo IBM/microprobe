@@ -65,7 +65,8 @@ def _get_wrapper(name: str):
 
 @typeguard_testsuite
 def _generic_policy_wrapper(all_arguments: Tuple[List[InstructionType], str,
-                                                 str, Target, Any, random.Random]):
+                                                 str, Target, Any,
+                                                 random.Random]):
 
     instructions, outputdir, outputname, target, kwargs, rand = all_arguments
 

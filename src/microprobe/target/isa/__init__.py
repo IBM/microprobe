@@ -190,7 +190,8 @@ def import_isa_definition(path: str, rand: random.Random):
     isadef = _read_yaml_definition([], path)
 
     regts, force = import_definition(isadef, os.path.join(path, "isa.yaml"),
-                                     "Register_type", register_type_mod, None, rand)
+                                     "Register_type", register_type_mod, None,
+                                     rand)
     regts = dict2OrderedDict(regts)
 
     regs, force = import_definition(isadef,
@@ -659,8 +660,7 @@ class GenericISA(ISA):
 
     def __init__(self, name: str, descr: str, path: str,
                  ins: Dict[str, "InstructionType"],
-                 regs: Dict[str, "Register"],
-                 comparators, generators):
+                 regs: Dict[str, "Register"], comparators, generators):
         """
 
         :param name:

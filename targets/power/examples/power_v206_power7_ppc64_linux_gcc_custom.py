@@ -143,7 +143,8 @@ def example_1():
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(mmodel))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=3, rand=rand))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=3,
+                                                                 rand=rand))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -173,7 +174,8 @@ def example_2():
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
             TARGET, [TARGET.elements['MUL_FXU0_Core0_SCM_Processor']], {}))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=4, rand=rand))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=4,
+                                                                 rand=rand))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -203,7 +205,8 @@ def example_3():
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
             TARGET, [TARGET.elements['ALU_FXU0_Core0_SCM_Processor']], {}))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1, rand=rand))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1,
+                                                                 rand=rand))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -238,7 +241,8 @@ def example_4():
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=10, rand=rand))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=10,
+                                                                 rand=rand))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -273,7 +277,8 @@ def example_5():
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1, rand=rand))
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1,
+                                                                 rand=rand))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()

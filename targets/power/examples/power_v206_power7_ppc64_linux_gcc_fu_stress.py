@@ -206,10 +206,8 @@ def _generate_benchmark(target, output_prefix, args):
 
         print_info("Generating %s ..." % (fname))
 
-
         rand = random.Random()
         rand.seed(64)  # My favorite number :)
-
 
         # Get the wrapper object. The wrapper object is in charge of
         # translating the internal representation of the microbenchmark

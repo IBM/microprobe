@@ -43,7 +43,6 @@ from microprobe.utils.asm import interpret_asm
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.logger import get_logger, set_log_level
 
-
 # Constants
 LOG = get_logger(__name__)
 set_log_level(50)
@@ -71,9 +70,9 @@ else:
     REPETITIONS = 50
     TRIALS = 3
 
-
 rand = random.Random()
 rand.seed(64)  # My favorite number :)
+
 
 # Functions
 def copy_func(f, name=None):
@@ -764,9 +763,9 @@ for name, gen_function, isa_path, env_path, \
                 newclass.compiler_bin  # pylint: disable=no-member
             )
             @skipUnless(
-                _check_executable(
-                    newclass.compiler_bin  # pylint: disable=no-member
-                ),
+                _check_executable(newclass.compiler_bin
+                                  # pylint: disable=no-member
+                                  ),
                 "Environment variable %s not set to a correct executable" %
                 newclass.compiler_bin  # pylint: disable=no-member
             )

@@ -50,10 +50,10 @@ rand = random.Random()
 rand.seed(64)  # My favorite number :)
 
 # Search and import definition
-ISADEF = import_isa_definition(
-    os.path.dirname([
-        isa for isa in find_isa_definitions() if isa.name == ISANAME
-    ][0].filename), rand=rand)
+ISADEF = import_isa_definition(os.path.dirname([
+    isa for isa in find_isa_definitions() if isa.name == ISANAME
+][0].filename),
+                               rand=rand)
 
 # Print definition
 print((ISADEF.full_report()))

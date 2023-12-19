@@ -36,7 +36,6 @@ from microprobe.utils.misc import OrderedDict
 
 # Local modules
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = ['SwitchingInstructions', 'SwitchingStores', 'Switching']
@@ -79,20 +78,18 @@ class Switching(microprobe.passes.Pass):
         value_dict = {}
 
         for idx in range(0, self._targets):
-            base_descriptor = [None,  # target register
-                               False,  # initialized
-                               itertools.cycle(
-                                   self._operands
-                               )  # required operands
-                               ]
+            base_descriptor = [
+                None,  # target register
+                False,  # initialized
+                itertools.cycle(self._operands)  # required operands
+            ]
             for dummy in range(0, idx):
                 next(base_descriptor[2])
 
             target_descriptors.append(base_descriptor)
 
         iter_descriptor = itertools.cycle(
-            target_descriptors
-        )  # required operands
+            target_descriptors)  # required operands
 
         context = building_block.context
 
@@ -109,17 +106,15 @@ class Switching(microprobe.passes.Pass):
 
                     if descriptor[0] is None:
                         valid_values = set(
-                            instr.operands()[0].type.values()
-                        ).difference(
-                            set(context.reserved_registers)
-                        )
+                            instr.operands()[0].type.values()).difference(
+                                set(context.reserved_registers))
                         valid_value = list(valid_values)[0]
                         context.add_reserved_registers([valid_value])
                         descriptor[0] = valid_value
 
                         for xreg in instr.architecture_type.sets(
-                            [descriptor[0]] + [None] * (len(descriptor) - 1)
-                        ):
+                                [descriptor[0]]
+                                + [None] * (len(descriptor) - 1)):
 
                             if not instr.allows(xreg):
                                 instr.add_allow_register(xreg)
@@ -129,10 +124,7 @@ class Switching(microprobe.passes.Pass):
 
                         if operands[0] is not None and not descriptor[1]:
                             building_block.add_init(
-                                target.set_register(
-                                    valid_value, operands[0]
-                                )
-                            )
+                                target.set_register(valid_value, operands[0]))
 
                     final_operands = [descriptor[0]]
                     if not instr.allows(descriptor[0]):
@@ -145,21 +137,14 @@ class Switching(microprobe.passes.Pass):
                             if instr.operands()[idx + 1][0].immediate():
                                 pass
                             else:
-                                valid_values = set(
-                                    instr.operands()[
-                                        idx + 1
-                                    ][0].values()
-                                ).difference(
-                                    context.reserved_registers
-                                )
+                                valid_values = set(instr.operands()[
+                                    idx + 1][0].values()).difference(
+                                        context.reserved_registers)
                                 valid_value = list(valid_values)[0]
                                 context.add_reserved_registers([valid_value])
 
                                 building_block.add_init(
-                                    target.set_register(
-                                        valid_value, operand
-                                    )
-                                )
+                                    target.set_register(valid_value, operand))
                                 value_dict[operand] = valid_value
 
                         if instr.operands()[idx + 1][0].immediate():
@@ -222,8 +207,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
                 if instr.switching == "None":
                     if self._strict:
                         raise MicroprobeCodeGenerationError(
-                            "No switching defined for '%s'" % instr
-                        )
+                            "No switching defined for '%s'" % instr)
                     LOG.warning("No switching defined for '%s'", instr)
                     continue
 
@@ -257,35 +241,28 @@ class SwitchingInstructions(microprobe.passes.Pass):
 
                                 except IndexError:
 
-                                    LOG.critical(
-                                        [reg for reg in operand.type.values()
-                                         if reg not in
-                                         context.reserved_registers])
+                                    LOG.critical([
+                                        reg for reg in operand.type.values() if
+                                        reg not in context.reserved_registers
+                                    ])
 
                                     LOG.critical(operand)
                                     LOG.critical(building_block.context.dump())
                                     raise NotImplementedError
 
                                 context.add_reserved_registers(
-                                    operand.type.access(output_registers[idx])
-                                )
+                                    operand.type.access(output_registers[idx]))
 
                                 building_block.add_init(
                                     target.set_register(
-                                        output_registers[idx], statuses[0][
-                                            0
-                                        ], building_block.context
-                                    )
-                                )
+                                        output_registers[idx], statuses[0][0],
+                                        building_block.context))
 
                                 building_block.context.set_register_value(
-                                    output_registers[idx], statuses[0][0]
-                                )
+                                    output_registers[idx], statuses[0][0])
 
-                                LOG.debug(
-                                    "Output register set to '%x'",
-                                    statuses[0][0]
-                                )
+                                LOG.debug("Output register set to '%x'",
+                                          statuses[0][0])
 
                     LOG.debug("Output registers: %s", output_registers)
                     LOG.debug("Statuses: %s", statuses)
@@ -308,9 +285,8 @@ class SwitchingInstructions(microprobe.passes.Pass):
         for key, values in descriptors.items():
 
             output_registers, status_idx, repl_idx, statuses, count = values
-            descriptors[key] = (
-                output_registers, status_idx, repl_idx, statuses, count
-            )
+            descriptors[key] = (output_registers, status_idx, repl_idx,
+                                statuses, count)
 
         LOG.debug("Setting up switching")
 
@@ -324,14 +300,11 @@ class SwitchingInstructions(microprobe.passes.Pass):
                     LOG.debug("No switching defined for '%s'", instr)
                     continue
 
-                if len(
-                    [
+                if len([
                         oper for oper in instr.operands() if oper.value is None
-                    ]
-                ) == 0:
-                    LOG.debug(
-                        "Operands of the instructions already set '%s'", instr
-                    )
+                ]) == 0:
+                    LOG.debug("Operands of the instructions already set '%s'",
+                              instr)
                     continue
 
                 output_registers, status_idx, repl_idx, statuses, count = \
@@ -340,16 +313,12 @@ class SwitchingInstructions(microprobe.passes.Pass):
                 output_register = output_registers[repl_idx]
 
                 if count == 0 and statuses[0][0] != "None":
-                    LOG.debug(
-                        "Skip last switch if not pair to maintain "
-                        "switching effects"
-                    )
+                    LOG.debug("Skip last switch if not pair to maintain "
+                              "switching effects")
                     LOG.debug("Current count: %s", count)
 
-                    LOG.critical(
-                        instr.architecture_type, count, repl_idx, status_idx,
-                        len(statuses)
-                    )
+                    LOG.critical(instr.architecture_type, count, repl_idx,
+                                 status_idx, len(statuses))
 
                     # TODO: add strict/not strict parameter
                     exit(0)
@@ -357,9 +326,9 @@ class SwitchingInstructions(microprobe.passes.Pass):
                 if output_register is not None:
                     instr.add_allow_register(output_register)
 
-                status = statuses[
-                    repl_idx * (len(statuses) // self._replicate) + status_idx
-                ]
+                status = statuses[repl_idx *
+                                  (len(statuses) // self._replicate) +
+                                  status_idx]
 
                 LOG.debug("Current descriptor:")
                 LOG.debug("Output register: %s", output_register)
@@ -371,17 +340,14 @@ class SwitchingInstructions(microprobe.passes.Pass):
 
                 memoperand_idx = 0
                 memoperand_list = [
-                    memop
-                    for memop in instr.memory_operands()
+                    memop for memop in instr.memory_operands()
                     if memop.address is not None
                 ]
 
                 operand_idx = 0
                 operand_list = [
-                    oper
-                    for oper in instr.operands()
-                    if oper.value is None and oper.is_input and
-                    not oper.type.constant
+                    oper for oper in instr.operands() if oper.value is None
+                    and oper.is_input and not oper.type.constant
                 ]
 
                 # if len(operand_list) == 0:
@@ -449,8 +415,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
 
                             address = address + displacement
                             memvalue = building_block.context.get_memory_value(
-                                address
-                            )
+                                address)
 
                             LOG.debug("Required value: 0x%x", required_value)
                             LOG.debug("Target address: %s", address)
@@ -463,42 +428,28 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                 mycontext = target.wrapper.context()
                                 treg = target.scratch_registers[0]
                                 instrs = target.set_register(
-                                    treg, required_value,
-                                    mycontext
-                                )
+                                    treg, required_value, mycontext)
                                 areg = target.scratch_registers[1]
                                 instrs += target.set_register_to_address(
-                                    areg, address,
-                                    mycontext
-                                )
-                                mycontext.set_register_value(
-                                    areg, address
-                                )
+                                    areg, address, mycontext)
+                                mycontext.set_register_value(areg, address)
 
                                 reg0 = \
                                     target.get_register_for_address_arithmetic(
                                         mycontext
                                     )
                                 instrs += target.set_register(
-                                    reg0, 0,
-                                    mycontext
-                                )
-                                mycontext.set_register_value(
-                                    reg0, 0
-                                )
+                                    reg0, 0, mycontext)
+                                mycontext.set_register_value(reg0, 0)
 
                                 instrs += target.store_integer(
                                     treg, address, memoperand.length * 8,
-                                    mycontext
-                                )
+                                    mycontext)
 
                                 building_block.add_init(instrs, prepend=True)
                                 building_block.context.set_memory_value(
-                                    MemoryValue(
-                                        address, required_value,
-                                        memoperand.length
-                                    )
-                                )
+                                    MemoryValue(address, required_value,
+                                                memoperand.length))
 
                                 # memoperand.set_address(
                                 #    address, building_block.context
@@ -512,10 +463,8 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                     memvalue.length == memoperand.length:
 
                                 # perfect, nothing to do
-                                LOG.debug(
-                                    "Memory contents already contain the"
-                                    " required value."
-                                )
+                                LOG.debug("Memory contents already contain the"
+                                          " required value.")
 
                                 # memoperand.set_address(
                                 #     address, building_block.context
@@ -526,10 +475,8 @@ class SwitchingInstructions(microprobe.passes.Pass):
 
                         if memory_set is False:
 
-                            LOG.warning(
-                                "Unable to set the memory to the"
-                                " required value."
-                            )
+                            LOG.warning("Unable to set the memory to the"
+                                        " required value.")
 
                         memoperand_idx += 1
 
@@ -539,9 +486,8 @@ class SwitchingInstructions(microprobe.passes.Pass):
                         LOG.debug("Operand: %s", operand)
 
                         if isinstance(switch_input, str):
-                            LOG.debug(
-                                "Required value before: %s", switch_input
-                            )
+                            LOG.debug("Required value before: %s",
+                                      switch_input)
 
                             if "_" in switch_input:
                                 size = int(switch_input.split("_")[1], 10)
@@ -557,11 +503,10 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                 if operand.type.immediate:
                                     raise MicroprobeCodeGenerationError(
                                         "No support for immediate definition "
-                                        "with '_'. Provide the full value."
-                                    )
+                                        "with '_'. Provide the full value.")
                                 else:
-                                    opsize = \
-                                        operand.type.random_value(self._rand).type.size
+                                    opsize = operand.type \
+                                        .random_value(self._rand).type.size
                                     assert opsize % size == 0
                                     mult = int(opsize / size)
                                     switch_input = prefix + switch_input * mult
@@ -572,25 +517,21 @@ class SwitchingInstructions(microprobe.passes.Pass):
                         if operand.is_output:
                             LOG.debug(
                                 "Operand is output. Already fixed to "
-                                "'%s' ", output_register
-                            )
+                                "'%s' ", output_register)
                             operand.set_value(output_register)
 
                         elif operand.type.immediate:
                             LOG.debug(
                                 "Operand is immediate. Set to '%s' (0x%X)",
-                                switch_input, switch_input
-                            )
+                                switch_input, switch_input)
                             operand.set_value(switch_input)
 
                         elif building_block.context.register_has_value(
-                            switch_input
-                        ) and building_block.context.registers_get_value(
-                                    switch_input
-                                )[0] in operand.type.values():
-                            treg = building_block.context.registers_get_value(
                                 switch_input
-                            )[0]
+                        ) and building_block.context.registers_get_value(
+                                switch_input)[0] in operand.type.values():
+                            treg = building_block.context.registers_get_value(
+                                switch_input)[0]
 
                             LOG.debug("Value already in register '%s'", treg)
                             operand.set_value(treg)
@@ -598,8 +539,7 @@ class SwitchingInstructions(microprobe.passes.Pass):
                         else:
                             LOG.debug("Initializing register contents")
                             tregs = [
-                                reg
-                                for reg in operand.type.values()
+                                reg for reg in operand.type.values()
                                 if reg not in context.reserved_registers
                             ]
 
@@ -608,29 +548,24 @@ class SwitchingInstructions(microprobe.passes.Pass):
                                 #    "No free registers available to switching"
                                 # )
                                 LOG.debug(
-                                    "No free registers available to switching"
-                                )
+                                    "No free registers available to switching")
                             else:
                                 treg = tregs[0]
                                 instrs = target.set_register(
-                                    treg, switch_input, context
-                                )
+                                    treg, switch_input, context)
 
                                 operand.set_value(treg)
                                 building_block.add_init(instrs)
                                 building_block.context.set_register_value(
-                                    treg, switch_input
-                                )
+                                    treg, switch_input)
 
-                                building_block.context.add_reserved_registers(
-                                    [reg for reg in operand.uses()
-                                     if reg not in context.reserved_registers]
-                                )
+                                building_block.context.add_reserved_registers([
+                                    reg for reg in operand.uses()
+                                    if reg not in context.reserved_registers
+                                ])
 
-                                LOG.debug(
-                                    "Register '%s' set to '%s'", treg,
-                                    switch_input
-                                )
+                                LOG.debug("Register '%s' set to '%s'", treg,
+                                          switch_input)
 
                         operand_idx += 1
 
@@ -639,8 +574,8 @@ class SwitchingInstructions(microprobe.passes.Pass):
 
                 if repl_idx == 0:
                     status_idx += 1
-                    status_idx = status_idx % (
-                        len(statuses) // self._replicate)
+                    status_idx = status_idx % (len(statuses) //
+                                               self._replicate)
 
                 descriptors[instr.architecture_type] = \
                     (output_registers, status_idx, repl_idx, statuses,
@@ -682,8 +617,8 @@ class SwitchingStores(microprobe.passes.Pass):
                     continue
 
                 memoperands = [
-                    operand
-                    for operand in instr.memory_operands() if operand.is_store
+                    operand for operand in instr.memory_operands()
+                    if operand.is_store
                 ]
 
                 if len(memoperands) == 0:
@@ -693,8 +628,7 @@ class SwitchingStores(microprobe.passes.Pass):
                 memoperand = memoperands[0]
 
                 operands = [
-                    operand
-                    for operand in instr.operands()
+                    operand for operand in instr.operands()
                     if not operand.value and not operand.type.immediate
                 ]
 
@@ -724,8 +658,7 @@ class SwitchingStores(microprobe.passes.Pass):
                 if building_block.context.register_has_value(pattern):
 
                     treg = building_block.context.registers_get_value(
-                        pattern
-                    )[0]
+                        pattern)[0]
 
                     if treg.type == list(operand.type.values())[0].type:
                         operand.set_value(treg)
@@ -734,14 +667,12 @@ class SwitchingStores(microprobe.passes.Pass):
                 if needs_init:
                     LOG.debug("Initializing register contents")
                     treg = [
-                        reg
-                        for reg in operand.type.values()
+                        reg for reg in operand.type.values()
                         if reg not in building_block.context.reserved_registers
                     ][0]
 
-                    instrs = target.set_register(
-                        treg, pattern, building_block.context
-                    )
+                    instrs = target.set_register(treg, pattern,
+                                                 building_block.context)
 
                     operand.set_value(treg)
                     building_block.add_init(instrs)

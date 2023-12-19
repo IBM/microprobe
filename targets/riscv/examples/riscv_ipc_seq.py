@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Example RISC-V IPC microbenchmark generator
 
 This generates RISC-V microbenchmarks with a range of dependency distances
@@ -58,72 +57,56 @@ class RiscvIpcTest(object):
     def _parse_options(self):
         parser = ArgumentParser(
             description="Example RISC-V IPC microbenchmark generator",
-            formatter_class=ArgumentDefaultsHelpFormatter
-        )
-        parser.add_argument(
-            '--output-dir',
-            default='./riscv_ipc',
-            help='Output directory to place files'
-        )
+            formatter_class=ArgumentDefaultsHelpFormatter)
+        parser.add_argument('--output-dir',
+                            default='./riscv_ipc',
+                            help='Output directory to place files')
         parser.add_argument(
             '--isa',
             default='riscv_v22',
-            help='Instruction set architecture (and version) to use'
-        )
-        parser.add_argument(
-            '--uarch',
-            default='riscv_generic',
-            help='Microarchitecture to use'
-        )
-        parser.add_argument(
-            '--env',
-            default='riscv64_linux_gcc',
-            help='Environment to use'
-        )
-        parser.add_argument(
-            '--dependency-distances',
-            '-d',
-            type=int,
-            nargs='+',
-            default=[1, 2, 3, 4, 5],
-            help='RAW dependency distances to sweep'
-        )
-        parser.add_argument(
-            '--instructions',
-            '-i',
-            nargs='+',
-            default=['ADD_V0', 'DIV_V0', 'MUL_V0',
-                     'FADD.S_V0', 'FDIV.S_V0', 'FMUL.S_V0',
-                     'FADD.D_V0', 'FDIV.D_V0', 'FMUL.D_V0'],
-            help='An instruction to use'
-        )
-        parser.add_argument(
-            '--loop-size',
-            type=int,
-            default=10,
-            help='Number of instructions in each loop'
-        )
+            help='Instruction set architecture (and version) to use')
+        parser.add_argument('--uarch',
+                            default='riscv_generic',
+                            help='Microarchitecture to use')
+        parser.add_argument('--env',
+                            default='riscv64_linux_gcc',
+                            help='Environment to use')
+        parser.add_argument('--dependency-distances',
+                            '-d',
+                            type=int,
+                            nargs='+',
+                            default=[1, 2, 3, 4, 5],
+                            help='RAW dependency distances to sweep')
+        parser.add_argument('--instructions',
+                            '-i',
+                            nargs='+',
+                            default=[
+                                'ADD_V0', 'DIV_V0', 'MUL_V0', 'FADD.S_V0',
+                                'FDIV.S_V0', 'FMUL.S_V0', 'FADD.D_V0',
+                                'FDIV.D_V0', 'FMUL.D_V0'
+                            ],
+                            help='An instruction to use')
+        parser.add_argument('--loop-size',
+                            type=int,
+                            default=10,
+                            help='Number of instructions in each loop')
         parser.add_argument(
             '--num_permutations',
             type=int,
             required=False,
             default=1,
-            help='Number of permutations of instruction sequence (optional)'
-        )
-        parser.add_argument(
-            '--microbenchmark_name',
-            type=str,
-            required=False,
-            help='Microbenchmark name (optional)'
-        )
+            help='Number of permutations of instruction sequence (optional)')
+        parser.add_argument('--microbenchmark_name',
+                            type=str,
+                            required=False,
+                            help='Microbenchmark name (optional)')
         return parser.parse_args()
 
     def __init__(self):
         self.args = self._parse_options()
         self.target = import_definition(
-            str.format("{}-{}-{}",
-                       self.args.isa, self.args.uarch, self.args.env)
-        )
+            str.format("{}-{}-{}", self.args.isa, self.args.uarch,
+                       self.args.env))
         self._rand = random.Random()
         self._rand.seed(64)  # My favorite number ;)
 
@@ -132,9 +115,9 @@ class RiscvIpcTest(object):
         reserved_registers = ["X0", "X1", "X2", "X3", "X4", "X8"]
 
         instructions_not_found = [
-            i for i in self.args.instructions
-            if i not in [
-                    ix.name for ix in self.target.isa.instructions.values()]]
+            i for i in self.args.instructions if i not in
+            [ix.name for ix in self.target.isa.instructions.values()]
+        ]
         if instructions_not_found:
             raise MicroprobeException(
                 str.format('Instructions {} not available',
@@ -145,16 +128,17 @@ class RiscvIpcTest(object):
 
         valid_instrs = [
             i for i in self.target.isa.instructions.values()
-            if i.name in self.args.instructions]
+            if i.name in self.args.instructions
+        ]
 
         # Generate permutations of instruction sequences and randomize order
         random.seed(rs)
         instr_seq_count = len(valid_instrs)
-        print("Instruction sequence count: "+str(instr_seq_count))
+        print("Instruction sequence count: " + str(instr_seq_count))
 
         # Select instruction sequence permutations
-        if (self.args.num_permutations > math.factorial(
-           min(instr_seq_count, MAX_INSTR_PERM_LENGTH))):
+        if (self.args.num_permutations
+                > math.factorial(min(instr_seq_count, MAX_INSTR_PERM_LENGTH))):
             print("ERROR: Selected sequences cannot exceed num. permutations")
             sys.exit()
 
@@ -167,8 +151,8 @@ class RiscvIpcTest(object):
             reduced_instr_seq = list(
                 it.permutations(reduced_instrs, len(reduced_instrs)))
             random.shuffle(reduced_instr_seq)
-            selected_valid_instr_seq = reduced_instr_seq[:][
-                0:self.args.num_permutations]
+            selected_valid_instr_seq = reduced_instr_seq[:][0:self.args.
+                                                            num_permutations]
 
             # Append remaining instructions to each of the sequences in list
             rem_instr_seq = valid_instrs[MAX_INSTR_PERM_LENGTH:instr_seq_count]
@@ -179,8 +163,8 @@ class RiscvIpcTest(object):
             # Generate complete list of permutations
             valid_instr_seq = list(it.permutations(valid_instrs))
             random.shuffle(valid_instr_seq)
-            selected_valid_instr_seq = valid_instr_seq[:][
-                0:self.args.num_permutations]
+            selected_valid_instr_seq = valid_instr_seq[:][0:self.args.
+                                                          num_permutations]
 
         microbenchmarks: List[str] = []
 
@@ -203,9 +187,9 @@ class RiscvIpcTest(object):
                     initialization.ReserveRegistersPass(reserved_registers),
                     branch.BranchNextPass(),
                     memory.GenericMemoryStreamsPass(
-                        [[0, 1024, 1, 32, 1, 0, (1, 0)]]
-                    ),
-                    register.DefaultRegisterAllocationPass(dd=d, rand=self._rand)
+                        [[0, 1024, 1, 32, 1, 0, (1, 0)]]),
+                    register.DefaultRegisterAllocationPass(dd=d,
+                                                           rand=self._rand)
                 ]
 
                 for p in passes:
@@ -221,18 +205,12 @@ class RiscvIpcTest(object):
 
                 print("Generating %s ..." % microbenchmark)
                 bench = synth.synthesize()
-                synth.save(
-                    str.format(
-                        '{}/{}',
-                        self.args.output_dir,
-                        microbenchmark
-                    ),
-                    bench=bench
-                )
+                synth.save(str.format('{}/{}', self.args.output_dir,
+                                      microbenchmark),
+                           bench=bench)
                 print(cwrapper().outputname(
-                    str.format('{}/{}', self.args.output_dir, microbenchmark)
-                    ) + " saved!"
-                )
+                    str.format('{}/{}', self.args.output_dir, microbenchmark))
+                      + " saved!")
                 microbenchmarks += [microbenchmark]
 
         # Print out microbenchmark names
@@ -241,10 +219,12 @@ class RiscvIpcTest(object):
 
         # Emit a Makefile fragment (tests.d) that identifies all tests
         # created
-        f = open(f"{self.args.output_dir}/"
-                 f"{self.args.microbenchmark_name}_tests.d", 'w')
-        f.write(str.format('# Autogenerated by {}\n', sys.argv[0]) +
-                'tests = \\\n\t' + '\\\n\t'.join([m for m in microbenchmarks]))
+        f = open(
+            f"{self.args.output_dir}/"
+            f"{self.args.microbenchmark_name}_tests.d", 'w')
+        f.write(
+            str.format('# Autogenerated by {}\n', sys.argv[0]) +
+            'tests = \\\n\t' + '\\\n\t'.join([m for m in microbenchmarks]))
         f.close()
 
 

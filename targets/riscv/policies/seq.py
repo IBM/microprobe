@@ -35,7 +35,6 @@ from microprobe.exceptions import MicroprobePolicyError
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RNDINT
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
@@ -69,8 +68,7 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
     if target.name not in SUPPORTED_TARGETS:
         raise MicroprobePolicyError(
             "Policy '%s' not valid for target '%s'. Supported targets are:"
-            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS))
-        )
+            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS)))
 
     sequence = kwargs['instructions']
 
@@ -92,50 +90,37 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
             if operand.type.vector:
                 vector = True
 
-    synthesizer = microprobe.code.Synthesizer(
-        target, wrapper, value=0b01010101
-    )
+    synthesizer = microprobe.code.Synthesizer(target,
+                                              wrapper,
+                                              value=0b01010101)
 
     synthesizer.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT()
-        )
-    )
+            value=RNDINT()))
 
     if vector and floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(1.000000000000001, 64)
-            )
-        )
+                v_value=(1.000000000000001, 64)))
     elif vector:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(RNDINT(), 64)
-            )
-        )
+                v_value=(RNDINT(), 64)))
     elif floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                fp_value=1.000000000000001
-            )
-        )
+                fp_value=1.000000000000001))
 
     synthesizer.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
-            kwargs['benchmark_size']
-        )
-    )
+            kwargs['benchmark_size']))
 
     synthesizer.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence
-        )
-    )
+            sequence))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
 
@@ -149,33 +134,22 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
         if len(minstruction.memory_operands()) > 0:
             mlength = max(
                 [mlength] +
-                minstruction.memory_operands()[0].possible_lengths(
-                    context)
-            )
+                minstruction.memory_operands()[0].possible_lengths(context))
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
-            [[0, 512, 1, 32, 1, 0, (1, 0)]]
-        )
-    )
+            [[0, 512, 1, 32, 1, 0, (1, 0)]]))
 
     synthesizer.add_pass(
         microprobe.passes.float.InitializeMemoryFloatPass(
-            value=1.000000000000001
-        )
-    )
+            value=1.000000000000001))
 
     synthesizer.add_pass(
-        microprobe.passes.decimal.InitializeMemoryDecimalPass(
-            value=1
-        )
-    )
+        microprobe.passes.decimal.InitializeMemoryDecimalPass(value=1))
 
     synthesizer.add_pass(
         microprobe.passes.switch.SwitchingInstructions(
-          strict=kwargs['force_switch'], rand=rand
-        )
-    )
+            strict=kwargs['force_switch'], rand=rand))
 
     if kwargs['dependency_distance'] < 1:
         synthesizer.add_pass(
@@ -183,25 +157,19 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=kwargs['dependency_distance'], rand=rand
-        )
-    )
+            dd=kwargs['dependency_distance'], rand=rand))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     for minstr in sequence:
         if minstr.disable_asm:
             synthesizer.add_pass(
                 microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-                    instructions=[minstr])
-            )
+                    instructions=[minstr]))
 
     if not synthesizer.wrapper.context().symbolic:
         synthesizer.add_pass(
-            microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-            )
-        )
+            microprobe.passes.symbol.ResolveSymbolicReferencesPass())
 
     return synthesizer

@@ -34,7 +34,6 @@ from microprobe.utils.cache import cache_file, \
 from microprobe.utils.logger import get_logger
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
-
 # Constants
 LOG = get_logger(__name__)
 __all__ = [
@@ -68,9 +67,8 @@ def find_subclasses(module_str, clazz, extra_import_name=None):
     :param extra_import_name:  (Default value = None)
 
     """
-    LOG.debug(
-        "Start find subclasses of '%s' in '%s' ", clazz.__name__, module_str
-    )
+    LOG.debug("Start find subclasses of '%s' in '%s' ", clazz.__name__,
+              module_str)
 
     import_name = _fix_importname(module_str + clazz.__name__)
 
@@ -126,9 +124,8 @@ def get_object_from_module(clsname, module):
     try:
         module = imp.load_source(_fix_importname(module + clsname), module)
     except IOError:
-        raise MicroprobeArchitectureDefinitionError(
-            "Module '%s' not found" % module
-        )
+        raise MicroprobeArchitectureDefinitionError("Module '%s' not found" %
+                                                    module)
 
     for name in dir(module):
         if name == clsname:
@@ -136,12 +133,9 @@ def get_object_from_module(clsname, module):
             if inspect.isclass(obj) or inspect.isfunction(obj):
                 return obj
 
-    raise MicroprobeArchitectureDefinitionError(
-        "Class '%s' not found in "
-        "module '%s'" % (
-            clsname, module
-        )
-    )
+    raise MicroprobeArchitectureDefinitionError("Class '%s' not found in "
+                                                "module '%s'" %
+                                                (clsname, module))
 
 
 def get_attr_from_module(attr, module):
@@ -162,12 +156,8 @@ def get_attr_from_module(attr, module):
             obj = getattr(module, name)
             return obj
 
-    raise MicroprobeImportDefinitionError(
-        "Class '%s' not found in "
-        "module '%s'" % (
-            attr, module
-        )
-    )
+    raise MicroprobeImportDefinitionError("Class '%s' not found in "
+                                          "module '%s'" % (attr, module))
 
 
 def get_dict_from_module(module):
@@ -199,7 +189,13 @@ def load_source(name, path):
 
 
 @typeguard_testsuite
-def import_definition(defdict, yaml, key, base_module, args, rand: random.Random, force=False):
+def import_definition(defdict,
+                      yaml,
+                      key,
+                      base_module,
+                      args,
+                      rand: random.Random,
+                      force=False):
     """Import definition
 
     :param defdict:
@@ -217,8 +213,7 @@ def import_definition(defdict, yaml, key, base_module, args, rand: random.Random
         raise MicroprobeArchitectureDefinitionError(
             "'%s' key in %s "
             "file missing or not defined "
-            "correctly." % (key, yaml)
-        )
+            "correctly." % (key, yaml))
 
     filenames = [yaml, entry["Module"]] + entry["YAML"]
 
@@ -245,8 +240,7 @@ def import_definition(defdict, yaml, key, base_module, args, rand: random.Random
     except KeyError:
         raise MicroprobeArchitectureDefinitionError(
             "'%s' key in %s "
-            "missing the YAML attribute." % (key, yaml)
-        )
+            "missing the YAML attribute." % (key, yaml))
 
     try:
         write_cache_data(cache_filename, data)
@@ -273,15 +267,17 @@ def import_cls_definition(isadef, yaml, key, base_module):
         raise MicroprobeArchitectureDefinitionError(
             "'%s' key in %s "
             "file missing or not defined "
-            "correctly." % (key, yaml)
-        )
+            "correctly." % (key, yaml))
 
 
 @typeguard_testsuite
-def import_operand_definition(
-    defdict, yaml, key, base_module,
-    regs, rand: random.Random, force=False
-):
+def import_operand_definition(defdict,
+                              yaml,
+                              key,
+                              base_module,
+                              regs,
+                              rand: random.Random,
+                              force=False):
     """
 
     :param defdict:
@@ -298,8 +294,7 @@ def import_operand_definition(
         raise MicroprobeArchitectureDefinitionError(
             "'%s' key in %s "
             "file missing or not defined "
-            "correctly." % (key, yaml)
-        )
+            "correctly." % (key, yaml))
 
     filenames = [yaml] + entry["YAML"]
     cache_filename = cache_file("%s.Operand" % (yaml))
@@ -318,15 +313,14 @@ def import_operand_definition(
         except MicroprobeCacheError:
             LOG.debug("Cache error when reading cache contents for Operand")
     try:
-        data = base_module.import_definition(
-            entry["YAML"], entry["YAML_inherits"], regs, rand
-        )
+        data = base_module.import_definition(entry["YAML"],
+                                             entry["YAML_inherits"], regs,
+                                             rand)
     except KeyError:
         raise MicroprobeArchitectureDefinitionError(
             "'%s' key in %s "
             "file missing or not defined "
-            "correctly." % (key, yaml)
-        )
+            "correctly." % (key, yaml))
 
     try:
         write_cache_data(cache_filename, data)
@@ -334,5 +328,6 @@ def import_operand_definition(
         LOG.debug("Cache error when writing cache contents for Operand")
 
     return data, result
+
 
 # Classes

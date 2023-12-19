@@ -80,8 +80,7 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
     if target.name not in SUPPORTED_TARGETS:
         raise MicroprobePolicyError(
             "Policy '%s' not valid for target '%s'. Supported targets are:"
-            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS))
-        )
+            " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS)))
 
     sequence = kwargs['instructions']
 
@@ -101,62 +100,48 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
             if operand.type.vector:
                 vector = True
 
-    synthesizer = microprobe.code.Synthesizer(
-        target, wrapper, value=0b01010101
-    )
+    synthesizer = microprobe.code.Synthesizer(target,
+                                              wrapper,
+                                              value=0b01010101)
 
     synthesizer.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT()
-        )
-    )
+            value=RNDINT()))
 
     if vector and floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(1.000000000000001, 64)
-            )
-        )
+                v_value=(1.000000000000001, 64)))
     elif vector:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(RNDINT(), 64)
-            )
-        )
+                v_value=(RNDINT(), 64)))
     elif floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                fp_value=1.000000000000001
-            )
-        )
+                fp_value=1.000000000000001))
 
     synthesizer.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
-            kwargs['benchmark_size']
-        )
-    )
+            kwargs['benchmark_size']))
 
     synthesizer.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
             sequence,
             # prepend=[target.instructions["ADDI_V0"]] * 12
-        )
-    )
+        ))
 
     for repl in kwargs["replace_every"]:
         synthesizer.add_pass(
-            microprobe.passes.instruction.ReplaceInstructionByTypePass(*repl)
-        )
+            microprobe.passes.instruction.ReplaceInstructionByTypePass(*repl))
 
     for addl in kwargs["add_every"]:
         synthesizer.add_pass(
             microprobe.passes.instruction.InsertInstructionSequencePass(
-                addl[0], every=addl[1])
-        )
+                addl[0], every=addl[1]))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     br_list = []
     for elem in kwargs['branch_pattern']:
@@ -166,52 +151,38 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
             br_list.append(12)
 
     if len(br_list) != 0:
-        warnings.warn(
-            "Branch pattern control not supported. "
-            "Contact developers."
-        )
+        warnings.warn("Branch pattern control not supported. "
+                      "Contact developers.")
 
     if kwargs["branch_switch"]:
-        warnings.warn(
-            "Branch pattern control not supported. "
-            "Contact developers."
-        )
+        warnings.warn("Branch pattern control not supported. "
+                      "Contact developers.")
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
             kwargs['memory_streams'],
             switch_stores=kwargs["mem_switch"],
             shift_streams=16,
-            warmstores=True
-        )
-    )
+            warmstores=True))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     synthesizer.add_pass(
         microprobe.passes.float.InitializeMemoryFloatPass(
-            value=1.000000000000001
-        )
-    )
+            value=1.000000000000001))
 
     synthesizer.add_pass(
-        microprobe.passes.decimal.InitializeMemoryDecimalPass(
-            value=1
-        )
-    )
+        microprobe.passes.decimal.InitializeMemoryDecimalPass(value=1))
 
     synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
 
     if kwargs["data_switch"]:
         synthesizer.add_pass(
-            microprobe.passes.switch.SwitchingInstructions(rand=rand)
-        )
+            microprobe.passes.switch.SwitchingInstructions(rand=rand))
 
     if kwargs['dependency_distance'] < 1:
         synthesizer.add_pass(
@@ -219,20 +190,16 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=kwargs['dependency_distance'], rand=rand
-        )
-    )
+            dd=kwargs['dependency_distance'], rand=rand))
 
     synthesizer.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass()
-    )
+        microprobe.passes.address.UpdateInstructionAddressesPass())
 
     for minstr in sequence:
         if minstr.disable_asm:
             synthesizer.add_pass(
                 microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-                    instructions=[minstr])
-            )
+                    instructions=[minstr]))
 
     warnings.warn("Loop alignment not implemented. Contact developers.")
 
@@ -240,12 +207,9 @@ def policy(target, wrapper, rand: random.Random, **kwargs):
 
         synthesizer.add_pass(
             microprobe.passes.address.UpdateInstructionAddressesPass(
-                force=True)
-        )
+                force=True))
 
         synthesizer.add_pass(
-            microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-            )
-        )
+            microprobe.passes.symbol.ResolveSymbolicReferencesPass())
 
     return synthesizer

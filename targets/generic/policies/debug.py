@@ -77,11 +77,10 @@ def policy(target: Target, wrapper, rand: random.Random, **kwargs):
 
     synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(
-            dd=99, relax=True, rand=rand))
-    synth.add_pass(
-        microprobe.passes.address.UpdateInstructionAddressesPass())
-    synth.add_pass(
-        microprobe.passes.symbol.ResolveSymbolicReferencesPass())
+        microprobe.passes.register.DefaultRegisterAllocationPass(dd=99,
+                                                                 relax=True,
+                                                                 rand=rand))
+    synth.add_pass(microprobe.passes.address.UpdateInstructionAddressesPass())
+    synth.add_pass(microprobe.passes.symbol.ResolveSymbolicReferencesPass())
 
     return synth

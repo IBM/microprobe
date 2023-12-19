@@ -78,7 +78,8 @@ __all__ = [
 # Functions
 @typeguard_testsuite
 def import_definition(definition_tuple: str
-                      | Tuple[Definition, Definition, Definition], rand: random.Random | None = None):
+                      | Tuple[Definition, Definition, Definition],
+                      rand: random.Random | None = None):
     """Return the target corresponding the to the given *definition_tuple*.
 
     Return the target object corresponding the to the given
@@ -104,7 +105,7 @@ def import_definition(definition_tuple: str
 
     if rand is None:
         rand = random.Random()
-        rand.seed(64) # My favorite number ;)
+        rand.seed(64)  # My favorite number ;)
 
     isa_def, uarch_def, env_def = definition_tuple
     isa = import_isa_definition(os.path.dirname(isa_def.filename), rand)
