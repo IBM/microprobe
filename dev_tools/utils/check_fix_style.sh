@@ -92,6 +92,6 @@ for i in $input; do
 done;
 exit 0
 
-for file in $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -type f -name "*.py" | grep -v ./venv | grep -v ./deploy | sort); do
-     check_style "$file"
-done;
+#for file in $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -type f -name "*.py" | grep -v ./venv | grep -v ./deploy | sort); do
+#     check_style "$file"
+#done;
