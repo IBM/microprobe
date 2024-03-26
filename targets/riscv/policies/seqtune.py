@@ -19,6 +19,7 @@ from __future__ import absolute_import
 
 # Built-in
 import warnings
+import random
 
 # Own modules
 import microprobe.code
@@ -103,6 +104,9 @@ def policy(target, wrapper, **kwargs):
     synthesizer = microprobe.code.Synthesizer(
         target, wrapper, value=0b01010101
     )
+
+    rand = random.Random()
+    rand.seed(13)
 
     synthesizer.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
@@ -209,7 +213,7 @@ def policy(target, wrapper, **kwargs):
 
     if kwargs["data_switch"]:
         synthesizer.add_pass(
-            microprobe.passes.switch.SwitchingInstructions()
+            microprobe.passes.switch.SwitchingInstructions(rand)
         )
 
     if kwargs['dependency_distance'] < 1:
@@ -218,6 +222,7 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
+            rand,
             dd=kwargs['dependency_distance']
         )
     )

@@ -53,6 +53,7 @@ import os
 import sys
 import time as runtime
 from typing import List, Tuple
+import random
 
 # Own modules
 import microprobe.code
@@ -156,6 +157,8 @@ def generate_genetic(compname: str, ipc: float):
         """
         wrapper = microprobe.code.get_wrapper("CInfPpc")
         synth = microprobe.code.Synthesizer(TARGET, wrapper())
+        rand = random.Random()
+        rand.seed(13)
         synth.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
                 value=RNDINT))
@@ -170,7 +173,8 @@ def generate_genetic(compname: str, ipc: float):
                 avelatency=latency,
                 any_comp=any_comp))
         synth.add_pass(
-            microprobe.passes.register.DefaultRegisterAllocationPass(dd=dist))
+            microprobe.passes.register.DefaultRegisterAllocationPass(
+                rand, dd=dist))
         bench = synth.synthesize()
         synth.save(name, bench=bench)
 

@@ -17,6 +17,9 @@ docstring
 # Futures
 from __future__ import absolute_import
 
+# Built-in modules
+import random
+
 # Own modules
 import microprobe.code
 import microprobe.passes.address
@@ -62,6 +65,9 @@ def policy(target: Target, wrapper, **kwargs):
             "Policy '%s' not valid for target '%s'. Supported targets are:"
             " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS)))
 
+    rand = random.Random()
+    rand.seed(13)
+
     sequence = [kwargs['instruction']]
     synth = microprobe.code.Synthesizer(target, wrapper)
     synth.add_pass(
@@ -76,7 +82,7 @@ def policy(target: Target, wrapper, **kwargs):
 
     synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=99,
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=99,
                                                                  relax=True))
     synth.add_pass(microprobe.passes.address.UpdateInstructionAddressesPass())
     synth.add_pass(microprobe.passes.symbol.ResolveSymbolicReferencesPass())

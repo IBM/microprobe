@@ -70,6 +70,9 @@ def import_definition(cls, filenames, args):
     LOG.debug("Start importing instruction definitions")
     iformats, defined_operands = args
 
+    rand = random.Random()
+    rand.seed(13)
+
     defined_memory_operands = []
     instructions = {}
 
@@ -106,7 +109,7 @@ def import_definition(cls, filenames, args):
                                        defined_operands)
 
             ioperands = _translate_ioperands(name, filename, ioperands,
-                                             defined_operands)
+                                             defined_operands, rand)
 
             moperands = _translate_moperands(name, filename, operands,
                                              ioperands, moperands,
@@ -369,7 +372,8 @@ def _translate_moperands(name, filename, operands, ioperands, moperands,
 
 
 @typeguard_testsuite
-def _translate_ioperands(name, filename, ioperands, defined_operands):
+def _translate_ioperands(name, filename, ioperands, defined_operands,
+                         rand: random.Random):
     """
 
     :param name:
@@ -393,7 +397,7 @@ def _translate_ioperands(name, filename, ioperands, defined_operands):
 
         try:
             if operand.constant:
-                reg = operand.random_value()
+                reg = operand.random_value(rand)
             else:
                 reg = [
                     value for value in operand.values()

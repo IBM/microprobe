@@ -52,6 +52,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
     """
 
     def __init__(self,
+                 rand: random.Random,
                  minimize=False,
                  value=None,
                  dd: Union[int, float] = 0,
@@ -64,6 +65,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
 
         """
         super(DefaultRegisterAllocationPass, self).__init__()
+        self._rand = rand
         self._min = minimize
         if self._min:
             raise NotImplementedError("Feature changed need to be"
@@ -159,7 +161,8 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
                                 LOG.warning("Operand set to: '%s'", value)
 
                         else:
-                            operand.set_value(operand.type.random_value())
+                            operand.set_value(operand.type.random_value(
+                                self._rand))
 
                     elif operand.type.address_relative:
                         LOG.warning(
@@ -349,7 +352,7 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self, size, reads, writes, value=None):
+    def __init__(self, size, reads, writes, rand: random.Random, value=None):
         """
 
         :param size:
@@ -363,6 +366,7 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
         self._reads = reads  # max reads in a group to the same register
         self._writes = writes  # max writes in a group to the same register
         self._rdwr = min(reads, writes)
+        self._rand = rand
         if value is not None:
             self._immediate = value
         else:
@@ -482,7 +486,8 @@ class CycleMinimalAllocationPass(microprobe.passes.Pass):
                         else:
 
                             instroperands.append(
-                                operand.assembly(operand.random_value()))
+                                operand.assembly(operand.random_value(
+                                    self._rand)))
 
                     elif not operand.immediate():
 
@@ -1013,18 +1018,20 @@ class RandomAllocationPass(microprobe.passes.Pass):
 
     """
 
-    def __init__(self):
+    def __init__(self, rand: random.Random):
         """ """
         super(RandomAllocationPass, self).__init__()
         self._description = "Random Allocation of operands"
+        self._rand = rand
 
     def __call__(self, building_block, dummy_target):
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
                 for operand in instr.operands():
-                    operand.set_value(operand.type.random_value())
+                    operand.set_value(operand.type.random_value(self._rand))
                     # TODO: This is a POWERPC hack (remove in future)
                     if operand.type.name == "BO_Values":
                         while operand.value in [17, 19, 21]:
-                            operand.set_value(operand.type.random_value())
+                            operand.set_value(operand.type.random_value(
+                                self._rand))

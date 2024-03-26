@@ -182,6 +182,9 @@ def generate(model: Tuple[str, List[SetAssociativeCache], List[int]]):
     # Create the benchmark synthesizer
     synth = microprobe.code.Synthesizer(garch, cwrapper())
 
+    rand = random.Random()
+    rand.seed(13)
+
     ##########################################################################
     # Add the passes we want to apply to synthesize benchmarks               #
     ##########################################################################
@@ -212,7 +215,7 @@ def generate(model: Tuple[str, List[SetAssociativeCache], List[int]]):
     # remaining undefined instruction operands (register allocation,...)
     synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=0))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=0))
 
     # Generate the benchmark (applies the passes).
     bench = synth.synthesize()
