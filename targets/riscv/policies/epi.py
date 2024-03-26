@@ -17,6 +17,9 @@ docstring
 # Futures
 from __future__ import absolute_import
 
+# Built-in
+import random
+
 # Own modules
 import microprobe.code
 import microprobe.passes.address
@@ -90,6 +93,9 @@ def policy(target, wrapper, **kwargs):
         target, wrapper, value=0b01010101
     )
 
+    rand = random.Random()
+    rand.seed(13)
+
     # synthesizer.add_pass(
     #     microprobe.passes.initialization.InitializeRegistersPass(
     #         value=RNDINT()
@@ -157,6 +163,7 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
+            rand,
             dd=kwargs['dependency_distance']
         )
     )

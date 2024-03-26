@@ -27,6 +27,7 @@ import multiprocessing as mp
 import os
 import sys
 import traceback
+import random
 
 # Third party modules
 
@@ -303,6 +304,9 @@ def _generate_benchmark(args):
                                             cwrapper(),
                                             value=0b01010101)
 
+        rand = random.Random()
+        rand.seed(13)
+
         # Add the transformation passes
 
         #######################################################################
@@ -405,7 +409,7 @@ def _generate_benchmark(args):
         #######################################################################
         synth.add_pass(
             microprobe.passes.register.DefaultRegisterAllocationPass(
-                dd=distance))
+                rand, dd=distance))
 
         # Synthesize the microbenchmark.The synthesize applies the set of
         # transformation passes added before and returns object representing

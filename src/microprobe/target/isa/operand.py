@@ -619,7 +619,7 @@ class Operand(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def random_value(self):
+    def random_value(self, rand: random.Random):
         """Return a random possible value for the operand."""
         raise NotImplementedError
 
@@ -823,12 +823,12 @@ class OperandReg(Operand):
         """
         return value.codification
 
-    def random_value(self):
+    def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.
 
         :rtype: :class:`~.Register`
         """
-        return list(self._regs.keys())[random.randrange(0, len(self._regs))]
+        return list(self._regs.keys())[rand.randrange(0, len(self._regs))]
 
     def access(self, value):
         """
@@ -943,21 +943,21 @@ class OperandImmRange(Operand):
         self._computed_values = values
         self._const = len(values) == 1
 
-    def random_value(self):
+    def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.
 
         :rtype: ::class:`~.int`
         """
         if self._computed_values is not None:
-            return self._computed_values[random.randrange(
+            return self._computed_values[rand.randrange(
                 0, len(self._computed_values))]
 
-        value = random.randrange(self._min, self._max + 1, self._step)
+        value = rand.randrange(self._min, self._max + 1, self._step)
 
         if value not in self._novalues:
             return value
         else:
-            return self.random_value()
+            return self.random_value(rand)
 
     def representation(self, value):
         """
@@ -1099,12 +1099,12 @@ class OperandValueSet(Operand):
         """
         return str(value)
 
-    def random_value(self):
+    def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.
 
         :rtype: ::class:`~.int`
         """
-        return self._values[random.randrange(0, len(self._values))]
+        return self._values[rand.randrange(0, len(self._values))]
 
     def access(self, dummy):
         """
@@ -1191,7 +1191,7 @@ class OperandConst(Operand):
         """
         return str(value)
 
-    def random_value(self):
+    def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.
 
         :rtype: ::class:`~.int`
@@ -1283,7 +1283,7 @@ class OperandConstReg(Operand):
         """
         return [self._reg]
 
-    def random_value(self):
+    def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.
 
         :rtype: :class:`~.Register`
@@ -1391,12 +1391,12 @@ class InstructionAddressRelativeOperand(Operand):
         """
         return [self._mindispl << self._shift]
 
-    def random_value(self):
+    def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.
 
         :rtype: ::class:`~.int`
         """
-        value = random.randrange(self._mindispl, self._maxdispl) << self._shift
+        value = rand.randrange(self._mindispl, self._maxdispl) << self._shift
 
         if value <= (self._maxdispl << self._shift) and \
            value >= (self._mindispl << self._shift) and \
@@ -1404,7 +1404,7 @@ class InstructionAddressRelativeOperand(Operand):
            value % self._step == 0:
             return value
         else:
-            return self.random_value()
+            return self.random_value(rand)
 
         return value
 
