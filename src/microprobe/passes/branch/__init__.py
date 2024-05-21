@@ -1330,6 +1330,7 @@ class RandomizeByTypePass(Pass):
         register = None
         zero_register = None
         tregister = None
+        random_reg = None
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:

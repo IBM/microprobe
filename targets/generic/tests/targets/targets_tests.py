@@ -463,6 +463,7 @@ def _process_as_output(input_str: str):
 
     input_lines = input_str.split("\n")
     output_lines = []
+    asm_lines = []
     for idx, line in enumerate(input_lines):
         if idx == 0:
             asm_file = line.split(":")[0]

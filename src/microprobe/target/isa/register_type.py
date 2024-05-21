@@ -180,7 +180,7 @@ class GenericRegisterType(RegisterType):
         :param u4va:
 
         """
-        super(GenericRegisterType, self).__init__()
+        # super(GenericRegisterType, self).__init__()
         self._rtype = rtype
         self._rdescr = rdescr
         self._rsize = rsize

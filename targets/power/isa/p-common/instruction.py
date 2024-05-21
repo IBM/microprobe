@@ -268,6 +268,17 @@ class PowerInstruction(GenericInstructionType):
         next_operand_value = getnextf(iter(args))
         newargs = []
 
+        sh0_value = None
+        ax_value = None
+        bx_value = None
+        cx_value = None
+        tx_value = None
+        sx_value = None
+        dm_value = None
+        dc_value = None
+        dd0_value = None
+        dd2_value = None
+
         for op_descriptor, field in zip(list(self.operands.items()),
                                         self.format.fields):
 

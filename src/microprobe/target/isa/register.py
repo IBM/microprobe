@@ -175,7 +175,7 @@ class GenericRegister(Register, Pickable):
         :param rrepr:
 
         """
-        super(GenericRegister, self).__init__()
+        # super(GenericRegister, self).__init__()
         self._rtype = rtype
         self._name = name
         self._descr = descr
