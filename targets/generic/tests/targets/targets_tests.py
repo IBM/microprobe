@@ -134,6 +134,8 @@ def riscv_v22_function(self):
     """
     riscv_v22_function
     """
+    rand = random.Random()
+    rand.seed(13)
 
     target = self.target
     instr = target.instructions[self.instr_name]
@@ -153,7 +155,7 @@ def riscv_v22_function(self):
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
             sequence))
     # synth.add_pass(microprobe.passes.branch.BranchNextPass())
-    synth.add_pass(microprobe.passes.register.RandomAllocationPass())
+    synth.add_pass(microprobe.passes.register.RandomAllocationPass(rand))
     # synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
     # synth.add_pass(
     #    microprobe.passes.register.DefaultRegisterAllocationPass(
@@ -317,7 +319,7 @@ def binary_benchmark(self, function):
             self.assertEqual(line_bin, asmline_bin)
 
 
-def self_codification_function(self):
+def self_codification_function(self, rand):
     """
     self_codification_function
     """
@@ -340,7 +342,7 @@ def self_codification_function(self):
 
                 for idx, operand in enumerate(instruction.operands()):
                     if idx >= len(values):
-                        values.append(operand.type.random_value())
+                        values.append(operand.type.random_value(rand))
                     operand.set_value(values[idx])
 
                 print("Operands to set: %s" % values)
@@ -388,6 +390,9 @@ def self_assembly_function(self):
     target = self.target
     instr = target.instructions[self.instr_name]
 
+    rand = random.Random()
+    rand.seed(13)
+
     repetition = 0
     while repetition < REPETITIONS:
         instruction = microprobe.code.ins.Instruction()
@@ -396,7 +401,7 @@ def self_assembly_function(self):
         print(instruction)
 
         for operand in instruction.operands():
-            operand.set_value(operand.type.random_value())
+            operand.set_value(operand.type.random_value(rand))
             print(operand)
 
         assembly = instruction.assembly()
@@ -693,7 +698,9 @@ for name, gen_function, isa_path, env_path, \
                 """
                 function_4
                 """
-                return self_codification_function(self)
+                rand = random.Random()
+                rand.seed(13)
+                return self_codification_function(self, rand)
 
             setattr(newclass, f4name, copy_func(function_4, f4name))
 

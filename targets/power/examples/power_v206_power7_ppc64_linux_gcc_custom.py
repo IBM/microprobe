@@ -24,6 +24,7 @@ from __future__ import absolute_import
 # Built-in modules
 import os
 import sys
+import random
 
 # Own modules
 import microprobe.code
@@ -123,6 +124,9 @@ def example_1():
                 ])):
             profile[instr] = 1
 
+    rand = random.Random()
+    rand.seed(13)
+
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
@@ -139,7 +143,7 @@ def example_1():
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(mmodel))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=3))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=3))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -158,6 +162,9 @@ def example_2():
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
+    rand = random.Random()
+    rand.seed(13)
+
     synth.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
@@ -166,7 +173,7 @@ def example_2():
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
             TARGET, [TARGET.elements['MUL_FXU0_Core0_SCM_Processor']], {}))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=4))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=4))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -185,6 +192,9 @@ def example_3():
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
+    rand = random.Random()
+    rand.seed(13)
+
     synth.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
@@ -193,7 +203,7 @@ def example_3():
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
             TARGET, [TARGET.elements['ALU_FXU0_Core0_SCM_Processor']], {}))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=1))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -218,6 +228,9 @@ def example_4():
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
+    rand = random.Random()
+    rand.seed(13)
+
     synth.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
@@ -225,7 +238,7 @@ def example_4():
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=10))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=10))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()
@@ -250,6 +263,9 @@ def example_5():
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
+    rand = random.Random()
+    rand.seed(13)
+
     synth.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
     synth.add_pass(
@@ -257,7 +273,7 @@ def example_5():
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(dd=1))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=1))
 
     print_info("Generating %s..." % name)
     bench = synth.synthesize()

@@ -147,7 +147,7 @@ class RiscvIpcTest(object):
                     memory.GenericMemoryStreamsPass(
                         [[1, 4*1024*1024, 1, 128, 1, 0, (1, 0)]]
                     ),
-                    register.DefaultRegisterAllocationPass(dd=d)
+                    register.DefaultRegisterAllocationPass(self._rand, dd=d)
                 ]
 
                 for p in passes:
