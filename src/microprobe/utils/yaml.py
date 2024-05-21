@@ -130,6 +130,8 @@ def read_yaml(data_file, schema_file):
     result = result or update_cache_needed([schema_file])
 
     readed = False
+    data = None
+
     if not result:
         LOG.debug("Using cache contents for '%s'", data_file)
         try:

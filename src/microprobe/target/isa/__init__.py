@@ -665,7 +665,7 @@ class GenericISA(ISA):
         :param generators:
 
         """
-        super(GenericISA, self).__init__()
+        # super(GenericISA, self).__init__()
         self._name = name
         self._descr = descr
         self._path = path
@@ -849,7 +849,8 @@ class GenericISA(ISA):
         :param value:
 
         """
-        super(GenericISA, self).add_to_register(register, value)
+        # super(GenericISA, self).add_to_register(register, value)
+        raise NotImplementedError
 
     def branch_unconditional_relative(self, source, target: Target):
         """
@@ -858,8 +859,7 @@ class GenericISA(ISA):
         :param target:
 
         """
-        return super(GenericISA,
-                     self).branch_unconditional_relative(source, target)
+        raise NotImplementedError
 
     def branch_to_itself(self):
         instr = self.branch_unconditional_relative(

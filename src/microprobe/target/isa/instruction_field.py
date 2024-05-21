@@ -181,7 +181,7 @@ class GenericInstructionField(InstructionField):
         :param foperand:
 
         """
-        super(GenericInstructionField, self).__init__()
+        # super(GenericInstructionField, self).__init__()
 
         self._fname = fname
         self._fdescr = descr

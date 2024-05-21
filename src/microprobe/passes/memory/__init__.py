@@ -1031,6 +1031,7 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
         warmed = []
 
         needs_reset = False
+        reset_reg = None
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
@@ -2122,6 +2123,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
         warmed = []
         to_warm = []
         prev_instr = None
+        valid_zero = None
+        valid_one = None
 
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:

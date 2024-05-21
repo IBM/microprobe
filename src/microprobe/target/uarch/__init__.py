@@ -298,7 +298,7 @@ class GenericMicroarchitecture(Microarchitecture):
         :param instruction_properties_defs:
 
         """
-        super(GenericMicroarchitecture, self).__init__()
+        # super(GenericMicroarchitecture, self).__init__()
         self._name = name
         self._descr = descr
         self._elements = elements

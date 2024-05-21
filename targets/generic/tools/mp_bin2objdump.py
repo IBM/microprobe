@@ -118,6 +118,7 @@ def dump_objdump(target: Target, input_bin_file: str, od_bin: str,
 
         rtarget = None
         atarget = None
+        target_addr = 0
         if relative is not None or absolute is not None:
 
             if relative is not None:

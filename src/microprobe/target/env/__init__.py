@@ -303,7 +303,7 @@ class GenericEnvironment(Environment):
         :param isa:
 
         """
-        super(GenericEnvironment, self).__init__()
+        # super(GenericEnvironment, self).__init__()
         self._name = name
         self._description = descr
         self._isa = isa
