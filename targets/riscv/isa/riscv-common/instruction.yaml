@@ -1771,6 +1771,9 @@
   Format: "cl_w"
   Operands:
     funct3: ['2', 'funct3', '?']
+    crs1: ['crega', 'crs1', 'I'] 
+  MemoryOperands:
+    MEM1 : [['cw_imm3', 'crs1'], [8], 8, 'I']
 - Name: "C.LD_V0"
   Mnemonic: "C.LD"
   Opcode: "0"
