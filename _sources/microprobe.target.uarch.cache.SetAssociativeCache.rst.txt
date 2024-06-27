@@ -1,0 +1,62 @@
+microprobe.target.uarch.cache.SetAssociativeCache
+=================================================
+
+.. currentmodule:: microprobe.target.uarch.cache
+
+.. autoclass:: SetAssociativeCache
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetAssociativeCache.__init__
+      ~SetAssociativeCache.congruence_class
+      ~SetAssociativeCache.lines
+      ~SetAssociativeCache.offset
+      ~SetAssociativeCache.print_info
+      ~SetAssociativeCache.sets
+      ~SetAssociativeCache.setsways
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SetAssociativeCache.bits_x_lines
+      ~SetAssociativeCache.bits_x_offset
+      ~SetAssociativeCache.bits_x_set
+      ~SetAssociativeCache.contains_data
+      ~SetAssociativeCache.contains_instructions
+      ~SetAssociativeCache.description
+      ~SetAssociativeCache.element
+      ~SetAssociativeCache.level
+      ~SetAssociativeCache.line_size
+      ~SetAssociativeCache.name
+      ~SetAssociativeCache.offset_bits
+      ~SetAssociativeCache.set_ways_bits
+      ~SetAssociativeCache.size
+      ~SetAssociativeCache.ways
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

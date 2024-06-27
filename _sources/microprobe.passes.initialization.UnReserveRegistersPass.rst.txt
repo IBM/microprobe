@@ -1,0 +1,41 @@
+microprobe.passes.initialization.UnReserveRegistersPass
+=======================================================
+
+.. currentmodule:: microprobe.passes.initialization
+
+.. autoclass:: UnReserveRegistersPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~UnReserveRegistersPass.__init__
+      ~UnReserveRegistersPass.check
+      ~UnReserveRegistersPass.info
+      ~UnReserveRegistersPass.report
+      ~UnReserveRegistersPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

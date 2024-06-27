@@ -1,0 +1,47 @@
+microprobe.target.isa.register.Register
+=======================================
+
+.. currentmodule:: microprobe.target.isa.register
+
+.. autoclass:: Register
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Register.__init__
+      ~Register.codification
+      ~Register.representation
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Register.description
+      ~Register.name
+      ~Register.type
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

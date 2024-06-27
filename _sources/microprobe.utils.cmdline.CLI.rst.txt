@@ -1,0 +1,52 @@
+microprobe.utils.cmdline.CLI
+============================
+
+.. currentmodule:: microprobe.utils.cmdline
+
+.. autoclass:: CLI
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CLI.__init__
+      ~CLI.add_description
+      ~CLI.add_epilog
+      ~CLI.add_flag
+      ~CLI.add_group
+      ~CLI.add_option
+      ~CLI.get
+      ~CLI.main
+      ~CLI.save
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CLI.arg_parser
+      ~CLI.arguments
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

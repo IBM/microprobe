@@ -1,0 +1,41 @@
+microprobe.passes.instruction.ReplaceInstructionByTypePass
+==========================================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: ReplaceInstructionByTypePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ReplaceInstructionByTypePass.__init__
+      ~ReplaceInstructionByTypePass.check
+      ~ReplaceInstructionByTypePass.info
+      ~ReplaceInstructionByTypePass.report
+      ~ReplaceInstructionByTypePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

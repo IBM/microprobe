@@ -1,0 +1,54 @@
+﻿=======================
+microprobe.code.wrapper
+=======================
+
+.. automodule:: microprobe.code.wrapper
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Wrapper
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Wrapper 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

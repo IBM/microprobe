@@ -1,0 +1,41 @@
+microprobe.passes.instruction.AddAssemblyByIndexPass
+====================================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: AddAssemblyByIndexPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AddAssemblyByIndexPass.__init__
+      ~AddAssemblyByIndexPass.check
+      ~AddAssemblyByIndexPass.info
+      ~AddAssemblyByIndexPass.report
+      ~AddAssemblyByIndexPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

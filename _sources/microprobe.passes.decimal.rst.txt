@@ -1,0 +1,54 @@
+﻿=========================
+microprobe.passes.decimal
+=========================
+
+.. automodule:: microprobe.passes.decimal
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      InitializeMemoryDecimalPass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  InitializeMemoryDecimalPass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

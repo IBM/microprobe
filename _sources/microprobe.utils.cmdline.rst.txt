@@ -1,0 +1,114 @@
+﻿========================
+microprobe.utils.cmdline
+========================
+
+.. automodule:: microprobe.utils.cmdline
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      csv_with_integer
+      csv_with_ranges
+      dict_key
+      existing_cmd
+      existing_dir
+      existing_file
+      existing_file_ext
+      file_with
+      float_range
+      float_type
+      int_range
+      int_type
+      new_file
+      new_file_ext
+      parse_instruction_list
+      print_error
+      print_info
+      print_warning
+      string_with_chars
+      string_with_fields
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      CLI
+      LazyArgumentParser
+      ParagraphFormatterML
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  CLI  LazyArgumentParser  ParagraphFormatterML 
+
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+      :template: myexception.rst 
+      :toctree:
+   
+      LazyArgumentError
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: csv_with_integer
+   .. autofunction:: csv_with_ranges
+   .. autofunction:: dict_key
+   .. autofunction:: existing_cmd
+   .. autofunction:: existing_dir
+   .. autofunction:: existing_file
+   .. autofunction:: existing_file_ext
+   .. autofunction:: file_with
+   .. autofunction:: float_range
+   .. autofunction:: float_type
+   .. autofunction:: int_range
+   .. autofunction:: int_type
+   .. autofunction:: new_file
+   .. autofunction:: new_file_ext
+   .. autofunction:: parse_instruction_list
+   .. autofunction:: print_error
+   .. autofunction:: print_info
+   .. autofunction:: print_warning
+   .. autofunction:: string_with_chars
+   .. autofunction:: string_with_fields
+   

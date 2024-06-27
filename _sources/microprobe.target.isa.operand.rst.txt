@@ -1,0 +1,75 @@
+﻿=============================
+microprobe.target.isa.operand
+=============================
+
+.. automodule:: microprobe.target.isa.operand
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      import_definition
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      InstructionAddressRelativeOperand
+      MemoryOperand
+      MemoryOperandDescriptor
+      Operand
+      OperandConst
+      OperandConstReg
+      OperandDescriptor
+      OperandImmRange
+      OperandReg
+      OperandValueSet
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  InstructionAddressRelativeOperand  MemoryOperand  MemoryOperandDescriptor  Operand  OperandConst  OperandConstReg  OperandDescriptor  OperandImmRange  OperandReg  OperandValueSet 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: import_definition
+   

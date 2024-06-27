@@ -1,0 +1,41 @@
+microprobe.passes.instruction.SetInstructionOperandsByOpcodePass
+================================================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: SetInstructionOperandsByOpcodePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetInstructionOperandsByOpcodePass.__init__
+      ~SetInstructionOperandsByOpcodePass.check
+      ~SetInstructionOperandsByOpcodePass.info
+      ~SetInstructionOperandsByOpcodePass.report
+      ~SetInstructionOperandsByOpcodePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

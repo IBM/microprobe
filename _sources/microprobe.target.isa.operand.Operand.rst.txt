@@ -1,0 +1,61 @@
+microprobe.target.isa.operand.Operand
+=====================================
+
+.. currentmodule:: microprobe.target.isa.operand
+
+.. autoclass:: Operand
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Operand.__init__
+      ~Operand.access
+      ~Operand.check
+      ~Operand.codification
+      ~Operand.copy
+      ~Operand.random_value
+      ~Operand.representation
+      ~Operand.set_valid_values
+      ~Operand.values
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Operand.address_absolute
+      ~Operand.address_base
+      ~Operand.address_immediate
+      ~Operand.address_index
+      ~Operand.address_relative
+      ~Operand.constant
+      ~Operand.description
+      ~Operand.float
+      ~Operand.immediate
+      ~Operand.name
+      ~Operand.vector
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

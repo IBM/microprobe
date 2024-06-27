@@ -1,0 +1,41 @@
+microprobe.passes.float.InitializeMemoryFloatPass
+=================================================
+
+.. currentmodule:: microprobe.passes.float
+
+.. autoclass:: InitializeMemoryFloatPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InitializeMemoryFloatPass.__init__
+      ~InitializeMemoryFloatPass.check
+      ~InitializeMemoryFloatPass.info
+      ~InitializeMemoryFloatPass.report
+      ~InitializeMemoryFloatPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

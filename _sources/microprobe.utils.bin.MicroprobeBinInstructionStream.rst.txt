@@ -1,0 +1,47 @@
+microprobe.utils.bin.MicroprobeBinInstructionStream
+===================================================
+
+.. currentmodule:: microprobe.utils.bin
+
+.. autoclass:: MicroprobeBinInstructionStream
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroprobeBinInstructionStream.__init__
+      ~MicroprobeBinInstructionStream.decode_next
+      ~MicroprobeBinInstructionStream.empty
+      ~MicroprobeBinInstructionStream.skip
+      ~MicroprobeBinInstructionStream.skip_all
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MicroprobeBinInstructionStream.lengths
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,67 @@
+﻿==============================
+microprobe.target.isa.register
+==============================
+
+.. automodule:: microprobe.target.isa.register
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      import_definition
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      GenericRegister
+      Register
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  GenericRegister  Register 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: import_definition
+   

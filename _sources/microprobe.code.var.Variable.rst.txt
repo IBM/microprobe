@@ -1,0 +1,50 @@
+microprobe.code.var.Variable
+============================
+
+.. currentmodule:: microprobe.code.var
+
+.. autoclass:: Variable
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Variable.__init__
+      ~Variable.array
+      ~Variable.set_address
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Variable.address
+      ~Variable.align
+      ~Variable.name
+      ~Variable.size
+      ~Variable.type
+      ~Variable.value
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

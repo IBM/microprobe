@@ -1,0 +1,5 @@
+<map id="inheritanced543b67836" name="inheritanced543b67836">
+<area shape="rect" id="node1" href="https://docs.python.org/3.9/library/abc.html#abc.ABC" target="_top" title="Helper class that provides a standard way to create an ABC using" alt="" coords="4,4,60,23"/>
+<area shape="rect" id="node3" href="microprobe.target.isa.instruction_format.InstructionFormat.html#microprobe.target.isa.instruction_format.InstructionFormat" target="_top" title="Abstract class to represent an instruction format" alt="" coords="95,4,394,23"/>
+<area shape="rect" id="node2" href="microprobe.target.isa.instruction_format.GenericInstructionFormat.html#microprobe.target.isa.instruction_format.GenericInstructionFormat" target="_top" title="Instruction format generic class." alt="" coords="429,4,764,23"/>
+</map>

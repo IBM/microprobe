@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeBranchConditionError
+====================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeBranchConditionError
+
+   
+
+   
+   
+
+   
+   
+   

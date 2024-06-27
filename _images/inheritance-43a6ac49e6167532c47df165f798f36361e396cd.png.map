@@ -1,0 +1,11 @@
+<map id="inheritance1863cfaf84" name="inheritance1863cfaf84">
+<area shape="rect" id="node1" href="microprobe.passes.Pass.html#microprobe.passes.Pass" target="_top" title="Class to represent a benchmak transformation pass." alt="" coords="5,179,184,204"/>
+<area shape="rect" id="node2" href="microprobe.passes.initialization.AddFinalizationAssemblyPass.html#microprobe.passes.initialization.AddFinalizationAssemblyPass" target="_top" title="AddFinalizationAssemblyPass pass." alt="" coords="241,5,668,31"/>
+<area shape="rect" id="node3" href="microprobe.passes.initialization.AddInitializationAssemblyPass.html#microprobe.passes.initialization.AddInitializationAssemblyPass" target="_top" title="AddInitializationAssemblyPass pass." alt="" coords="238,55,671,80"/>
+<area shape="rect" id="node4" href="microprobe.passes.initialization.AddInitializationInstructionsPass.html#microprobe.passes.initialization.AddInitializationInstructionsPass" target="_top" title="AddInitializationInstructionsPass pass." alt="" coords="232,104,677,129"/>
+<area shape="rect" id="node5" href="microprobe.passes.initialization.AutoAlignPass.html#microprobe.passes.initialization.AutoAlignPass" target="_top" title="AutoAlignPass pass." alt="" coords="291,153,618,179"/>
+<area shape="rect" id="node6" href="microprobe.passes.initialization.InitializeRegisterPass.html#microprobe.passes.initialization.InitializeRegisterPass" target="_top" title="InitializeRegisterPass pass." alt="" coords="269,203,641,228"/>
+<area shape="rect" id="node7" href="microprobe.passes.initialization.InitializeRegistersPass.html#microprobe.passes.initialization.InitializeRegistersPass" target="_top" title="InitializeRegistersPass pass." alt="" coords="265,252,644,277"/>
+<area shape="rect" id="node8" href="microprobe.passes.initialization.ReserveRegistersPass.html#microprobe.passes.initialization.ReserveRegistersPass" target="_top" title="ReserveRegistersPass pass." alt="" coords="267,301,642,327"/>
+<area shape="rect" id="node9" href="microprobe.passes.initialization.UnReserveRegistersPass.html#microprobe.passes.initialization.UnReserveRegistersPass" target="_top" title="UnReserveRegistersPass pass." alt="" coords="258,351,651,376"/>
+</map>

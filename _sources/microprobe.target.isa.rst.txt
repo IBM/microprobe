@@ -1,0 +1,69 @@
+﻿=====================
+microprobe.target.isa
+=====================
+
+.. automodule:: microprobe.target.isa
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      find_isa_definitions
+      import_isa_definition
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      GenericISA
+      ISA
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  GenericISA  ISA 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: find_isa_definitions
+   .. autofunction:: import_isa_definition
+   

@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeCalledProcessError
+==================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeCalledProcessError
+
+   
+
+   
+   
+
+   
+   
+   

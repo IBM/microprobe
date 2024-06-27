@@ -1,0 +1,41 @@
+microprobe.passes.register.DefaultRegisterAllocationPass
+========================================================
+
+.. currentmodule:: microprobe.passes.register
+
+.. autoclass:: DefaultRegisterAllocationPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DefaultRegisterAllocationPass.__init__
+      ~DefaultRegisterAllocationPass.check
+      ~DefaultRegisterAllocationPass.info
+      ~DefaultRegisterAllocationPass.report
+      ~DefaultRegisterAllocationPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

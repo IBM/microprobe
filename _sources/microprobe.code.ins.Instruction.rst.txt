@@ -1,0 +1,70 @@
+microprobe.code.ins.Instruction
+===============================
+
+.. currentmodule:: microprobe.code.ins
+
+.. autoclass:: Instruction
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Instruction.__init__
+      ~Instruction.add_allow_register
+      ~Instruction.add_comment
+      ~Instruction.add_decorator
+      ~Instruction.allows
+      ~Instruction.assembly
+      ~Instruction.binary
+      ~Instruction.check_context
+      ~Instruction.copy
+      ~Instruction.memory_operands
+      ~Instruction.operand_by_field
+      ~Instruction.operand_fields
+      ~Instruction.operands
+      ~Instruction.register_context_callback
+      ~Instruction.rm_decorator
+      ~Instruction.set_address
+      ~Instruction.set_arch_type
+      ~Instruction.set_label
+      ~Instruction.set_operands
+      ~Instruction.sets
+      ~Instruction.unset_address
+      ~Instruction.uses
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Instruction.address
+      ~Instruction.allowed_regs
+      ~Instruction.architecture_type
+      ~Instruction.comments
+      ~Instruction.context_callbacks
+      ~Instruction.decorators
+      ~Instruction.label
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,69 @@
+﻿===================
+microprobe.property
+===================
+
+.. automodule:: microprobe.property
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      import_properties
+      list_property_files
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Property
+      PropertyHolder
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Property  PropertyHolder 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: import_properties
+   .. autofunction:: list_property_files
+   
