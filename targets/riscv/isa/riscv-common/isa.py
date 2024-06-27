@@ -163,6 +163,11 @@ class RISCVISA(GenericISA):
                 )
                 instrs.append(addi)
 
+            elif value >= -(2**11) and value < (2**11):
+                addi = self.new_instruction("ADDI_V0")
+                addi.set_operands([value, self.registers["X0"], register])
+                instrs.append(addi)
+
             elif value >= -(2**31) and value < (2**31):
                 LOG.debug("Short path")
 
