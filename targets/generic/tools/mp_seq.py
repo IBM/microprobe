@@ -363,6 +363,13 @@ def main():
     )
 
     cmdline.add_flag(
+        "combinations",
+        "combinations",
+        "Only generate combinations of the given instructions",
+        group=groupname,
+    )
+
+    cmdline.add_flag(
         "shortnames",
         "sn",
         "Use short output names",
@@ -392,7 +399,7 @@ def main():
 @typeguard_testsuite
 def _generate_sequences(slots: int, instruction_groups, instruction_map,
                         group_max: List[int], group_min: List[int],
-                        base_seq: List[InstructionType]):
+                        base_seq: List[InstructionType], combinations: bool):
 
     instr_names = []
     instr_objs = []
@@ -435,6 +442,8 @@ def _generate_sequences(slots: int, instruction_groups, instruction_map,
                    f"\tMax intr: {group_max[idx]}")
     print_info("")
 
+    seen = set()
+
     for seq in itertools.product(*[descr[1] for descr in slot_dsrc]):
         valid = True
         for idx, igroup in enumerate(instruction_groups):
@@ -460,6 +469,13 @@ def _generate_sequences(slots: int, instruction_groups, instruction_map,
                     instr_obj for instr_obj in instr_objs
                     if instr_obj.name == instrname
                 ]
+            if combinations:
+                # Only generate combinations, not permutations
+                if tuple(sorted(sequence)) in seen:
+                    continue
+                else:
+                    seen.add(tuple(sorted(sequence)))
+
             yield base_seq + sequence
 
 
@@ -591,11 +607,13 @@ def _main(arguments):
     if 'base_seq' in arguments:
         base_seq = parse_instruction_list(target, arguments['base_seq'])
 
+    combinations = "combinations" in arguments
+
     sequences = [base_seq]
     if len(instruction_groups) > 0:
         sequences = _generate_sequences(slots, instruction_groups,
                                         instruction_map, group_max, group_min,
-                                        base_seq)
+                                        base_seq, combinations)
 
     sequences = [seq for seq in sequences if seq]
     if not sequences:
@@ -634,7 +652,7 @@ def _main(arguments):
         arguments['compress'] = False
 
     # process batches
-    print_info("Num sequences difined: %d" % len(sequences))
+    print_info("Num sequences defined: %d" % len(sequences))
     print_info("Number of batches: %d " % arguments["num_batches"])
     print_info("Batch number: %d " % arguments["batch_number"])
 
