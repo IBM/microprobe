@@ -66,6 +66,7 @@ class RISCVISA(GenericISA):
         self._scratch_registers += [
             self.registers["X31"],
             self.registers["F7"],
+            self.registers["V31"],
         ]
         self._control_registers += [
             reg for reg in self.registers.values() if reg.type.name == "rm"
@@ -233,7 +234,7 @@ class RISCVISA(GenericISA):
             if present_reg is not None:
                 LOG.debug("Value already present")
 
-                instr = self.new_instruction("vmv.v.v_Vd-Vs")
+                instr = self.new_instruction("VMV.V.V_V0")
                 instr.set_operands([register, present_reg])
                 instrs.append(instr)
 
@@ -255,7 +256,7 @@ class RISCVISA(GenericISA):
                     )
 
                     # Shift existing vector register value
-                    shiftleft = self.new_instruction("vsll.vx_Vd-Vt-s")
+                    shiftleft = self.new_instruction("VSLL.VX_V0")
                     shiftleft.set_operands(
                         [register, register, self._scratch_registers[0]]
                     )
@@ -268,7 +269,7 @@ class RISCVISA(GenericISA):
                     )
 
                     # Add chunk to the shifted register
-                    vadd = self.new_instruction("vadd.vx_Vd-Vt-s")
+                    vadd = self.new_instruction("VADD.VX_V0")
                     vadd.set_operands(
                         [register, register, self._scratch_registers[0]])
                     instrs.append(vadd)
