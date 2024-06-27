@@ -157,6 +157,8 @@ def _generic_policy_wrapper(all_arguments: Tuple[List[InstructionType], str,
     extra_arguments['dependency_distance'] = kwargs['dependency_distance']
     extra_arguments['force_switch'] = kwargs['force_switch']
     extra_arguments['endless'] = kwargs['endless']
+    extra_arguments["lmul"] = kwargs["lmul"]
+    extra_arguments["sew"] = kwargs["sew"]
 
     if wrapper.outputname(outputfile) != outputfile:
         print_error(
@@ -205,6 +207,9 @@ def main():
     groupname = "SEQ arguments"
     cmdline.add_group(groupname,
                       "Command arguments related to Sequence generation")
+    riscv_groupname = "RISC-V specific options"
+    cmdline.add_group(riscv_groupname,
+                      "Command arguments only valid for the RISC-V target")
 
     cmdline.add_option("seq-output-dir",
                        "D",
@@ -213,6 +218,27 @@ def main():
                        group=groupname,
                        opt_type=existing_dir,
                        required=True)
+
+
+    cmdline.add_option(
+        "lmul",
+        "lmul",
+        1,
+        "lmul for vector insns (only valid for RISCV backend)",
+        group=riscv_groupname,
+        opt_type=int_type(1, 8),
+        required=False,
+    )
+
+    cmdline.add_option(
+        "sew",
+        "sew",
+        32,
+        "Selected element width for vector insns (only valid for RISCV backend)",
+        group=riscv_groupname,
+        opt_type=int_type(8, 64),
+        required=False,
+    )
 
     cmdline.add_option(
         "instruction-slots",
