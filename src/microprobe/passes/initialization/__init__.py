@@ -222,6 +222,7 @@ class InitializeRegistersPass(microprobe.passes.Pass):
         warn_unknown = kwargs.get("warn_unknown", False)
         self._force_code = kwargs.get("force_code", False)
         self.lmul = kwargs.get("lmul", 1)
+        self.sew = kwargs.get("sew", 32)
 
         if len(args) == 1:
             self._reg_dict = dict(
@@ -300,10 +301,11 @@ class InitializeRegistersPass(microprobe.passes.Pass):
                 force_direct = True
 
             if reg.name == "LMUL":
+                packed_lmul_sew = self.lmul << 9 | self.sew & 127
                 building_block.add_init(
-                    target.isa.set_register(reg, self.lmul,
-                                            building_block.context))
-                building_block.context.set_register_value(reg, self.lmul)
+                    target.isa.set_register(reg, packed_lmul_sew, building_block.context)
+                )
+                building_block.context.set_register_value(reg, packed_lmul_sew)
                 continue
 
             all_vec_regs = set([f"V{i}" for i in range(0, 32)])

@@ -611,22 +611,82 @@
   Fields:
   - funct25
   - opcode
-  Name: vsetivli_lmul1
-- Assembly: OPC zero,16,m2,ta,ma
+  Name: vsetivli_lmul1_e8
+- Assembly: OPC zero,16,e8,m2,ta,ma
   Fields:
   - funct25
   - opcode
-  Name: vsetivli_lmul2
-- Assembly: OPC zero,16,m4,ta,ma
+  Name: vsetivli_lmul2_e8
+- Assembly: OPC zero,16,e8,m4,ta,ma
   Fields:
   - funct25
   - opcode
-  Name: vsetivli_lmul4
-- Assembly: OPC zero,16,m8,ta,ma
+  Name: vsetivli_lmul4_e8
+- Assembly: OPC zero,16,e8,m8,ta,ma
   Fields:
   - funct25
   - opcode
-  Name: vsetivli_lmul8
+  Name: vsetivli_lmul8_e8
+- Assembly: OPC zero,16,e16,m1,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul1_e16
+- Assembly: OPC zero,16,e16,m2,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul2_e16
+- Assembly: OPC zero,16,e16,m4,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul4_e16
+- Assembly: OPC zero,16,e16,m8,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul8_e16
+- Assembly: OPC zero,16,e32,m1,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul1_e32
+- Assembly: OPC zero,16,e32,m2,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul2_e32
+- Assembly: OPC zero,16,e32,m4,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul4_e32
+- Assembly: OPC zero,16,e32,m8,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul8_e32
+- Assembly: OPC zero,16,e64,m1,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul1_e64
+- Assembly: OPC zero,16,e64,m2,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul2_e64
+- Assembly: OPC zero,16,e64,m4,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul4_e64
+- Assembly: OPC zero,16,e64,m8,ta,ma
+  Fields:
+  - funct25
+  - opcode
+  Name: vsetivli_lmul8_e64
 # Generated using parse_binutils_riscv.py
 - Assembly: OPC vd, i_imm5
   Fields:

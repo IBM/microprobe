@@ -74,6 +74,8 @@ def policy(target, wrapper, **kwargs):
             " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS))
         )
 
+    lmul = kwargs["lmul"]
+    sew = kwargs["sew"]
     sequence = kwargs['instructions']
 
     context = microprobe.code.context.Context()
@@ -103,26 +105,26 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT()
+            value=RNDINT(), lmul=lmul, sew=sew
         )
     )
 
     if vector and floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(1.000000000000001, 64)
+                v_value=(1.000000000000001, 64), lmul=lmul, sew=sew
             )
         )
     elif vector:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(RNDINT(), 64)
+                v_value=(RNDINT(), 64), lmul=lmul, sew=sew
             )
         )
     elif floating:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                fp_value=1.000000000000001
+                fp_value=1.000000000000001, lmul=lmul, sew=sew
             )
         )
 

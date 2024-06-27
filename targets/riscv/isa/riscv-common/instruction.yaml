@@ -2083,24 +2083,84 @@
     funct3: ['1', 'funct3', '?']
 # Manually added
 - Description: Set lmul
-  Format: vsetivli_lmul1
-  Mnemonic: vsetivli
-  Name: vsetivli_lmul1
+  Format: vsetivli_lmul1_e8
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul1_e8
   Opcode: '0'
 - Description: Set lmul
-  Format: vsetivli_lmul2
-  Mnemonic: vsetivli
-  Name: vsetivli_lmul2
+  Format: vsetivli_lmul2_e8
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul2_e8
   Opcode: '0'
 - Description: Set lmul
-  Format: vsetivli_lmul4
-  Mnemonic: vsetivli
-  Name: vsetivli_lmul4
+  Format: vsetivli_lmul4_e8
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul4_e8
   Opcode: '0'
 - Description: Set lmul
-  Format: vsetivli_lmul8
-  Mnemonic: vsetivli
-  Name: vsetivli_lmul8
+  Format: vsetivli_lmul8_e8
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul8_e8
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul1_e16
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul1_e16
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul2_e16
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul2_e16
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul4_e16
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul4_e16
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul8_e16
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul8_e16
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul1_e32
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul1_e32
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul2_e32
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul2_e32
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul4_e32
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul4_e32
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul8_e32
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul8_e32
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul1_e64
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul1_e64
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul2_e64
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul2_e64
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul4_e64
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul4_e64
+  Opcode: '0'
+- Description: Set lmul
+  Format: vsetivli_lmul8_e64
+  Mnemonic: VSETIVLI
+  Name: vsetivli_lmul8_e64
   Opcode: '0'
 # Generated using parse_binutils_riscv.py
 - Description: Auto parsed from binutils. Opcode is dummy data

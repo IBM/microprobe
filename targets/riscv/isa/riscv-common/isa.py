@@ -274,16 +274,22 @@ class RISCVISA(GenericISA):
                         [register, register, self._scratch_registers[0]])
                     instrs.append(vadd)
 
-            LOG.debug("Register: %s set to value %d", register.name, value)
-        elif register.type.name == "LMUL" and value in [1, 2, 4, 8]:
-            vset = self.new_instruction(f"vsetivli_lmul{value}")
+            LOG.debug(f"Register: {register.name} set to value {value}")
+        elif register.type.name == "LMUL" and value in [lmul << 9 | sew & 127 for lmul in [1, 2, 4, 8] for sew in [8, 16, 32, 64]]:
+            sew = value & 127
+            lmul = value >> 9
+            vset = self.new_instruction(f"vsetivli_lmul{lmul}_e{sew}")
             instrs.append(vset)
-            LOG.debug("Register: %s set to value %d", register.name, value)
+            LOG.debug(f"Register: {register.name} set to value {value}")
         else:
-            raise NotImplementedError(
-                "Microprobe doesn't know how to initialize "
-                f"{register.type.name} register with value {value}."
-            )
+            if register.type.name == "LMUL":
+                raise NotImplementedError(
+                    f"Don't know how to initialize {register.type.name} register with value {value}. LMUL: {value >> 9} SEW: {value & 127}"
+                )
+            else:
+                raise NotImplementedError(
+                    f"Don't know how to initialize {register.type.name} register with value {value}."
+                )
 
         if len(instrs) > 0:
             return instrs

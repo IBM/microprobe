@@ -826,11 +826,15 @@ class OperandReg(Operand):
         return list(self._regs.keys())
 
     def filtered_values(self, context: Context, fieldname: str):
-        lmul = cast(int | None, context.get_registername_value("LMUL"))
+        lmul_sew = cast(int | None, context.get_registername_value("LMUL"))
 
-        if lmul is None or not fieldname.startswith("v"):
+        if lmul_sew is None or not fieldname.startswith("v"):
             return self.values()
-        elif fieldname in ["vd", "vmd", "vrs1", "vrs2", "vmask"]:
+
+        sew = lmul_sew & 127
+        lmul = lmul_sew >> 9
+
+        if fieldname in ["vd", "vmd", "vrs1", "vrs2", "vmask"]:
             lmul *= 1
         elif fieldname in ["vdd", "vdmd", "vdrs1", "vdrs2", "vnd", "vnmd"]:
             lmul *= 2
