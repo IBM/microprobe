@@ -105,7 +105,7 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT(), lmul=lmul, sew=sew
+            value=rand.randint(0, (2**1024)), lmul=lmul, sew=sew
         )
     )
 

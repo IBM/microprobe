@@ -240,8 +240,6 @@ class RISCVISA(GenericISA):
 
             else:
                 # Load the value into the vector register 1 chunk at a time.
-                # TODO: Fix this.
-                # Currently each chunk will overwrite the existing chunks.
 
                 chunks = [
                     (value >> 1024 - (64 * i)) & 0xFFFFFFFFFFFFFFFF
@@ -249,30 +247,18 @@ class RISCVISA(GenericISA):
                 ]
 
                 for chunk in chunks:
-                    # Set register to shift amount
-                    instrs.extend(
-                        self.set_register(
-                            self._scratch_registers[0], 64, context)
-                    )
-
-                    # Shift existing vector register value
-                    shiftleft = self.new_instruction("VSLL.VX_V0")
-                    shiftleft.set_operands(
-                        [register, register, self._scratch_registers[0]]
-                    )
-                    instrs.append(shiftleft)
-
                     # Set int register to chunk
                     instrs.extend(
                         self.set_register(
                             self._scratch_registers[0], chunk, context)
                     )
 
-                    # Add chunk to the shifted register
-                    vadd = self.new_instruction("VADD.VX_V0")
-                    vadd.set_operands(
-                        [register, register, self._scratch_registers[0]])
-                    instrs.append(vadd)
+                    # Shift existing vector register value and insert chunk
+                    shiftleft = self.new_instruction("VSLIDE1UP.VX_V0")
+                    shiftleft.set_operands(
+                        [register, register, self._scratch_registers[0]]
+                    )
+                    instrs.append(shiftleft)
 
             LOG.debug(f"Register: {register.name} set to value {value}")
         elif register.type.name == "LMUL" and value in [lmul << 9 | sew & 127 for lmul in [1, 2, 4, 8] for sew in [8, 16, 32, 64]]:
