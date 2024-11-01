@@ -114,6 +114,14 @@ def _generic_policy_wrapper(all_arguments: Tuple[List[InstructionType], str,
         wrapper = wrapper_class(endless=kwargs['endless'],
                                 reset=kwargs['reset'])
 
+    elif target.name.endswith("riscv64_bp3"):
+
+        wrapper_name = "RiscvBP3"
+        extension = "S"
+        wrapper_class = _get_wrapper(wrapper_name)
+        wrapper = wrapper_class(endless=kwargs['endless'],
+                                reset=kwargs['reset'])
+
     elif target.environment.default_wrapper:
 
         wrapper_name = target.environment.default_wrapper

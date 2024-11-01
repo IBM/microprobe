@@ -47,6 +47,7 @@ DESCRIPTION = "Sequence generation policy"
 SUPPORTED_TARGETS = [
     "riscv_v22-riscv_generic-riscv64_linux_gcc",
     "riscv_v22-riscv_generic-riscv64_test_p",
+    "riscv_v22-riscv_generic-riscv64_bp3",
 ]
 
 
