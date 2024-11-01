@@ -2169,11 +2169,6 @@
   Name: VSETVL_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-VtVm_parsed
-  Mnemonic: VNEG.V
-  Name: VNEG.V_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-VsVm_parsed
   Mnemonic: VADD.VV
   Name: VADD.VV_V1
@@ -2207,16 +2202,6 @@
   Format: Vd-Vt-ViVm_parsed
   Mnemonic: VRSUB.VI
   Name: VRSUB.VI_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-VtVm_wide_in_parsed
-  Mnemonic: VWCVT.X.X.V
-  Name: VWCVT.X.X.V_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-VtVm_wide_in_parsed
-  Mnemonic: VWCVTU.X.X.V
-  Name: VWCVTU.X.X.V_V1
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-VsVm_wide_in_parsed
@@ -2374,11 +2359,6 @@
   Name: VMSBC.VX_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-VtVm_parsed
-  Mnemonic: VNOT.V
-  Name: VNOT.V_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-VsVm_parsed
   Mnemonic: VAND.VV
   Name: VAND.VV_V1
@@ -2467,11 +2447,6 @@
   Format: Vd-Vt-VjVm_parsed
   Mnemonic: VSRA.VI
   Name: VSRA.VI_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-VtVm_wide_in_parsed
-  Mnemonic: VNCVT.X.X.W
-  Name: VNCVT.X.X.W_V1
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-VsVm_wide_in_parsed
@@ -2602,46 +2577,6 @@
   Format: Vd-Vt-ViVm_parsed
   Mnemonic: VMSGT.VI
   Name: VMSGT.VI_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-VtVm_parsed
-  Mnemonic: VMSGT.VV
-  Name: VMSGT.VV_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-VtVm_parsed
-  Mnemonic: VMSGTU.VV
-  Name: VMSGTU.VV_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-VtVm_parsed
-  Mnemonic: VMSGE.VV
-  Name: VMSGE.VV_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-VtVm_parsed
-  Mnemonic: VMSGEU.VV
-  Name: VMSGEU.VV_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-VkVm_parsed
-  Mnemonic: VMSLT.VI
-  Name: VMSLT.VI_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-VkVm_parsed
-  Mnemonic: VMSLTU.VI
-  Name: VMSLTU.VI_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-VkVm_parsed
-  Mnemonic: VMSGE.VI
-  Name: VMSGE.VI_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-VkVm_parsed
-  Mnemonic: VMSGEU.VI
-  Name: VMSGEU.VI_V1
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-VsVm_parsed
@@ -3329,16 +3264,6 @@
   Name: VFMAX.VF_V1
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-VuVm_parsed
-  Mnemonic: VFNEG.V
-  Name: VFNEG.V_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-VuVm_parsed
-  Mnemonic: VFABS.V
-  Name: VFABS.V_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-VsVm_parsed
   Mnemonic: VFSGNJ.VV
   Name: VFSGNJ.VV_V1
@@ -3417,16 +3342,6 @@
   Format: Vd-Vt-SVm_parsed
   Mnemonic: VMFGE.VF
   Name: VMFGE.VF_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-VtVm_parsed
-  Mnemonic: VMFGT.VV
-  Name: VMFGT.VV_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-VtVm_parsed
-  Mnemonic: VMFGE.VV
-  Name: VMFGE.VV_V1
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-S-V0_parsed
@@ -3605,11 +3520,6 @@
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-VsVm_parsed
-  Mnemonic: VFREDSUM.VS
-  Name: VFREDSUM.VS_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-VsVm_parsed
   Mnemonic: VFREDMAX.VS
   Name: VFREDMAX.VS_V1
   Opcode: '0'
@@ -3629,36 +3539,6 @@
   Name: VFWREDUSUM.VS_V1
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-VsVm_parsed
-  Mnemonic: VFWREDSUM.VS
-  Name: VFWREDSUM.VS_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vu_parsed
-  Mnemonic: VMMV.M
-  Name: VMMV.M_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vu_parsed
-  Mnemonic: VMCPY.M
-  Name: VMCPY.M_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vv_parsed
-  Mnemonic: VMCLR.M
-  Name: VMCLR.M_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vv_parsed
-  Mnemonic: VMSET.M
-  Name: VMSET.M_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vu_parsed
-  Mnemonic: VMNOT.M
-  Name: VMNOT.M_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
   Mnemonic: VMAND.MM
   Name: VMAND.MM_V0
@@ -3672,11 +3552,6 @@
   Format: Vd-Vt-Vs_parsed
   Mnemonic: VMANDN.MM
   Name: VMANDN.MM_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vs_parsed
-  Mnemonic: VMANDNOT.MM
-  Name: VMANDNOT.MM_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
@@ -3700,11 +3575,6 @@
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
-  Mnemonic: VMORNOT.MM
-  Name: VMORNOT.MM_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vs_parsed
   Mnemonic: VMXNOR.MM
   Name: VMXNOR.MM_V0
   Opcode: '0'
@@ -3712,11 +3582,6 @@
   Format: d-VtVm_parsed
   Mnemonic: VCPOP.M
   Name: VCPOP.M_V1
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: d-VtVm_parsed
-  Mnemonic: VPOPC.M
-  Name: VPOPC.M_V1
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: d-VtVm_parsed
@@ -3834,11 +3699,6 @@
   Name: VMV1R.V_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt_parsed
-  Mnemonic: VNEG.V
-  Name: VNEG.V_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
   Mnemonic: VADD.VV
   Name: VADD.VV_V0
@@ -3872,16 +3732,6 @@
   Format: Vd-Vt-Vi_parsed
   Mnemonic: VRSUB.VI
   Name: VRSUB.VI_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt_wide_in_parsed
-  Mnemonic: VWCVT.X.X.V
-  Name: VWCVT.X.X.V_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt_wide_in_parsed
-  Mnemonic: VWCVTU.X.X.V
-  Name: VWCVTU.X.X.V_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_wide_in_parsed
@@ -3962,11 +3812,6 @@
   Format: Vd-Vt-s_wide_in_wide_out_parsed
   Mnemonic: VWSUB.WX
   Name: VWSUB.WX_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt_parsed
-  Mnemonic: VNOT.V
-  Name: VNOT.V_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
@@ -4057,11 +3902,6 @@
   Format: Vd-Vt-Vj_parsed
   Mnemonic: VSRA.VI
   Name: VSRA.VI_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt_wide_in_parsed
-  Mnemonic: VNCVT.X.X.W
-  Name: VNCVT.X.X.W_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_wide_in_parsed
@@ -4192,46 +4032,6 @@
   Format: Vd-Vt-Vi_parsed
   Mnemonic: VMSGT.VI
   Name: VMSGT.VI_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-Vt_parsed
-  Mnemonic: VMSGT.VV
-  Name: VMSGT.VV_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-Vt_parsed
-  Mnemonic: VMSGTU.VV
-  Name: VMSGTU.VV_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-Vt_parsed
-  Mnemonic: VMSGE.VV
-  Name: VMSGE.VV_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-Vt_parsed
-  Mnemonic: VMSGEU.VV
-  Name: VMSGEU.VV_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vk_parsed
-  Mnemonic: VMSLT.VI
-  Name: VMSLT.VI_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vk_parsed
-  Mnemonic: VMSLTU.VI
-  Name: VMSLTU.VI_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vk_parsed
-  Mnemonic: VMSGE.VI
-  Name: VMSGE.VI_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vk_parsed
-  Mnemonic: VMSGEU.VI
-  Name: VMSGEU.VI_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
@@ -4889,16 +4689,6 @@
   Name: VFMAX.VF_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vu_parsed
-  Mnemonic: VFNEG.V
-  Name: VFNEG.V_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vu_parsed
-  Mnemonic: VFABS.V
-  Name: VFABS.V_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
   Mnemonic: VFSGNJ.VV
   Name: VFSGNJ.VV_V0
@@ -4977,16 +4767,6 @@
   Format: Vd-Vt-S_parsed
   Mnemonic: VMFGE.VF
   Name: VMFGE.VF_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-Vt_parsed
-  Mnemonic: VMFGT.VV
-  Name: VMFGT.VV_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vs-Vt_parsed
-  Mnemonic: VMFGE.VV
-  Name: VMFGE.VV_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt_parsed
@@ -5155,11 +4935,6 @@
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: Vd-Vt-Vs_parsed
-  Mnemonic: VFREDSUM.VS
-  Name: VFREDSUM.VS_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vs_parsed
   Mnemonic: VFREDMAX.VS
   Name: VFREDMAX.VS_V0
   Opcode: '0'
@@ -5179,19 +4954,9 @@
   Name: VFWREDUSUM.VS_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
-  Format: Vd-Vt-Vs_parsed
-  Mnemonic: VFWREDSUM.VS
-  Name: VFWREDSUM.VS_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
   Format: d-Vt_parsed
   Mnemonic: VCPOP.M
   Name: VCPOP.M_V0
-  Opcode: '0'
-- Description: Auto parsed from binutils. Opcode is dummy data
-  Format: d-Vt_parsed
-  Mnemonic: VPOPC.M
-  Name: VPOPC.M_V0
   Opcode: '0'
 - Description: Auto parsed from binutils. Opcode is dummy data
   Format: d-Vt_parsed

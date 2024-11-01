@@ -874,23 +874,6 @@
   - i_shamt5
   - opcode
   Name: Vd-Vt-Vj_wide_in_parsed
-- Assembly: OPC vmd, vrs2, ioff_imm5, vmask.t
-  Fields:
-  - vmd
-  - vrs2
-  - ioff_imm5
-  - opcode
-  - vmask
-  - funct5
-  Name: Vd-Vt-VkVm_parsed
-- Assembly: OPC vd, vrs2, ioff_imm5
-  Fields:
-  - funct10
-  - vd
-  - vrs2
-  - ioff_imm5
-  - opcode
-  Name: Vd-Vt-Vk_parsed
 - Assembly: OPC vmd, vrs1, vrs2, vmask
   Fields:
   - funct5
@@ -1043,22 +1026,6 @@
   - vdrs2
   - opcode
   Name: Vd-Vt_wide_in_parsed
-- Assembly: OPC vmd, vrs1, vmask.t
-  Fields:
-  - funct10
-  - vmd
-  - vrs1
-  - opcode
-  - vmask
-  Name: Vd-VuVm_parsed
-- Assembly: OPC vd, vrs1
-  Fields:
-  - funct10
-  - funct5
-  - vd
-  - vrs1
-  - opcode
-  Name: Vd-Vu_parsed
 - Assembly: OPC vmd, rs1, vrs2, vmask.t
   Fields:
   - vmd
@@ -1115,12 +1082,6 @@
   - vd
   - opcode
   Name: Vd_parsed
-- Assembly: OPC vd
-  Fields:
-  - funct20
-  - vd
-  - opcode
-  Name: Vv_parsed
 - Assembly: OPC rd, vrs2, vmask.t
   Fields:
   - funct10

@@ -335,6 +335,17 @@ def parse_binutils():
             split_lines, quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True
         )
     ]
+    tags = [
+        row[-1]
+        for row in csv.reader(
+            split_lines, quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True
+        )
+    ]
+
+    # Mark alias insns
+    for i, tag in enumerate(tags):
+        if "INSN_ALIAS" in tag:
+            formats[i] = formats[i] + "_alias"
 
     # Generate unmasked variants for all masked vector insns
     unmasked_insns: List[str] = []
@@ -390,10 +401,12 @@ def print_filter_stats(
 
     unimp_insns = {insn.name for insn in missing_pattern_insns}
     unimp_format = {insn.format[0] for insn in missing_pattern_insns}
+    unimp_alias_format = {insn.format[0] for insn in missing_pattern_insns if any(["_alias" in fmt for fmt in insn.format]) }
 
     print()
     print("Formats missing pattern:", len(unimp_format))
     print("Insns missing pattern:", len(unimp_insns))
+    print("Alias insns missing pattern:", len(unimp_alias_format))
 
     unimp_format_counter = Counter(
         [insn.format for insn in missing_pattern_insns if insn.name not in imp_insns]
@@ -456,7 +469,7 @@ def main():
         if insn.ext in VECTOR_EXTS:
             insn_name = f"{insn.name}_{'V1' if ('Vm' in fmt) else 'V0'}".upper()
         else:
-            insn_name = f"{insn.name}_{fmt}"
+            insn_name = f"{insn.name}_V0".upper()
 
         # TODO Memory operands
         insn_names.append(insn_name)
@@ -470,6 +483,10 @@ def main():
                 "Description": "Auto parsed from binutils. Opcode is dummy data",
             }
         )
+
+    insn_names = sorted(insn_names)
+
+    assert len(insn_names) == len(set(insn_names)), "Duplicate insn name detected!"
 
     with open("gen/instruction.yaml", "w", encoding='UTF-8') as stream:
         yaml.dump(instruction_list, stream, sort_keys=True)
