@@ -1,0 +1,44 @@
+microprobe.utils.cmdline.ParagraphFormatterML
+=============================================
+
+.. currentmodule:: microprobe.utils.cmdline
+
+.. autoclass:: ParagraphFormatterML
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ParagraphFormatterML.__init__
+      ~ParagraphFormatterML.add_argument
+      ~ParagraphFormatterML.add_arguments
+      ~ParagraphFormatterML.add_text
+      ~ParagraphFormatterML.add_usage
+      ~ParagraphFormatterML.end_section
+      ~ParagraphFormatterML.format_help
+      ~ParagraphFormatterML.start_section
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

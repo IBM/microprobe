@@ -1,0 +1,742 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.passes.initialization &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../passes.html">microprobe.passes</a></li>
+      <li class="breadcrumb-item active">microprobe.passes.initialization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.passes.initialization</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.passes.initialization` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.code</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.passes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.ins</span><span class="w"> </span><span class="kn">import</span> <span class="n">instruction_set_def_properties</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span>
+    <span class="n">MicroprobeDuplicatedValueError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.asm</span><span class="w"> </span><span class="kn">import</span> <span class="n">interpret_asm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.cmdline</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_warning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.ieee</span><span class="w"> </span><span class="kn">import</span> <span class="n">ieee_float_to_int64</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;AutoAlignPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AddInitializationAssemblyPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AddFinalizationAssemblyPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AddInitializationInstructionsPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;InitializeRegistersPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;InitializeRegisterPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ReserveRegistersPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UnReserveRegistersPass&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Functions</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="AddInitializationAssemblyPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AddInitializationAssemblyPass.html#microprobe.passes.initialization.AddInitializationAssemblyPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AddInitializationAssemblyPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AddInitializationAssemblyPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AddInitializationAssemblyPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AddInitializationAssemblyPass.html#microprobe.passes.initialization.AddInitializationAssemblyPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assembly</span><span class="p">,</span> <span class="n">allow_registers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param assembly:</span>
+<span class="sd">        :type assembly:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asm</span> <span class="o">=</span> <span class="n">assembly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aregs</span> <span class="o">=</span> <span class="n">allow_registers</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Append the &#39;</span><span class="si">%s</span><span class="s2">&#39; instructions at the init of the&quot;</span>
+            <span class="s2">&quot;building block.&quot;</span> <span class="o">%</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">assembly</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">instructions_def</span> <span class="o">=</span> <span class="n">interpret_asm</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_asm</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">target</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">labels</span>
+        <span class="p">)</span>
+
+        <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">instructions_def</span><span class="p">:</span>
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">Instruction</span><span class="p">()</span>
+            <span class="n">instruction_set_def_properties</span><span class="p">(</span>
+                <span class="n">instruction</span><span class="p">,</span>
+                <span class="n">definition</span><span class="p">,</span>
+                <span class="n">building_block</span><span class="o">=</span><span class="n">building_block</span><span class="p">,</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                <span class="n">allowed_registers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_aregs</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">instructions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
+
+        <span class="n">building_block</span><span class="o">.</span><span class="n">add_init</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AddFinalizationAssemblyPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AddFinalizationAssemblyPass.html#microprobe.passes.initialization.AddFinalizationAssemblyPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AddFinalizationAssemblyPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AddFinalizationAssemblyPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AddFinalizationAssemblyPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AddFinalizationAssemblyPass.html#microprobe.passes.initialization.AddFinalizationAssemblyPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assembly</span><span class="p">,</span> <span class="n">allow_registers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param assembly:</span>
+<span class="sd">        :type assembly:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asm</span> <span class="o">=</span> <span class="n">assembly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aregs</span> <span class="o">=</span> <span class="n">allow_registers</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Append the &#39;</span><span class="si">%s</span><span class="s2">&#39; instructions at the init of the&quot;</span>
+            <span class="s2">&quot;building block.&quot;</span> <span class="o">%</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">assembly</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">instructions_def</span> <span class="o">=</span> <span class="n">interpret_asm</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_asm</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">target</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">labels</span>
+        <span class="p">)</span>
+
+        <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">instructions_def</span><span class="p">:</span>
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">Instruction</span><span class="p">()</span>
+            <span class="n">instruction_set_def_properties</span><span class="p">(</span>
+                <span class="n">instruction</span><span class="p">,</span>
+                <span class="n">definition</span><span class="p">,</span>
+                <span class="n">building_block</span><span class="o">=</span><span class="n">building_block</span><span class="p">,</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                <span class="n">allowed_registers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_aregs</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">instructions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
+
+        <span class="n">building_block</span><span class="o">.</span><span class="n">add_fini</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ReserveRegistersPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.ReserveRegistersPass.html#microprobe.passes.initialization.ReserveRegistersPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReserveRegistersPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ReserveRegistersPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ReserveRegistersPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.ReserveRegistersPass.html#microprobe.passes.initialization.ReserveRegistersPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register_names</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param register_names:</span>
+<span class="sd">        :type register_names:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_names</span> <span class="o">=</span> <span class="n">register_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Reserve registers &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_register_names</span><span class="si">}</span><span class="s2">&#39;&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">register_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_names</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">register</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="p">[</span><span class="n">register_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unknown register &#39;</span><span class="si">%s</span><span class="s2">&#39;. Known registers: </span><span class="si">%s</span><span class="s2">&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">register_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+            <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">add_reserved_registers</span><span class="p">([</span><span class="n">register</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="UnReserveRegistersPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.UnReserveRegistersPass.html#microprobe.passes.initialization.UnReserveRegistersPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UnReserveRegistersPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;UnReserveRegistersPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="UnReserveRegistersPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.UnReserveRegistersPass.html#microprobe.passes.initialization.UnReserveRegistersPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register_names</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param register_names:</span>
+<span class="sd">        :type register_names:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_names</span> <span class="o">=</span> <span class="n">register_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Reserve registers &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_register_names</span><span class="si">}</span><span class="s2">&#39;&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">register_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_names</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">register</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="p">[</span><span class="n">register_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unknown register &#39;</span><span class="si">%s</span><span class="s2">&#39;. Known registers: </span><span class="si">%s</span><span class="s2">&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">register_name</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+            <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">remove_reserved_registers</span><span class="p">([</span><span class="n">register</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="InitializeRegistersPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.InitializeRegistersPass.html#microprobe.passes.initialization.InitializeRegistersPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InitializeRegistersPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;InitializeRegistersPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InitializeRegistersPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.InitializeRegistersPass.html#microprobe.passes.initialization.InitializeRegistersPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param value:  (Default value = None)</span>
+<span class="sd">        :param fp_value:  (Default value = None)</span>
+<span class="sd">        :param v_value:  (Default value = None)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">fp_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fp_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">v_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;v_value&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">skip_unknown</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;skip_unknown&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">warn_unknown</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warn_unknown&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_code</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;force_code&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reg_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="p">[(</span><span class="n">elem</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_priolist</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reg_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_priolist</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_value</span> <span class="o">=</span> <span class="n">fp_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vect_value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vect_elemsize</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skip_unknown</span> <span class="o">=</span> <span class="n">skip_unknown</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warn_unknown</span> <span class="o">=</span> <span class="n">warn_unknown</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_reserved</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;force_reserved&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skip_control</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;skip_control&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">v_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vect_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vect_elemsize</span> <span class="o">=</span> <span class="n">v_value</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Initialize general registers to: &quot;</span>
+            <span class="s2">&quot; &#39;</span><span class="si">%s</span><span class="s2">&#39; and FP registers to &#39;</span><span class="si">%s</span><span class="s2">&#39; and&quot;</span>
+            <span class="s2">&quot; Vector register to &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span>
+            <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp_value</span><span class="p">,</span> <span class="n">v_value</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip_unknown</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">register_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reg_dict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">register_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unknown register name: &#39;</span><span class="si">{</span><span class="n">register_name</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                        <span class="s2">&quot;Unable to set it&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warn_unknown</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">register_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reg_dict</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">register_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">print_warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unknown register name: &#39;</span><span class="si">{</span><span class="n">register_name</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                        <span class="s2">&quot;Unable to set it&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="n">regs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_priolist</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_priolist</span>
+            <span class="k">else</span> <span class="mi">314159</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Make sure scratch registers are set last</span>
+        <span class="c1">#</span>
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">scratch_registers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">:</span>
+                <span class="n">regs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                <span class="n">regs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">elemsize</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">force_direct</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reg_dict</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reg_dict</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reg_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">force_direct</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">reg</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_reserved</span>
+            <span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skip reserved - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">control_registers</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip_control</span>
+            <span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skip control - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">used_for_vector_arithmetic</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vect_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vect_value</span>
+                        <span class="n">elemsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vect_elemsize</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;Skip no vector default value provided - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">reg</span><span class="o">.</span><span class="n">used_for_float_arithmetic</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp_value</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;Skip no float default value provided - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span>
+                        <span class="p">)</span>
+                        <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skip no default value provided - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                <span class="k">while</span> <span class="nb">callable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="n">reg</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">used_for_float_arithmetic</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">ieee_float_to_int64</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+                <span class="k">elif</span> <span class="n">reg</span><span class="o">.</span><span class="n">used_for_vector_arithmetic</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">elemsize</span> <span class="o">!=</span> <span class="mi">64</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                                <span class="s2">&quot;Unable to initialize &#39;</span><span class="si">%s</span><span class="s2">&#39; to &#39;</span><span class="si">%s</span><span class="s2">&#39;. Only 64bit&quot;</span>
+                                <span class="s2">&quot; vector element initialization is supported&quot;</span>
+                                <span class="o">%</span> <span class="p">(</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">elemsize</span><span class="p">))</span>
+                            <span class="p">)</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">ieee_float_to_int64</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">elemsize</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">elemsize</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting reg </span><span class="si">%s</span><span class="s2"> to val </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">direct_initialization_support</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_code</span>
+            <span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">target</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">register_direct_init</span><span class="p">(</span>
+                        <span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_direct</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Direct set of &#39;</span><span class="si">%s</span><span class="s2">&#39; to &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Direct set of &#39;</span><span class="si">%s</span><span class="s2">&#39; to &#39;0x</span><span class="si">%x</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">:</span>
+                    <span class="n">building_block</span><span class="o">.</span><span class="n">add_init</span><span class="p">(</span>
+                        <span class="n">target</span><span class="o">.</span><span class="n">set_register</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Set &#39;</span><span class="si">%s</span><span class="s2">&#39; to &#39;0x</span><span class="si">%x</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">MicroprobeDuplicatedValueError</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skip already set - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">building_block</span><span class="o">.</span><span class="n">add_init</span><span class="p">(</span>
+                    <span class="n">target</span><span class="o">.</span><span class="n">set_register</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">set_register_value</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InitializeRegistersPass.check">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.InitializeRegistersPass.html#microprobe.passes.initialization.InitializeRegistersPass.check">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="InitializeRegisterPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.InitializeRegisterPass.html#microprobe.passes.initialization.InitializeRegisterPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InitializeRegisterPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;InitializeRegisterPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InitializeRegisterPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.InitializeRegisterPass.html#microprobe.passes.initialization.InitializeRegisterPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">register_name</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">,</span>
+        <span class="n">reserve</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">force_code</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">force_value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">force_control</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param register_name:</span>
+<span class="sd">        :param value:</span>
+<span class="sd">        :param reserve:  (Default value = False)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_name</span> <span class="o">=</span> <span class="n">register_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reserve</span> <span class="o">=</span> <span class="n">reserve</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force</span> <span class="o">=</span> <span class="n">force</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_code</span> <span class="o">=</span> <span class="n">force_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_value</span> <span class="o">=</span> <span class="n">force_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_control</span> <span class="o">=</span> <span class="n">force_control</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="s2">&quot;Initialize register &#39;</span><span class="si">%s</span><span class="s2">&#39; to &quot;</span> <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_register_name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">reg</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">reg</span>
+            <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_name</span>
+        <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+
+        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reserve</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Register &#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; already reserved&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">control_registers</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_control</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Register &#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; in Target definition control registers&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">used_for_float_arithmetic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_value</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">ieee_float_to_int64</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">direct_initialization_support</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_code</span>
+        <span class="p">):</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">register_direct_init</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_force</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">building_block</span><span class="o">.</span><span class="n">add_init</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">set_register</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">set_register_value</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reserve</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span>
+            <span class="ow">and</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span>
+        <span class="p">):</span>
+            <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">add_reserved_registers</span><span class="p">([</span><span class="n">reg</span><span class="p">])</span>
+
+<div class="viewcode-block" id="InitializeRegisterPass.check">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.InitializeRegisterPass.html#microprobe.passes.initialization.InitializeRegisterPass.check">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AddInitializationInstructionsPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AddInitializationInstructionsPass.html#microprobe.passes.initialization.AddInitializationInstructionsPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AddInitializationInstructionsPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AddInitializationInstructionsPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AddInitializationInstructionsPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AddInitializationInstructionsPass.html#microprobe.passes.initialization.AddInitializationInstructionsPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr</span><span class="p">,</span> <span class="n">operands</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param instr:</span>
+<span class="sd">        :param operands:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instr</span> <span class="o">=</span> <span class="n">instr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_operands</span> <span class="o">=</span> <span class="n">operands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Add </span><span class="si">{</span><span class="n">instr</span><span class="si">}</span><span class="s2"> in the init sequence with operands: </span><span class="si">{</span><span class="n">operands</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+
+
+        <span class="c1"># TODO: improve description string</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">dummy_target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param dummy_target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span><span class="p">,</span> <span class="n">operands</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operands</span><span class="p">):</span>
+                <span class="n">newinstr</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">Instruction</span><span class="p">()</span>
+                <span class="c1"># print instr</span>
+                <span class="c1"># print self._instr</span>
+                <span class="n">newinstr</span><span class="o">.</span><span class="n">set_arch_type</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+                <span class="n">newinstr</span><span class="o">.</span><span class="n">set_operands</span><span class="p">(</span><span class="n">operands</span><span class="p">)</span>
+                <span class="c1"># print operands</span>
+                <span class="n">building_block</span><span class="o">.</span><span class="n">add_init</span><span class="p">([</span><span class="n">newinstr</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instr</span><span class="p">:</span>
+                <span class="n">building_block</span><span class="o">.</span><span class="n">add_init</span><span class="p">([</span><span class="n">instr</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="AutoAlignPass">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AutoAlignPass.html#microprobe.passes.initialization.AutoAlignPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AutoAlignPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AutoAlignPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AutoAlignPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.initialization.AutoAlignPass.html#microprobe.passes.initialization.AutoAlignPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr</span><span class="p">,</span> <span class="n">operands</span><span class="p">,</span> <span class="n">mod</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param instr:</span>
+<span class="sd">        :type instr:</span>
+<span class="sd">        :param operands:</span>
+<span class="sd">        :type operands:</span>
+<span class="sd">        :param mod:</span>
+<span class="sd">        :type mod:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instr</span> <span class="o">=</span> <span class="n">instr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_operands</span> <span class="o">=</span> <span class="n">operands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mod</span> <span class="o">=</span> <span class="n">mod</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Align the loop to be module &#39;</span><span class="si">%s</span><span class="s2">&#39; using &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span>
+            <span class="s2">&quot; instruction with &#39;</span><span class="si">%s</span><span class="s2">&#39; operands&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">instr</span><span class="p">,</span> <span class="n">operands</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">dummy_target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param dummy_target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">displacement</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">building_block</span><span class="o">.</span><span class="n">init</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">displacement</span>
+            <span class="o">+</span> <span class="n">building_block</span><span class="o">.</span><span class="n">init</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span>
+        <span class="p">)</span>
+        <span class="k">while</span> <span class="p">((</span><span class="n">displacement</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mod</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span><span class="p">,</span> <span class="n">operands</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operands</span><span class="p">):</span>
+                <span class="n">newinstr</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">Instruction</span><span class="p">()</span>
+                <span class="n">newinstr</span><span class="o">.</span><span class="n">set_arch_type</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+                <span class="n">newinstr</span><span class="o">.</span><span class="n">set_operands</span><span class="p">(</span><span class="n">operands</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">((</span><span class="n">displacement</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mod</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="n">displacement</span> <span class="o">+=</span> <span class="n">newinstr</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span>
+                <span class="n">building_block</span><span class="o">.</span><span class="n">add_init</span><span class="p">([</span><span class="n">newinstr</span><span class="p">])</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.code" href="microprobe.code.html" />
+    <link rel="prev" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">microprobe</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-options">Configuration options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">microprobe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="api.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.code.html" class="btn btn-neutral float-right" title="microprobe.code" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-microprobe">
+<span id="microprobe"></span><h1>microprobe<a class="headerlink" href="#module-microprobe" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="#module-microprobe" title="microprobe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">microprobe</span></code></a> package.</p>
+<p>This is the main package of the Microprobe microbenchmark generation
+framework. The sub-packages are the following:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="microprobe.code.html#module-microprobe.code" title="microprobe.code"><code class="xref py py-mod docutils literal notranslate"><span class="pre">code</span></code></a>: Code generation package.</p></li>
+<li><p><a class="reference internal" href="microprobe.driver.html#module-microprobe.driver" title="microprobe.driver"><code class="xref py py-mod docutils literal notranslate"><span class="pre">driver</span></code></a>: Design space exploration package.</p></li>
+<li><p><a class="reference internal" href="microprobe.model.html#module-microprobe.model" title="microprobe.model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">model</span></code></a>: Analytical modeling package.</p></li>
+<li><p><a class="reference internal" href="microprobe.passes.html#module-microprobe.passes" title="microprobe.passes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">passes</span></code></a>: Code transformation passes package.</p></li>
+<li><p><a class="reference internal" href="microprobe.schemas.html#module-microprobe.schemas" title="microprobe.schemas"><code class="xref py py-mod docutils literal notranslate"><span class="pre">schemas</span></code></a>: Schema definition package.</p></li>
+<li><p><a class="reference internal" href="microprobe.target.html#module-microprobe.target" title="microprobe.target"><code class="xref py py-mod docutils literal notranslate"><span class="pre">target</span></code></a>: Target definition package.</p></li>
+<li><p><a class="reference internal" href="microprobe.utils.html#module-microprobe.utils" title="microprobe.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a>: Utilities package.</p></li>
+</ul>
+<p>and the modules in this package are the following:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="microprobe.exceptions.html#module-microprobe.exceptions" title="microprobe.exceptions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">exceptions</span></code></a>: Exception definition module.</p></li>
+<li><p><a class="reference internal" href="microprobe.property.html#module-microprobe.property" title="microprobe.property"><code class="xref py py-mod docutils literal notranslate"><span class="pre">property</span></code></a>: Property definition module.</p></li>
+</ul>
+<p>Visit their respective documentation for further details.</p>
+<p>In this package, the <code class="xref py py-data docutils literal notranslate"><span class="pre">MICROPROBE_RC</span></code>
+(<a class="reference internal" href="microprobe.utils.config.MicroprobeDefaultConfiguration.html#microprobe.utils.config.MicroprobeDefaultConfiguration" title="microprobe.utils.config.MicroprobeDefaultConfiguration"><code class="xref py py-class docutils literal notranslate"><span class="pre">MicroprobeDefaultConfiguration</span></code></a>) attribute is defined. This
+attribute contains the framework-wide configuration options, which are
+set to the default values or the values set in environment variables
+when this package is imported. One can access this attribute in order
+to change the framework configuration.</p>
+<section id="configuration-options">
+<h2>Configuration options<a class="headerlink" href="#configuration-options" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>verbosity</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>): Verbosity level. It controls the verbosity
+level of the logger (Default: 0). Valid values are:</p>
+<ul>
+<li><p>0: quiet</p></li>
+<li><p>1: critical messages</p></li>
+<li><p>2: error messages</p></li>
+<li><p>3: warning messages</p></li>
+<li><p>4: info messages</p></li>
+</ul>
+</li>
+<li><p><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Enable debug mode (Default: False). If enabled,
+lots of output is generated, useful for developers.</p></li>
+<li><p><strong>default_paths</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): List of paths
+to search for :any definitions. (Default: None).</p></li>
+<li><p><strong>architecture_paths</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): List of paths
+to search for <a class="reference internal" href="microprobe.target.isa.ISA.html#microprobe.target.isa.ISA" title="microprobe.target.isa.ISA"><code class="xref py py-class docutils literal notranslate"><span class="pre">ISA</span></code></a> definitions. (Default: <strong>default_paths</strong>
+option value).</p></li>
+<li><p><strong>microarchitecture_paths</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): List of
+paths to search for <a class="reference internal" href="microprobe.target.uarch.Microarchitecture.html#microprobe.target.uarch.Microarchitecture" title="microprobe.target.uarch.Microarchitecture"><code class="xref py py-class docutils literal notranslate"><span class="pre">Microarchitecture</span></code></a> definitions. (Default:
+<strong>default_paths</strong> option value).</p></li>
+<li><p><strong>environments_paths</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): List of paths
+to search for <a class="reference internal" href="microprobe.target.env.Environment.html#microprobe.target.env.Environment" title="microprobe.target.env.Environment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Environment</span></code></a> definitions. (Default: <strong>default_paths</strong>
+option value).</p></li>
+<li><p><strong>template_paths</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): List of paths
+to search for template files.</p></li>
+<li><p><strong>wrappers_paths</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): List of paths
+to search for <a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a> definitions.</p></li>
+<li><p><strong>hex_all</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Use hexadecimal representation for all the
+integers in an instruction assembly string (Default: False). This option
+is mutually exclusive with <strong>hex_address</strong> and <strong>hex_none</strong>.</p></li>
+<li><p><strong>hex_address</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Use hexadecimal representation for the
+integers in an instruction assembly string that are used in address
+generation arithmetic, such as displacements (Default: True). This option
+is mutually exclusive with <strong>hex_all</strong> and <strong>hex_none</strong>.</p></li>
+<li><p><strong>hex_none</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>): Use integer representation for all the
+integers in an instruction assembly string (Default: False). This option
+is mutually exclusive with <strong>hex_address</strong> and <strong>hex_all</strong>.</p></li>
+</ul>
+</section>
+<section id="environment-variables">
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<p>Environment variables can be set to override default configuration options
+or the options provided by the configuration files. These are the environ
+variable that can be defined:</p>
+<ul class="simple">
+<li><p><strong>MICROPROBERC</strong>: Extends the default paths to search for the default
+microprobe configuration file. It should be a list of paths separated by
+colons.</p></li>
+<li><p><strong>MICROPROBEDATA</strong>: Extends the default paths to search for target
+definitions (<strong>default_paths</strong> options). It should be a list of paths
+separated by colons.</p></li>
+<li><p><strong>MICROPROBETEMPLATES</strong>: Extends the default base paths for templates.</p></li>
+<li><p><strong>MICROPROBEWRAPPERS</strong>: Extends the default base paths for wrappers.</p></li>
+<li><p><strong>MICROPROBEDEBUG</strong>: If defined, enables the debug mode, i.e. <strong>debug</strong>
+option set to True.</p></li>
+<li><p><strong>MICROPROBEDEBUGPASSES</strong>: If defined, enables the debug mode only for
+passes. i.e. <strong>debug</strong> option set to True while benchmark generation passes
+are being applied.</p></li>
+<li><p><strong>MICROPROBEASMHEXFMT</strong>: Overrides the assembly hex mode format. Valid
+values are: <code class="docutils literal notranslate"><span class="pre">hex_all</span></code>, <code class="docutils literal notranslate"><span class="pre">hex_address</span></code>, <code class="docutils literal notranslate"><span class="pre">hex_none</span></code>. It sets to true
+the corresponding option.</p></li>
+</ul>
+</section>
+<br>
+<hr width="75%">
+<br></section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

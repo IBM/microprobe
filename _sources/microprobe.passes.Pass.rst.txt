@@ -1,0 +1,41 @@
+microprobe.passes.Pass
+======================
+
+.. currentmodule:: microprobe.passes
+
+.. autoclass:: Pass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Pass.__init__
+      ~Pass.check
+      ~Pass.info
+      ~Pass.report
+      ~Pass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

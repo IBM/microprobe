@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeBinaryError
+===========================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeBinaryError
+
+   
+
+   
+   
+
+   
+   
+   

@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upgrading Microprobe &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Checking Microprobe installation" href="start_check.html" />
+    <link rel="prev" title="Installing Microprobe via GIT" href="start_install_git.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="start.html">Getting started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="start_quick.html">Quick start guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_organization.html">Microprobe package organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_install.html">Installing Microprobe</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Upgrading Microprobe</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#upgrading-a-pip-installation">Upgrading a PIP installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upgrading-a-git-installation">Upgrading a GIT installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="start_check.html">Checking Microprobe installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="start.html">Getting started</a></li>
+      <li class="breadcrumb-item active">Upgrading Microprobe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="start_install_git.html" class="btn btn-neutral float-left" title="Installing Microprobe via GIT" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="start_check.html" class="btn btn-neutral float-right" title="Checking Microprobe installation" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="upgrading-microprobe">
+<h1>Upgrading Microprobe<a class="headerlink" href="#upgrading-microprobe" title="Link to this heading"></a></h1>
+<p>The process for installing Microprobe depends on your type of installation:
+PIP (python package manager) based installation or GIT (development mode)
+installation.</p>
+<section id="upgrading-a-pip-installation">
+<h2>Upgrading a PIP installation<a class="headerlink" href="#upgrading-a-pip-installation" title="Link to this heading"></a></h2>
+<p>You just need to activate your Microprobe virtual environment and execute the
+pip command as following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">source</span> <span class="n">INSTALLDIRECTORY</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="o">--</span><span class="n">pre</span> <span class="n">microprobe_all</span>
+</pre></div>
+</div>
+<p>If you only want to upgrade some packages within Microprobe, use the following
+commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">source</span> <span class="n">INSTALLDIRECTORY</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="o">--</span><span class="n">pre</span> <span class="o">&lt;</span><span class="n">your_microprobe_packages</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Check <a class="reference internal" href="start_organization.html"><span class="doc">Microprobe package organization</span></a> to know the list of packages available.</p>
+</section>
+<section id="upgrading-a-git-installation">
+<h2>Upgrading a GIT installation<a class="headerlink" href="#upgrading-a-git-installation" title="Link to this heading"></a></h2>
+<p>If you have installed Microprobe directly from the GIT repository (preferred
+option for developers), then execute these commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="n">INSTALLDIRECTORY</span><span class="o">/</span><span class="n">microprobe</span>
+<span class="o">&gt;</span> <span class="n">git</span> <span class="n">pull</span> <span class="o">--</span><span class="n">update</span> <span class="o">--</span><span class="n">recurse</span><span class="o">-</span><span class="n">submodules</span>
+<span class="o">&gt;</span> <span class="n">find</span> <span class="o">.</span> <span class="o">-</span><span class="n">name</span> \<span class="o">.*.</span><span class="n">yaml</span><span class="o">*</span><span class="n">cache</span> <span class="o">-</span><span class="n">delete</span>
+</pre></div>
+</div>
+<p>Basically, we are pulling the latest copy of the repository and the
+submodules from the origin repository and cleaning up any cached files.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

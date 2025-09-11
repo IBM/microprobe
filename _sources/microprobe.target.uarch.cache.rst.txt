@@ -1,0 +1,68 @@
+﻿=============================
+microprobe.target.uarch.cache
+=============================
+
+.. automodule:: microprobe.target.uarch.cache
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      cache_hierarchy_from_elements
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Cache
+      CacheHierarchy
+      SetAssociativeCache
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Cache  CacheHierarchy  SetAssociativeCache 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: cache_hierarchy_from_elements
+   

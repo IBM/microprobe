@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.code.context &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../code.html">microprobe.code</a></li>
+      <li class="breadcrumb-item active">microprobe.code.context</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.code.context</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.code.context` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">annotations</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span><span class="p">,</span> <span class="n">InstructionAddress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">RejectingDict</span><span class="p">,</span> <span class="n">smart_copy_dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.typeguard_decorator</span><span class="w"> </span><span class="kn">import</span> <span class="n">typeguard_testsuite</span>
+
+<span class="c1"># Type hinting</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa.register</span><span class="w"> </span><span class="kn">import</span> <span class="n">Register</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryValue</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa.dat</span><span class="w"> </span><span class="kn">import</span> <span class="n">DynamicAddressTranslation</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Context&quot;</span><span class="p">]</span>
+
+<span class="c1"># Functions</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="Context">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Context</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent the execution context (e.g. register values, etc ...</span>
+<span class="sd">    on each benchmark building block)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Context.__init__">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">default_context</span><span class="p">:</span> <span class="n">Context</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">code_segment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">data_segment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">symbolic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">absolute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param default_context:  (Default value = None)</span>
+<span class="sd">        :param code_segment:  (Default value = None)</span>
+<span class="sd">        :param data_segment:  (Default value = None)</span>
+<span class="sd">        :param symbolic:  (Default value = True)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reserved_registers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Register</span><span class="p">]</span> <span class="o">=</span> <span class="n">RejectingDict</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Register</span><span class="p">,</span>
+                                    <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Address</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Address</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+                                    <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Address</span><span class="p">,</span> <span class="n">MemoryValue</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">MemoryValue</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">MemoryValue</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_segment</span> <span class="o">=</span> <span class="n">data_segment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_code_segment</span> <span class="o">=</span> <span class="n">code_segment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_symbolic</span> <span class="o">=</span> <span class="n">symbolic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fabsolute</span> <span class="o">=</span> <span class="n">absolute</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dat</span><span class="p">:</span> <span class="n">DynamicAddressTranslation</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">default_context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">default_context</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Context.copy">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a copy of the current context.&quot;&quot;&quot;</span>
+
+        <span class="n">newcontext</span> <span class="o">=</span> <span class="n">Context</span><span class="p">()</span>
+
+        <span class="c1"># pylint: disable=protected-access</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">_reserved_registers</span> <span class="o">=</span> <span class="n">smart_copy_dict</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reserved_registers</span><span class="p">)</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">_register_values</span> <span class="o">=</span> <span class="n">smart_copy_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="p">)</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">_value_registers</span> <span class="o">=</span> <span class="n">smart_copy_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">)</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">_memory_values</span> <span class="o">=</span> <span class="n">smart_copy_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">)</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">_value_memorys</span> <span class="o">=</span> <span class="n">smart_copy_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">newcontext</span><span class="o">.</span><span class="n">set_dat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dat</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">set_code_segment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_segment</span><span class="p">)</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">set_data_segment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_segment</span><span class="p">)</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">set_symbolic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbolic</span><span class="p">)</span>
+        <span class="n">newcontext</span><span class="o">.</span><span class="n">set_absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">force_absolute</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">newcontext</span></div>
+
+
+<div class="viewcode-block" id="Context.add_reserved_registers">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.add_reserved_registers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_reserved_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rregs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the provided registers into the reserved register list.</span>
+
+<span class="sd">        :param rregs: Registers to reserve</span>
+<span class="sd">        :type rregs: :class:`~.list` of :class:`~.Register`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reserved_registers</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reg</span></div>
+
+
+<div class="viewcode-block" id="Context.remove_reserved_registers">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.remove_reserved_registers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_reserved_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rregs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the provided registers from the reserved register list.</span>
+
+<span class="sd">        :param rregs: Registers to un-reserve</span>
+<span class="sd">        :type rregs: :class:`~.list` of :class:`~.Register`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reserved_registers</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Context.set_register_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.set_register_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_register_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span>
+                           <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Address</span> <span class="o">|</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the provided register to the specified value.</span>
+
+<span class="sd">        :param register: Register to set</span>
+<span class="sd">        :type register: :class:`~.Register`</span>
+<span class="sd">        :param value: Value to assign</span>
+<span class="sd">        :type value: :class:`~.int`, :class:`~.float`, :class:`~.long`,</span>
+<span class="sd">             :class:`~.Address` or :class:`~.str`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">register</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">,</span>
+            <span class="nb">tuple</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">+</span>
+                <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Address</span><span class="p">,</span> <span class="n">InstructionAddress</span><span class="p">,</span> <span class="nb">str</span><span class="p">])),</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_register_value</span><span class="p">(</span><span class="n">register</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unset_register</span><span class="p">(</span><span class="n">register</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="p">[</span><span class="n">register</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">register</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">[</span><span class="n">value</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">register</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">register</span><span class="p">]</span></div>
+
+
+        <span class="c1"># assert self.get_register_value(register) == value</span>
+        <span class="c1"># assert value in self._value_registers.keys()</span>
+        <span class="c1"># assert self._register_values[register] == value</span>
+
+<div class="viewcode-block" id="Context.get_closest_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.get_closest_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_closest_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the closest value to the given value.</span>
+
+<span class="sd">        Returns the closest value to the given value. If there are</span>
+<span class="sd">        not values registered, `None` is returned.</span>
+
+<span class="sd">        :param value: value to look for</span>
+<span class="sd">        :type value: :class:`~.int`, :class:`~.float`, :class:`~.long`,</span>
+<span class="sd">             :class:`~.Address` or :class:`~.str`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">possible_regs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">reg</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)):</span>
+                <span class="k">continue</span>
+
+            <span class="n">possible_regs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">reg</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+
+        <span class="n">possible_regs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">possible_regs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">possible_regs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">possible_regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Context.get_closest_address_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.get_closest_address_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_closest_address_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="n">Address</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the closest address to the given address.</span>
+
+<span class="sd">        Returns the closest address to the given address. If there are</span>
+<span class="sd">        not addresses registered, `None` is returned.</span>
+
+<span class="sd">        :param address: Address to look for</span>
+<span class="sd">        :type address: :class:`~.Address`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">possible_regs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="s2">&quot;Register&quot;</span><span class="p">,</span> <span class="n">Address</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">reg</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Address</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">Address</span><span class="p">(</span><span class="n">base_address</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">base_address</span><span class="p">)</span> <span class="o">==</span> \
+                    <span class="n">Address</span><span class="p">(</span><span class="n">base_address</span><span class="o">=</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">):</span>
+                <span class="n">possible_regs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">reg</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="n">possible_regs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">possible_regs</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">displacement</span> <span class="o">-</span> <span class="n">address</span><span class="o">.</span><span class="n">displacement</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">possible_regs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">possible_regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Context.get_register_closest_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.get_register_closest_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_register_closest_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the register with the closest value to the given value.</span>
+
+<span class="sd">        Returns the register with the closest value to the given value.</span>
+<span class="sd">        If there are not values registered, `None` is returned.</span>
+<span class="sd">        Address values are ignored.</span>
+
+<span class="sd">        :param value: Value to look for</span>
+<span class="sd">        :type value: :class:`~.int`, :class:`~.float`, :class:`~.long`,</span>
+<span class="sd">             :class:`~.Address` or :class:`~.str`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">possible_regs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">reg</span><span class="p">,</span> <span class="n">reg_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Address</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reg_value</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)):</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reg_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="c1"># Type hinting needs some help with this one :)</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">reg_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+
+            <span class="n">possible_regs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">reg</span><span class="p">,</span> <span class="n">reg_value</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">possible_regs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">possible_regs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">possible_regs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="n">possible_regs</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
+
+        <span class="k">if</span> <span class="n">possible_regs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">possible_regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Context.get_register_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.get_register_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_register_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">:</span> <span class="n">Register</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the register value. `None` if not found.</span>
+
+<span class="sd">        :param register: Register to get its value</span>
+<span class="sd">        :type register: :class:`~.Register`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="Context.get_registername_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.get_registername_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_registername_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the register value. `None` if not found.</span>
+
+<span class="sd">        :param register: Register name to get its value</span>
+<span class="sd">        :type register: :class:`~.str`</span>
+<span class="sd">        :param register_name:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">register_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+        <span class="n">register_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">register_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">register_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">register</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">reg</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span> <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">register_name</span>
+        <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Context.unset_registers">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.unset_registers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unset_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">registers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes the values from registers.</span>
+
+<span class="sd">        :param registers: List of registers</span>
+<span class="sd">        :type registers: :class:`~.list` of :class:`~.Register`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">registers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unset_register</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Context.unset_register">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.unset_register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unset_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the value from a register.</span>
+
+<span class="sd">        :param register: Registers</span>
+<span class="sd">        :type register: :class:`~.Register`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="p">[</span><span class="n">register</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="p">[</span><span class="n">register</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">register</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">[</span><span class="n">value</span><span class="p">]:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="p">[</span><span class="n">register</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Context.set_memory_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.set_memory_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_memory_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mem_value</span><span class="p">:</span> <span class="n">MemoryValue</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a memory value.</span>
+
+<span class="sd">        :param mem_value: Memory value to set.</span>
+<span class="sd">        :type mem_value: :class:`~.MemoryValue`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start set memory value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mem_value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">unset_memory</span><span class="p">(</span><span class="n">mem_value</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">mem_value</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="n">mem_value</span>
+
+        <span class="k">if</span> <span class="n">mem_value</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">mem_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">]:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mem_value</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Values inv </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Already in inv dictionary&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mem_value</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Values inv </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">[</span><span class="n">mem_value</span><span class="p">])</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">address</span><span class="p">]</span> <span class="o">==</span> <span class="n">mem_value</span>
+        <span class="k">assert</span> <span class="n">mem_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End set memory value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mem_value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Context.get_memory_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.get_memory_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_memory_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="n">Address</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a memory value.</span>
+
+<span class="sd">        :param address: Address to look for</span>
+<span class="sd">        :type address: :class:`~.Address`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">address</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">[</span><span class="n">address</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Context.unset_memory">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.unset_memory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unset_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="n">Address</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unsets a memory region.</span>
+
+<span class="sd">        :param address: Start address of the region</span>
+<span class="sd">        :type address: :class:`~.Address`</span>
+<span class="sd">        :param length: Length in bytes of the region</span>
+<span class="sd">        :type length: :class:`~.int`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start unset address: </span><span class="si">%s</span><span class="s2"> (length: </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="n">possible_addresses</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">addr</span> <span class="k">for</span> <span class="n">addr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span>
+            <span class="k">if</span> <span class="n">addr</span><span class="o">.</span><span class="n">base_address</span> <span class="o">==</span> <span class="n">address</span><span class="o">.</span><span class="n">base_address</span>
+        <span class="p">]</span>
+
+        <span class="c1"># LOG.debug(&quot;Possible addresses: %s&quot;, possible_addresses)</span>
+
+        <span class="k">for</span> <span class="n">paddr</span> <span class="ow">in</span> <span class="n">possible_addresses</span><span class="p">:</span>
+
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">paddr</span> <span class="o">-</span> <span class="n">address</span>
+            <span class="n">diff2</span> <span class="o">=</span> <span class="n">address</span> <span class="o">-</span> <span class="n">paddr</span>
+            <span class="n">length2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="p">[</span><span class="n">paddr</span><span class="p">]</span><span class="o">.</span><span class="n">length</span>
+
+            <span class="k">if</span> <span class="p">((</span><span class="n">diff</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="p">(</span><span class="n">diff2</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">diff2</span> <span class="o">&lt;</span> <span class="n">length2</span><span class="p">)):</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Address overlap: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">paddr</span><span class="p">)</span>
+                <span class="n">mem_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">paddr</span><span class="p">)</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Memory value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mem_value</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">mem_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="p">[</span><span class="n">mem_value</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">mem_value</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finish unset address: </span><span class="si">%s</span><span class="s2"> (length: </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Context.register_has_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.register_has_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_has_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Address</span> <span class="o">|</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns if a value is in a register.</span>
+
+<span class="sd">        :param value: Value to look for</span>
+<span class="sd">        :type value: :class:`~.bool`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">([</span>
+            <span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="Context.registers_get_value">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.registers_get_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">registers_get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Address</span> <span class="o">|</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a list of registers containing the specified value.</span>
+
+<span class="sd">        :param value: Value to look for</span>
+<span class="sd">        :type value: :class:`~.int` or :class:`~.float` or :class:`~.Address`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">keyl</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span> <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">value</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keyl</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">keyl</span> <span class="o">==</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="p">[</span><span class="n">keyl</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary of register, value pairs (:class:`~.dict`)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reserved_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of reserved registers (:class:`~.list`)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reserved_registers</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Address starting the data segment (::class:`~.int`)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_segment</span>
+
+<div class="viewcode-block" id="Context.set_data_segment">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.set_data_segment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the data segment start address.</span>
+
+<span class="sd">        :param value: Start address.</span>
+<span class="sd">        :type value: ::class:`~.int`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_segment</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;DAT object (:class:`~.DynamicAddressTranslation`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dat</span>
+
+<div class="viewcode-block" id="Context.set_dat">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.set_dat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_dat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dat</span><span class="p">:</span> <span class="n">DynamicAddressTranslation</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the dynamic address translation object.</span>
+
+<span class="sd">        :param dat: DAT object.</span>
+<span class="sd">        :type dat: :class:`~.DynamicAddressTranslation`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dat</span> <span class="o">=</span> <span class="n">dat</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">code_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Address starting the code segment (::class:`~.int`)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_code_segment</span>
+
+<div class="viewcode-block" id="Context.set_code_segment">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.set_code_segment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_code_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the code segment start address.</span>
+
+<span class="sd">        :param value: Start address.</span>
+<span class="sd">        :type value: :class:`~.int`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_code_segment</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">symbolic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Boolean indicating if the context allows symbol labels</span>
+
+<span class="sd">        Boolean indicating if the context allows symbol labels</span>
+<span class="sd">        (:class:`~.bool`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_symbolic</span>
+
+<div class="viewcode-block" id="Context.set_symbolic">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.set_symbolic">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_symbolic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the symbolic property.</span>
+
+<span class="sd">        :param value: Boolean indicating if the context allows symbol labels</span>
+<span class="sd">        :type value: :class:`~.bool`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_symbolic</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">force_absolute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Boolean indicating if absolute addresses are needed.</span>
+
+<span class="sd">        Boolean indicating if absolute addresses are needed</span>
+<span class="sd">        (:class:`~.bool`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fabsolute</span>
+
+<div class="viewcode-block" id="Context.set_absolute">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.set_absolute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_absolute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the force_absolute property.</span>
+
+<span class="sd">        :param value: Boolean indicating if absolute addresses are needed</span>
+<span class="sd">        :type value: :class:`~.bool`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fabsolute</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="c1"># def _validate(self):</span>
+    <span class="c1">#     for register in self._register_values:</span>
+    <span class="c1">#        value = self._register_values[register]</span>
+    <span class="c1">#        if value is not None:</span>
+    <span class="c1">#            assert register in self._value_registers[value]</span>
+
+<div class="viewcode-block" id="Context.dump">
+<a class="viewcode-back" href="../../../microprobe.code.context.Context.html#microprobe.code.context.Context.dump">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dump of the current context status.</span>
+
+<span class="sd">        Return a dump of the current context status. Very useful for pass</span>
+<span class="sd">        debugging purposes.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mstr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Context status:&quot;</span><span class="p">)</span>
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Reserved Registers:&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reserved_registers</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Idx:</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s2">Value:</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Registers values:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_register_values</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Idx:</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s2">Raw Value:</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Registers values inverted:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">([(</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                                  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_registers</span><span class="o">.</span><span class="n">items</span><span class="p">()]):</span>
+            <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Idx:</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s2">Value:</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Memory values:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_memory_values</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Idx:</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s2">Raw Value:</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Memory values inverted:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_memorys</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Idx:</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="s2">Value:</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Code segment: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_code_segment</span><span class="p">)</span>
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Data segment: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_segment</span><span class="p">)</span>
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Symbolic context: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_symbolic</span><span class="p">)</span>
+
+        <span class="n">mstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mstr</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

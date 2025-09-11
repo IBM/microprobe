@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.utils.config.DuplicateConfigParser &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.utils.config.MicroprobeConfiguration" href="microprobe.utils.config.MicroprobeConfiguration.html" />
+    <link rel="prev" title="microprobe.utils.config" href="microprobe.utils.config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">microprobe.utils.config.DuplicateConfigParser</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser"><code class="docutils literal notranslate"><span class="pre">DuplicateConfigParser</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.config.MicroprobeConfiguration.html">microprobe.utils.config.MicroprobeConfiguration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.config.MicroprobeDefaultConfiguration.html">microprobe.utils.config.MicroprobeDefaultConfiguration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+      <li class="breadcrumb-item active">microprobe.utils.config.DuplicateConfigParser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="microprobe.utils.config.html" class="btn btn-neutral float-left" title="microprobe.utils.config" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.utils.config.MicroprobeConfiguration.html" class="btn btn-neutral float-right" title="microprobe.utils.config.MicroprobeConfiguration" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="microprobe-utils-config-duplicateconfigparser">
+<h1>microprobe.utils.config.DuplicateConfigParser<a class="headerlink" href="#microprobe-utils-config-duplicateconfigparser" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DuplicateConfigParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">defaults=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_type=&lt;class</span> <span class="pre">'dict'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_no_value=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiters=('='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">':')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_prefixes=('#'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">';')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline_comment_prefixes=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">empty_lines_in_values=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_section='DEFAULT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolation=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converters=&lt;object</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/config.html#DuplicateConfigParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/configparser.html#configparser.ConfigParser" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A helper class to allow multiple configuration files.</p>
+<p>This class extends the base class behavior by allowing to read multiple
+config files instead of a single one. Configuration options are appended
+or reset depending on the configuration option type. Scalar values are
+reset, i.e. last configuration file setting the value is used. List
+values are appended.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">defaults=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict_type=&lt;class</span> <span class="pre">'dict'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_no_value=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiters=('='</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">':')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_prefixes=('#'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">';')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline_comment_prefixes=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">empty_lines_in_values=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_section='DEFAULT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolation=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converters=&lt;object</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.__init__" title="microprobe.utils.config.DuplicateConfigParser.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([defaults, dict_type, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.add_section" title="microprobe.utils.config.DuplicateConfigParser.add_section"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_section</span></code></a>(section)</p></td>
+<td><p>Create a new section in the configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.clear" title="microprobe.utils.config.DuplicateConfigParser.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.defaults" title="microprobe.utils.config.DuplicateConfigParser.defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">defaults</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.get" title="microprobe.utils.config.DuplicateConfigParser.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(section, option[, raw])</p></td>
+<td><p>Get an option value for a given section.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.getboolean" title="microprobe.utils.config.DuplicateConfigParser.getboolean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getboolean</span></code></a>(section, option, *[, raw, vars, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.getfloat" title="microprobe.utils.config.DuplicateConfigParser.getfloat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getfloat</span></code></a>(section, option, *[, raw, vars, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.getint" title="microprobe.utils.config.DuplicateConfigParser.getint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getint</span></code></a>(section, option, *[, raw, vars, fallback])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.has_option" title="microprobe.utils.config.DuplicateConfigParser.has_option"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_option</span></code></a>(section, option)</p></td>
+<td><p>Check for the existence of a given option in a given section. If the specified <a href="#id1"><span class="problematic" id="id2">`</span></a>section' is None or an empty string, DEFAULT is assumed. If the specified <a href="#id3"><span class="problematic" id="id4">`</span></a>section' does not exist, returns False.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.has_section" title="microprobe.utils.config.DuplicateConfigParser.has_section"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_section</span></code></a>(section)</p></td>
+<td><p>Indicate whether the named section is present in the configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.items" title="microprobe.utils.config.DuplicateConfigParser.items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code></a>(section[, raw])</p></td>
+<td><p>Return a list of tuples with (name, value) for each option in the section.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.keys" title="microprobe.utils.config.DuplicateConfigParser.keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.options" title="microprobe.utils.config.DuplicateConfigParser.options"><code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code></a>(section)</p></td>
+<td><p>Return a list of option names for the given section name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.optionxform" title="microprobe.utils.config.DuplicateConfigParser.optionxform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optionxform</span></code></a>(optionstr)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.pop" title="microprobe.utils.config.DuplicateConfigParser.pop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code></a>(k[,d])</p></td>
+<td><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.popitem" title="microprobe.utils.config.DuplicateConfigParser.popitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">popitem</span></code></a>()</p></td>
+<td><p>Remove a section from the parser and return it as a (section_name, section_proxy) tuple.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.read" title="microprobe.utils.config.DuplicateConfigParser.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(filenames[, overwrite_first])</p></td>
+<td><p>Read and parse a filename or a list of filenames.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.read_dict" title="microprobe.utils.config.DuplicateConfigParser.read_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_dict</span></code></a>(dictionary[, source])</p></td>
+<td><p>Read configuration from a dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.read_file" title="microprobe.utils.config.DuplicateConfigParser.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(f[, source])</p></td>
+<td><p>Like read() but the argument must be a file-like object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.read_string" title="microprobe.utils.config.DuplicateConfigParser.read_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_string</span></code></a>(string[, source])</p></td>
+<td><p>Read configuration from a given string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.readfp" title="microprobe.utils.config.DuplicateConfigParser.readfp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">readfp</span></code></a>(fp[, filename, overwrite_first])</p></td>
+<td><p>Like read() but the argument must be a file-like object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.remove_option" title="microprobe.utils.config.DuplicateConfigParser.remove_option"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_option</span></code></a>(section, option)</p></td>
+<td><p>Remove an option.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.remove_section" title="microprobe.utils.config.DuplicateConfigParser.remove_section"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_section</span></code></a>(section)</p></td>
+<td><p>Remove a file section.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.sections" title="microprobe.utils.config.DuplicateConfigParser.sections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sections</span></code></a>()</p></td>
+<td><p>Return a list of section names, excluding [DEFAULT]</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.set" title="microprobe.utils.config.DuplicateConfigParser.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a>(section, option[, value])</p></td>
+<td><p>Set an option.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.setdefault" title="microprobe.utils.config.DuplicateConfigParser.setdefault"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setdefault</span></code></a>(k[,d])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.update" title="microprobe.utils.config.DuplicateConfigParser.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>([E, ]**F)</p></td>
+<td><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k] If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v In either case, this is followed by: for k, v in F.items(): D[k] = v</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.values" title="microprobe.utils.config.DuplicateConfigParser.values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.write" title="microprobe.utils.config.DuplicateConfigParser.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(fp[, write_empty])</p></td>
+<td><p>Write an .ini-format representation of the configuration state.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.BOOLEAN_STATES" title="microprobe.utils.config.DuplicateConfigParser.BOOLEAN_STATES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BOOLEAN_STATES</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.NONSPACECRE" title="microprobe.utils.config.DuplicateConfigParser.NONSPACECRE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NONSPACECRE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.OPTCRE" title="microprobe.utils.config.DuplicateConfigParser.OPTCRE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OPTCRE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.OPTCRE_NV" title="microprobe.utils.config.DuplicateConfigParser.OPTCRE_NV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OPTCRE_NV</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.SECTCRE" title="microprobe.utils.config.DuplicateConfigParser.SECTCRE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SECTCRE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.config.DuplicateConfigParser.converters" title="microprobe.utils.config.DuplicateConfigParser.converters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">converters</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr width="75%">
+<br><dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/config.html#DuplicateConfigParser.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.read" title="Link to this definition"></a></dt>
+<dd><p>Read and parse a filename or a list of filenames.</p>
+<p>Files that cannot be opened are silently ignored; this is
+designed so that you can specify a list of potential
+configuration file locations (e.g. current directory, user’s
+home directory, system wide directory), and all existing
+configuration files in the list will be read.  A single
+filename may also be given.</p>
+<p>Return list of successfully read files.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/config.html#DuplicateConfigParser.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.get" title="Link to this definition"></a></dt>
+<dd><p>Get an option value for a given section.</p>
+<p>If <em>vars</em> is provided, it must be a dictionary. The option is looked up
+in <em>vars</em> (if provided), <em>section</em>, and in <em>defaults</em> in that order.</p>
+<p>All % interpolations are expanded in the return values, unless the
+optional argument <em>raw</em> is true. Values for interpolation keys are
+looked up in the same manner as the option.</p>
+<p>The section DEFAULT is special.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/config.html#DuplicateConfigParser.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.items" title="Link to this definition"></a></dt>
+<dd><p>Return a list of tuples with (name, value) for each option
+in the section.</p>
+<p>All % interpolations are expanded in the return values, based on the
+defaults passed into the constructor, unless the optional argument
+<em>raw</em> is true.  Additional substitutions may be provided using the
+<em>vars</em> argument, which must be a dictionary whose contents overrides
+any pre-existing defaults.</p>
+<p>The section DEFAULT is special.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.readfp">
+<span class="sig-name descname"><span class="pre">readfp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/config.html#DuplicateConfigParser.readfp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.readfp" title="Link to this definition"></a></dt>
+<dd><p>Like read() but the argument must be a file-like object.</p>
+<p>The <cite>fp</cite> argument must have a <cite>readline</cite> method.  Optional
+second argument is the <cite>filename</cite>, which if not given, is
+taken from fp.name.  If fp has no <cite>name’ attribute, `&lt;???&gt;</cite> is
+used.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/config.html#DuplicateConfigParser.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.write" title="Link to this definition"></a></dt>
+<dd><p>Write an .ini-format representation of the configuration state.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.BOOLEAN_STATES">
+<span class="sig-name descname"><span class="pre">BOOLEAN_STATES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'0':</span> <span class="pre">False,</span> <span class="pre">'1':</span> <span class="pre">True,</span> <span class="pre">'false':</span> <span class="pre">False,</span> <span class="pre">'no':</span> <span class="pre">False,</span> <span class="pre">'off':</span> <span class="pre">False,</span> <span class="pre">'on':</span> <span class="pre">True,</span> <span class="pre">'true':</span> <span class="pre">True,</span> <span class="pre">'yes':</span> <span class="pre">True}</span></em><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.BOOLEAN_STATES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.NONSPACECRE">
+<span class="sig-name descname"><span class="pre">NONSPACECRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('\\S')</span></em><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.NONSPACECRE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.OPTCRE">
+<span class="sig-name descname"><span class="pre">OPTCRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?P&lt;option&gt;.*?)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">very</span> <span class="pre">permissive!\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">\\s*(?P&lt;vi&gt;=|:)\\s*</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">any</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">space/tab,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">followed</span> <span class="pre">by</span> <span class="pre">any</span> <span class="pre">of</span> <span class="pre">t,</span> <span class="pre">re.VERBOSE)</span></em><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.OPTCRE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.OPTCRE_NV">
+<span class="sig-name descname"><span class="pre">OPTCRE_NV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?P&lt;option&gt;.*?)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">very</span> <span class="pre">permissive!\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">\\s*(?:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">any</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">space/tab,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?P&lt;vi&gt;=|:)\\s*</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">optionally</span> <span class="pre">followed</span> <span class="pre">,</span> <span class="pre">re.VERBOSE)</span></em><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.OPTCRE_NV" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.SECTCRE">
+<span class="sig-name descname"><span class="pre">SECTCRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">\\[</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(?P&lt;header&gt;[^]]+)</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">very</span> <span class="pre">permissive!\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">\\]</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">]\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">',</span> <span class="pre">re.VERBOSE)</span></em><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.SECTCRE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.add_section">
+<span class="sig-name descname"><span class="pre">add_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.add_section" title="Link to this definition"></a></dt>
+<dd><p>Create a new section in the configuration.  Extends
+RawConfigParser.add_section by validating if the section name is
+a string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None.</span>&#160; <span class="pre">Remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">D.</span></span></span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.clear" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.converters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">converters</span></span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.converters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.defaults">
+<span class="sig-name descname"><span class="pre">defaults</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.defaults" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.getboolean">
+<span class="sig-name descname"><span class="pre">getboolean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.getboolean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.getfloat">
+<span class="sig-name descname"><span class="pre">getfloat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.getfloat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.getint">
+<span class="sig-name descname"><span class="pre">getint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vars=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.getint" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.has_option">
+<span class="sig-name descname"><span class="pre">has_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.has_option" title="Link to this definition"></a></dt>
+<dd><p>Check for the existence of a given option in a given section.
+If the specified <a href="#id5"><span class="problematic" id="id6">`</span></a>section’ is None or an empty string, DEFAULT is
+assumed. If the specified <a href="#id7"><span class="problematic" id="id8">`</span></a>section’ does not exist, returns False.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.has_section">
+<span class="sig-name descname"><span class="pre">has_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.has_section" title="Link to this definition"></a></dt>
+<dd><p>Indicate whether the named section is present in the configuration.</p>
+<p>The DEFAULT section is not acknowledged.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">a</span> <span class="pre">set-like</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">keys</span></span></span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.keys" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.options">
+<span class="sig-name descname"><span class="pre">options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.options" title="Link to this definition"></a></dt>
+<dd><p>Return a list of option names for the given section name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.optionxform">
+<span class="sig-name descname"><span class="pre">optionxform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optionstr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.optionxform" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">v,</span> <span class="pre">remove</span> <span class="pre">specified</span> <span class="pre">key</span> <span class="pre">and</span> <span class="pre">return</span> <span class="pre">the</span> <span class="pre">corresponding</span> <span class="pre">value.</span></span></span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.pop" title="Link to this definition"></a></dt>
+<dd><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.popitem">
+<span class="sig-name descname"><span class="pre">popitem</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.popitem" title="Link to this definition"></a></dt>
+<dd><p>Remove a section from the parser and return it as
+a (section_name, section_proxy) tuple. If no section is present, raise
+KeyError.</p>
+<p>The section DEFAULT is never returned because it cannot be removed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.read_dict">
+<span class="sig-name descname"><span class="pre">read_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&lt;dict&gt;'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.read_dict" title="Link to this definition"></a></dt>
+<dd><p>Read configuration from a dictionary.</p>
+<p>Keys are section names, values are dictionaries with keys and values
+that should be present in the section. If the used dictionary type
+preserves order, sections and their keys will be added in order.</p>
+<p>All types held in the dictionary are converted to strings during
+reading, including section names, option names and keys.</p>
+<p>Optional second argument is the <a href="#id9"><span class="problematic" id="id10">`</span></a>source’ specifying the name of the
+dictionary being read.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.read_file">
+<span class="sig-name descname"><span class="pre">read_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.read_file" title="Link to this definition"></a></dt>
+<dd><p>Like read() but the argument must be a file-like object.</p>
+<p>The <a href="#id11"><span class="problematic" id="id12">`</span></a>f’ argument must be iterable, returning one line at a time.
+Optional second argument is the <a href="#id13"><span class="problematic" id="id14">`</span></a>source’ specifying the name of the
+file being read. If not given, it is taken from f.name. If <a href="#id15"><span class="problematic" id="id16">`</span></a>f’ has no
+<a href="#id17"><span class="problematic" id="id18">`</span></a>name’ attribute, <a href="#id19"><span class="problematic" id="id20">`</span></a>&lt;???&gt;’ is used.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.read_string">
+<span class="sig-name descname"><span class="pre">read_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&lt;string&gt;'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.read_string" title="Link to this definition"></a></dt>
+<dd><p>Read configuration from a given string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.remove_option">
+<span class="sig-name descname"><span class="pre">remove_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.remove_option" title="Link to this definition"></a></dt>
+<dd><p>Remove an option.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.remove_section">
+<span class="sig-name descname"><span class="pre">remove_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.remove_section" title="Link to this definition"></a></dt>
+<dd><p>Remove a file section.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.sections">
+<span class="sig-name descname"><span class="pre">sections</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.sections" title="Link to this definition"></a></dt>
+<dd><p>Return a list of section names, excluding [DEFAULT]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">section</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.set" title="Link to this definition"></a></dt>
+<dd><p>Set an option.  Extends RawConfigParser.set by validating type and
+interpolation syntax on the value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.setdefault">
+<span class="sig-name descname"><span class="pre">setdefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">D.get(k,d),</span> <span class="pre">also</span> <span class="pre">set</span> <span class="pre">D[k]=d</span> <span class="pre">if</span> <span class="pre">k</span> <span class="pre">not</span> <span class="pre">in</span> <span class="pre">D</span></span></span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.setdefault" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <span class="optional">]</span><em class="sig-param"><span class="n"><span class="pre">**F</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None.</span>&#160; <span class="pre">Update</span> <span class="pre">D</span> <span class="pre">from</span> <span class="pre">mapping/iterable</span> <span class="pre">E</span> <span class="pre">and</span> <span class="pre">F.</span></span></span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.update" title="Link to this definition"></a></dt>
+<dd><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.utils.config.DuplicateConfigParser.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">an</span> <span class="pre">object</span> <span class="pre">providing</span> <span class="pre">a</span> <span class="pre">view</span> <span class="pre">on</span> <span class="pre">D's</span> <span class="pre">values</span></span></span><a class="headerlink" href="#microprobe.utils.config.DuplicateConfigParser.values" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

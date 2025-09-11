@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.utils.distrib &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.utils.distrib.Choice" href="microprobe.utils.distrib.Choice.html" />
+    <link rel="prev" title="microprobe.utils.config.MicroprobeDefaultConfiguration" href="microprobe.utils.config.MicroprobeDefaultConfiguration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">microprobe.utils.distrib</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.distrib.Choice.html">microprobe.utils.distrib.Choice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.average"><code class="docutils literal notranslate"><span class="pre">average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.compute_weighted_profile_average"><code class="docutils literal notranslate"><span class="pre">compute_weighted_profile_average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.discrete_average"><code class="docutils literal notranslate"><span class="pre">discrete_average()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.generate_plain_profile"><code class="docutils literal notranslate"><span class="pre">generate_plain_profile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.generate_weighted_profile"><code class="docutils literal notranslate"><span class="pre">generate_weighted_profile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.locality"><code class="docutils literal notranslate"><span class="pre">locality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.probability"><code class="docutils literal notranslate"><span class="pre">probability()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.pstdev"><code class="docutils literal notranslate"><span class="pre">pstdev()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.regular_probability"><code class="docutils literal notranslate"><span class="pre">regular_probability()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.regular_seq"><code class="docutils literal notranslate"><span class="pre">regular_seq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.shuffle"><code class="docutils literal notranslate"><span class="pre">shuffle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.sort_by_distance"><code class="docutils literal notranslate"><span class="pre">sort_by_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.sort_by_usage"><code class="docutils literal notranslate"><span class="pre">sort_by_usage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.distrib.weighted_choice"><code class="docutils literal notranslate"><span class="pre">weighted_choice()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">microprobe.utils.distrib</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="microprobe.utils.config.MicroprobeDefaultConfiguration.html" class="btn btn-neutral float-left" title="microprobe.utils.config.MicroprobeDefaultConfiguration" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.utils.distrib.Choice.html" class="btn btn-neutral float-right" title="microprobe.utils.distrib.Choice" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-microprobe.utils.distrib">
+<span id="microprobe-utils-distrib"></span><h1>microprobe.utils.distrib<a class="headerlink" href="#module-microprobe.utils.distrib" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="#module-microprobe.utils.distrib" title="microprobe.utils.distrib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">microprobe.utils.distrib</span></code></a> module</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.distrib.average" title="microprobe.utils.distrib.average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average</span></code></a>(array[, weights])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.distrib.compute_weighted_profile_average" title="microprobe.utils.distrib.compute_weighted_profile_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_weighted_profile_average</span></code></a>(profile, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.distrib.discrete_average" title="microprobe.utils.distrib.discrete_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discrete_average</span></code></a>(average_val)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.distrib.generate_plain_profile" title="microprobe.utils.distrib.generate_plain_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_plain_profile</span></code></a>(elements)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.distrib.generate_weighted_profile" title="microprobe.utils.distrib.generate_weighted_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_weighted_profile</span></code></a>(elements, ...[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.distrib.locality" title="microprobe.utils.distrib.locality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locality</span></code></a>(values, locdef)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.distrib.probability" title="microprobe.utils.distrib.probability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">probability</span></code></a>(value)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.distrib.pstdev" title="microprobe.utils.distrib.pstdev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pstdev</span></code></a>(data)</p></td>
+<td><p>Calculates the population standard deviation</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.distrib.regular_probability" title="microprobe.utils.distrib.regular_probability"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regular_probability</span></code></a>(value)</p></td>
+<td><p>Returns callable that returns True every value calls</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.distrib.regular_seq" title="microprobe.utils.distrib.regular_seq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regular_seq</span></code></a>(items)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.distrib.shuffle" title="microprobe.utils.distrib.shuffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code></a>(slist, threshold)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.distrib.sort_by_distance" title="microprobe.utils.distrib.sort_by_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_by_distance</span></code></a>(regs, distdict, useddict, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.distrib.sort_by_usage" title="microprobe.utils.distrib.sort_by_usage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_by_usage</span></code></a>(regs, lastdict, dummy_defdict)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.distrib.weighted_choice" title="microprobe.utils.distrib.weighted_choice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weighted_choice</span></code></a>(items)</p></td>
+<td><p>Returns a function that makes a weighted random choice from items.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="microprobe.utils.distrib.Choice.html#microprobe.utils.distrib.Choice" title="microprobe.utils.distrib.Choice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Choice</span></code></a>(items)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes diagram</p>
+<div class="graphviz"><img src="_images/inheritance-764477a437986f4c1de6ea6ab6d415e864d0ac3c.png" alt="Inheritance diagram of Choice" usemap="#inheritancec4b02ce4de" class="inheritance graphviz" /></div>
+<map id="inheritancec4b02ce4de" name="inheritancec4b02ce4de">
+<area shape="rect" id="node1" href="microprobe.utils.distrib.Choice.html#microprobe.utils.distrib.Choice" target="_top" title="Choice" alt="" coords="5,5,227,31"/>
+</map><br>
+<hr width="75%">
+<br><section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.average">
+<span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.average" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong></p></li>
+<li><p><strong>weights</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.compute_weighted_profile_average">
+<span class="sig-name descname"><span class="pre">compute_weighted_profile_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#compute_weighted_profile_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.compute_weighted_profile_average" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong></p></li>
+<li><p><strong>attribute</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.discrete_average">
+<span class="sig-name descname"><span class="pre">discrete_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">average_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#discrete_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.discrete_average" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>average_val</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.generate_plain_profile">
+<span class="sig-name descname"><span class="pre">generate_plain_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#generate_plain_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.generate_plain_profile" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>elements</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.generate_weighted_profile">
+<span class="sig-name descname"><span class="pre">generate_weighted_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetvalue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minvalue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#generate_weighted_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.generate_weighted_profile" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elements</strong></p></li>
+<li><p><strong>attribute</strong></p></li>
+<li><p><strong>targetvalue</strong></p></li>
+<li><p><strong>maxvalue</strong> – (Default value = None)</p></li>
+<li><p><strong>minvalue</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.locality">
+<span class="sig-name descname"><span class="pre">locality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locdef</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#locality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.locality" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.probability">
+<span class="sig-name descname"><span class="pre">probability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.probability" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.pstdev">
+<span class="sig-name descname"><span class="pre">pstdev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#pstdev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.pstdev" title="Link to this definition"></a></dt>
+<dd><p>Calculates the population standard deviation</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.regular_probability">
+<span class="sig-name descname"><span class="pre">regular_probability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#regular_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.regular_probability" title="Link to this definition"></a></dt>
+<dd><p>Returns callable that returns True every value calls</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.regular_seq">
+<span class="sig-name descname"><span class="pre">regular_seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#regular_seq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.regular_seq" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>items</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.shuffle">
+<span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#shuffle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.shuffle" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slist</strong></p></li>
+<li><p><strong>threshold</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.sort_by_distance">
+<span class="sig-name descname"><span class="pre">sort_by_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_instr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#sort_by_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.sort_by_distance" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regs</strong></p></li>
+<li><p><strong>distdict</strong></p></li>
+<li><p><strong>useddict</strong></p></li>
+<li><p><strong>distance</strong></p></li>
+<li><p><strong>dummy_instr</strong></p></li>
+<li><p><strong>dummy_idx</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.sort_by_usage">
+<span class="sig-name descname"><span class="pre">sort_by_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lastdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_defdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#sort_by_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.sort_by_usage" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regs</strong></p></li>
+<li><p><strong>lastdict</strong></p></li>
+<li><p><strong>dummy_defdict</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.distrib.weighted_choice">
+<span class="sig-name descname"><span class="pre">weighted_choice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/distrib.html#weighted_choice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.distrib.weighted_choice" title="Link to this definition"></a></dt>
+<dd><p>Returns a function that makes a weighted random choice from items.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>items</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

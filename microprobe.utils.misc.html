@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.utils.misc &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.utils.misc.Pickable" href="microprobe.utils.misc.Pickable.html" />
+    <link rel="prev" title="microprobe.utils.logger" href="microprobe.utils.logger.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">microprobe.utils.misc</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.misc.Pickable.html">microprobe.utils.misc.Pickable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.misc.Progress.html">microprobe.utils.misc.Progress</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.misc.RejectingDict.html">microprobe.utils.misc.RejectingDict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.utils.misc.RejectingOrderedDict.html">microprobe.utils.misc.RejectingOrderedDict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.RNDFP"><code class="docutils literal notranslate"><span class="pre">RNDFP()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.RNDINT"><code class="docutils literal notranslate"><span class="pre">RNDINT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.closest_divisor"><code class="docutils literal notranslate"><span class="pre">closest_divisor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.compress_file"><code class="docutils literal notranslate"><span class="pre">compress_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.dict2OrderedDict"><code class="docutils literal notranslate"><span class="pre">dict2OrderedDict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.findfiles"><code class="docutils literal notranslate"><span class="pre">findfiles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.getnextf"><code class="docutils literal notranslate"><span class="pre">getnextf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.int_to_twocs"><code class="docutils literal notranslate"><span class="pre">int_to_twocs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.iter_flatten"><code class="docutils literal notranslate"><span class="pre">iter_flatten()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.longest_common_substr"><code class="docutils literal notranslate"><span class="pre">longest_common_substr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.move_file"><code class="docutils literal notranslate"><span class="pre">move_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.natural_sort"><code class="docutils literal notranslate"><span class="pre">natural_sort()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.open_generic_fd"><code class="docutils literal notranslate"><span class="pre">open_generic_fd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.primes"><code class="docutils literal notranslate"><span class="pre">primes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.range_to_sequence"><code class="docutils literal notranslate"><span class="pre">range_to_sequence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.range_to_sequence_float"><code class="docutils literal notranslate"><span class="pre">range_to_sequence_float()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.shift_with_sign"><code class="docutils literal notranslate"><span class="pre">shift_with_sign()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.smart_copy_dict"><code class="docutils literal notranslate"><span class="pre">smart_copy_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.twocs_to_int"><code class="docutils literal notranslate"><span class="pre">twocs_to_int()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.utils.misc.which"><code class="docutils literal notranslate"><span class="pre">which()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">microprobe.utils.misc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="microprobe.utils.logger.html" class="btn btn-neutral float-left" title="microprobe.utils.logger" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.utils.misc.Pickable.html" class="btn btn-neutral float-right" title="microprobe.utils.misc.Pickable" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-microprobe.utils.misc">
+<span id="microprobe-utils-misc"></span><h1>microprobe.utils.misc<a class="headerlink" href="#module-microprobe.utils.misc" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="#module-microprobe.utils.misc" title="microprobe.utils.misc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">microprobe.utils.misc</span></code></a> module</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.RNDFP" title="microprobe.utils.misc.RNDFP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RNDFP</span></code></a>([x, y])</p></td>
+<td><p>Returns a random floating point between x and y</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.RNDINT" title="microprobe.utils.misc.RNDINT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RNDINT</span></code></a>([maxmin])</p></td>
+<td><p>Returns a random integer between 0 and 2^64.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.closest_divisor" title="microprobe.utils.misc.closest_divisor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">closest_divisor</span></code></a>(target, closer)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.compress_file" title="microprobe.utils.misc.compress_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compress_file</span></code></a>(source)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.dict2OrderedDict" title="microprobe.utils.misc.dict2OrderedDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict2OrderedDict</span></code></a>(my_dict)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.findfiles" title="microprobe.utils.misc.findfiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">findfiles</span></code></a>(paths, regexp[, full, maxcount])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.getnextf" title="microprobe.utils.misc.getnextf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getnextf</span></code></a>(itr)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.int_to_twocs" title="microprobe.utils.misc.int_to_twocs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_twocs</span></code></a>(val, bits)</p></td>
+<td><p>compute the two compliment of a int</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.iter_flatten" title="microprobe.utils.misc.iter_flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_flatten</span></code></a>(iterable)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.longest_common_substr" title="microprobe.utils.misc.longest_common_substr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">longest_common_substr</span></code></a>(str1, str2)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.move_file" title="microprobe.utils.misc.move_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_file</span></code></a>(source, target)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.natural_sort" title="microprobe.utils.misc.natural_sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">natural_sort</span></code></a>(input_list)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.open_generic_fd" title="microprobe.utils.misc.open_generic_fd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_generic_fd</span></code></a>(filename, mode)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.primes" title="microprobe.utils.misc.primes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">primes</span></code></a>(number)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.range_to_sequence" title="microprobe.utils.misc.range_to_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">range_to_sequence</span></code></a>(start, *args)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.range_to_sequence_float" title="microprobe.utils.misc.range_to_sequence_float"><code class="xref py py-obj docutils literal notranslate"><span class="pre">range_to_sequence_float</span></code></a>(start, *args)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.shift_with_sign" title="microprobe.utils.misc.shift_with_sign"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift_with_sign</span></code></a>(val, bits, shift)</p></td>
+<td><p>shift value extending sign in twocs format</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.smart_copy_dict" title="microprobe.utils.misc.smart_copy_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smart_copy_dict</span></code></a>(olddict)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.utils.misc.twocs_to_int" title="microprobe.utils.misc.twocs_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">twocs_to_int</span></code></a>(val, bits)</p></td>
+<td><p>compute the int value of a two compliment int</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.utils.misc.which" title="microprobe.utils.misc.which"><code class="xref py py-obj docutils literal notranslate"><span class="pre">which</span></code></a>(program)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="microprobe.utils.misc.Pickable.html#microprobe.utils.misc.Pickable" title="microprobe.utils.misc.Pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pickable</span></code></a>()</p></td>
+<td><p>A helper class to implement the pickling interface.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="microprobe.utils.misc.Progress.html#microprobe.utils.misc.Progress" title="microprobe.utils.misc.Progress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Progress</span></code></a>(total[, msg, out])</p></td>
+<td><p>A counting progress indicator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="microprobe.utils.misc.RejectingDict.html#microprobe.utils.misc.RejectingDict" title="microprobe.utils.misc.RejectingDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RejectingDict</span></code></a></p></td>
+<td><p>A dictionary that raise an exception if the key is already set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="microprobe.utils.misc.RejectingOrderedDict.html#microprobe.utils.misc.RejectingOrderedDict" title="microprobe.utils.misc.RejectingOrderedDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RejectingOrderedDict</span></code></a></p></td>
+<td><p>An ordered dictionary that raises an exception if key is already set.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes diagram</p>
+<div class="graphviz"><img src="_images/inheritance-9ee4116efb6bed681978774a1d072f24c2a195c4.png" alt="Inheritance diagram of Pickable, Progress, RejectingDict, RejectingOrderedDict" usemap="#inheritance218da7f032" class="inheritance graphviz" /></div>
+<map id="inheritance218da7f032" name="inheritance218da7f032">
+<area shape="rect" id="node1" href="https://docs.python.org/3.9/library/collections.html#collections.OrderedDict" target="_top" title="Dictionary that remembers insertion order" alt="" coords="45,153,219,179"/>
+<area shape="rect" id="node5" href="microprobe.utils.misc.RejectingOrderedDict.html#microprobe.utils.misc.RejectingOrderedDict" target="_top" title="An ordered dictionary that raises an exception if key is already set." alt="" coords="307,153,612,179"/>
+<area shape="rect" id="node2" href="microprobe.utils.misc.Pickable.html#microprobe.utils.misc.Pickable" target="_top" title="A helper class to implement the pickling interface." alt="" coords="21,104,243,129"/>
+<area shape="rect" id="node3" href="microprobe.utils.misc.Progress.html#microprobe.utils.misc.Progress" target="_top" title="A counting progress indicator." alt="" coords="21,55,243,80"/>
+<area shape="rect" id="node4" href="microprobe.utils.misc.RejectingDict.html#microprobe.utils.misc.RejectingDict" target="_top" title="A dictionary that raise an exception if the key is already set." alt="" coords="5,5,259,31"/>
+</map><br>
+<hr width="75%">
+<br><section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.RNDFP">
+<span class="sig-name descname"><span class="pre">RNDFP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#RNDFP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.RNDFP" title="Link to this definition"></a></dt>
+<dd><p>Returns a random floating point between x and y</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.RNDINT">
+<span class="sig-name descname"><span class="pre">RNDINT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#RNDINT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.RNDINT" title="Link to this definition"></a></dt>
+<dd><p>Returns a random integer between 0 and 2^64.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.closest_divisor">
+<span class="sig-name descname"><span class="pre">closest_divisor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#closest_divisor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.closest_divisor" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong></p></li>
+<li><p><strong>closer</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.compress_file">
+<span class="sig-name descname"><span class="pre">compress_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#compress_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.compress_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.dict2OrderedDict">
+<span class="sig-name descname"><span class="pre">dict2OrderedDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#dict2OrderedDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.dict2OrderedDict" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>my_dict</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.findfiles">
+<span class="sig-name descname"><span class="pre">findfiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regexp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#findfiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.findfiles" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>paths</strong></p></li>
+<li><p><strong>regexp</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.getnextf">
+<span class="sig-name descname"><span class="pre">getnextf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">itr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#getnextf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.getnextf" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.int_to_twocs">
+<span class="sig-name descname"><span class="pre">int_to_twocs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#int_to_twocs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.int_to_twocs" title="Link to this definition"></a></dt>
+<dd><p>compute the two compliment of a int</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.iter_flatten">
+<span class="sig-name descname"><span class="pre">iter_flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#iter_flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.iter_flatten" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>iterable</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.longest_common_substr">
+<span class="sig-name descname"><span class="pre">longest_common_substr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#longest_common_substr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.longest_common_substr" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>str1</strong></p></li>
+<li><p><strong>str2</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.move_file">
+<span class="sig-name descname"><span class="pre">move_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#move_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.move_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.natural_sort">
+<span class="sig-name descname"><span class="pre">natural_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#natural_sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.natural_sort" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_list</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.open_generic_fd">
+<span class="sig-name descname"><span class="pre">open_generic_fd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#open_generic_fd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.open_generic_fd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.primes">
+<span class="sig-name descname"><span class="pre">primes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#primes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.primes" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>number</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.range_to_sequence">
+<span class="sig-name descname"><span class="pre">range_to_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#range_to_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.range_to_sequence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.range_to_sequence_float">
+<span class="sig-name descname"><span class="pre">range_to_sequence_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#range_to_sequence_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.range_to_sequence_float" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.shift_with_sign">
+<span class="sig-name descname"><span class="pre">shift_with_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#shift_with_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.shift_with_sign" title="Link to this definition"></a></dt>
+<dd><p>shift value extending sign in twocs format</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.smart_copy_dict">
+<span class="sig-name descname"><span class="pre">smart_copy_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">olddict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#smart_copy_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.smart_copy_dict" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>olddict</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.twocs_to_int">
+<span class="sig-name descname"><span class="pre">twocs_to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#twocs_to_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.twocs_to_int" title="Link to this definition"></a></dt>
+<dd><p>compute the int value of a two compliment int</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="microprobe.utils.misc.which">
+<span class="sig-name descname"><span class="pre">which</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">program</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/utils/misc.html#which"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.utils.misc.which" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>program</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

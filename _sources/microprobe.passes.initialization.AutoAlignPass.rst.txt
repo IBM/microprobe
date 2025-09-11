@@ -1,0 +1,41 @@
+microprobe.passes.initialization.AutoAlignPass
+==============================================
+
+.. currentmodule:: microprobe.passes.initialization
+
+.. autoclass:: AutoAlignPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AutoAlignPass.__init__
+      ~AutoAlignPass.check
+      ~AutoAlignPass.info
+      ~AutoAlignPass.report
+      ~AutoAlignPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

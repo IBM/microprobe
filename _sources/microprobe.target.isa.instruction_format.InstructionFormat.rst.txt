@@ -1,0 +1,54 @@
+microprobe.target.isa.instruction_format.InstructionFormat
+==========================================================
+
+.. currentmodule:: microprobe.target.isa.instruction_format
+
+.. autoclass:: InstructionFormat
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InstructionFormat.__init__
+      ~InstructionFormat.flip_fields
+      ~InstructionFormat.full_report
+      ~InstructionFormat.get_field
+      ~InstructionFormat.get_field_props
+      ~InstructionFormat.get_fields
+      ~InstructionFormat.get_findex
+      ~InstructionFormat.get_operands
+      ~InstructionFormat.set_fields
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InstructionFormat.assembly_format
+      ~InstructionFormat.description
+      ~InstructionFormat.fields
+      ~InstructionFormat.name
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

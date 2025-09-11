@@ -1,0 +1,1192 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.target.isa &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../target.html">microprobe.target</a></li>
+      <li class="breadcrumb-item active">microprobe.target.isa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.target.isa</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.target.isa` package</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">annotations</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.code.ins</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">MICROPROBE_RC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstructionAddress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.var</span><span class="w"> </span><span class="kn">import</span> <span class="n">VariableArray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span> \
+    <span class="n">MicroprobeTargetDefinitionError</span><span class="p">,</span> <span class="n">MicroprobeYamlFormatError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">comparator</span> <span class="k">as</span> <span class="n">comparator_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">generator</span> <span class="k">as</span> <span class="n">generator_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">instruction</span> <span class="k">as</span> <span class="n">instruction_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">instruction_field</span> <span class="k">as</span> <span class="n">ifield_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">instruction_format</span> <span class="k">as</span> <span class="n">iformat_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">operand</span> <span class="k">as</span> <span class="n">operand_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">register</span> <span class="k">as</span> <span class="n">register_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_type</span> <span class="k">as</span> <span class="n">register_type_mod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa.dat</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericDynamicAddressTranslation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.imp</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_object_from_module</span><span class="p">,</span> \
+    <span class="n">import_cls_definition</span><span class="p">,</span> <span class="n">import_definition</span><span class="p">,</span> <span class="n">import_operand_definition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">dict2OrderedDict</span><span class="p">,</span> <span class="n">findfiles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.typeguard_decorator</span><span class="w"> </span><span class="kn">import</span> <span class="n">typeguard_testsuite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.yaml</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_yaml</span>
+
+<span class="c1"># Local modules</span>
+
+<span class="c1"># Type hinting</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target</span><span class="w"> </span><span class="kn">import</span> <span class="n">Definition</span><span class="p">,</span> <span class="n">Target</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa.register</span><span class="w"> </span><span class="kn">import</span> <span class="n">Register</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.var</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.ins</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstructionType</span>
+
+<span class="c1"># Constants</span>
+<span class="n">SCHEMA</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;schemas&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;isa.yaml&quot;</span><span class="p">)</span>
+<span class="n">DEFAULT_ISA</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span>
+                           <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">)</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;find_isa_definitions&quot;</span><span class="p">,</span> <span class="s2">&quot;import_isa_definition&quot;</span><span class="p">,</span> <span class="s2">&quot;ISA&quot;</span><span class="p">,</span> <span class="s2">&quot;GenericISA&quot;</span>
+<span class="p">]</span>
+
+
+<span class="c1"># Functions</span>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_isa_extensions</span><span class="p">(</span><span class="n">isadefs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param isadefs:</span>
+<span class="sd">    :param path:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="s2">&quot;Extends&quot;</span> <span class="ow">in</span> <span class="n">isadefs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">isadefval</span> <span class="o">=</span> <span class="n">isadefs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;Extends&quot;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">isadefs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;Extends&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">isadefval</span><span class="p">):</span>
+            <span class="n">isadefval</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">isadefval</span><span class="p">)</span>
+
+        <span class="n">isadef</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">isadefval</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span> <span class="n">SCHEMA</span><span class="p">)</span>
+        <span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">isadefval</span>
+        <span class="n">isadefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isadef</span><span class="p">)</span>
+
+        <span class="n">_read_isa_extensions</span><span class="p">(</span><span class="n">isadefs</span><span class="p">,</span> <span class="n">isadefval</span><span class="p">)</span>
+
+
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_yaml_definition</span><span class="p">(</span><span class="n">isadefs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param isadefs:</span>
+<span class="sd">    :param path:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">isadef</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span> <span class="n">SCHEMA</span><span class="p">)</span>
+    <span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="n">isadefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isadef</span><span class="p">)</span>
+
+    <span class="n">_read_isa_extensions</span><span class="p">(</span><span class="n">isadefs</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="n">baseisa</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">DEFAULT_ISA</span><span class="p">,</span> <span class="n">SCHEMA</span><span class="p">)</span>
+    <span class="n">baseisa</span><span class="p">[</span><span class="s2">&quot;Path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_ISA</span>
+    <span class="n">isadefs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">baseisa</span><span class="p">)</span>
+
+    <span class="n">complete_isadef</span> <span class="o">=</span> <span class="n">dict2OrderedDict</span><span class="p">({})</span>
+    <span class="n">isadefs</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">isadef</span> <span class="ow">in</span> <span class="n">isadefs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">isadef</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">isadef</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">override</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Override&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">inherit</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Inherit&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">complete_isadef</span><span class="p">:</span>
+                    <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="k">for</span> <span class="n">key2</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="n">key2</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;YAML&quot;</span><span class="p">,</span> <span class="s2">&quot;Modules&quot;</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">key2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                            <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]):</span>
+                            <span class="k">if</span> <span class="n">override</span><span class="p">:</span>
+                                <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">override</span><span class="p">:</span>
+                                <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Path&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">])</span>
+                                <span class="p">]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Path&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]))</span>
+
+                        <span class="k">if</span> <span class="n">inherit</span><span class="p">:</span>
+                            <span class="n">key3</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_inherits&quot;</span> <span class="o">%</span> <span class="n">key2</span>
+                            <span class="k">if</span> <span class="n">key3</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                                <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key3</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key3</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+                    <span class="k">elif</span> <span class="n">key2</span> <span class="o">==</span> <span class="s2">&quot;Module&quot;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;microprobe&quot;</span><span class="p">):</span>
+                            <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span>
+                                                     <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span>
+                                                     <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">])</span>
+
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]):</span>
+                            <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                                <span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Path&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">complete_isadef</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key2</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="n">key2</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">complete_isadef</span>
+
+
+<div class="viewcode-block" id="import_isa_definition">
+<a class="viewcode-back" href="../../../microprobe.target.isa.html#microprobe.target.isa.import_isa_definition">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">import_isa_definition</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Imports a ISA definition given a path</span>
+
+<span class="sd">    :param path:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start ISA import&quot;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Importing definition from &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">isadef</span> <span class="o">=</span> <span class="n">_read_yaml_definition</span><span class="p">([],</span> <span class="n">path</span><span class="p">)</span>
+
+    <span class="n">regts</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span> <span class="n">import_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                     <span class="s2">&quot;Register_type&quot;</span><span class="p">,</span> <span class="n">register_type_mod</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">regts</span> <span class="o">=</span> <span class="n">dict2OrderedDict</span><span class="p">(</span><span class="n">regts</span><span class="p">)</span>
+
+    <span class="n">regs</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span> <span class="n">import_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                    <span class="s2">&quot;Register&quot;</span><span class="p">,</span>
+                                    <span class="n">register_mod</span><span class="p">,</span>
+                                    <span class="n">regts</span><span class="p">,</span>
+                                    <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+    <span class="n">regs</span> <span class="o">=</span> <span class="n">dict2OrderedDict</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span>
+
+    <span class="n">ops</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span> <span class="n">import_operand_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span>
+                                           <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                           <span class="s2">&quot;Operand&quot;</span><span class="p">,</span>
+                                           <span class="n">operand_mod</span><span class="p">,</span>
+                                           <span class="n">regs</span><span class="p">,</span>
+                                           <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="n">dict2OrderedDict</span><span class="p">(</span><span class="n">ops</span><span class="p">)</span>
+
+    <span class="n">ifields</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span> <span class="n">import_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span>
+                                       <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                       <span class="s2">&quot;Instruction_field&quot;</span><span class="p">,</span>
+                                       <span class="n">ifield_mod</span><span class="p">,</span>
+                                       <span class="n">ops</span><span class="p">,</span>
+                                       <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+    <span class="n">ifields</span> <span class="o">=</span> <span class="n">dict2OrderedDict</span><span class="p">(</span><span class="n">ifields</span><span class="p">)</span>
+
+    <span class="n">iformats</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span> <span class="n">import_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span>
+                                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                        <span class="s2">&quot;Instruction_format&quot;</span><span class="p">,</span>
+                                        <span class="n">iformat_mod</span><span class="p">,</span>
+                                        <span class="n">ifields</span><span class="p">,</span>
+                                        <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+
+    <span class="n">iformats</span> <span class="o">=</span> <span class="n">dict2OrderedDict</span><span class="p">(</span><span class="n">iformats</span><span class="p">)</span>
+
+    <span class="n">ins</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span> <span class="n">import_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span>
+                                   <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                   <span class="s2">&quot;Instruction&quot;</span><span class="p">,</span>
+                                   <span class="n">instruction_mod</span><span class="p">,</span> <span class="p">(</span><span class="n">iformats</span><span class="p">,</span> <span class="n">ops</span><span class="p">),</span>
+                                   <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+    <span class="n">ins</span> <span class="o">=</span> <span class="n">dict2OrderedDict</span><span class="p">(</span><span class="n">ins</span><span class="p">)</span>
+
+    <span class="n">comp_clss</span> <span class="o">=</span> <span class="n">import_cls_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                      <span class="s2">&quot;Comparator&quot;</span><span class="p">,</span> <span class="n">comparator_mod</span><span class="p">)</span>
+
+    <span class="n">gen_clss</span> <span class="o">=</span> <span class="n">import_cls_definition</span><span class="p">(</span><span class="n">isadef</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;isa.yaml&quot;</span><span class="p">),</span>
+                                     <span class="s2">&quot;Generator&quot;</span><span class="p">,</span> <span class="n">generator_mod</span><span class="p">)</span>
+
+    <span class="n">isa_cls</span> <span class="o">=</span> <span class="n">get_object_from_module</span><span class="p">(</span><span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;ISA&quot;</span><span class="p">][</span><span class="s2">&quot;Class&quot;</span><span class="p">],</span>
+                                     <span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;ISA&quot;</span><span class="p">][</span><span class="s2">&quot;Module&quot;</span><span class="p">])</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">isa</span> <span class="o">=</span> <span class="n">isa_cls</span><span class="p">(</span><span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">],</span> <span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Description&quot;</span><span class="p">],</span> <span class="n">path</span><span class="p">,</span> <span class="n">ins</span><span class="p">,</span> <span class="n">regs</span><span class="p">,</span>
+                      <span class="n">comp_clss</span><span class="p">,</span> <span class="n">gen_clss</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Unable to import ISA definition.&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Check if you definition is complete.&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Error reported: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">MicroprobeTargetDefinitionError</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ISA &#39;</span><span class="si">%s</span><span class="s2">&#39; imported&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">isa</span>
+
+    <span class="c1"># Check definition. Ensure that all the components defined are referenced.</span>
+    <span class="k">for</span> <span class="n">unused_regt</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">regt</span> <span class="k">for</span> <span class="n">regt</span> <span class="ow">in</span> <span class="n">regts</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">regt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">isa</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+    <span class="p">]:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unused register type definition: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unused_regt</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">unused_reg</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">reg</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">isa</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="p">]:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unused register definition: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unused_reg</span><span class="p">)</span>
+
+    <span class="n">used_operands</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ins</span> <span class="ow">in</span> <span class="n">isa</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">oper</span> <span class="ow">in</span> <span class="n">ins</span><span class="o">.</span><span class="n">operands</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">used_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">oper</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="p">[</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">ins</span><span class="o">.</span><span class="n">implicit_operands</span><span class="p">]:</span>
+            <span class="n">used_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ins</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">used_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">default_operand</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">unused_op</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">operand</span> <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">ops</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used_operands</span>
+    <span class="p">]:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unused operand definition: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unused_op</span><span class="p">)</span>
+
+    <span class="n">used_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ins</span> <span class="ow">in</span> <span class="n">isa</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">used_fields</span> <span class="o">+=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ins</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">unused_field</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ifields</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used_fields</span>
+    <span class="p">]:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unused field definition: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unused_field</span><span class="p">)</span>
+
+    <span class="n">used_formats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ins</span> <span class="ow">in</span> <span class="n">isa</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">used_formats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ins</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">unused_format</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">iformat</span> <span class="k">for</span> <span class="n">iformat</span> <span class="ow">in</span> <span class="n">iformats</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">iformat</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used_formats</span>
+    <span class="p">]:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unused format definition: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">unused_format</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">isa</span></div>
+
+
+
+<div class="viewcode-block" id="find_isa_definitions">
+<a class="viewcode-back" href="../../../microprobe.target.isa.html#microprobe.target.isa.find_isa_definitions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_isa_definitions</span><span class="p">(</span><span class="n">paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">paths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">paths</span> <span class="o">=</span> <span class="n">paths</span> <span class="o">+</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;architecture_paths&quot;</span><span class="p">]</span> \
+        <span class="o">+</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;default_paths&quot;</span><span class="p">]</span>
+
+    <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Definition</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">isafiles</span> <span class="o">=</span> <span class="n">findfiles</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="s2">&quot;^isa.yaml$&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">isafiles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target</span><span class="w"> </span><span class="kn">import</span> <span class="n">Definition</span>
+
+    <span class="k">for</span> <span class="n">isafile</span> <span class="ow">in</span> <span class="n">isafiles</span><span class="p">:</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">isadef</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">isafile</span><span class="p">,</span> <span class="n">SCHEMA</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MicroprobeYamlFormatError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exception: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">isafile</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">definition</span> <span class="o">=</span> <span class="n">Definition</span><span class="p">(</span><span class="n">isafile</span><span class="p">,</span> <span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">],</span>
+                                    <span class="n">isadef</span><span class="p">[</span><span class="s2">&quot;Description&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">definition</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">definition</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;common&quot;</span><span class="p">)):</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">definition</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="c1"># Skip bad definitions</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exception: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">isafile</span><span class="p">)</span>
+            <span class="k">continue</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="ISA">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ISA</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract class to represent an Instruction Set Architecture (ISA).</span>
+
+<span class="sd">    An instruction set architecture (ISA) object defines the part of the</span>
+<span class="sd">    computer architecture related to programming, including instructions,</span>
+<span class="sd">    registers, operands, memory operands, etc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ISA.__init__">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.__init__">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ISA name (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ISA description (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Path to definition (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;InstructionType&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ISA instructions (:class:`~.dict` mapping strings to</span>
+<span class="sd">        :class:`~.InstructionType`).&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Target</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Associated target object (:class:`~.Target`).&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">registers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Register</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scratch_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">address_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">float_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">control_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scratch_var</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Variable</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">context_var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="ISA.full_report">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.full_report">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.set_register">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.set_register">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param value:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.negate_register">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.negate_register">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">negate_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.load">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.load">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param address:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.load_float">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.load_float">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_float</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param address:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.store_float">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.store_float">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_float</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param address:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.store_integer">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.store_integer">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param address:</span>
+<span class="sd">        :param length:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.store_decimal">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.store_decimal">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_decimal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param address:</span>
+<span class="sd">        :param length:</span>
+<span class="sd">        :param value:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.set_register_to_address">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.set_register_to_address">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_register_to_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span>
+                                <span class="n">address</span><span class="p">,</span>
+                                <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+                                <span class="n">force_absolute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                <span class="n">force_relative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param address:</span>
+<span class="sd">        :param context:</span>
+<span class="sd">        :param force_absolute:  (Default value = False)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.get_register_for_address_arithmetic">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.get_register_for_address_arithmetic">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_register_for_address_arithmetic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.get_register_for_float_arithmetic">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.get_register_for_float_arithmetic">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_register_for_float_arithmetic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.set_register_bits">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.set_register_bits">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_register_bits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span>
+                          <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param register:</span>
+<span class="sd">        :param value:</span>
+<span class="sd">        :param mask:</span>
+<span class="sd">        :param shift:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.new_instruction">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.new_instruction">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param name:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.set_target">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.set_target">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.add_to_register">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.add_to_register">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param register:</span>
+<span class="sd">        :param value:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.branch_unconditional_relative">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.branch_unconditional_relative">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">branch_unconditional_relative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param source:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.branch_to_itself">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.branch_to_itself">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">branch_to_itself</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.compare_and_branch">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.compare_and_branch">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare_and_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param val1:</span>
+<span class="sd">        :param val2:</span>
+<span class="sd">        :param cond:</span>
+<span class="sd">        :param target:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.nop">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.nop">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flag_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="ISA.get_dat">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.get_dat">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.set_context">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.set_context">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmpl_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.get_context">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.get_context">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmpl_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.register_value_comparator">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.register_value_comparator">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_value_comparator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.normalize_asm">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.normalize_asm">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalize_asm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mnemonic</span><span class="p">,</span> <span class="n">operands</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="ISA.randomize_register">
+<a class="viewcode-back" href="../../../microprobe.target.isa.ISA.html#microprobe.target.isa.ISA.randomize_register">[docs]</a>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">randomize_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GenericISA">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GenericISA</span><span class="p">(</span><span class="n">ISA</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a generic Instruction Set Architecture (ISA).&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GenericISA.__init__">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">descr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">ins</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;InstructionType&quot;</span><span class="p">],</span>
+                 <span class="n">regs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Register&quot;</span><span class="p">],</span>
+                 <span class="n">comparators</span><span class="p">,</span> <span class="n">generators</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param name:</span>
+<span class="sd">        :param descr:</span>
+<span class="sd">        :param ins:</span>
+<span class="sd">        :param regs:</span>
+<span class="sd">        :param comparators:</span>
+<span class="sd">        :param generators:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># super(GenericISA, self).__init__()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_descr</span> <span class="o">=</span> <span class="n">descr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instructions</span> <span class="o">=</span> <span class="n">ins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registers</span> <span class="o">=</span> <span class="n">regs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">:</span> <span class="n">Target</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address_registers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">reg</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">used_for_address_arithmetic</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_float_registers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">reg</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">used_for_float_arithmetic</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_comparators</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">comparator</span> <span class="ow">in</span> <span class="n">comparators</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_comparators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comparator</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generators</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">generator</span> <span class="ow">in</span> <span class="n">generators</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_generators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generator</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scratch_registers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_control_registers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_registers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Register</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scratch_var</span> <span class="o">=</span> <span class="n">VariableArray</span><span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_scratch_var&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context_var</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_descr</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Path to definition (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">address_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address_registers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">float_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_float_registers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flag_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_registers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instructions</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scratch_var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scratch_var</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span>
+
+<div class="viewcode-block" id="GenericISA.normalize_asm">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.normalize_asm">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalize_asm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mnemonic</span><span class="p">,</span> <span class="n">operands</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">mnemonic</span><span class="p">,</span> <span class="n">operands</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.set_target">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.set_target">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">target</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;ISA Name: </span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GenericISA.new_instruction">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.new_instruction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param name:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ins_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">instruction_factory</span><span class="p">(</span><span class="n">ins_type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.full_report">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.full_report">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rstr</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;ISA Name: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;ISA Description: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;Register Types:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">regt</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">()]):</span>
+            <span class="n">rstr</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">regt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;Architected registers:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">regname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registers</span><span class="p">:</span>
+            <span class="n">rstr</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registers</span><span class="p">[</span><span class="n">regname</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;Instructions:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">ins_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="p">:</span>
+            <span class="n">rstr</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="p">[</span><span class="n">ins_name</span><span class="p">]</span><span class="o">.</span><span class="n">full_report</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Instructions defined: </span><span class="si">%s</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> \
+            <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">ins</span><span class="o">.</span><span class="n">mnemonic</span> <span class="k">for</span> <span class="n">ins</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span>
+
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot; Variants defined: </span><span class="si">%s</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instructions</span><span class="p">)</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">rstr</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.set_register">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.set_register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param reg:</span>
+<span class="sd">        :param value:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span><span class="s2">&quot;Unable to set register &#39;</span><span class="si">%s</span><span class="s2">&#39; to &quot;</span>
+                                            <span class="s2">&quot; value &#39;</span><span class="si">%d</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scratch_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scratch_registers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">control_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_registers</span>
+
+<div class="viewcode-block" id="GenericISA.get_register_for_address_arithmetic">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.get_register_for_address_arithmetic">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_register_for_address_arithmetic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reg</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">reg</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address_registers</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span><span class="s2">&quot;No free registers available. &quot;</span>
+                                                <span class="s2">&quot;Change your policy.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># REG0 tends to have special meaning and it is usually at the</span>
+        <span class="c1"># beginning, move it</span>
+        <span class="n">reg</span> <span class="o">=</span> <span class="n">reg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">reg</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">reg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.get_register_for_float_arithmetic">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.get_register_for_float_arithmetic">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_register_for_float_arithmetic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reg</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">reg</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_float_registers</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span>
+        <span class="p">]</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;All registers for floats already reserved&quot;</span>
+
+        <span class="c1"># REG0 tends to have special meaning and it is usually at the</span>
+        <span class="c1"># beginning, move it</span>
+        <span class="n">reg</span> <span class="o">=</span> <span class="n">reg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">reg</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">reg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.add_to_register">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.add_to_register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_to_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param register:</span>
+<span class="sd">        :param value:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># super(GenericISA, self).add_to_register(register, value)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.branch_unconditional_relative">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.branch_unconditional_relative">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">branch_unconditional_relative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param source:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.branch_to_itself">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.branch_to_itself">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">branch_to_itself</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">instr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">branch_unconditional_relative</span><span class="p">(</span>
+            <span class="n">InstructionAddress</span><span class="p">(</span><span class="n">base_address</span><span class="o">=</span><span class="s2">&quot;code&quot;</span><span class="p">),</span>
+            <span class="n">InstructionAddress</span><span class="p">(</span><span class="n">base_address</span><span class="o">=</span><span class="s2">&quot;code&quot;</span><span class="p">))</span>
+        <span class="n">instr</span><span class="o">.</span><span class="n">set_address</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instr</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.get_dat">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.get_dat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_dat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">GenericDynamicAddressTranslation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.set_context">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.set_context">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmpl_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">complete</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_var</span>
+
+        <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_var</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                <span class="s2">&quot;Variable &#39;</span><span class="si">%s</span><span class="s2">&#39; is too small to restore the target context&quot;</span><span class="p">)</span>
+
+        <span class="n">asm</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpl_path</span><span class="p">,</span> <span class="s2">&quot;setcontext.S&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">asm</span><span class="p">):</span>
+            <span class="n">asm</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@@SCRATCH@@&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">complete</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">instructions_from_asm</span><span class="p">(</span>
+                <span class="n">asm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scratch_registers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">instrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_register_to_address</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">variable</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                                                  <span class="n">Context</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">instrs</span> <span class="o">+</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">instructions_from_asm</span><span class="p">(</span>
+                <span class="n">asm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.get_context">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.get_context">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">tmpl_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">complete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_var</span>
+
+        <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_var</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                <span class="s2">&quot;Variable &#39;</span><span class="si">%s</span><span class="s2">&#39; is too small to save the target context&quot;</span><span class="p">)</span>
+
+        <span class="n">asm</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpl_path</span><span class="p">,</span> <span class="s2">&quot;getcontext.S&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">asm</span><span class="p">):</span>
+            <span class="n">asm</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@@SCRATCH@@&quot;</span><span class="p">,</span> <span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">complete</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">instructions_from_asm</span><span class="p">(</span>
+                <span class="n">asm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scratch_registers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">instrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_register_to_address</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">variable</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                                                  <span class="n">Context</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">instrs</span> <span class="o">+</span> \
+                <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">instructions_from_asm</span><span class="p">(</span>
+                    <span class="n">asm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.register_value_comparator">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.register_value_comparator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_value_comparator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="GenericISA.randomize_register">
+<a class="viewcode-back" href="../../../microprobe.target.isa.GenericISA.html#microprobe.target.isa.GenericISA.randomize_register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">randomize_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">:</span> <span class="n">Register</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

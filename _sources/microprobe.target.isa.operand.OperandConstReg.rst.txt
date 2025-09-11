@@ -1,0 +1,61 @@
+microprobe.target.isa.operand.OperandConstReg
+=============================================
+
+.. currentmodule:: microprobe.target.isa.operand
+
+.. autoclass:: OperandConstReg
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OperandConstReg.__init__
+      ~OperandConstReg.access
+      ~OperandConstReg.check
+      ~OperandConstReg.codification
+      ~OperandConstReg.copy
+      ~OperandConstReg.random_value
+      ~OperandConstReg.representation
+      ~OperandConstReg.set_valid_values
+      ~OperandConstReg.values
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~OperandConstReg.address_absolute
+      ~OperandConstReg.address_base
+      ~OperandConstReg.address_immediate
+      ~OperandConstReg.address_index
+      ~OperandConstReg.address_relative
+      ~OperandConstReg.constant
+      ~OperandConstReg.description
+      ~OperandConstReg.float
+      ~OperandConstReg.immediate
+      ~OperandConstReg.name
+      ~OperandConstReg.vector
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

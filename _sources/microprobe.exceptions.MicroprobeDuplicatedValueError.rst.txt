@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeDuplicatedValueError
+====================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeDuplicatedValueError
+
+   
+
+   
+   
+
+   
+   
+   

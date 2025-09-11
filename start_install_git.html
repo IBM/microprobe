@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installing Microprobe via GIT &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Upgrading Microprobe" href="start_update.html" />
+    <link rel="prev" title="Installing Microprobe via PIP packages" href="start_install_pip.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="start.html">Getting started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="start_quick.html">Quick start guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_requirements.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_organization.html">Microprobe package organization</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="start_install.html">Installing Microprobe</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="start_install_pip.html">Installing Microprobe via PIP packages</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Installing Microprobe via GIT</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pre-requirements">Pre-requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#required-commands">Required commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#first-time-set-up">First-time set up</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-microprobe">Using Microprobe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="start_update.html">Upgrading Microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_check.html">Checking Microprobe installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="start.html">Getting started</a></li>
+          <li class="breadcrumb-item"><a href="start_install.html">Installing Microprobe</a></li>
+      <li class="breadcrumb-item active">Installing Microprobe via GIT</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="start_install_pip.html" class="btn btn-neutral float-left" title="Installing Microprobe via PIP packages" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="start_update.html" class="btn btn-neutral float-right" title="Upgrading Microprobe" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installing-microprobe-via-git">
+<h1>Installing Microprobe via GIT<a class="headerlink" href="#installing-microprobe-via-git" title="Link to this heading"></a></h1>
+<p>This is the preferred method if you need to modify the code
+to implement new functionalities and quick fixes. This way you
+can quickly share your improvements to the rest of the community
+using the regular GIT procedures. Check the
+<a class="reference internal" href="devel.html"><span class="doc">Development Corner</span></a> for further details.</p>
+<section id="pre-requirements">
+<h2>Pre-requirements<a class="headerlink" href="#pre-requirements" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Check that you can access <strong>GitHub</strong></p>
+<ul>
+<li><p>Set up your account and make sure you can create your own
+repositories. Check the entire flow: create your own repository,
+clone it in your working directory/environment, make changes and
+commit them. Finally, push the changes to the server.
+If that works, you are all set to work with GitHub.</p></li>
+<li><p>Resources:</p>
+<ul>
+<li><p><a class="reference external" href="https://education.github.com/git-cheat-sheet-education.pdf">https://education.github.com/git-cheat-sheet-education.pdf</a></p></li>
+<li><p>Search internet using your favourite search engine</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Check that you have the appropriate access rights</p>
+<ul>
+<li><p>Check if you can read/clone the public repository at
+<a class="reference external" href="https://github.com/IBM/microprobe">https://github.com/IBM/microprobe</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="required-commands">
+<h2>Required commands<a class="headerlink" href="#required-commands" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>git</strong></p></li>
+<li><p><strong>python</strong> &gt;=3.7</p></li>
+<li><p><strong>virtualenv</strong>: <a class="reference external" href="https://virtualenv.pypa.io/en/stable/">https://virtualenv.pypa.io/en/stable/</a></p></li>
+</ul>
+</section>
+<section id="first-time-set-up">
+<h2>First-time set up<a class="headerlink" href="#first-time-set-up" title="Link to this heading"></a></h2>
+<p>We are assuming a bash environment throughout the process. You might
+try to use other shells, although some commands might need to be
+modified accordingly.</p>
+<p>Execute the following commands the first time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">IBM</span><span class="o">/</span><span class="n">microprobe</span> <span class="n">INSTALLDIRECTORY</span><span class="o">/</span><span class="n">microprobe</span>
+<span class="o">&gt;</span> <span class="n">cd</span> <span class="n">INSTALLDIRECTORY</span><span class="o">/</span><span class="n">microprobe</span>
+<span class="o">&gt;</span> <span class="n">bootstrap_environment</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">&gt;</span> <span class="o">.</span> <span class="n">activate_microprobe</span>
+</pre></div>
+</div>
+<p>Hopefully, the installation is complete. Otherwise, report the
+error to the development team (<a class="reference internal" href="support_contact.html"><span class="doc">Contact</span></a>).</p>
+<p>With commands above we did the following.
+First, we have checked out the repository and all of its submodules.
+Then, we set up a virtual python environment and install all
+the Microprobe dependencies to avoid any system dependency issues
+(<code class="docutils literal notranslate"><span class="pre">bootstrap_environment.sh</span></code>) and then we activated it.</p>
+</section>
+<section id="using-microprobe">
+<h2>Using Microprobe<a class="headerlink" href="#using-microprobe" title="Link to this heading"></a></h2>
+<p>You just need to execute the following command to start using
+Microprobe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="o">.</span> <span class="n">INSTALLDIRECTORY</span><span class="o">/</span><span class="n">activate_microprobe</span>
+</pre></div>
+</div>
+<p>You will see that you command prompt changes. You should be able
+to execute the Microprobe related commands. This should be the only
+command you need to execute before using Microprobe related commands
+in the future.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeConstantRegisterError
+=====================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeConstantRegisterError
+
+   
+
+   
+   
+
+   
+   
+   

@@ -1,0 +1,47 @@
+microprobe.target.isa.generator.Generator
+=========================================
+
+.. currentmodule:: microprobe.target.isa.generator
+
+.. autoclass:: Generator
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Generator.__init__
+      ~Generator.check
+      ~Generator.generate
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Generator.alias
+      ~Generator.arch
+      ~Generator.instr_name
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

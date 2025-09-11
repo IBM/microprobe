@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeLookupError
+===========================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeLookupError
+
+   
+
+   
+   
+
+   
+   
+   

@@ -1,0 +1,1131 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.utils.bin &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">microprobe.utils.bin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.utils.bin</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.utils.bin` definition module</span>
+
+<span class="sd">This module implements the required features to interpret instructions in</span>
+<span class="sd">binary codification and translate them into Microprobe internal represenation</span>
+<span class="sd">of instruction, operands, labels and addreses.</span>
+
+<span class="sd">The main elements of this module are the following:</span>
+
+<span class="sd">- :class:`~.MicroprobeBinInstructionStream` objects to represent a binary</span>
+<span class="sd">  stream of codified instructions</span>
+<span class="sd">- :func:`~.interpret_bin` function validates the binary codification and</span>
+<span class="sd">  translates them into internal Microprobe represenation of instructions and</span>
+<span class="sd">  operands.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="c1"># Third party modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cachetools</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.code.ins</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">MICROPROBE_RC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeBinaryError</span><span class="p">,</span> \
+    <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span> <span class="n">MicroprobeValueError</span><span class="p">,</span> \
+    <span class="n">MicroprobeCacheError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa.instruction</span><span class="w"> </span><span class="kn">import</span> <span class="n">instruction_type_from_bin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_default_cache_data</span><span class="p">,</span> \
+    <span class="n">write_default_cache_data_silent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span><span class="p">,</span> \
+    <span class="n">RejectingDict</span><span class="p">,</span> <span class="n">int_to_twocs</span><span class="p">,</span> <span class="n">twocs_to_int</span>
+
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_BIN_CACHE_ENABLED</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">_BIN_CACHE_FILE</span> <span class="o">=</span> <span class="vm">__file__</span> <span class="o">+</span> <span class="s2">&quot;.bin&quot;</span>
+<span class="n">_BIN_CACHE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_BIN_CACHE_USED</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">_BIN_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">_BIN_CACHE_SIZE</span> <span class="o">=</span> <span class="mi">16</span><span class="o">*</span><span class="mi">1024</span>
+<span class="n">_BIN_CACHE_STATS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;hit&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="n">_CODE_CACHE_ENABLED</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">_CODE_CACHE_FILE</span> <span class="o">=</span> <span class="vm">__file__</span> <span class="o">+</span> <span class="s2">&quot;.code&quot;</span>
+<span class="n">_CODE_CACHE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_CODE_CACHE_USED</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">_CODE_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">_CODE_CACHE_SIZE</span> <span class="o">=</span> <span class="mi">16</span><span class="o">*</span><span class="mi">1024</span>
+<span class="n">_CODE_CACHE_STATS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;hit&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;access&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="n">_DATA_CACHE</span> <span class="o">=</span> <span class="n">RejectingDict</span><span class="p">()</span>
+<span class="n">_DATA_CACHE_LENGTHS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">_DATA_CACHE_ENABLED</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;interpret_bin&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;MicroprobeBinInstructionStream&quot;</span><span class="p">,</span> <span class="p">]</span>
+
+
+<span class="c1"># Functions</span>
+<div class="viewcode-block" id="interpret_bin">
+<a class="viewcode-back" href="../../../microprobe.utils.bin.html#microprobe.utils.bin.interpret_bin">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpret_bin</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">word_length</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the list of :class:`~.MicroprobeInstructionDefinition` objects</span>
+<span class="sd">    that results from interpreting the *code* (a binary stream).</span>
+<span class="sd">    The *target* object is used to validate the existence of the instruction</span>
+<span class="sd">    and operands in the target.</span>
+
+<span class="sd">    :param code: String to interpret</span>
+<span class="sd">    :type code: :class:`~.str` object</span>
+<span class="sd">    :param target: Target definition</span>
+<span class="sd">    :type target: :class:`~.Target` object</span>
+<span class="sd">    :return: A list of instructions, operands, labels, etc. resulting from</span>
+<span class="sd">            interpreting the assembly</span>
+<span class="sd">    :rtype: :class:`~.list` of :class:`~.MicroprobeInstructionDefinition`</span>
+<span class="sd">    :raise microprobe.exceptions.MicroprobeBinaryError: if something is wrong</span>
+<span class="sd">        during the interpretation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">_BIN_CACHE</span>
+    <span class="k">global</span> <span class="n">_CODE_CACHE</span>
+
+    <span class="k">global</span> <span class="n">_BIN_CACHE_USED</span>
+    <span class="k">global</span> <span class="n">_CODE_CACHE_USED</span>
+
+    <span class="k">global</span> <span class="n">_BIN_CACHE_SAVED</span>
+    <span class="k">global</span> <span class="n">_CODE_CACHE_SAVED</span>
+
+    <span class="k">global</span> <span class="n">_BIN_CACHE_SIZE</span>
+    <span class="k">global</span> <span class="n">_CODE_CACHE_SIZE</span>
+
+    <span class="k">if</span> <span class="n">_BIN_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_BIN_CACHE</span> <span class="o">=</span> <span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="n">_BIN_CACHE_SIZE</span><span class="p">,</span> <span class="n">getsizeof</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_BIN_CACHE_ENABLED</span><span class="p">:</span>
+                <span class="n">_BIN_CACHE</span> <span class="o">=</span> <span class="n">read_default_cache_data</span><span class="p">(</span><span class="n">_BIN_CACHE_FILE</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MicroprobeCacheError</span><span class="p">:</span>
+            <span class="n">_BIN_CACHE</span> <span class="o">=</span> <span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="n">_BIN_CACHE_SIZE</span><span class="p">,</span> <span class="n">getsizeof</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">_CODE_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_CODE_CACHE</span> <span class="o">=</span> <span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="n">_CODE_CACHE_SIZE</span><span class="p">,</span> <span class="n">getsizeof</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_CODE_CACHE_ENABLED</span><span class="p">:</span>
+                <span class="n">_CODE_CACHE</span> <span class="o">=</span> <span class="n">read_default_cache_data</span><span class="p">(</span><span class="n">_CODE_CACHE_FILE</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MicroprobeCacheError</span><span class="p">:</span>
+            <span class="n">_CODE_CACHE</span> <span class="o">=</span> <span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="n">_CODE_CACHE_SIZE</span><span class="p">,</span> <span class="n">getsizeof</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">safe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">safe</span> <span class="o">=</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s1">&#39;safe_bin&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">single</span><span class="p">:</span>
+        <span class="n">little_endian</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;hex&quot;</span><span class="p">:</span>
+            <span class="n">word_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;bin&quot;</span><span class="p">:</span>
+            <span class="n">word_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span><span class="s2">&quot;Unknown format &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">fmt</span><span class="p">)</span>
+
+    <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="n">target</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">safe</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_CODE_CACHE</span> <span class="ow">and</span> <span class="n">_CODE_CACHE_ENABLED</span><span class="p">:</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Bytes parsed:&quot;</span><span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="n">instrdef</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">instrdef</span> <span class="ow">in</span> <span class="n">_CODE_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span>
+        <span class="n">_CODE_CACHE_STATS</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">_CODE_CACHE_STATS</span><span class="p">[</span><span class="s1">&#39;hit&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">progress</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">progress</span>
+    <span class="k">elif</span> <span class="n">safe</span><span class="p">:</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">_interpret_bin_code_safe</span><span class="p">(</span>
+            <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="n">little_endian</span><span class="p">,</span>
+            <span class="n">word_length</span><span class="o">=</span><span class="n">word_length</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">_CODE_CACHE_ENABLED</span><span class="p">:</span>
+            <span class="n">_CODE_CACHE_STATS</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">_CODE_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">code</span><span class="p">[:]</span>
+            <span class="n">_CODE_CACHE_USED</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">_interpret_bin_code</span><span class="p">(</span>
+            <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="n">little_endian</span><span class="p">,</span>
+            <span class="n">word_length</span><span class="o">=</span><span class="n">word_length</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">_CODE_CACHE_ENABLED</span><span class="p">:</span>
+            <span class="n">_CODE_CACHE_STATS</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">_CODE_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">code</span><span class="p">[:]</span>
+            <span class="n">_CODE_CACHE_USED</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">_BIN_CACHE_ENABLED</span> <span class="ow">and</span> <span class="n">_BIN_CACHE_USED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_BIN_CACHE_SAVED</span><span class="p">):</span>
+        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="n">write_default_cache_data_silent</span><span class="p">,</span>
+            <span class="n">_BIN_CACHE_FILE</span><span class="p">,</span> <span class="n">_BIN_CACHE</span><span class="p">,</span>
+            <span class="n">data_reload</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="n">_show_cache_stats</span><span class="p">,</span> <span class="n">_BIN_CACHE_FILE</span><span class="p">,</span> <span class="n">_BIN_CACHE_STATS</span>
+        <span class="p">)</span>
+        <span class="n">_BIN_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">_CODE_CACHE_ENABLED</span> <span class="ow">and</span> <span class="n">_CODE_CACHE_USED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_CODE_CACHE_SAVED</span><span class="p">):</span>
+        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="n">write_default_cache_data_silent</span><span class="p">,</span>
+            <span class="n">_CODE_CACHE_FILE</span><span class="p">,</span> <span class="n">_CODE_CACHE</span><span class="p">,</span>
+            <span class="n">data_reload</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="n">_show_cache_stats</span><span class="p">,</span> <span class="n">_CODE_CACHE_FILE</span><span class="p">,</span> <span class="n">_CODE_CACHE_STATS</span>
+        <span class="p">)</span>
+        <span class="n">_CODE_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">code</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpret_bin_code</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">word_length</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">):</span>
+
+    <span class="n">instructions_and_params</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+
+    <span class="n">binstream</span> <span class="o">=</span> <span class="n">MicroprobeBinInstructionStream</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="n">little_endian</span><span class="p">,</span>
+        <span class="n">word_length</span><span class="o">=</span><span class="n">word_length</span>
+     <span class="p">)</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">binstream</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+        <span class="n">bins</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">operands</span> <span class="o">=</span> <span class="n">binstream</span><span class="o">.</span><span class="n">decode_next</span><span class="p">()</span>
+        <span class="n">instr_def</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">MicroprobeInstructionDefinition</span><span class="p">(</span>
+            <span class="n">instr_type</span><span class="p">,</span> <span class="n">operands</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">instructions_and_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr_def</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">instructions_and_params</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpret_bin_code_safe</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">single</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">word_length</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">):</span>
+
+    <span class="n">instructions_and_params</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+
+    <span class="n">binstream</span> <span class="o">=</span> <span class="n">MicroprobeBinInstructionStream</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span>
+        <span class="n">_data_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">little_endian</span><span class="o">=</span><span class="n">little_endian</span><span class="p">,</span>
+        <span class="n">word_length</span><span class="o">=</span><span class="n">word_length</span>
+    <span class="p">)</span>
+
+    <span class="n">min_skip_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">ins</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="k">for</span> <span class="n">ins</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;0x</span><span class="si">%%</span><span class="s2">0</span><span class="si">%d</span><span class="s2">x&quot;</span> <span class="o">%</span> <span class="n">min_skip_length</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">binstream</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bins</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">operands</span> <span class="o">=</span> <span class="n">binstream</span><span class="o">.</span><span class="n">decode_next</span><span class="p">()</span>
+            <span class="n">instr_def</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">MicroprobeInstructionDefinition</span><span class="p">(</span>
+                <span class="n">instr_type</span><span class="p">,</span> <span class="n">operands</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="n">instructions_and_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr_def</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MicroprobeBinaryError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">single</span><span class="p">:</span>
+                <span class="n">skip</span> <span class="o">=</span> <span class="n">binstream</span><span class="o">.</span><span class="n">skip_all</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">skip</span> <span class="o">=</span> <span class="n">binstream</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">characters</span><span class="o">=</span><span class="n">min_skip_length</span><span class="p">)</span>
+
+            <span class="n">instr_type</span> <span class="o">=</span> <span class="n">instruction_type_from_bin</span><span class="p">(</span><span class="n">skip</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="n">instr_def</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">MicroprobeInstructionDefinition</span><span class="p">(</span>
+                <span class="n">instr_type</span><span class="p">,</span> <span class="p">(),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">skip</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="n">instructions_and_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr_def</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">_BIN_CACHE_ENABLED</span> <span class="ow">and</span>
+                    <span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;raw&quot;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">binstream</span><span class="o">.</span><span class="n">lengths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">fmt</span> <span class="o">%</span> <span class="nb">int</span><span class="p">(</span><span class="n">skip</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">_BIN_CACHE</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="n">target</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">path</span><span class="o">+</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">fmt</span> <span class="o">%</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">skip</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">instr_type</span><span class="p">,</span> <span class="p">())</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">instructions_and_params</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_target_lengths</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">instr_formats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+        <span class="p">(</span>
+            <span class="n">instr</span><span class="o">.</span><span class="n">format</span> <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">lengths</span> <span class="o">=</span> <span class="nb">set</span><span class="p">((</span><span class="n">instr_format</span><span class="o">.</span><span class="n">length</span> <span class="k">for</span> <span class="n">instr_format</span> <span class="ow">in</span> <span class="n">instr_formats</span><span class="p">))</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Possible lengths: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">lengths</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lengths</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpret_bin_instr</span><span class="p">(</span><span class="n">instr_type</span><span class="p">,</span> <span class="n">bin_instr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Interpret bin instr: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="n">bin_instr</span><span class="p">))</span>
+
+    <span class="n">operand_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">processed_bits</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">op_descriptor</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">operands</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">fields</span>
+    <span class="p">):</span>
+        <span class="n">dummy_fieldname</span><span class="p">,</span> <span class="n">op_descriptor</span> <span class="o">=</span> <span class="n">op_descriptor</span>
+        <span class="n">operand</span><span class="p">,</span> <span class="n">dummy_io_def</span> <span class="o">=</span> <span class="n">op_descriptor</span>
+
+        <span class="n">processed_bits</span> <span class="o">+=</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Process field: </span><span class="si">%s</span><span class="s2">, size: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Process operand: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Processed bits: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">processed_bits</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">default_show</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skip, not shown&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">field_value</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-</span> <span class="n">processed_bits</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+            <span class="p">(</span><span class="mb">0b1</span> <span class="o">&lt;&lt;</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;All: 0x</span><span class="si">%x</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bin_instr</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Shift bits: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-</span> <span class="n">processed_bits</span>
+        <span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Shifted value: 0x</span><span class="si">%x</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span>
+                <span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-</span> <span class="n">processed_bits</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Field size: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Mask used: 0x</span><span class="si">%x</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mb">0b1</span> <span class="o">&lt;&lt;</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Field value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="n">field_value</span><span class="p">))</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Field value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">bin</span><span class="p">(</span><span class="n">field_value</span><span class="p">))</span>
+
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">immediate</span> <span class="ow">or</span>
+                <span class="n">operand</span><span class="o">.</span><span class="n">address_relative</span> <span class="ow">or</span> <span class="n">operand</span><span class="o">.</span><span class="n">address_absolute</span><span class="p">):</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Immediate/Relative operand&quot;</span><span class="p">)</span>
+            <span class="n">oper_size_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+
+            <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand shifted by: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">field_value</span> <span class="o">&lt;&lt;</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">shift</span>
+                <span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="s2">&quot;step&quot;</span><span class="p">):</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand has a step of: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="n">idx</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">field_value</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+                            <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="n">idx</span>
+                        <span class="p">),</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="n">idx</span><span class="p">,</span>
+                        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="n">idx</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Operand shifted/stepped: </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">step</span>
+                    <span class="p">)</span>
+                    <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">field_value</span> <span class="o">&lt;&lt;</span> <span class="p">(</span>
+                            <span class="p">(</span>
+                                <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+                            <span class="p">)</span> <span class="o">+</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span>
+                        <span class="p">),</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span> <span class="p">(</span>
+                            <span class="p">(</span>
+                                <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+                            <span class="p">)</span> <span class="o">+</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">address_relative</span> <span class="ow">or</span> <span class="n">operand</span><span class="o">.</span><span class="n">address_absolute</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">operand</span><span class="o">.</span><span class="n">address_relative</span> <span class="ow">and</span> <span class="n">operand</span><span class="o">.</span><span class="n">min</span> <span class="o">&lt;</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;C2 codification&quot;</span><span class="p">)</span>
+                <span class="n">new_pairs</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">oper</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">shift</span> <span class="ow">in</span> <span class="n">oper_size_pairs</span><span class="p">:</span>
+                    <span class="n">new_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">twocs_to_int</span><span class="p">(</span><span class="n">oper</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">size</span><span class="p">,</span> <span class="n">shift</span><span class="p">))</span>
+                <span class="n">oper_size_pairs</span> <span class="o">+=</span> <span class="n">new_pairs</span>
+
+            <span class="c1">#</span>
+            <span class="c1"># Handle special codifications</span>
+            <span class="c1"># TODO: This should be moved to the architecture</span>
+            <span class="c1"># back-ends</span>
+            <span class="c1">#</span>
+            <span class="c1"># MB field on POWERPC</span>
+            <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MB6&quot;</span><span class="p">,</span> <span class="s2">&quot;ME6&quot;</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Special condition field 1&quot;</span><span class="p">)</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="p">(</span><span class="n">field_value</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mb">0b11111</span>
+                    <span class="p">)</span> <span class="o">|</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="n">field_value</span> <span class="o">&amp;</span> <span class="mb">0b1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span>
+                    <span class="p">),</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span>
+                <span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;SH6_5&quot;</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Special condition field 2&quot;</span><span class="p">)</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_value</span> <span class="o">+</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Dd0&quot;</span><span class="p">,</span> <span class="s2">&quot;Dd2&quot;</span><span class="p">]:</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Dd1&#39;</span><span class="p">]:</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">dd2_value</span> <span class="o">=</span> <span class="n">bin_instr</span> <span class="o">&amp;</span> <span class="mb">0b1</span>
+                <span class="n">dd0_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="mi">6</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mb">0b1111111111</span><span class="p">)</span>
+
+                <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_value</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">|</span> <span class="n">dd2_value</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">|</span> <span class="p">(</span><span class="n">dd0_value</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">twocs_to_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dc&quot;</span><span class="p">,</span> <span class="s2">&quot;dm&quot;</span><span class="p">]:</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]:</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">dc_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="mi">6</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mb">0b1</span>
+                <span class="n">dm_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mb">0b1</span>
+
+                <span class="n">value</span> <span class="o">=</span> <span class="n">field_value</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">|</span> <span class="p">(</span><span class="n">dm_value</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">|</span> <span class="p">(</span><span class="n">dc_value</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">)</span>
+                <span class="c1"># value = twocs_to_int(value, 16)</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="c1"># Z Fixes</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DH1&quot;</span><span class="p">,</span> <span class="s2">&quot;DH2&quot;</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Special condition field 3&quot;</span><span class="p">)</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DL1&quot;</span><span class="p">,</span> <span class="s2">&quot;DL2&quot;</span><span class="p">]:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Special condition field 4&quot;</span><span class="p">)</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">next_field_value</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-</span>
+                            <span class="p">(</span><span class="n">processed_bits</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="mb">0b1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="p">)</span>
+
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">field_value</span> <span class="o">|</span> <span class="p">(</span><span class="n">next_field_value</span> <span class="o">&lt;&lt;</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="mi">8</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span>
+                <span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">twocs_to_int</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="c1"># RISC-V fixes</span>
+
+            <span class="c1"># List of immediate fixes which need to be performed</span>
+            <span class="n">riscv_fixes</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;sb_imm7&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;sb_imm5&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;12|10:5;#13;4:1|11&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;s_imm7&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;s_imm5&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;11:5;#13;4:0&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uj_imm20&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;20|10:1|11|19:12&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cw_imm3&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm2&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5:3;#3;2|6&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cd_imm3&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm2&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5:3;#3;7|6&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cb_imm5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm3&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;#3;8|4:3;#3;7:6|2:1|5&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cw_imm5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5;#5;4:2|7:6&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cd_imm5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5;#5;4:3|8:6&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;ci_imm5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;#3;5;#5;4:0&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cu_imm5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5;#5;4:0&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+                <span class="s1">&#39;cs_imm5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;#3;9;#5;4|6|8:7|5&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cls_imm5&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5;#5;4:0&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cw_imm6&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5:2|7:6&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cd_imm6&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5:3|8:6&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;c_imm11&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;#3;11|4|9:8|10|6|7|3:1|5&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;cs_imm8&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;#3;5:4|9:6|2|3&#39;</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">zero_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">fix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">fix</span><span class="p">)</span> <span class="ow">in</span>
+                           <span class="nb">enumerate</span><span class="p">(</span><span class="n">riscv_fixes</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">_parse_riscv_fix_field</span><span class="p">(</span><span class="n">fix</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">src_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+                <span class="n">segments</span> <span class="o">=</span> <span class="n">fix</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">segment</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                        <span class="n">src_pos</span> <span class="o">-=</span> <span class="nb">int</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">tokens</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">token</span><span class="p">:</span>
+                                <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">))</span>
+                                <span class="k">for</span> <span class="n">dst_pos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                                    <span class="n">bit</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="n">src_pos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span>
+                                    <span class="n">value</span> <span class="o">|=</span> <span class="p">(</span><span class="n">bit</span> <span class="o">&lt;&lt;</span> <span class="n">dst_pos</span><span class="p">)</span>
+                                    <span class="n">src_pos</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">bit</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="n">src_pos</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span>
+                                <span class="n">dst_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+                                <span class="n">value</span> <span class="o">|=</span> <span class="p">(</span><span class="n">bit</span> <span class="o">&lt;&lt;</span> <span class="n">dst_pos</span><span class="p">)</span>
+                                <span class="n">src_pos</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">fix</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">twocs_to_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fix</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span> <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="n">fix</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">fix</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">twocs_to_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fix</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">value</span>
+
+            <span class="c1"># Fields which will contain the actual value</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">riscv_fixes</span><span class="p">:</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">fix</span> <span class="o">=</span> <span class="n">riscv_fixes</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">_parse_riscv_fix_field</span><span class="p">(</span><span class="n">fix</span><span class="p">)</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="c1"># Fields which will contain a 0</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">zero_fields</span><span class="p">:</span>
+                <span class="n">special_condition</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">oper_size_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+
+            <span class="n">oper_size_pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">oper_size_pairs</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Possible operand values: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">oper_size_pairs</span><span class="p">)</span>
+
+            <span class="n">valid_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">operand_value</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">shift</span> <span class="ow">in</span> <span class="n">oper_size_pairs</span><span class="p">:</span>
+
+                <span class="c1"># Regular no shift</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">codification</span><span class="p">(</span><span class="n">operand_value</span><span class="p">))</span> <span class="o">==</span> <span class="n">field_value</span>
+                <span class="p">)</span>
+
+                <span class="c1"># C2 no shift</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">int_to_twocs</span><span class="p">(</span><span class="n">operand_value</span><span class="p">,</span> <span class="n">size</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Regular shifted</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">codification</span><span class="p">(</span><span class="n">operand_value</span><span class="p">))</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span>
+                    <span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span>
+                <span class="p">)</span>
+
+                <span class="c1"># C2 shifted</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">int_to_twocs</span><span class="p">(</span><span class="n">operand_value</span><span class="p">,</span> <span class="n">size</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span>
+                    <span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span>
+                <span class="p">)</span>
+
+                <span class="c1"># C2 shifted 2</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">int_to_twocs</span><span class="p">(</span><span class="n">operand_value</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="n">shift</span><span class="p">)</span>
+                    <span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span>
+                <span class="p">)</span>
+
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">or</span> <span class="n">special_condition</span>
+
+                <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Codification matches&quot;</span><span class="p">)</span>
+
+                    <span class="k">try</span><span class="p">:</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_value</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instruction type: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">)</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">operand_value</span><span class="p">)</span>
+                        <span class="n">valid_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_value</span><span class="p">)</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Codification matches and valid value!&quot;</span><span class="p">)</span>
+
+                    <span class="k">except</span> <span class="n">MicroprobeValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Codification matches but not valid value&quot;</span><span class="p">)</span>
+
+            <span class="n">operand_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">valid_values</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Non immediate operand&quot;</span><span class="p">)</span>
+
+            <span class="n">registers</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Testing value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">codification</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;N/A&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">int_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">codification</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="n">int_val</span> <span class="o">==</span> <span class="n">field_value</span>
+
+                <span class="k">if</span> <span class="n">int_val</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+
+                    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">or</span> <span class="p">(</span><span class="n">int_val</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span>
+                    <span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span> <span class="ow">or</span> <span class="p">((</span><span class="n">int_val</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span>
+
+                <span class="c1"># Handle POWERPC specific codification</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;SPR&quot;</span><span class="p">):</span>
+                    <span class="n">valid</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="p">((</span><span class="n">int_val</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mb">0b11111</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span>
+                            <span class="p">(</span><span class="n">int_val</span> <span class="o">&amp;</span> <span class="mb">0b11111</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span>
+
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;TP&#39;</span><span class="p">]:</span>
+                    <span class="n">tmp_value</span> <span class="o">=</span> <span class="n">field_value</span> <span class="o">&lt;&lt;</span> <span class="mb">0b1</span>
+                    <span class="n">tx_value</span> <span class="o">=</span> <span class="p">((</span><span class="n">bin_instr</span> <span class="o">&gt;&gt;</span> <span class="mi">21</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mb">0b1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">32</span>
+                    <span class="n">tmp_value</span> <span class="o">=</span> <span class="n">tx_value</span> <span class="o">+</span> <span class="n">tmp_value</span>
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">codification</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">tmp_value</span><span class="p">):</span>
+                        <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># Handle RISCV specific codification</span>
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;crs1&#39;</span><span class="p">,</span> <span class="s1">&#39;crs2&#39;</span><span class="p">,</span> <span class="s1">&#39;crd&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;fcrs1&#39;</span><span class="p">,</span> <span class="s1">&#39;fcrs2&#39;</span><span class="p">,</span> <span class="s1">&#39;fcrd&#39;</span><span class="p">]:</span>
+                    <span class="n">valid</span> <span class="o">=</span> <span class="p">(</span><span class="n">int_val</span> <span class="o">&amp;</span> <span class="mb">0b1000</span>
+                             <span class="ow">and</span> <span class="p">(</span><span class="n">int_val</span> <span class="o">&amp;</span> <span class="mb">0b111</span><span class="p">)</span> <span class="o">==</span> <span class="n">field_value</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        <span class="n">registers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="n">MicroprobeValueError</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Codification matches but not valid value&quot;</span><span class="p">)</span>
+
+            <span class="n">registers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">registers</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">registers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">operand_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">registers</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand values: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_values</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">operand_values</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_swap_bytes</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">little_endian</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">original</span>
+
+    <span class="c1"># Pad with 0s on the left until having an even number of digits</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">original</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="n">original</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">original</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">original</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">original</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">result</span> <span class="o">+</span> <span class="n">original</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_code</span><span class="p">(</span>
+        <span class="n">code</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">,</span> <span class="n">endianess_missmatch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">word_length</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param code:</span>
+<span class="sd">    :type code:</span>
+<span class="sd">    :param iformat:</span>
+<span class="sd">    :type iformat:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">skip_character</span> <span class="o">=</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">skip_regex</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">skip_character</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;hex&quot;</span><span class="p">:</span>
+        <span class="n">digit_list</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">hexdigits</span> <span class="o">+</span> <span class="n">skip_character</span>
+    <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;bin&quot;</span><span class="p">:</span>
+        <span class="n">digit_list</span> <span class="o">=</span> <span class="s2">&quot;01&quot;</span> <span class="o">+</span> <span class="n">skip_character</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span>
+            <span class="s2">&quot;Unknown format &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">fmt</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid input provided. Code is not a string&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">character</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid input provided. Not character provided&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">character</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">digit_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid input provided. Not hexadecimal number provided&quot;</span>
+            <span class="p">)</span>
+
+    <span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">char</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">code</span> <span class="k">if</span> <span class="n">char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip_character</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">endianess_missmatch</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fixing missmatch between input data and target&#39;s endianess&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">word_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">word_length</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="p">[(</span><span class="n">code</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">n</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="n">n</span><span class="p">)]</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+            <span class="n">code</span> <span class="o">+=</span> <span class="n">_swap_bytes</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;hex&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">code</span>
+    <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;bin&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">code</span><span class="p">[</span><span class="n">elem</span><span class="p">:</span><span class="n">elem</span> <span class="o">+</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">2</span><span class="p">))[</span>
+                    <span class="mi">2</span><span class="p">:</span>
+                <span class="p">]</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="MicroprobeBinInstructionStream">
+<a class="viewcode-back" href="../../../microprobe.utils.bin.MicroprobeBinInstructionStream.html#microprobe.utils.bin.MicroprobeBinInstructionStream">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeBinInstructionStream</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MicroprobeBinInstructionStream.__init__">
+<a class="viewcode-back" href="../../../microprobe.utils.bin.MicroprobeBinInstructionStream.html#microprobe.utils.bin.MicroprobeBinInstructionStream.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">,</span>
+            <span class="n">_data_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">little_endian</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">word_length</span><span class="o">=</span><span class="kc">None</span>
+            <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param code:</span>
+<span class="sd">        :type code:</span>
+<span class="sd">        :param target:</span>
+<span class="sd">        :type target:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">little_endian</span>
+
+        <span class="k">if</span> <span class="n">little_endian</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stream_little_endian</span> <span class="o">=</span> <span class="n">little_endian</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stream_little_endian</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">little_endian</span>
+
+        <span class="n">endianess_missmatch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_little_endian</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_code</span> <span class="o">=</span> <span class="n">_normalize_code</span><span class="p">(</span>
+            <span class="n">code</span><span class="p">,</span>
+            <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span>
+            <span class="n">endianess_missmatch</span><span class="o">=</span><span class="n">endianess_missmatch</span><span class="p">,</span>
+            <span class="n">word_length</span><span class="o">=</span><span class="n">word_length</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fmt</span> <span class="o">=</span> <span class="n">fmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">target</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_cache</span> <span class="o">=</span> <span class="n">_data_cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lengths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_compute_target_lengths</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+                                    <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">),</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Bytes parsed:&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MicroprobeBinInstructionStream.empty">
+<a class="viewcode-back" href="../../../microprobe.utils.bin.MicroprobeBinInstructionStream.html#microprobe.utils.bin.MicroprobeBinInstructionStream.empty">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lengths</span>
+
+<div class="viewcode-block" id="MicroprobeBinInstructionStream.skip">
+<a class="viewcode-back" href="../../../microprobe.utils.bin.MicroprobeBinInstructionStream.html#microprobe.utils.bin.MicroprobeBinInstructionStream.skip">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">characters</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+=</span> <span class="n">characters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="n">characters</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">bin_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">-</span> <span class="n">characters</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span><span class="p">:</span>
+            <span class="n">bin_str</span> <span class="o">=</span> <span class="n">_swap_bytes</span><span class="p">(</span><span class="n">bin_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bin_str</span></div>
+
+
+<div class="viewcode-block" id="MicroprobeBinInstructionStream.skip_all">
+<a class="viewcode-back" href="../../../microprobe.utils.bin.MicroprobeBinInstructionStream.html#microprobe.utils.bin.MicroprobeBinInstructionStream.skip_all">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skip_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">)</span><span class="o">-</span><span class="n">pindex</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">bin_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">[</span><span class="n">pindex</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span><span class="p">:</span>
+            <span class="n">bin_str</span> <span class="o">=</span> <span class="n">_swap_bytes</span><span class="p">(</span><span class="n">bin_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bin_str</span></div>
+
+
+<div class="viewcode-block" id="MicroprobeBinInstructionStream.decode_next">
+<a class="viewcode-back" href="../../../microprobe.utils.bin.MicroprobeBinInstructionStream.html#microprobe.utils.bin.MicroprobeBinInstructionStream.decode_next">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">decode_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">global</span> <span class="n">_BIN_CACHE</span>
+        <span class="k">global</span> <span class="n">_BIN_CACHE_USED</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span><span class="s2">&quot;Binary stream finished&quot;</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Index </span><span class="si">%s</span><span class="s2"> : value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+</span> <span class="mi">16</span><span class="p">])</span>
+
+        <span class="n">bin_str</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_cache</span> <span class="ow">and</span> <span class="n">_DATA_CACHE_ENABLED</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_DATA_CACHE_LENGTHS</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">bin_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+</span> <span class="n">length</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">bin_str</span> <span class="ow">in</span> <span class="n">_DATA_CACHE</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+=</span> <span class="n">length</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="n">length</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> in data cache&quot;</span> <span class="o">%</span> <span class="n">bin_str</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">bin_str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Not found in data cache&quot;</span><span class="p">)</span>
+
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">max_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lengths</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lengths</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Trying length: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Short bin string without leading zeros, skipping.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+</span> <span class="n">length</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skipping length </span><span class="si">%s</span><span class="s2"> ...&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">bin_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_code</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+</span> <span class="n">max_size</span><span class="p">]</span>
+            <span class="n">bin_str</span> <span class="o">=</span> <span class="n">bin_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">length</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span><span class="p">:</span>
+                <span class="n">bin_str</span> <span class="o">=</span> <span class="n">_swap_bytes</span><span class="p">(</span><span class="n">bin_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_little_endian</span><span class="p">)</span>
+
+            <span class="n">bin_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bin_str</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;0x</span><span class="si">%%</span><span class="s2">0</span><span class="si">%d</span><span class="s2">x&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">bin_str</span> <span class="o">=</span> <span class="n">fmt</span> <span class="o">%</span> <span class="n">bin_int</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">path</span><span class="o">+</span><span class="n">bin_str</span> <span class="ow">in</span>
+                    <span class="n">_BIN_CACHE</span> <span class="ow">and</span> <span class="n">_BIN_CACHE_ENABLED</span><span class="p">):</span>
+                <span class="n">add</span> <span class="o">=</span> <span class="n">_BIN_CACHE</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span>
+                                 <span class="n">bin_str</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+=</span> <span class="n">add</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> in code cache&quot;</span> <span class="o">%</span> <span class="n">bin_str</span><span class="p">)</span>
+
+                <span class="n">_BIN_CACHE_STATS</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">_BIN_CACHE_STATS</span><span class="p">[</span><span class="s1">&#39;hit&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="c1">#</span>
+                <span class="c1"># Return always the largest match in cache</span>
+                <span class="c1">#</span>
+                <span class="k">return</span> <span class="n">_BIN_CACHE</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="n">bin_str</span>
+                <span class="p">]</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Looking for length: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+
+            <span class="n">matches</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">instr_type</span><span class="p">,</span> <span class="n">bin_int</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">instr_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="n">length</span> <span class="ow">and</span> <span class="n">instr_type</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                    <span class="n">bin_int</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Current matches: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">matches</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to interpret the binary provided: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">bin_str</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">]))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span>
+                <span class="s2">&quot;Multiple instructions with multiple lengths found&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">possible_match_operands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">bin_int</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instruction type: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">)</span>
+            <span class="n">operands</span> <span class="o">=</span> <span class="n">_interpret_bin_instr</span><span class="p">(</span><span class="n">instr_type</span><span class="p">,</span> <span class="n">bin_int</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operands: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operands</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">operands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">operands</span><span class="p">):</span>
+                    <span class="n">possible_match_operands</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bin_int</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">elem</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_match_operands</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span>
+                <span class="s2">&quot;No variants found when processing: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                <span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="n">elem2</span><span class="p">)</span> <span class="k">for</span> <span class="n">dummy</span><span class="p">,</span> <span class="n">elem2</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">bin_int</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">operand_values</span> <span class="ow">in</span> <span class="n">possible_match_operands</span><span class="p">:</span>
+
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">Instruction</span><span class="p">()</span>
+            <span class="n">instruction</span><span class="o">.</span><span class="n">set_arch_type</span><span class="p">(</span><span class="n">instr_type</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Check match: </span><span class="si">%s</span><span class="s2"> : Values: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">instr_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">operand_values</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">operand</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">(),</span> <span class="n">operand_values</span>
+                <span class="p">):</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="n">codification</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">binary</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">bin_int</span> <span class="o">==</span> <span class="n">codification</span><span class="p">:</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Match found&quot;</span><span class="p">)</span>
+
+                    <span class="n">add</span> <span class="o">=</span> <span class="n">instr_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">2</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">+=</span> <span class="n">add</span>
+                    <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;0x</span><span class="si">%%</span><span class="s2">0</span><span class="si">%d</span><span class="s2">x&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">add</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_progress</span><span class="p">(</span><span class="n">increment</span><span class="o">=</span><span class="n">add</span><span class="p">)</span>
+
+                    <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+                    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span>
+                        <span class="n">fmt</span> <span class="o">%</span>
+                        <span class="n">bin_int</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span> <span class="o">==</span> <span class="n">bin_int</span><span class="p">,</span> <span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">bin_int</span><span class="p">),</span>
+                                                  <span class="n">fmt</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">_BIN_CACHE_ENABLED</span> <span class="ow">and</span> <span class="n">instr_type</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;raw&quot;</span><span class="p">:</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">fmt</span> <span class="o">%</span> <span class="n">bin_int</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                        <span class="n">_BIN_CACHE</span><span class="p">[</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="n">key</span>
+                        <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="n">fmt</span> <span class="o">%</span> <span class="n">bin_int</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">operand_values</span>
+                        <span class="p">)</span>
+                        <span class="n">_BIN_CACHE_STATS</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">_BIN_CACHE_USED</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="k">return</span> <span class="p">(</span><span class="n">fmt</span> <span class="o">%</span> <span class="n">bin_int</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">operand_values</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="n">MicroprobeValueError</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skip match&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skip match&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+        <span class="k">raise</span> <span class="n">MicroprobeBinaryError</span><span class="p">(</span><span class="s2">&quot;No candidates found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="n">bin_int</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_show_cache_stats</span><span class="p">(</span><span class="n">cache_file</span><span class="p">,</span> <span class="n">cache_stats</span><span class="p">):</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">cache_stats</span><span class="p">[</span><span class="s1">&#39;hit&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">cache_stats</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Cache </span><span class="si">%s</span><span class="s2"> stats: </span><span class="si">%d</span><span class="s2"> / </span><span class="si">%d</span><span class="s2"> (</span><span class="si">%2.2f%%</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="n">cache_file</span><span class="p">,</span> <span class="n">cache_stats</span><span class="p">[</span><span class="s1">&#39;hit&#39;</span><span class="p">],</span> <span class="n">cache_stats</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">],</span> <span class="n">ratio</span>
+    <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

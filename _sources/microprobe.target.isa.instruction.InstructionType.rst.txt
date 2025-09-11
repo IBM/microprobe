@@ -1,0 +1,62 @@
+microprobe.target.isa.instruction.InstructionType
+=================================================
+
+.. currentmodule:: microprobe.target.isa.instruction
+
+.. autoclass:: InstructionType
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InstructionType.__init__
+      ~InstructionType.assembly
+      ~InstructionType.binary
+      ~InstructionType.full_report
+      ~InstructionType.list_properties
+      ~InstructionType.register_property
+      ~InstructionType.sets
+      ~InstructionType.unregister_property
+      ~InstructionType.uses
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InstructionType.description
+      ~InstructionType.format
+      ~InstructionType.implicit_operands
+      ~InstructionType.instruction_checks
+      ~InstructionType.memory_operand_descriptors
+      ~InstructionType.mnemonic
+      ~InstructionType.name
+      ~InstructionType.opcode
+      ~InstructionType.operand_descriptors
+      ~InstructionType.operands
+      ~InstructionType.properties
+      ~InstructionType.target_checks
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

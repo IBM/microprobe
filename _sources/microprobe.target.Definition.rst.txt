@@ -1,0 +1,45 @@
+microprobe.target.Definition
+============================
+
+.. currentmodule:: microprobe.target
+
+.. autoclass:: Definition
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Definition.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Definition.description
+      ~Definition.filename
+      ~Definition.name
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

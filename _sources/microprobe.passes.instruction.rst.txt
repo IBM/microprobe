@@ -1,0 +1,69 @@
+﻿=============================
+microprobe.passes.instruction
+=============================
+
+.. automodule:: microprobe.passes.instruction
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      AddAssemblyByIndexPass
+      AddOnePass
+      DIDTSimplePass
+      DisableAsmByOpcodePass
+      InsertInstructionSequencePass
+      ReplaceInstructionByTypePass
+      ReplaceLoadInstructionsPass
+      ReproduceSequencePass
+      SetInstructionOperandsByOpcodePass
+      SetInstructionTypeByAlternatingSequencesPass
+      SetInstructionTypeByElementPass
+      SetInstructionTypeByProfilePass
+      SetInstructionTypeByPropertyPass
+      SetInstructionTypeBySequencePass
+      SetInstructionTypePass
+      SetRandomInstructionTypePass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  AddAssemblyByIndexPass  AddOnePass  DIDTSimplePass  DisableAsmByOpcodePass  InsertInstructionSequencePass  ReplaceInstructionByTypePass  ReplaceLoadInstructionsPass  ReproduceSequencePass  SetInstructionOperandsByOpcodePass  SetInstructionTypeByAlternatingSequencesPass  SetInstructionTypeByElementPass  SetInstructionTypeByProfilePass  SetInstructionTypeByPropertyPass  SetInstructionTypeBySequencePass  SetInstructionTypePass  SetRandomInstructionTypePass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

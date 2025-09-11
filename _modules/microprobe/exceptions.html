@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.exceptions &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">microprobe.exceptions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.exceptions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.exceptions` module</span>
+
+<span class="sd">This module define the excpeption hierarchy used in Microprobe framework.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># Constants</span>
+
+<span class="c1"># Functions</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="MicroprobeException">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeException.html#microprobe.exceptions.MicroprobeException">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all Microprobe-defined Exceptions&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeWarning">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeWarning.html#microprobe.exceptions.MicroprobeWarning">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeWarning</span><span class="p">(</span><span class="n">MicroprobeException</span><span class="p">,</span> <span class="ne">Warning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all Microprobe-defined Warning Exceptions&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeError.html#microprobe.exceptions.MicroprobeError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeError</span><span class="p">(</span><span class="n">MicroprobeException</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all Microprobe-defined Error Exceptions&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeValueError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeValueError.html#microprobe.exceptions.MicroprobeValueError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeValueError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroproveValueError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<span class="c1"># pylint: disable=too-many-ancestors</span>
+<div class="viewcode-block" id="MicroprobeDuplicatedValueError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeDuplicatedValueError.html#microprobe.exceptions.MicroprobeDuplicatedValueError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeDuplicatedValueError</span><span class="p">(</span><span class="n">MicroprobeValueError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeDuplicatedValueError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<span class="c1"># pylint: enable=too-many-ancestors</span>
+
+
+<div class="viewcode-block" id="MicroprobeCalledProcessError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeCalledProcessError.html#microprobe.exceptions.MicroprobeCalledProcessError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeCalledProcessError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeCalledProcessError Exception&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MicroprobeCalledProcessError.__init__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeCalledProcessError.html#microprobe.exceptions.MicroprobeCalledProcessError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returncode</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">MicroprobeCalledProcessError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">returncode</span> <span class="o">=</span> <span class="n">returncode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="MicroprobeCalledProcessError.__str__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeCalledProcessError.html#microprobe.exceptions.MicroprobeCalledProcessError.__str__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Command &#39;</span><span class="si">%s</span><span class="s2">&#39; returned non-zero exit status </span><span class="si">%d</span><span class="s2">.</span><span class="se">\n</span><span class="s2">Output:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MicroprobeAsmError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeAsmError.html#microprobe.exceptions.MicroprobeAsmError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeAsmError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeAsmError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeObjdumpError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeObjdumpError.html#microprobe.exceptions.MicroprobeObjdumpError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeObjdumpError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeObjdumpError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeRunCmdError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeRunCmdError.html#microprobe.exceptions.MicroprobeRunCmdError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeRunCmdError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeRunCmdError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeAddressTranslationError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeAddressTranslationError.html#microprobe.exceptions.MicroprobeAddressTranslationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeAddressTranslationError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeAddressTranslationError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeBinaryError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeBinaryError.html#microprobe.exceptions.MicroprobeBinaryError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeBinaryError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeBinaryError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobePolicyError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobePolicyError.html#microprobe.exceptions.MicroprobePolicyError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobePolicyError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobePolicyError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeUncheckableEnvironmentWarning">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeUncheckableEnvironmentWarning.html#microprobe.exceptions.MicroprobeUncheckableEnvironmentWarning">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeUncheckableEnvironmentWarning</span><span class="p">(</span><span class="n">MicroprobeWarning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeUncheckableEnvironmentWarning Warning&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeTypeError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeTypeError.html#microprobe.exceptions.MicroprobeTypeError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeTypeError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeTypeError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeLookupError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeLookupError.html#microprobe.exceptions.MicroprobeLookupError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeLookupError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">,</span> <span class="ne">LookupError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeLookupError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeArchitectureDefinitionError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeArchitectureDefinitionError.html#microprobe.exceptions.MicroprobeArchitectureDefinitionError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeArchitectureDefinitionError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeArchitectureDefinitionError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeArchitectureFormatError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeArchitectureFormatError.html#microprobe.exceptions.MicroprobeArchitectureFormatError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeArchitectureFormatError</span><span class="p">(</span><span class="n">MicroprobeArchitectureDefinitionError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeArchitectureFormatError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeYamlFormatError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeYamlFormatError.html#microprobe.exceptions.MicroprobeYamlFormatError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeYamlFormatError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeYamlFormatError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeCacheError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeCacheError.html#microprobe.exceptions.MicroprobeCacheError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeCacheError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeCacheError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeDMAFormatError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeDMAFormatError.html#microprobe.exceptions.MicroprobeDMAFormatError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeDMAFormatError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeDMAFormatError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeMPTFormatError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeMPTFormatError.html#microprobe.exceptions.MicroprobeMPTFormatError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeMPTFormatError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeMPTFormatError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeCodeGenerationError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeCodeGenerationError.html#microprobe.exceptions.MicroprobeCodeGenerationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeCodeGenerationError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeCodeGenerationError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeTargetDefinitionError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeTargetDefinitionError.html#microprobe.exceptions.MicroprobeTargetDefinitionError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeTargetDefinitionError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeTargetDefinitionError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeModelError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeModelError.html#microprobe.exceptions.MicroprobeModelError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeModelError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeModelError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeImportDefinitionError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeImportDefinitionError.html#microprobe.exceptions.MicroprobeImportDefinitionError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeImportDefinitionError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeImportDefinitionError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeImportError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeImportError.html#microprobe.exceptions.MicroprobeImportError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeImportError</span><span class="p">(</span><span class="n">MicroprobeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeImportError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeNoComparatorError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeNoComparatorError.html#microprobe.exceptions.MicroprobeNoComparatorError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeNoComparatorError</span><span class="p">(</span><span class="n">MicroprobeCodeGenerationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when there is no comparator suitable to perform a</span>
+<span class="sd">    given action.</span>
+
+<span class="sd">    :param val1: First value to compare.</span>
+<span class="sd">    :type val1: :class:`~.int` or :class:`~.Register`</span>
+<span class="sd">    :param val2: Second value to compare.</span>
+<span class="sd">    :type val2: :class:`~.int` or :class:`~.Register`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MicroprobeNoComparatorError.__init__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeNoComparatorError.html#microprobe.exceptions.MicroprobeNoComparatorError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param val1:</span>
+<span class="sd">        :param val2:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MicroprobeNoComparatorError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val1</span> <span class="o">=</span> <span class="n">val1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val2</span> <span class="o">=</span> <span class="n">val2</span></div>
+
+
+<div class="viewcode-block" id="MicroprobeNoComparatorError.__str__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeNoComparatorError.html#microprobe.exceptions.MicroprobeNoComparatorError.__str__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;No comparator found to compare: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_val1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val2</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MicroprobeBranchConditionError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeBranchConditionError.html#microprobe.exceptions.MicroprobeBranchConditionError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeBranchConditionError</span><span class="p">(</span><span class="n">MicroprobeCodeGenerationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when the branch condition is not supported.</span>
+
+<span class="sd">    :param string: cond: Condition</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MicroprobeBranchConditionError.__init__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeBranchConditionError.html#microprobe.exceptions.MicroprobeBranchConditionError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cond</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param cond:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MicroprobeBranchConditionError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span> <span class="o">=</span> <span class="n">cond</span></div>
+
+
+<div class="viewcode-block" id="MicroprobeBranchConditionError.__str__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeBranchConditionError.html#microprobe.exceptions.MicroprobeBranchConditionError.__str__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;Condition &#39;</span><span class="si">%s</span><span class="s2">&#39; not supported.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MicroprobeConstantRegisterError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeConstantRegisterError.html#microprobe.exceptions.MicroprobeConstantRegisterError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeConstantRegisterError</span><span class="p">(</span><span class="n">MicroprobeCodeGenerationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MicroprobeConstantRegisterError Exception&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="MicroprobeNoGenerationPathError">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeNoGenerationPathError.html#microprobe.exceptions.MicroprobeNoGenerationPathError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeNoGenerationPathError</span><span class="p">(</span><span class="n">MicroprobeCodeGenerationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when there is not a path suitable to generate a given</span>
+<span class="sd">    value using the available :class:`~.Generator`</span>
+<span class="sd">    instances.</span>
+
+<span class="sd">    :param target: Value to generate.</span>
+<span class="sd">    :type target: :class:`~.int`</span>
+<span class="sd">    :param origin: Starting value.</span>
+<span class="sd">    :type origin: :class:`~.int`</span>
+<span class="sd">    :param address: If value to generate is an address.</span>
+<span class="sd">    :type address: :class:`~.bool`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MicroprobeNoGenerationPathError.__init__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeNoGenerationPathError.html#microprobe.exceptions.MicroprobeNoGenerationPathError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param target:</span>
+<span class="sd">        :param origin:</span>
+<span class="sd">        :param address:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MicroprobeNoGenerationPathError</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span></div>
+
+
+<div class="viewcode-block" id="MicroprobeNoGenerationPathError.__str__">
+<a class="viewcode-back" href="../../microprobe.exceptions.MicroprobeNoGenerationPathError.html#microprobe.exceptions.MicroprobeNoGenerationPathError.__str__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;It was not possible to generate the address &#39;</span><span class="si">%d</span><span class="s2">&#39; &quot;</span> \
+                   <span class="s2">&quot;from &#39;</span><span class="si">%d</span><span class="s2">&#39; with the available Generators.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;It was not possible to generate the value &#39;</span><span class="si">%d</span><span class="s2">&#39; from &quot;</span> \
+                   <span class="s2">&quot;&#39;</span><span class="si">%d</span><span class="s2">&#39; with the available Generators.&quot;</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

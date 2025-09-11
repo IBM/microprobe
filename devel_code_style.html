@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coding style &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Submitting patches" href="devel_patches.html" />
+    <link rel="prev" title="Source code repository" href="devel_repository.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="devel.html">Development Corner</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="devel_contributing.html">Contributing to Microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_repository.html">Source code repository</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Coding style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#code-format-checker">Code format checker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pylint">Pylint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pycodestyle">Pycodestyle</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-formatting-with-black-anf-flynt">Auto-formatting with black anf flynt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#templates">Templates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#coding-conventions">Coding conventions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#docstring-format-conventions">Docstring format conventions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#documenting-modules-and-packages">Documenting modules and packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#documenting-variables">Documenting variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#documenting-classes-and-methods">Documenting classes and methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#documenting-class-properties">Documenting class properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#documenting-private-methods-properties-variables">Documenting private methods/properties/variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#referring-to-other-classes-methods-properties-modules">Referring to other classes/methods/properties/modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#comments-and-todos">Comments and TODOs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#useful-links">Useful links</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="devel_patches.html">Submitting patches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_continuous.html">Continuous integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_ticket.html">Reporting issues and bugs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_roadmap.html">Development road-map</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="devel.html">Development Corner</a></li>
+      <li class="breadcrumb-item active">Coding style</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="devel_repository.html" class="btn btn-neutral float-left" title="Source code repository" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="devel_patches.html" class="btn btn-neutral float-right" title="Submitting patches" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="coding-style">
+<h1>Coding style<a class="headerlink" href="#coding-style" title="Link to this heading"></a></h1>
+<p>This section provides the overview for the coding conventions used in this
+project. In case of doubt, please <a class="reference internal" href="support_contact.html"><span class="doc">Contact</span></a> the main developers.</p>
+<section id="code-format-checker">
+<h2>Code format checker<a class="headerlink" href="#code-format-checker" title="Link to this heading"></a></h2>
+<p>We use <em>pylint</em> and <em>pycodestyle</em> as our code checkers, as well as <em>black</em>
+and <em>flynt</em> to automatically help in the formatting of code. You can
+automatically fix code formatting issues by issuing the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; ./dev_tools/utils/check_fix_style.sh $file
+</pre></div>
+</div>
+<p>The goal is to have zero errors and warnings, and also comply with all the
+conventions suggested by these tools.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Please ensure that your patch, modification or proposal does not trigger
+any error or warning.</strong></p>
+</div>
+<p>We provide the following helper scripts to check the code style of the
+project files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="o">./</span><span class="n">dev_tools</span><span class="o">/</span><span class="n">ci</span><span class="o">/</span><span class="n">code_conventions_001_pycodestyle</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">&gt;</span> <span class="o">./</span><span class="n">dev_tools</span><span class="o">/</span><span class="n">ci</span><span class="o">/</span><span class="n">code_conventions_002_pylint</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">&gt;</span> <span class="o">./</span><span class="n">dev_tools</span><span class="o">/</span><span class="n">ci</span><span class="o">/</span><span class="n">code_conventions_003_documentation</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">&gt;</span> <span class="o">./</span><span class="n">dev_tools</span><span class="o">/</span><span class="n">ci</span><span class="o">/</span><span class="n">code_conventions_004_mypy</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>You can run them locally and fix any errors reported before committing
+changes to the repository. These scripts are executed as a part of our
+continuous integration framework, and they will fail if an error is reported.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span> <span class="pre">--check</span></code> command to check for unwanted trailing
+spaces in the code base.</p>
+</div>
+<section id="pylint">
+<h3>Pylint<a class="headerlink" href="#pylint" title="Link to this heading"></a></h3>
+<p>By default, we are not going to use any special parameter.
+<a class="reference external" href="http://www.logilab.org/857">Pylint</a> default options are ensuring the
+standard. Any warning issues should be treated as an error, and should be
+fixed <em>before</em> committing the file to the repository.</p>
+<p>We agree that sometimes the default options of <em>Pylint</em> are very strict,
+in such case, a bug should be reported and after the discussion, we will
+relax the option or not depending on what we agree.</p>
+</section>
+<section id="pycodestyle">
+<h3>Pycodestyle<a class="headerlink" href="#pycodestyle" title="Link to this heading"></a></h3>
+<p>We also use <a class="reference external" href="https://pypi.python.org/pypi/pycodestyle">pycodestyle</a> to
+verify that the code written follows the python style guide.</p>
+</section>
+</section>
+<section id="auto-formatting-with-black-anf-flynt">
+<h2>Auto-formatting with black anf flynt<a class="headerlink" href="#auto-formatting-with-black-anf-flynt" title="Link to this heading"></a></h2>
+<p><em>black</em> and <em>flynt</em> can be used as an auto-formatter tools. To do so,
+you can use the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; ./dev_tools/utils/check_fix_style.sh $file
+</pre></div>
+</div>
+<p>Then, you can manually fix any remaining errors and warnings.</p>
+</section>
+<section id="templates">
+<h2>Templates<a class="headerlink" href="#templates" title="Link to this heading"></a></h2>
+<p>Use the following template for all the <strong>python</strong> files included
+in Microprobe, and then modify the required fields as needed and declare
+the imports, functions, classes and constants accordingly.</p>
+<p>The order of declaration within a block should be alphabetical.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copyright [YEAR] IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#    http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;&lt;your one-liner module description&gt;.</span>
+
+<span class="sd">&lt;your module documentation here&gt;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+
+<span class="c1"># Built-in modules</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;&lt;YOUR_NAME&gt;&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright &lt;YEAR&gt; IBM Corporation&quot;</span>
+<span class="n">__credits__</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache License, Version 2.0&quot;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;&lt;CURRENT_VERSION&gt;&quot;</span>
+<span class="n">__maintainer__</span> <span class="o">=</span> <span class="s2">&quot;&lt;YOUR_NAME&gt;&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;&lt;YOUR_EMAIL&gt;&quot;</span>
+<span class="n">__status__</span> <span class="o">=</span> <span class="s2">&quot;Development&quot;</span>  <span class="c1"># &quot;Prototype&quot;, &quot;Development&quot;, or &quot;Production&quot;</span>
+
+<span class="c1"># Constants</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;your exported list of symbols&gt;&quot;</span><span class="p">]</span>
+
+<span class="c1"># Functions</span>
+
+<span class="c1"># Classes</span>
+</pre></div>
+</div>
+<p>For the <strong>YAML</strong> target definition files, please use the following template
+(update the fields accordingly):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copyright [YEAR] IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#    http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="c1">#</span>
+<span class="c1"># Author: &lt;YOUR_NAME&gt;</span>
+<span class="c1"># Email: &lt;YOUR_EMAIL&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># Version: &lt;CURRENT_VERSION&gt;</span>
+<span class="c1">#</span>
+
+<span class="l l-Scalar l-Scalar-Plain">&lt;your YAML definitions&gt;</span>
+</pre></div>
+</div>
+<section id="coding-conventions">
+<h3>Coding conventions<a class="headerlink" href="#coding-conventions" title="Link to this heading"></a></h3>
+<p>Follow the rules below when coding. You should apply them within each of the
+sections the template defines (i.e. do not mix code sections):</p>
+<ul class="simple">
+<li><p>Do not import multiple modules in one statement, split for readability.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">...</span></code> go before <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">...</span> <span class="pre">import</span> <span class="pre">...</span></code> statements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">...</span></code> statements should be sorted alphabetically.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">...</span></code> statements should be sorted alphabetically.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">...</span></code> statements that import more than one element from the package should
+have the elements sorted alphabetically.</p></li>
+<li><p>Constants should be sorted alphabetically, private constants (starting with
+<code class="docutils literal notranslate"><span class="pre">__</span></code> and <code class="docutils literal notranslate"><span class="pre">_</span></code>) go after the others.</p></li>
+<li><p>Always define the <code class="docutils literal notranslate"><span class="pre">__all__</span></code> special variable to define which elements are
+public (exported).</p></li>
+<li><p>Functions should be sorted alphabetically, but public functions go before
+private ones (starting with <code class="docutils literal notranslate"><span class="pre">_</span></code>).</p></li>
+<li><p>Classes should be sorted alphabetically, but public ones go before
+private ones (starting with <code class="docutils literal notranslate"><span class="pre">_</span></code>).</p></li>
+<li><p>Methods within classes should be arranged in the following manner. First the
+<code class="docutils literal notranslate"><span class="pre">__init__</span></code> method, then public attributes sorted alphabetically, then
+public methods sorted alphabetically, then private attributes sorted
+alphabetically and finally private methods sorted alphabetically and
+at the end all the magic methods starting with <code class="docutils literal notranslate"><span class="pre">__</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">__str__</span></code>,
+<code class="docutils literal notranslate"><span class="pre">__add__</span></code>, etc.).</p></li>
+<li><p>Functions and methods with named parameters should have the named parameters
+sorted alphabetically. Positional parameters only have to be sorted
+alphabetically if they are in equal importance and if the
+readability of the code is not affected.</p></li>
+</ul>
+</section>
+</section>
+<section id="docstring-format-conventions">
+<h2>Docstring format conventions<a class="headerlink" href="#docstring-format-conventions" title="Link to this heading"></a></h2>
+<p>We use sphinx to auto-document the project. Please use the following
+conventions when including python docstrings in the code. At the end of this
+section there is a list of some useful links to more details about the
+documenting formats.</p>
+<section id="documenting-modules-and-packages">
+<h3>Documenting modules and packages<a class="headerlink" href="#documenting-modules-and-packages" title="Link to this heading"></a></h3>
+<p>At the top of the module, just below the license headers explained in <a class="reference internal" href="#templates">Templates</a>, but
+above the <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">Futures</span></code> comment, include a description of the
+module. The description should include a <em>short</em> sentence with a brief
+description in the first line, then a line-break and then the long description.
+The short description will be used for table summaries when executing sphinx.
+The following code snippet shows an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;:mod:`test` module. Example module.</span>
+
+<span class="sd">The :mod:`test` is used as example module to show how to document</span>
+<span class="sd">modules. All sentences in the documentation should finish with a dot.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+</pre></div>
+</div>
+</section>
+<section id="documenting-variables">
+<h3>Documenting variables<a class="headerlink" href="#documenting-variables" title="Link to this heading"></a></h3>
+<p>Module/Package public variables should be documented. One should provide
+a description just above the declaration of the variable. Each line of this
+description should use <code class="docutils literal notranslate"><span class="pre">#:</span></code> marker in order to be considered as the
+documentation string by sphinx. The description should be: a sentence
+describing the variable and its purpose, followed by a description of
+the type of the variable within parentheses. The following code snippet
+shows an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#: Dictionary mapping the name of the registered architectures to the</span>
+<span class="c1">#: module and the object representing them. (:class:`dict` mapping :func:`str`</span>
+<span class="c1">#: to :class:`tuple` of two elements. The first one is a :class:`module` and</span>
+<span class="c1">#: the second a :class:`~.Target`)</span>
+<span class="n">REGISTERED_ARCHITECTURES</span> <span class="o">=</span> <span class="p">{}</span>
+</pre></div>
+</div>
+</section>
+<section id="documenting-classes-and-methods">
+<h3>Documenting classes and methods<a class="headerlink" href="#documenting-classes-and-methods" title="Link to this heading"></a></h3>
+<p>Methods and classes are documented in a similar fashion. In general,
+documenting a class (putting the docstring just below the <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">ClassName</span></code>
+statement), is the same as documenting the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of the class.
+Our convention is to document the class (just below the <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">ClassName</span></code>
+statement) with the high level description of the class and use the docstring
+of the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method to describe the signature (parameter, return values
+and possible exceptions).</p>
+<p>The structure of the docstring should be the following:</p>
+<ul class="simple">
+<li><p>A short description, a line break, a paragraph with the explanation of the
+class or method, a line break, the list of parameter definitions,
+the return type and the list of possible raising exceptions.</p></li>
+<li><p>There is no need to refer to types in the description unless it facilitates
+the readability of the documentation.</p></li>
+<li><p>The signature description should provide the type of the inputs, outputs and
+the exceptions. If containers/iterables types are used, one should specify
+the type of the contents (e.g. not only dictionary, also the type of the
+key and the values expected).</p></li>
+<li><p>If the parameter names are referenced in the description, they should be
+highlighted (e.g. <em>param</em>).</p></li>
+<li><p>Unless otherwise stated, whenever we refer to a type, we are implicitly
+referring to an instance object of that type. Therefore, for referring to
+the <em>class</em> type, we should explicitly state that.</p></li>
+</ul>
+<p>The following code snippet shows an example. Notice that for each parameter
+we always define it in two lines: the <code class="docutils literal notranslate"><span class="pre">:param</span></code>, and the <code class="docutils literal notranslate"><span class="pre">:type:</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Architecture</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;Abstract class to represent an architecture.</span>
+
+<span class="sd">   Object to represent an architecture bla bla ... It does several</span>
+<span class="sd">   things, some of them are very interesting others are not. Please do not</span>
+<span class="sd">   explain implementation details here, only functionality details.</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">archdef</span><span class="p">,</span> <span class="n">rregs</span><span class="p">,</span> <span class="n">stress_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an Architecture object.</span>
+
+<span class="sd">        :param definition: Architecture definition</span>
+<span class="sd">        :type definition: :class:`~.ArchitectureDefinition` instance</span>
+<span class="sd">        :param rregs: Architecture reserved registers. These registers will</span>
+<span class="sd">                      not be used unless manually allowed</span>
+<span class="sd">        :type rregs: :class:`dict` mapping strings to</span>
+<span class="sd">                     :class:`~.Register` instances</span>
+<span class="sd">        :param stress_map: Map between components and instructions that</span>
+<span class="sd">                           stress them</span>
+<span class="sd">        :type stress_map: :class:`dict` mapping :class:`~.ArchComponent`</span>
+<span class="sd">                          instances to :func:`list` of</span>
+<span class="sd">                          :class:`~.InstructionType` instances</span>
+<span class="sd">        :return: A new architecture object</span>
+<span class="sd">        :rtype: :class:`Architecture`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_def</span> <span class="o">=</span> <span class="n">archdef</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rregs</span> <span class="o">=</span> <span class="n">rregs</span>
+        <span class="o">...</span>
+
+    <span class="o">...</span>
+    <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_var_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the address of a variable into a register.</span>
+
+<span class="sd">        Return a list of instruction that sets the contents of</span>
+<span class="sd">        *register* to the address of the *var*.</span>
+
+<span class="sd">        :param register: Register</span>
+<span class="sd">        :type register: :class:`~.Register`</span>
+<span class="sd">        :param var: Variable object</span>
+<span class="sd">        :type var: :class:`~.Variable`</span>
+<span class="sd">        :return: A list of the new instruction required to load the</span>
+<span class="sd">                 variable address</span>
+<span class="sd">        :rtype: :func:`list` of :class:`~.Instruction`</span>
+<span class="sd">        :raise InvalidRegisterTypeError: if the</span>
+<span class="sd">               register can not be used to store a variable address</span>
+<span class="sd">        :raise OtherException: if something else happens</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+</div>
+</section>
+<section id="documenting-class-properties">
+<h3>Documenting class properties<a class="headerlink" href="#documenting-class-properties" title="Link to this heading"></a></h3>
+<p>Class properties are documented in a similar fashion than the module/package
+variables: a sentence plus the type within parentheses. The following code
+snippet shows an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Instruction set architecture (:class:`dict` mapping strings to :class:`~.InstructionType`).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isa</span>
+</pre></div>
+</div>
+</section>
+<section id="documenting-private-methods-properties-variables">
+<h3>Documenting private methods/properties/variables<a class="headerlink" href="#documenting-private-methods-properties-variables" title="Link to this heading"></a></h3>
+<p>It is always recommended to document everything, please follow the same rules
+we pointed out for public methods.</p>
+</section>
+<section id="referring-to-other-classes-methods-properties-modules">
+<h3>Referring to other classes/methods/properties/modules<a class="headerlink" href="#referring-to-other-classes-methods-properties-modules" title="Link to this heading"></a></h3>
+<p>As you already noticed, whenever we refer to another object –even an object
+of another project– , we always use the sphinx conventions to refer to it.
+This will generate automatically the links between documentations. Check the
+examples or the code base to see how to refer to other object types.</p>
+</section>
+<section id="comments-and-todos">
+<h3>Comments and TODOs<a class="headerlink" href="#comments-and-todos" title="Link to this heading"></a></h3>
+<p>If you need to add some extra comments, such as specific implementation
+details, or missing functionalities, you can add the <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">todo::</span></code> and
+<code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">note::</span></code> entries at the end of the docstring you are documenting.</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>We are in the process of modifying the code base to follow the conventions
+defined in this section. This is a slow and tedious process that is going on
+in back-ground. However, we have re-factorized the most of the
+following sections:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="microprobe.target.html#module-microprobe.target" title="microprobe.target"><code class="xref py py-mod docutils literal notranslate"><span class="pre">microprobe.target</span></code></a></p></li>
+<li><p><a class="reference internal" href="microprobe.target.Definition.html#microprobe.target.Definition" title="microprobe.target.Definition"><code class="xref py py-class docutils literal notranslate"><span class="pre">microprobe.target.Definition</span></code></a></p></li>
+<li><p><a class="reference internal" href="microprobe.target.Target.html#microprobe.target.Target" title="microprobe.target.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">microprobe.target.Target</span></code></a></p></li>
+</ul>
+<p>Take a look at the source code to check the conventions used, in case of
+doubts, please <a class="reference internal" href="support_contact.html"><span class="doc">Contact</span></a> the main developers.</p>
+</section>
+<section id="useful-links">
+<h2>Useful links<a class="headerlink" href="#useful-links" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">rst features</a></p></li>
+<li><p><a class="reference external" href="http://www.python.org/dev/peps/pe3.9257/">docstring format</a></p></li>
+<li><p><a class="reference external" href="http://packages.python.org/an_example_pypi_project/sphinx.html">Sphinx examples</a></p></li>
+<li><p><a class="reference external" href="http://sphinx.pocoo.org/markup/desc.html">Sphinx docstring format</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

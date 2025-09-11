@@ -1,0 +1,71 @@
+microprobe.utils.mpt.MicroprobeTestDefinition
+=============================================
+
+.. currentmodule:: microprobe.utils.mpt
+
+.. autoclass:: MicroprobeTestDefinition
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroprobeTestDefinition.__init__
+      ~MicroprobeTestDefinition.register_dat_mapping
+      ~MicroprobeTestDefinition.register_dat_property
+      ~MicroprobeTestDefinition.register_instruction_definitions
+      ~MicroprobeTestDefinition.register_raw_definition
+      ~MicroprobeTestDefinition.register_register_definition
+      ~MicroprobeTestDefinition.register_variable_definition
+      ~MicroprobeTestDefinition.set_cycle_count
+      ~MicroprobeTestDefinition.set_default_code_address
+      ~MicroprobeTestDefinition.set_default_data_address
+      ~MicroprobeTestDefinition.set_instruction_count
+      ~MicroprobeTestDefinition.set_roi_cyc
+      ~MicroprobeTestDefinition.set_roi_ins
+      ~MicroprobeTestDefinition.set_roi_memory_access_trace
+      ~MicroprobeTestDefinition.set_state
+      ~MicroprobeTestDefinition.update_register_definition
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MicroprobeTestDefinition.code
+      ~MicroprobeTestDefinition.cycle_count
+      ~MicroprobeTestDefinition.dat_mappings
+      ~MicroprobeTestDefinition.dat_properties
+      ~MicroprobeTestDefinition.default_code_address
+      ~MicroprobeTestDefinition.default_data_address
+      ~MicroprobeTestDefinition.instruction_count
+      ~MicroprobeTestDefinition.raw
+      ~MicroprobeTestDefinition.registers
+      ~MicroprobeTestDefinition.roi_cyc
+      ~MicroprobeTestDefinition.roi_ins
+      ~MicroprobeTestDefinition.roi_memory_access_trace
+      ~MicroprobeTestDefinition.state
+      ~MicroprobeTestDefinition.variables
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

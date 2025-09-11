@@ -1,0 +1,56 @@
+﻿===================
+microprobe.code.var
+===================
+
+.. automodule:: microprobe.code.var
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Variable
+      VariableArray
+      VariableSingle
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Variable  VariableArray  VariableSingle 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

@@ -1,0 +1,47 @@
+microprobe.target.isa.operand.OperandDescriptor
+===============================================
+
+.. currentmodule:: microprobe.target.isa.operand
+
+.. autoclass:: OperandDescriptor
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OperandDescriptor.__init__
+      ~OperandDescriptor.copy
+      ~OperandDescriptor.set_type
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~OperandDescriptor.is_input
+      ~OperandDescriptor.is_output
+      ~OperandDescriptor.type
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

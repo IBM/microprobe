@@ -1,0 +1,48 @@
+microprobe.code.Synthesizer
+===========================
+
+.. currentmodule:: microprobe.code
+
+.. autoclass:: Synthesizer
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Synthesizer.__init__
+      ~Synthesizer.add_pass
+      ~Synthesizer.save
+      ~Synthesizer.set_current_thread
+      ~Synthesizer.synthesize
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Synthesizer.target
+      ~Synthesizer.wrapper
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

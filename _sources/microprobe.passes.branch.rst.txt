@@ -1,0 +1,60 @@
+﻿========================
+microprobe.passes.branch
+========================
+
+.. automodule:: microprobe.passes.branch
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      BranchBraidNextPass
+      BranchNextPass
+      FixIndirectBranchPass
+      InitializeBranchDecorator
+      LinkBbls
+      NormalizeBranchTargetsPass
+      RandomizeByTypePass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  BranchBraidNextPass  BranchNextPass  FixIndirectBranchPass  InitializeBranchDecorator  LinkBbls  NormalizeBranchTargetsPass  RandomizeByTypePass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

@@ -1,0 +1,8 @@
+<map id="inheritance9c4a5da29f" name="inheritance9c4a5da29f">
+<area shape="rect" id="node1" href="microprobe.passes.Pass.html#microprobe.passes.Pass" target="_top" title="Class to represent a benchmak transformation pass." alt="" coords="5,104,184,129"/>
+<area shape="rect" id="node2" href="microprobe.passes.register.CycleMinimalAllocationPass.html#microprobe.passes.register.CycleMinimalAllocationPass" target="_top" title="CycleMinimalAllocationPass pass." alt="" coords="239,5,623,31"/>
+<area shape="rect" id="node3" href="microprobe.passes.register.DefaultRegisterAllocationPass.html#microprobe.passes.register.DefaultRegisterAllocationPass" target="_top" title="DefaultRegisterAllocationPass pass." alt="" coords="232,55,629,80"/>
+<area shape="rect" id="node4" href="microprobe.passes.register.FixRegistersPass.html#microprobe.passes.register.FixRegistersPass" target="_top" title="DefaultRegisterAllocationPass pass." alt="" coords="276,104,585,129"/>
+<area shape="rect" id="node5" href="microprobe.passes.register.NoHazardsAllocationPass.html#microprobe.passes.register.NoHazardsAllocationPass" target="_top" title="Avoid all possible data hazards:" alt="" coords="247,153,614,179"/>
+<area shape="rect" id="node6" href="microprobe.passes.register.RandomAllocationPass.html#microprobe.passes.register.RandomAllocationPass" target="_top" title="RandomAllocationPass pass." alt="" coords="255,203,606,228"/>
+</map>

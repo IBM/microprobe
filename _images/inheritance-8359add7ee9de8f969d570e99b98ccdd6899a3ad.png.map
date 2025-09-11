@@ -1,0 +1,5 @@
+<map id="inheritancecd4dae799a" name="inheritancecd4dae799a">
+<area shape="rect" id="node1" href="https://docs.python.org/3.9/library/abc.html#abc.ABC" target="_top" title="Helper class that provides a standard way to create an ABC using" alt="" coords="4,4,69,26"/>
+<area shape="rect" id="node3" href="microprobe.target.isa.register_type.RegisterType.html#microprobe.target.isa.register_type.RegisterType" target="_top" title="Abstract base class to represent a Register Type" alt="" coords="109,4,395,26"/>
+<area shape="rect" id="node2" href="microprobe.target.isa.register_type.GenericRegisterType.html#microprobe.target.isa.register_type.GenericRegisterType" target="_top" title="A class to represent a register type. Each register type is identified" alt="" coords="435,4,764,26"/>
+</map>

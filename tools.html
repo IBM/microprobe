@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command line tools &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Command line target definition scheme" href="tools_target_definition.html" />
+    <link rel="prev" title="Checking Microprobe installation" href="start_check.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command line tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tools_target_definition.html">Command line target definition scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mpt_format.html">Microprobe test (mpt) format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_ctest_format.html">C test format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2asm.html">Tool: mp_bin2asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2objdump.html">Tool: mp_bin2objdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_c2mpt.html">Tool: mp_c2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_epi.html">Tool: mp_epi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2bin.html">Tool: mp_mpt2bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2elf.html">Tool: mp_mpt2elf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2test.html">Tool: mp_mpt2test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2trace.html">Tool: mp_mpt2trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_objdump2mpt.html">Tool: mp_objdump2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seq.html">Tool: mp_seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seqtune.html">Tool: mp_seqtune</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_target.html">Tool: mp_target</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Command line tools</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="start_check.html" class="btn btn-neutral float-left" title="Checking Microprobe installation" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools_target_definition.html" class="btn btn-neutral float-right" title="Command line target definition scheme" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-line-tools">
+<h1>Command line tools<a class="headerlink" href="#command-line-tools" title="Link to this heading"></a></h1>
+<p>Microprobe is a python package providing an API to generate microbenchmarks.
+The best interface to get all the flexibility is to write down your own
+python scripts, as explained in the <a class="reference internal" href="tutorial.html"><span class="doc">Tutorials</span></a> section.
+This allows the control of the entire microbenchmark generation process.</p>
+<p>However, in some scenarios it is desirable to provide command line tools
+and text-based input definition files
+–less flexible and tailored for particular goals– to avoid the need to
+understand Microprobe internals or learn Python. Check the following
+sections for further details:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tools_target_definition.html">Command line target definition scheme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mpt_format.html">Microprobe test (mpt) format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_ctest_format.html">C test format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_bin2asm.html">Tool: mp_bin2asm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_bin2objdump.html">Tool: mp_bin2objdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_c2mpt.html">Tool: mp_c2mpt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_epi.html">Tool: mp_epi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_mpt2bin.html">Tool: mp_mpt2bin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_mpt2elf.html">Tool: mp_mpt2elf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_mpt2test.html">Tool: mp_mpt2test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_mpt2trace.html">Tool: mp_mpt2trace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_objdump2mpt.html">Tool: mp_objdump2mpt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_seq.html">Tool: mp_seq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_seqtune.html">Tool: mp_seqtune</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools_mp_target.html">Tool: mp_target</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

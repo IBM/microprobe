@@ -1,0 +1,62 @@
+microprobe.target.isa.operand.InstructionAddressRelativeOperand
+===============================================================
+
+.. currentmodule:: microprobe.target.isa.operand
+
+.. autoclass:: InstructionAddressRelativeOperand
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InstructionAddressRelativeOperand.__init__
+      ~InstructionAddressRelativeOperand.access
+      ~InstructionAddressRelativeOperand.check
+      ~InstructionAddressRelativeOperand.codification
+      ~InstructionAddressRelativeOperand.copy
+      ~InstructionAddressRelativeOperand.random_value
+      ~InstructionAddressRelativeOperand.representation
+      ~InstructionAddressRelativeOperand.set_valid_values
+      ~InstructionAddressRelativeOperand.values
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InstructionAddressRelativeOperand.address_absolute
+      ~InstructionAddressRelativeOperand.address_base
+      ~InstructionAddressRelativeOperand.address_immediate
+      ~InstructionAddressRelativeOperand.address_index
+      ~InstructionAddressRelativeOperand.address_relative
+      ~InstructionAddressRelativeOperand.constant
+      ~InstructionAddressRelativeOperand.description
+      ~InstructionAddressRelativeOperand.float
+      ~InstructionAddressRelativeOperand.immediate
+      ~InstructionAddressRelativeOperand.name
+      ~InstructionAddressRelativeOperand.shift
+      ~InstructionAddressRelativeOperand.vector
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

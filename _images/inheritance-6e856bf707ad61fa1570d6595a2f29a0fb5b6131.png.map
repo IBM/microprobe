@@ -1,0 +1,5 @@
+<map id="inheritancecb0aff2783" name="inheritancecb0aff2783">
+<area shape="rect" id="node1" href="microprobe.passes.Pass.html#microprobe.passes.Pass" target="_top" title="Class to represent a benchmak transformation pass." alt="" coords="5,31,184,56"/>
+<area shape="rect" id="node2" href="microprobe.passes.symbol.ResolveSymbolicReferencesPass.html#microprobe.passes.symbol.ResolveSymbolicReferencesPass" target="_top" title="ResolveSymbolicReferencesPass pass." alt="" coords="232,5,645,31"/>
+<area shape="rect" id="node3" href="microprobe.passes.symbol.SetInstructionLabelByIndexPass.html#microprobe.passes.symbol.SetInstructionLabelByIndexPass" target="_top" title="SetInstructionLabelByIndexPass pass." alt="" coords="235,55,643,80"/>
+</map>

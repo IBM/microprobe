@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.code.bbl &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../code.html">microprobe.code</a></li>
+      <li class="breadcrumb-item active">microprobe.code.bbl</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.code.bbl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.code.bbl` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.ins</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instruction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">MICROPROBE_RC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span> \
+    <span class="n">MicroprobeValueError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.typeguard_decorator</span><span class="w"> </span><span class="kn">import</span> <span class="n">typeguard_testsuite</span>
+
+<span class="c1"># Type hinting</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Bbl&quot;</span><span class="p">,</span> <span class="s2">&quot;replicate_bbls&quot;</span><span class="p">]</span>
+
+
+<span class="c1"># Functions</span>
+<div class="viewcode-block" id="replicate_bbls">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.html#microprobe.code.bbl.replicate_bbls">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">replicate_bbls</span><span class="p">(</span><span class="n">bbl_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Bbl</span><span class="p">],</span> <span class="n">displacement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a copy the given basic block list at the specified displacement.</span>
+
+<span class="sd">    :param bbl_list: List of basic blocks to copy</span>
+<span class="sd">    :type bbl_list: :class:`~.list` of :class:`~.Bbl`</span>
+<span class="sd">    :param displacement: Displacement of the copied basic blocks</span>
+<span class="sd">                         (Default value = None)</span>
+<span class="sd">    :type displacement: :class:`~.int`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bbls_replicated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Bbl</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">bbl_list</span><span class="p">:</span>
+        <span class="n">bbls_replicated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbl</span><span class="o">.</span><span class="n">replicate</span><span class="p">(</span><span class="n">displacement</span><span class="o">=</span><span class="n">displacement</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">bbls_replicated</span></div>
+
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="Bbl">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Bbl</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a basic block.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Bbl.__init__">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">instructions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instruction</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param size:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeValueError</span><span class="p">(</span><span class="s2">&quot;I can not create a Bbl with </span><span class="si">%d</span><span class="s2"> size&quot;</span> <span class="o">%</span>
+                                       <span class="n">size</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_copy_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_incstep</span> <span class="o">=</span> <span class="mi">10000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instruction</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_incstep</span><span class="p">,</span> <span class="p">(</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="p">:</span> <span class="n">Address</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_displacement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]:</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="s2">&quot;Initializing BBL:&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">instructions</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+                <span class="c1"># self._check_size()</span>
+                <span class="n">instr</span> <span class="o">=</span> <span class="n">Instruction</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span><span class="p">]</span> <span class="o">=</span> <span class="n">instr</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="p">[</span><span class="n">instr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">+=</span> <span class="mi">10</span>
+                <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]:</span>
+                    <span class="n">progress</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_size</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span><span class="p">]</span> <span class="o">=</span> <span class="n">instructions</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span><span class="p">]</span> <span class="o">=</span> <span class="n">Instruction</span><span class="p">()</span>
+
+                <span class="c1"># Type hinting needs some help here :)</span>
+                <span class="n">instr_index</span><span class="p">:</span> <span class="n">Instruction</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="n">instr_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="p">[</span><span class="n">instr_index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">+=</span> <span class="mi">10</span>
+                <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]:</span>
+                    <span class="n">progress</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of instructions in the basic block</span>
+<span class="sd">        (:class:`~.list` of :class:`~.Instruction`)</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span><span class="p">]</span> <span class="k">if</span> <span class="n">elem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Basic block address (:class:`~.Address`)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address</span>
+
+<div class="viewcode-block" id="Bbl.set_address">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.set_address">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="n">Address</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the basic block address.</span>
+
+<span class="sd">        :param address: Address for the basic block</span>
+<span class="sd">        :type address: :class:`~.Address`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Displacement of the basic block (::class:`~.int`)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_displacement</span>
+
+<div class="viewcode-block" id="Bbl.set_displacement">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.set_displacement">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">displacement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the displacement of the basic block.</span>
+
+<span class="sd">        :param displacement: Displacement for the basic block</span>
+<span class="sd">        :type displacement: :class:`~.int`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_displacement</span> <span class="o">=</span> <span class="n">displacement</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Size of the basic block, number of instructions (::class:`~.int`)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instrs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr</span><span class="p">:</span> <span class="n">Instruction</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the index of the given instruction within the basic block.</span>
+
+<span class="sd">        Returns the index of the given instruction within the basic block.</span>
+<span class="sd">        If the instruction is not found, return a negative number.</span>
+
+<span class="sd">        :param instr: Instruction instance</span>
+<span class="sd">        :type instr: :class:`~.Instruction`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">instr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Bbl.get_instruction_index">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.get_instruction_index">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_instruction_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the index of the given instruction within the basic block.</span>
+
+<span class="sd">        Returns the index of the given instruction within the basic block.</span>
+<span class="sd">        If the instruction is not found, return a negative number.</span>
+
+<span class="sd">        :param instr: Instruction instance</span>
+<span class="sd">        :type instr: :class:`~.Instruction`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Bbl.reset_instruction">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.reset_instruction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_instruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">,</span> <span class="n">new_instr</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the instruction within a basic block by another instruction.</span>
+
+<span class="sd">        Resets the instruction within a basic block by another instruction.</span>
+<span class="sd">        If the instruction is not found, an exception is raised.</span>
+
+<span class="sd">        :param instr: Instruction to replace</span>
+<span class="sd">        :type instr: :class:`~.Instruction`</span>
+<span class="sd">        :param new_instr: New instruction</span>
+<span class="sd">        :type new_instr: :class:`~.Instruction`</span>
+<span class="sd">        :raise microprobe.exceptions.MicroprobeCodeGenerationError: if the</span>
+<span class="sd">            instruction is not found in the basic block</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span><span class="s2">&quot;Instruction not found &quot;</span>
+                                                <span class="s2">&quot;in the basic block&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_instr</span></div>
+
+
+<div class="viewcode-block" id="Bbl.remove_instructions_from">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.remove_instructions_from">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_instructions_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes the given instruction from the basic block.</span>
+
+<span class="sd">        Removes the given instruction from the basic block. If the instruction</span>
+<span class="sd">        is not found, the basic block is not changed.</span>
+
+<span class="sd">        :param instr: Instruction to remove</span>
+<span class="sd">        :type instr: :class:`~.Instruction`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">linstr</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">elem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">linstr</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_size</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Bbl.insert_instr">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.insert_instr">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert_instr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">instrs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instruction</span><span class="p">],</span>
+                     <span class="n">before</span><span class="p">:</span> <span class="n">Instruction</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">after</span><span class="p">:</span> <span class="n">Instruction</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts a list of instruction in the basic block.</span>
+
+<span class="sd">        Inserts a list of instruction in the basic block. Before/After</span>
+<span class="sd">        parameters specify the instructions before/after which the new</span>
+<span class="sd">        instruction should be added.</span>
+
+<span class="sd">        :param instrs: Instruction to insert</span>
+<span class="sd">        :type instrs: :class:`~.list` of :class:`~.Instruction`</span>
+<span class="sd">        :param before: Instructions will be inserted before this instruction</span>
+<span class="sd">                       (Default value = None)</span>
+<span class="sd">        :type before: :class:`~.list` of :class:`~.Instruction`</span>
+<span class="sd">        :param after: Instructions will be inserted after this instruction</span>
+<span class="sd">                      (Default value = None)</span>
+<span class="sd">        :type after: :class:`~.list` of :class:`~.Instruction`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">idx_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">(</span><span class="n">before</span><span class="p">)</span>
+        <span class="n">idx_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">idx_before</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">idx_after</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_size</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">instrs</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">instrs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">instrs</span>
+
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">instrs</span><span class="p">:</span>
+
+                <span class="k">assert</span> <span class="n">instr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="p">,</span> <span class="s2">&quot;Something wrong&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="p">[</span><span class="n">instr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">assert</span> <span class="n">idx_before</span> <span class="o">&gt;</span> <span class="n">idx_after</span> <span class="ow">or</span> <span class="n">idx_before</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> \
+                <span class="s2">&quot;Something wrong&quot;</span>
+
+            <span class="c1"># assert idx_before == -1 and idx_after &gt; -1</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="n">idx_after</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">idx_after</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">instrs</span><span class="p">)]):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="n">idx_after</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">idx_after</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">instrs</span><span class="p">)]</span> <span class="o">=</span> \
+                    <span class="n">instrs</span>
+                <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">instrs</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">instr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="p">,</span> <span class="s2">&quot;Something wrong&quot;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="p">[</span><span class="n">instr</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx_after</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">idx_after</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_size</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">instrs</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[(</span><span class="n">idx_after</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">instrs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">instrs</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">instrs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">v</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+                                      <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">)</span>
+                                      <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_increase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increases the basic block size by the number specified.</span>
+
+<span class="sd">        :param num: Number of instructions to increase</span>
+<span class="sd">        :type num: :class:`~.int`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">instrs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instruction</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+            <span class="n">instrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Instruction</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_instr</span><span class="p">(</span><span class="n">instrs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extra</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks and fixes basic block size.</span>
+
+<span class="sd">        :param extra:  (Default value = 0)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pointer</span> <span class="o">+</span> <span class="n">extra</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incstep</span>
+
+<div class="viewcode-block" id="Bbl.replicate">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.replicate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">displacement</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replicates current basic block.</span>
+
+<span class="sd">        Replicates current basic block with the given extra displacement.</span>
+
+<span class="sd">        :param displacement: Extra displacement (Default value = 0)</span>
+<span class="sd">        :type displacement: :class:`~.int`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">new_bbl</span> <span class="o">=</span> <span class="n">Bbl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">new_bbl</span><span class="o">.</span><span class="n">set_address</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">displacement</span><span class="p">)</span>
+        <span class="n">new_bbl</span><span class="o">.</span><span class="n">set_displacement</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">orig_instr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instrs</span><span class="p">):</span>
+
+            <span class="n">new_instr</span> <span class="o">=</span> <span class="n">orig_instr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">new_instr</span><span class="o">.</span><span class="n">label</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">new_instr</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">new_instr</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy_id</span><span class="p">))</span>
+
+            <span class="n">new_instr</span><span class="o">.</span><span class="n">set_address</span><span class="p">(</span><span class="n">orig_instr</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">displacement</span><span class="p">)</span>
+            <span class="n">new_bbl</span><span class="o">.</span><span class="n">reset_instruction</span><span class="p">(</span><span class="n">new_bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">new_instr</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_copy_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">new_bbl</span></div>
+
+
+<div class="viewcode-block" id="Bbl.distance">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.distance">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr1</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">,</span> <span class="n">instr2</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">):</span>
+        <span class="n">i1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_instruction_index</span><span class="p">(</span><span class="n">instr1</span><span class="p">)</span>
+        <span class="n">i2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_instruction_index</span><span class="p">(</span><span class="n">instr2</span><span class="p">)</span>
+        <span class="n">idxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">]))</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">elem</span> <span class="o">&gt;</span> <span class="n">idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">elem</span> <span class="o">&lt;=</span> <span class="n">idxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Bbl.get_instruction_by_distance">
+<a class="viewcode-back" href="../../../microprobe.code.bbl.Bbl.html#microprobe.code.bbl.Bbl.get_instruction_by_distance">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_instruction_by_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instr</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">i1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_instruction_index</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">-</span> <span class="n">distance</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">distance</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instdic</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

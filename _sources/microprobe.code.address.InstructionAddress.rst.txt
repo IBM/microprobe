@@ -1,0 +1,48 @@
+microprobe.code.address.InstructionAddress
+==========================================
+
+.. currentmodule:: microprobe.code.address
+
+.. autoclass:: InstructionAddress
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InstructionAddress.__init__
+      ~InstructionAddress.check_alignment
+      ~InstructionAddress.copy
+      ~InstructionAddress.set_target_instruction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InstructionAddress.base_address
+      ~InstructionAddress.displacement
+      ~InstructionAddress.target_instruction
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

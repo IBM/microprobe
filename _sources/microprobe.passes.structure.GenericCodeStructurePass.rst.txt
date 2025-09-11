@@ -1,0 +1,41 @@
+microprobe.passes.structure.GenericCodeStructurePass
+====================================================
+
+.. currentmodule:: microprobe.passes.structure
+
+.. autoclass:: GenericCodeStructurePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GenericCodeStructurePass.__init__
+      ~GenericCodeStructurePass.check
+      ~GenericCodeStructurePass.info
+      ~GenericCodeStructurePass.report
+      ~GenericCodeStructurePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

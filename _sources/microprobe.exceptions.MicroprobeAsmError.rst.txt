@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeAsmError
+========================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeAsmError
+
+   
+
+   
+   
+
+   
+   
+   

@@ -1,0 +1,54 @@
+﻿=====================
+microprobe.utils.ieee
+=====================
+
+.. automodule:: microprobe.utils.ieee
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      float_to_nnp_data_type_1
+      ieee_float_to_int64
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: float_to_nnp_data_type_1
+   .. autofunction:: ieee_float_to_int64
+   

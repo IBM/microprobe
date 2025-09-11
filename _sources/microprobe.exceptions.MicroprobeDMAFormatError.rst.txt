@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeDMAFormatError
+==============================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeDMAFormatError
+
+   
+
+   
+   
+
+   
+   
+   

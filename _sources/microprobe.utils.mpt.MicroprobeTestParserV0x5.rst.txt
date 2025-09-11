@@ -1,0 +1,50 @@
+microprobe.utils.mpt.MicroprobeTestParserV0x5
+=============================================
+
+.. currentmodule:: microprobe.utils.mpt
+
+.. autoclass:: MicroprobeTestParserV0x5
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroprobeTestParserV0x5.__init__
+      ~MicroprobeTestParserV0x5.dump_mpt_config
+      ~MicroprobeTestParserV0x5.parse_code
+      ~MicroprobeTestParserV0x5.parse_contents
+      ~MicroprobeTestParserV0x5.parse_filename
+      ~MicroprobeTestParserV0x5.parse_instruction
+      ~MicroprobeTestParserV0x5.parse_register
+      ~MicroprobeTestParserV0x5.parse_variable
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MicroprobeTestParserV0x5.version
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,715 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.target &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">microprobe.target</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.target</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.target` package</span>
+
+<span class="sd">A target is defined by three components. The architecture definition</span>
+<span class="sd">(see :mod:`~.isa` subpackage), the microarchitecture definition</span>
+<span class="sd">(see :mod:`~.uarch` subpackage) and the environment definition</span>
+<span class="sd">(see :mod:`~.env` subpackage). These three elements define the properties</span>
+<span class="sd">of the target which might be queried during the code generation in order</span>
+<span class="sd">to drive the code generation.</span>
+
+<span class="sd">The main elements of this package are the following:</span>
+
+<span class="sd">- :func:`~.import_definition` function provides support for importing target</span>
+<span class="sd">  definitions.</span>
+<span class="sd">- :class:`~.Definition` objects encapsulate the required information to be</span>
+<span class="sd">  able to import architecture, microarchitecture or environment definitions.</span>
+<span class="sd">- :class:`~.Target` objects are in charge of providing a generic API to query</span>
+<span class="sd">  all kind of target properties. This is the main object that is used by other</span>
+<span class="sd">  modules and packages of microprobe to query target information (e.g.</span>
+<span class="sd">  instructions, registers, functional units, etc.).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">annotations</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeError</span><span class="p">,</span> \
+    <span class="n">MicroprobeTargetDefinitionError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericEnvironment</span><span class="p">,</span> \
+    <span class="n">find_env_definitions</span><span class="p">,</span> <span class="n">import_env_definition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_isa_definitions</span><span class="p">,</span> <span class="n">import_isa_definition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.uarch</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_microarchitecture_definitions</span><span class="p">,</span> \
+    <span class="n">import_microarchitecture_definition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pickable</span>
+
+<span class="c1"># Local modules</span>
+
+<span class="c1"># Type hinting</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa</span><span class="w"> </span><span class="kn">import</span> <span class="n">ISA</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.uarch</span><span class="w"> </span><span class="kn">import</span> <span class="n">Microarchitecture</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wrapper</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;import_definition&quot;</span><span class="p">,</span>
+    <span class="c1"># &quot;import_policies&quot;,</span>
+    <span class="s2">&quot;Target&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Definition&quot;</span>
+<span class="p">]</span>
+
+
+<span class="c1"># Functions</span>
+<div class="viewcode-block" id="import_definition">
+<a class="viewcode-back" href="../../microprobe.target.html#microprobe.target.import_definition">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">import_definition</span><span class="p">(</span><span class="n">definition_tuple</span><span class="p">:</span> <span class="nb">str</span>
+                      <span class="o">|</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Definition</span><span class="p">,</span> <span class="n">Definition</span><span class="p">,</span> <span class="n">Definition</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the target corresponding the to the given *definition_tuple*.</span>
+
+<span class="sd">    Return the target object corresponding the to the given</span>
+<span class="sd">    *definition_tuple*. The *definition_tuple* is a string of the form</span>
+<span class="sd">    ``&lt;architecture_name&gt;-&lt;uarch_name&gt;-&lt;environment_name&gt;`` that defines the</span>
+<span class="sd">    target. This function uses the search paths provided in the configuration</span>
+<span class="sd">    to look for the definitions to import.</span>
+
+<span class="sd">    :param definition_tuple: Target definition string</span>
+<span class="sd">    :type definition_tuple: :class:`~.str`</span>
+<span class="sd">    :return: The target object corresponding to the given *definition_tuple*</span>
+<span class="sd">    :rtype: :class:`~.Target`</span>
+<span class="sd">    :raise microprobe.exceptions.MicroprobeTargetDefinitionError: if something</span>
+<span class="sd">        is wrong during the import</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start importing definition tuple&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">definition_tuple</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">definition_tuple</span> <span class="o">=</span> <span class="n">_parse_definition_tuple</span><span class="p">(</span><span class="n">definition_tuple</span><span class="p">)</span>
+
+    <span class="c1"># Type hinting needs some help here :)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">definition_tuple</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="n">isa_def</span><span class="p">,</span> <span class="n">uarch_def</span><span class="p">,</span> <span class="n">env_def</span> <span class="o">=</span> <span class="n">definition_tuple</span>
+    <span class="n">isa</span> <span class="o">=</span> <span class="n">import_isa_definition</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">isa_def</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">import_env_definition</span><span class="p">(</span><span class="n">env_def</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                <span class="n">isa</span><span class="p">,</span>
+                                <span class="n">definition_name</span><span class="o">=</span><span class="n">env_def</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">uarch</span> <span class="o">=</span> <span class="n">import_microarchitecture_definition</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">uarch_def</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+
+    <span class="n">target</span> <span class="o">=</span> <span class="n">Target</span><span class="p">(</span><span class="n">isa</span><span class="p">,</span> <span class="n">uarch</span><span class="o">=</span><span class="n">uarch</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Target &#39;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">&#39; imported&quot;</span><span class="p">,</span> <span class="n">isa_def</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">uarch_def</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+             <span class="n">env_def</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End importing definition tuple&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">target</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_definition_tuple</span><span class="p">(</span><span class="n">definition_tuple</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the target definitions corresponding to the *definition_tuple*.</span>
+
+<span class="sd">    Return the target definitions corresponding to the *definition_tuple*.</span>
+<span class="sd">    Check the *definition_tuple* format, and for each element (architecture,</span>
+<span class="sd">    microarchitecture and environment) looks for the if there is a definition</span>
+<span class="sd">    present in the current defined definition paths. It returns a tuple with</span>
+<span class="sd">    the three corresponding definitions.</span>
+
+<span class="sd">    :param definition_tuple: Target definition string</span>
+<span class="sd">    :type definition_tuple: :class:`~.str`</span>
+<span class="sd">    :return: Tuple of target definitions</span>
+<span class="sd">    :rtype: :func:`tuple` of :class:`~.Definition`</span>
+<span class="sd">    :raise microprobe.exceptions.MicroprobeTargetDefinitionError: if something</span>
+<span class="sd">        if the *definition_tuple* format is wrong or if the definition</span>
+<span class="sd">        specified is not found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">isa_def</span><span class="p">,</span> <span class="n">architecture_def</span><span class="p">,</span> <span class="n">env_def</span> <span class="o">=</span> <span class="n">definition_tuple</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeTargetDefinitionError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid format of &#39;</span><span class="si">%s</span><span class="s2">&#39; target tuple&quot;</span> <span class="o">%</span> <span class="n">definition_tuple</span><span class="p">)</span>
+
+    <span class="n">definitions</span> <span class="o">=</span> <span class="n">find_isa_definitions</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">isa_def</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">definition</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">definitions</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeTargetDefinitionError</span><span class="p">(</span><span class="s2">&quot;ISA &#39;</span><span class="si">%s</span><span class="s2">&#39; not available&quot;</span> <span class="o">%</span>
+                                              <span class="n">isa_def</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">isa_def</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">definition</span> <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">definitions</span>
+            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">isa_def</span>
+        <span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">definitions</span> <span class="o">=</span> <span class="n">find_microarchitecture_definitions</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">architecture_def</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">definition</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">definitions</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeTargetDefinitionError</span><span class="p">(</span>
+            <span class="s2">&quot;Microarchitecture &#39;</span><span class="si">%s</span><span class="s2">&#39; not available&quot;</span> <span class="o">%</span> <span class="n">architecture_def</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">architecture_def</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">definition</span> <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">definitions</span>
+            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">architecture_def</span>
+        <span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">definitions</span> <span class="o">=</span> <span class="n">find_env_definitions</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">env_def</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">definition</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">definitions</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeTargetDefinitionError</span><span class="p">(</span>
+            <span class="s2">&quot;Environment &#39;</span><span class="si">%s</span><span class="s2">&#39; not available. &quot;</span> <span class="o">%</span> <span class="n">env_def</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">env_def</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">definition</span> <span class="k">for</span> <span class="n">definition</span> <span class="ow">in</span> <span class="n">definitions</span>
+            <span class="k">if</span> <span class="n">definition</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">env_def</span>
+        <span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">isa_def</span><span class="p">,</span> <span class="n">architecture_def</span><span class="p">,</span> <span class="n">env_def</span><span class="p">)</span>
+
+
+<span class="c1"># def import_policies(target_name):</span>
+<span class="c1">#    &quot;&quot;&quot;Return the dictionary of policies for the *target_name*.&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#    paths = MICROPROBE_RC[&quot;default_paths&quot;]</span>
+<span class="c1">#    policies = RejectingDict()</span>
+<span class="c1">#</span>
+<span class="c1">#    for policy_file in findfiles(paths, &quot;^.*.py$&quot;):</span>
+<span class="c1">#</span>
+<span class="c1">#        LOG.debug(&quot;Looking for policies in &#39;%s&#39;&quot;, policy_file)</span>
+<span class="c1">#</span>
+<span class="c1">#        try:</span>
+<span class="c1">#</span>
+<span class="c1">#            name = get_attr_from_module(&quot;NAME&quot;, policy_file)</span>
+<span class="c1">#            description = get_attr_from_module(&quot;DESCRIPTION&quot;, policy_file)</span>
+<span class="c1">#            targets = get_attr_from_module(&quot;SUPPORTED_TARGETS&quot;, policy_file)</span>
+<span class="c1">#            policy = get_attr_from_module(&quot;policy&quot;, policy_file)</span>
+<span class="c1">#            extra = get_dict_from_module(policy_file)</span>
+<span class="c1">#</span>
+<span class="c1">#            LOG.debug(&quot;Policy &#39;%s&#39; found!&quot;, name)</span>
+<span class="c1">#</span>
+<span class="c1">#            if target_name in targets:</span>
+<span class="c1">#</span>
+<span class="c1">#                LOG.debug(&quot;Policy &#39;%s&#39; valid!&quot;, name)</span>
+<span class="c1">#                policies[name] = Policy(name, description, policy,</span>
+<span class="c1">#                                        targets, extra, policy_file)</span>
+<span class="c1">#</span>
+<span class="c1">#        except MicroprobeImportDefinitionError:</span>
+<span class="c1">#            LOG.debug(&quot;Not a policy module&quot;)</span>
+<span class="c1">#            continue</span>
+<span class="c1">#</span>
+<span class="c1">#        except MicroprobeDuplicatedValueError:</span>
+<span class="c1">#            raise MicroprobePolicyError(</span>
+<span class="c1">#                &quot;Policy &#39;%s&#39; in &#39;%s&#39; is duplicated&quot; % (name, policy_file)</span>
+<span class="c1">#            )</span>
+<span class="c1">#</span>
+<span class="c1">#    return policies</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="Definition">
+<a class="viewcode-back" href="../../microprobe.target.Definition.html#microprobe.target.Definition">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Definition</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a target element definition.</span>
+
+<span class="sd">    A target element definition could be the definition of the architecture,</span>
+<span class="sd">    the microarchitecture or the environment. In all three cases a definition</span>
+<span class="sd">    is composed by the definition name, the filename (where in the file system</span>
+<span class="sd">    the definition is located) and the description.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Class constant used for nice string formmating</span>
+    <span class="n">_field1</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">_field2</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">_field3</span> <span class="o">=</span> <span class="mi">78</span> <span class="o">-</span> <span class="n">_field1</span> <span class="o">-</span> <span class="n">_field2</span>
+    <span class="n">_fmt_str_</span> <span class="o">=</span> <span class="s2">&quot;Name:&#39;</span><span class="si">%%%d</span><span class="s2">s&#39;, Description:&#39;</span><span class="si">%%%d</span><span class="s2">s&#39;, File:&#39;</span><span class="si">%%%d</span><span class="s2">s&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">_field1</span><span class="p">,</span> <span class="n">_field2</span><span class="p">,</span> <span class="n">_field3</span><span class="p">)</span>
+    <span class="n">_cmp_attributes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;filename&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Definition.__init__">
+<a class="viewcode-back" href="../../microprobe.target.Definition.html#microprobe.target.Definition.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Definition object.</span>
+
+<span class="sd">        :param filename: Filename where the definition is placed</span>
+<span class="sd">        :type filename: :class:`~.str`</span>
+<span class="sd">        :param name: Name of the definition</span>
+<span class="sd">        :type name: :class:`~.str`</span>
+<span class="sd">        :param description: Description of the definition</span>
+<span class="sd">        :type description: :class:`~.str`</span>
+<span class="sd">        :return: Definition instance</span>
+<span class="sd">        :rtype: :class:`~.Definition`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Description of the definition (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filename of the definition (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Name of the definition (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x.__str__() &lt;==&gt; str(x).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fmt_str_</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_cmp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> != </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                                      <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x.__eq__(y) &lt;==&gt; x==y&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_cmp</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmp_attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x.__ne__(y) &lt;==&gt; x!=y&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_cmp</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmp_attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x.__lt__(y) &lt;==&gt; x&lt;y&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_cmp</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmp_attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x.__gt__(y) &lt;==&gt; x&gt;y&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_cmp</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmp_attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x.__le__(y) &lt;==&gt; x&lt;=y&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_cmp</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmp_attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x.__ge__(y) &lt;==&gt; x&gt;=y&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_cmp</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmp_attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="Target">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Target</span><span class="p">(</span><span class="n">Pickable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a code generation target.</span>
+
+<span class="sd">    A target is defined by the architecture, the microarchitecture</span>
+<span class="sd">    implementation and the generation environment.</span>
+<span class="sd">    The Target object provides a common interface to all the</span>
+<span class="sd">    architecture/microarchitecture/environment specific methods using a</span>
+<span class="sd">    facade software design pattern.</span>
+<span class="sd">    Therefore, all the references to target related properties should go</span>
+<span class="sd">    through this object interface in order to minimize the coupling with the</span>
+<span class="sd">    other modules (code generation, design space exploration, ...).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Target.__init__">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">isa</span><span class="p">:</span> <span class="n">ISA</span><span class="p">,</span>
+                 <span class="n">env</span><span class="p">:</span> <span class="n">Environment</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">uarch</span><span class="p">:</span> <span class="n">Microarchitecture</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Target object.</span>
+
+<span class="sd">        :param isa: Architecture (i.e. Instruction Set Architecture)</span>
+<span class="sd">        :type isa: :class:`~.ISA`</span>
+<span class="sd">        :param env: Environment (default: None)</span>
+<span class="sd">        :type env: :class:`~.Environment`</span>
+<span class="sd">        :param uarch: Microarchitecture (default: None)</span>
+<span class="sd">        :type uarch: :class:`~.Microarchitecture`</span>
+<span class="sd">        :return: Target instance</span>
+<span class="sd">        :rtype: :class:`~.Target`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span><span class="p">:</span> <span class="n">Microarchitecture</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="p">:</span> <span class="n">Environment</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_policies</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper</span><span class="p">:</span> <span class="n">Wrapper</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_isa</span><span class="p">(</span><span class="n">isa</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">uarch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_uarch</span><span class="p">(</span><span class="n">uarch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">microarchitecture</span><span class="o">.</span><span class="n">add_properties_to_isa</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">instructions</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_env</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_env</span><span class="p">(</span>
+                <span class="n">GenericEnvironment</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Empty environment&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">isa</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Name of the Target (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isa</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">+=</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Description of the Target (:class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Target ISA: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ISA Description: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">microarchitecture</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Target Micro-architecture: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">microarchitecture</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Micro-architecture Description: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">microarchitecture</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Target Micro-architecture: Not defined&quot;</span><span class="p">)</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Micro-architecture Description: Not defined&quot;</span><span class="p">)</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Target Environment: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Environment description: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">environment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Environment of the Target (:class:`~.Environment`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isa</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Architecture of the Target (:class:`~.ISA`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isa</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">microarchitecture</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Microarchitecture of the Target (:class:`~.Microarchitecture`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reserved_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reserved registers of the Target (:class:`~.list` of</span>
+<span class="sd">        :class:`~.Register`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">environment_reserved_registers</span> <span class="o">+</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">scratch_registers</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper of the Target (:class:`~.Wrapper`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper</span>
+
+<div class="viewcode-block" id="Target.full_report">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target.full_report">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a long description of the Target.</span>
+
+<span class="sd">        :rtype: :class:`~.str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">full_report</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">microarchitecture</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">microarchitecture</span><span class="o">.</span><span class="n">full_report</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">rstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">full_report</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">rstr</span></div>
+
+
+<div class="viewcode-block" id="Target.property_isa_map">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target.property_isa_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">property_isa_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate property to isa map.</span>
+
+<span class="sd">        Return a dictionary mapping values of the property *prop_name* to</span>
+<span class="sd">        the list of :class:`~.InstructionType` that have that property value.</span>
+
+<span class="sd">        :param prop_name: Property name</span>
+<span class="sd">        :type prop_name: :class:`~.str`</span>
+<span class="sd">        :return: Dictionary mapping value properties to instruction types</span>
+<span class="sd">        :rtype: :class:`~.dict` mapping property values to :class:`~.list` of</span>
+<span class="sd">                :class:`~.InstructionType`</span>
+<span class="sd">        :raise microprobe.exceptions.MicroprobeTargetDefinitionError: if the</span>
+<span class="sd">            property is not found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prop_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeTargetDefinitionError</span><span class="p">(</span>
+                    <span class="s2">&quot;Property &#39;</span><span class="si">%s</span><span class="s2">&#39; for instruction not found&quot;</span> <span class="o">%</span> <span class="n">prop_name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prop_map</span><span class="p">:</span>
+                    <span class="n">prop_map</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="n">prop_map</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">prop_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">prop_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prop_map</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">prop_map</span></div>
+
+
+<div class="viewcode-block" id="Target.set_env">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target.set_env">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_env</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="n">Environment</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the environment of the Target.</span>
+
+<span class="sd">        :param env: Execution environment definition</span>
+<span class="sd">        :type env: :class:`~.Environment`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">set_target</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Target.set_isa">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target.set_isa">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_isa</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isa</span><span class="p">:</span> <span class="n">ISA</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the ISA of the Target.</span>
+
+<span class="sd">        :param isa: Architecture (i.e. ISA)</span>
+<span class="sd">        :type isa: :class:`~.ISA`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isa</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">isa</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isa</span><span class="o">.</span><span class="n">set_target</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Target.set_uarch">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target.set_uarch">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_uarch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uarch</span><span class="p">:</span> <span class="n">Microarchitecture</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the microarchitecture of the Target.</span>
+
+<span class="sd">        :param uarch: Microarchitecture</span>
+<span class="sd">        :type uarch: :class:`~.Microarchitecture`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span> <span class="o">=</span> <span class="n">uarch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span><span class="o">.</span><span class="n">set_target</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+    <span class="c1"># TODO: remove this interface once the code generation back-end is fixed</span>
+<div class="viewcode-block" id="Target.set_wrapper">
+<a class="viewcode-back" href="../../microprobe.target.Target.html#microprobe.target.Target.set_wrapper">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">:</span> <span class="n">Wrapper</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the wrapper of the Target.</span>
+
+<span class="sd">        :param wrapper: Wrapper</span>
+<span class="sd">        :type wrapper: :class:`~.Wrapper`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper</span> <span class="o">=</span> <span class="n">wrapper</span></div>
+
+
+    <span class="c1"># TODO: Remove facade pattern to allow type hints to propagate</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Facade design pattern implementation.</span>
+
+<span class="sd">        This is where we implement the facade design pattern. Whenever an</span>
+<span class="sd">        attribute is not defined by the Target object itself, it is searched</span>
+<span class="sd">        if it is defined by one of the three elements composing the target.</span>
+
+<span class="sd">        :param name: Attribute name</span>
+<span class="sd">        :type name: :class:`~.str`</span>
+<span class="sd">        :return: Attribute value</span>
+<span class="sd">        :rtype: Type of the value of the attribute requested</span>
+<span class="sd">        :raise microprobe.exceptions.MicroprobeError: if attribute is defined</span>
+<span class="sd">            in multiple objects</span>
+<span class="sd">        :raise AttributeError: if attribute is not found in the class</span>
+<span class="sd">               or any of the facade classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isa</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_isa</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uarch</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">attrs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">attrs</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeError</span><span class="p">(</span><span class="s2">&quot;Attribute defined in multiple objects&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; object has no attribute &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

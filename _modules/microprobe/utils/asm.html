@@ -1,0 +1,1645 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.utils.asm &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">microprobe.utils.asm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.utils.asm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.utils.asm` module</span>
+
+<span class="sd">This module implements the required features to interpret assembly statements</span>
+<span class="sd">and translate them into Microprobe internal representation of instruction,</span>
+<span class="sd">operands, labels and addreses.</span>
+
+<span class="sd">The main elements of this module are the following:</span>
+
+<span class="sd">- :class:`~.MicroprobeAsmInstructionDefinition` objects to represent</span>
+<span class="sd">  assembly statements (i.e. instruction definitions)</span>
+<span class="sd">- :func:`~.interpret_asm` function validates the assembly statements and</span>
+<span class="sd">  translates them into internal Microprobe represenation of instructions and</span>
+<span class="sd">  operands.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+
+
+<span class="c1"># Third party modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cachetools</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.code.ins</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">MICROPROBE_RC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span><span class="p">,</span> <span class="n">InstructionAddress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeAsmError</span><span class="p">,</span> \
+    <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span> <span class="n">MicroprobeDuplicatedValueError</span><span class="p">,</span> \
+    <span class="n">MicroprobeValueError</span><span class="p">,</span> <span class="n">MicroprobeCacheError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa.operand</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstructionAddressRelativeOperand</span><span class="p">,</span> \
+    <span class="n">OperandConst</span><span class="p">,</span> <span class="n">OperandImmRange</span><span class="p">,</span> <span class="n">OperandValueSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.bin</span><span class="w"> </span><span class="kn">import</span> <span class="n">interpret_bin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_default_cache_data</span><span class="p">,</span> \
+    <span class="n">write_default_cache_data_silent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span><span class="p">,</span> <span class="n">RejectingDict</span><span class="p">,</span> <span class="n">twocs_to_int</span><span class="p">,</span> \
+    <span class="n">range_to_sequence</span>
+
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_ASM_CACHE_ENABLED</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">_ASM_CACHE_FILE</span> <span class="o">=</span> <span class="vm">__file__</span> <span class="o">+</span> <span class="s2">&quot;.asm&quot;</span>
+<span class="n">_ASM_CACHE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_ASM_CACHE_SIZE</span> <span class="o">=</span> <span class="mi">16</span><span class="o">*</span><span class="mi">1024</span>
+<span class="n">_ASM_CACHE_USED</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">_ASM_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">_DECORATOR_CACHE</span> <span class="o">=</span> <span class="n">RejectingDict</span><span class="p">()</span>
+<span class="n">_DECORATOR_CACHE_ENABLED</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;interpret_asm&quot;</span><span class="p">,</span> <span class="s2">&quot;MicroprobeAsmInstructionDefinition&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;instruction_to_asm_definition&quot;</span>
+<span class="p">]</span>
+
+
+<span class="c1"># Functions</span>
+<div class="viewcode-block" id="interpret_asm">
+<a class="viewcode-back" href="../../../microprobe.utils.asm.html#microprobe.utils.asm.interpret_asm">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">interpret_asm</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the list of :class:`~.MicroprobeInstructionDefinition` objects</span>
+<span class="sd">    that results from interpreting the *code* (list of assembly statements).</span>
+<span class="sd">    The *target* object is used to validate the existence of the instruction</span>
+<span class="sd">    and operands in the target and the *labels* are needed to validate the</span>
+<span class="sd">    correctness of the symbolic labels used in the assembly statements.</span>
+
+<span class="sd">    :param code: Assembly to interpret</span>
+<span class="sd">    :type code: :class:`list` of :class:`~.MicroprobeAsmInstructionDefinition`</span>
+<span class="sd">                or string/s to interpret</span>
+<span class="sd">    :param target: Target definition</span>
+<span class="sd">    :type target: :class:`~.Target` object</span>
+<span class="sd">    :param labels: Labels available</span>
+<span class="sd">    :type labels: :class:`~.list` of :class:`~.str`</span>
+<span class="sd">    :return: A list of instructions, operands, labels, etc. resulting from</span>
+<span class="sd">            interpreting the assembly</span>
+<span class="sd">    :rtype: :class:`~.list` of :class:`~.MicroprobeInstructionDefinition`</span>
+<span class="sd">    :raise microprobe.exceptions.MicroprobeAsmError: if something is wrong</span>
+<span class="sd">        during the interpretation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">_ASM_CACHE</span>
+    <span class="k">global</span> <span class="n">_ASM_CACHE_SIZE</span>
+
+    <span class="k">if</span> <span class="n">_ASM_CACHE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_ASM_CACHE</span> <span class="o">=</span> <span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="n">_ASM_CACHE_SIZE</span><span class="p">,</span> <span class="n">getsizeof</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_ASM_CACHE_ENABLED</span><span class="p">:</span>
+                <span class="n">_ASM_CACHE</span> <span class="o">=</span> <span class="n">read_default_cache_data</span><span class="p">(</span><span class="n">_ASM_CACHE_FILE</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MicroprobeCacheError</span><span class="p">:</span>
+            <span class="n">_ASM_CACHE</span> <span class="o">=</span> <span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">(</span><span class="n">_ASM_CACHE_SIZE</span><span class="p">,</span> <span class="n">getsizeof</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start interpret_asm&quot;</span><span class="p">)</span>
+    <span class="n">instructions_and_params</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Extract defined labels&quot;</span><span class="p">)</span>
+
+    <span class="n">def_labels</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">()</span>
+    <span class="n">def_labels_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">def_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="n">def_labels_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="n">code</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;parallel_threshold&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">parallel</span><span class="p">:</span>
+        <span class="c1"># Do parallel parsing</span>
+        <span class="n">processes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">queues</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">chunksize</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">//</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s1">&#39;cpus&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">extra_args</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">extra_args</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="n">extra_args</span><span class="p">[</span><span class="s1">&#39;show_progress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">show_progress</span>
+        <span class="n">extra_args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="p">[</span><span class="n">code</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">chunksize</span><span class="p">]</span>
+                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="n">chunksize</span><span class="p">)]:</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+            <span class="n">extra_args</span><span class="p">[</span><span class="s1">&#39;queue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">queue</span>
+            <span class="n">proc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">interpret_asm</span><span class="p">,</span>
+                              <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">def_labels</span><span class="p">),</span>
+                              <span class="n">kwargs</span><span class="o">=</span><span class="n">extra_args</span><span class="p">)</span>
+            <span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proc</span><span class="p">)</span>
+            <span class="n">queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+            <span class="n">proc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">extra_args</span><span class="p">[</span><span class="s1">&#39;show_progress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">instructions_and_params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="n">queues</span><span class="p">:</span>
+            <span class="n">instructions_and_params</span> <span class="o">+=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">join_thread</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">process</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">:</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">instructions_and_params</span>
+
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Labels parsed:&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">instr_def</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instr_def</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">instr_def</span> <span class="o">=</span> <span class="n">_str_to_asmdef</span><span class="p">(</span><span class="n">instr_def</span><span class="p">)</span>
+
+            <span class="c1"># if instr_def.label.upper() in def_labels:</span>
+            <span class="c1">#    raise MicroprobeAsmError(</span>
+            <span class="c1">#        &quot;Label &#39;%s&#39; defined twice!&quot; % instr_def.label</span>
+            <span class="c1">#    )</span>
+
+            <span class="k">if</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">def_labels_dict</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                        <span class="s2">&quot;Label &#39;</span><span class="si">%s</span><span class="s2">&#39; defined twice!&quot;</span> <span class="o">%</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">label</span>
+                    <span class="p">)</span>
+                <span class="n">def_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr_def</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+                <span class="n">def_labels_dict</span><span class="p">[</span><span class="n">instr_def</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+                <span class="n">progress</span><span class="p">()</span>
+
+        <span class="k">del</span> <span class="n">def_labels_dict</span>
+
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">),</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Instructions parsed:&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">instr_def</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+                <span class="n">progress</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instr_def</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="c1"># empty, string, continue</span>
+                    <span class="k">continue</span>
+                <span class="n">instr_def</span> <span class="o">=</span> <span class="n">_str_to_asmdef</span><span class="p">(</span><span class="n">instr_def</span><span class="p">)</span>
+
+            <span class="n">safe</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;RAW:&quot;</span><span class="p">:</span>
+                <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span> <span class="o">=</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">safe</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="n">intr_asm</span> <span class="o">=</span> <span class="n">_interpret_instr_def</span><span class="p">(</span>
+                <span class="n">instr_def</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">def_labels</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="n">safe</span>
+            <span class="p">)</span>
+            <span class="n">instructions_and_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intr_asm</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instruction: &#39;</span><span class="si">%s</span><span class="s2">&#39; interpreted&quot;</span><span class="p">,</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">MicroprobeAsmError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Assembly provided:&quot;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%25s</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span>
+            <span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%25s</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;address&quot;</span><span class="p">,</span> <span class="s2">&quot;instruction&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;decorators&quot;</span>
+            <span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%25s</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">code</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">instr</span> <span class="o">=</span> <span class="n">_str_to_asmdef</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+                <span class="n">address</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span>
+                <span class="k">if</span> <span class="n">instr</span><span class="o">.</span><span class="n">address</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">address</span> <span class="o">=</span> <span class="s2">&quot;0x</span><span class="si">%016x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">instr</span><span class="o">.</span><span class="n">address</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%25s</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instr</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span>
+                    <span class="n">instr</span><span class="o">.</span><span class="n">assembly</span><span class="p">,</span> <span class="n">instr</span><span class="o">.</span><span class="n">decorators</span>
+                <span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%20s</span><span class="se">\t</span><span class="si">%25s</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span>
+            <span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="s2">&quot;If the previous assembly is not correct, &quot;</span>
+                <span class="s2">&quot;check the format of the assembly file provided&quot;</span>
+            <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">exc</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End interpret_asm&quot;</span><span class="p">)</span>
+
+    <span class="n">instructions_and_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">instructions_and_params</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">instructions_and_params</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">instructions_and_params</span></div>
+
+
+
+<div class="viewcode-block" id="instruction_to_asm_definition">
+<a class="viewcode-back" href="../../../microprobe.utils.asm.html#microprobe.utils.asm.instruction_to_asm_definition">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">instruction_to_asm_definition</span><span class="p">(</span><span class="n">instr</span><span class="p">):</span>
+
+    <span class="n">label</span> <span class="o">=</span> <span class="n">instr</span><span class="o">.</span><span class="n">label</span>
+    <span class="n">instr</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MicroprobeAsmInstructionDefinition</span><span class="p">(</span>
+        <span class="n">instr</span><span class="o">.</span><span class="n">assembly</span><span class="p">(),</span> <span class="n">label</span><span class="p">,</span> <span class="n">instr</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">displacement</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">instr</span><span class="o">.</span><span class="n">comments</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpret_instr_def</span><span class="p">(</span><span class="n">instr_def</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param instr_def:</span>
+<span class="sd">    :type instr_def:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    :param labels:</span>
+<span class="sd">    :type labels:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_ASM_CACHE_USED</span>
+    <span class="k">global</span> <span class="n">_ASM_CACHE_SAVED</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start interpret_asm: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">instr_def</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">isa</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_ASM_CACHE</span> <span class="ow">and</span> <span class="n">_ASM_CACHE_ENABLED</span><span class="p">:</span>
+        <span class="n">instruction_type</span><span class="p">,</span> <span class="n">operands</span> <span class="o">=</span> <span class="n">_ASM_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">operands</span> <span class="o">=</span> <span class="n">operands</span><span class="p">[:]</span>
+    <span class="k">elif</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0X&quot;</span><span class="p">):</span>
+        <span class="n">binary_def</span> <span class="o">=</span> <span class="n">interpret_bin</span><span class="p">(</span>
+            <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">target</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">,</span> <span class="n">single</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="n">safe</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary_def</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span><span class="s2">&quot;More than one instruction parsed.&quot;</span><span class="p">)</span>
+
+        <span class="n">instruction_type</span> <span class="o">=</span> <span class="n">binary_def</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">instruction_type</span>
+        <span class="n">operands</span> <span class="o">=</span> <span class="n">binary_def</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">operands</span>
+        <span class="k">if</span> <span class="n">_ASM_CACHE_ENABLED</span><span class="p">:</span>
+            <span class="n">_ASM_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">instruction_type</span><span class="p">,</span> <span class="n">operands</span><span class="p">)</span>
+            <span class="n">_ASM_CACHE_USED</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">_ASM_CACHE_USED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_ASM_CACHE_SAVED</span><span class="p">:</span>
+                <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+                    <span class="n">write_default_cache_data_silent</span><span class="p">,</span>
+                    <span class="n">_ASM_CACHE_FILE</span><span class="p">,</span> <span class="n">_ASM_CACHE</span><span class="p">,</span>
+                    <span class="n">data_reload</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">_ASM_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">elif</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0B&quot;</span><span class="p">):</span>
+        <span class="n">binary_def</span> <span class="o">=</span> <span class="n">interpret_bin</span><span class="p">(</span><span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">target</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;bin&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary_def</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span><span class="s2">&quot;More than one instruction parsed.&quot;</span><span class="p">)</span>
+
+        <span class="n">instruction_type</span> <span class="o">=</span> <span class="n">binary_def</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">instruction_type</span>
+        <span class="n">operands</span> <span class="o">=</span> <span class="n">binary_def</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">operands</span>
+        <span class="k">if</span> <span class="n">_ASM_CACHE_ENABLED</span><span class="p">:</span>
+            <span class="n">_ASM_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">instruction_type</span><span class="p">,</span> <span class="n">operands</span><span class="p">)</span>
+            <span class="n">_ASM_CACHE_USED</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">_ASM_CACHE_USED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_ASM_CACHE_SAVED</span><span class="p">:</span>
+                <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+                    <span class="n">write_default_cache_data_silent</span><span class="p">,</span>
+                    <span class="n">_ASM_CACHE_FILE</span><span class="p">,</span> <span class="n">_ASM_CACHE</span>
+                <span class="p">)</span>
+                <span class="n">_ASM_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">asm_mnemonic</span> <span class="o">=</span> <span class="n">_extract_asm_mnemonic</span><span class="p">(</span><span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Mnemonic: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">asm_mnemonic</span><span class="p">)</span>
+
+        <span class="n">asm_operands</span> <span class="o">=</span> <span class="n">_extract_asm_operands</span><span class="p">(</span><span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operands: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">)</span>
+
+        <span class="c1"># This is a work-around for RISC-V objdump implementation.</span>
+        <span class="c1"># It does not dump negative numbers and the corresponding</span>
+        <span class="c1"># absolute value is printed. Also a weird +1 needs to be added</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">asm_operand</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">asm_operands</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">asm_operand</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0XF&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm_operand</span><span class="p">)</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+                <span class="n">nval</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">twocs_to_int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">asm_operand</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="mi">64</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+                <span class="n">instr_def</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">instr_def</span><span class="p">)</span>
+                <span class="n">instr_def</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">instr_def</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="n">asm_operand</span><span class="p">,</span> <span class="n">nval</span><span class="p">)</span>
+                <span class="n">instr_def</span> <span class="o">=</span> <span class="n">MicroprobeAsmInstructionDefinition</span><span class="p">(</span><span class="o">*</span><span class="n">instr_def</span><span class="p">)</span>
+                <span class="n">asm_operands</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">nval</span>
+
+        <span class="c1"># End work-around</span>
+
+        <span class="n">asm_mnemonic</span><span class="p">,</span> <span class="n">asm_operands</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">normalize_asm</span><span class="p">(</span><span class="n">asm_mnemonic</span><span class="p">,</span>
+                                                          <span class="n">asm_operands</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Norm. mnemonic: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">asm_mnemonic</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Norm. Operands: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">)</span>
+
+        <span class="n">instruction_types</span><span class="p">,</span> <span class="n">asm_operands</span> <span class="o">=</span> <span class="n">_find_instr_with_mnemonic</span><span class="p">(</span>
+            <span class="n">asm_mnemonic</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">target</span>
+        <span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Types detected: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="p">[</span>
+                <span class="n">type_ins</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">type_ins</span> <span class="ow">in</span> <span class="n">instruction_types</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">instruction_type</span><span class="p">,</span> <span class="n">operands</span> <span class="o">=</span> <span class="n">_extract_operands</span><span class="p">(</span>
+            <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">instruction_types</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">labels</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_ASM_CACHE_ENABLED</span><span class="p">:</span>
+            <span class="n">_ASM_CACHE</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">instruction_type</span><span class="p">,</span> <span class="n">operands</span><span class="p">)</span>
+            <span class="n">_ASM_CACHE_USED</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">_ASM_CACHE_USED</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_ASM_CACHE_SAVED</span><span class="p">:</span>
+                <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+                    <span class="n">write_default_cache_data_silent</span><span class="p">,</span>
+                    <span class="n">_ASM_CACHE_FILE</span><span class="p">,</span> <span class="n">_ASM_CACHE</span>
+                <span class="p">)</span>
+                <span class="n">_ASM_CACHE_SAVED</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">address</span> <span class="o">=</span> <span class="n">_extract_address</span><span class="p">(</span><span class="n">instr_def</span><span class="o">.</span><span class="n">address</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">decorators</span> <span class="ow">in</span> <span class="n">_DECORATOR_CACHE</span> <span class="ow">and</span> <span class="n">_DECORATOR_CACHE_ENABLED</span><span class="p">:</span>
+        <span class="n">decorators</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">_DECORATOR_CACHE</span><span class="p">[</span><span class="n">instr_def</span><span class="o">.</span><span class="n">decorators</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">decorators</span> <span class="o">=</span> <span class="n">_interpret_decorators</span><span class="p">(</span><span class="n">instr_def</span><span class="o">.</span><span class="n">decorators</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_DECORATOR_CACHE_ENABLED</span><span class="p">:</span>
+            <span class="n">_DECORATOR_CACHE</span><span class="p">[</span><span class="n">instr_def</span><span class="o">.</span><span class="n">decorators</span><span class="p">]</span> <span class="o">=</span> <span class="n">decorators</span>
+
+    <span class="n">label</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End interpret_asm: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">instr_def</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">ins</span><span class="o">.</span><span class="n">MicroprobeInstructionDefinition</span><span class="p">(</span>
+        <span class="n">instruction_type</span><span class="p">,</span> <span class="n">operands</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">assembly</span><span class="p">,</span>
+        <span class="n">decorators</span><span class="p">,</span> <span class="n">instr_def</span><span class="o">.</span><span class="n">comments</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_address</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param address:</span>
+<span class="sd">    :type address:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">address</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">InstructionAddress</span><span class="p">(</span><span class="n">base_address</span><span class="o">=</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="n">address</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">address</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_asm_mnemonic</span><span class="p">(</span><span class="n">asm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param asm:</span>
+<span class="sd">    :type asm:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">asm</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_asm_operands</span><span class="p">(</span><span class="n">asm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param asm:</span>
+<span class="sd">    :type asm:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">operands</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">asm</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">operands</span> <span class="o">=</span> <span class="n">operands</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[.a-zA-Z0-9_+-@]+&quot;</span><span class="p">,</span> <span class="n">operands</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpret_decorators</span><span class="p">(</span><span class="n">str_decorators</span><span class="p">):</span>
+
+    <span class="n">decorators</span> <span class="o">=</span> <span class="n">RejectingDict</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">str_decorators</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">decorators</span>
+
+    <span class="k">for</span> <span class="n">decorator_def</span> <span class="ow">in</span> <span class="n">str_decorators</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">decorator_def</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="n">decorator_def</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">lvalue</span> <span class="o">=</span> <span class="p">(</span><span class="n">decorator_def</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+        <span class="n">nvalue</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lvalue</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Decorator with references to files &quot;</span>
+                    <span class="s2">&quot;not yet implemented&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">origvalue</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;ON&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;OFF&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;TRUE&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;FALSE&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0X&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">range_to_sequence</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">origvalue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">origvalue</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">nvalue</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nvalue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lvalue</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">decorators</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">nvalue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">decorators</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">nvalue</span>
+
+        <span class="k">except</span> <span class="n">MicroprobeDuplicatedValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                <span class="s2">&quot;Decorator with key &#39;</span><span class="si">%s</span><span class="s2">&#39; specified twice for the same &quot;</span>
+                <span class="s2">&quot;instruction.&quot;</span> <span class="o">%</span> <span class="n">key</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">decorators</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_instr_with_mnemonic</span><span class="p">(</span><span class="n">mnemonic</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param mnemonic:</span>
+<span class="sd">    :type mnemonic:</span>
+<span class="sd">    :param asm_operands:</span>
+<span class="sd">    :type asm_operands:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># First, look for default instructions</span>
+
+    <span class="n">base_instructions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">instr</span>
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">instr</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="n">mnemonic</span> <span class="ow">or</span> <span class="n">instr</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">mnemonic</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Instruction found with same mnemonic: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">instr</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">base_instructions</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">instructions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">instr</span>
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">base_instructions</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">op</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">new_instruction</span><span class="p">(</span><span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">operands</span><span class="p">()</span>
+                <span class="c1">#   if (op.is_input or op.is_output)</span>
+                <span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm_operands</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Instruction found with same operands: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">[</span>
+            <span class="n">instr</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">instructions</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">fixed_asm_operands</span> <span class="o">=</span> <span class="n">asm_operands</span>
+
+    <span class="c1"># TODO: Hack for Z amd RISC-V, needs to be</span>
+    <span class="c1"># TODO: removed from here, it should be in the target backend</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">base_instructions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># There are instructions but for some reason the number of operands</span>
+        <span class="c1"># is not correct</span>
+
+        <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">base_instructions</span><span class="p">:</span>
+            <span class="c1"># check if it is our fault or user&#39;s fault</span>
+            <span class="n">fnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
+            <span class="n">insfmt</span> <span class="o">=</span> <span class="n">instruction</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">assembly_format</span>
+
+            <span class="c1"># Z hacks</span>
+            <span class="k">if</span> <span class="s2">&quot;DH1&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot;DL1&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot;D1&quot;</span> <span class="ow">in</span> <span class="n">insfmt</span><span class="p">:</span>
+                <span class="n">asm_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;0x0&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_find_instr_with_mnemonic</span><span class="p">(</span>
+                    <span class="n">mnemonic</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">target</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="s2">&quot;DH2&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot;DL2&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot;D2&quot;</span> <span class="ow">in</span> <span class="n">insfmt</span><span class="p">:</span>
+                <span class="n">asm_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;0x0&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_find_instr_with_mnemonic</span><span class="p">(</span>
+                    <span class="n">mnemonic</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">target</span>
+                <span class="p">)</span>
+
+            <span class="c1"># RISC-V hacks</span>
+            <span class="c1"># One fix per array member.</span>
+            <span class="c1"># The first parameter of each tuple is an array containing all the</span>
+            <span class="c1"># fields which together represent the full codification of the</span>
+            <span class="c1"># field in the second parameter.</span>
+            <span class="c1"># Therefore, each element of the array in the first value of the</span>
+            <span class="c1"># tuple is present in the instruction format definition, while</span>
+            <span class="c1"># the second value is in the assembly format string.</span>
+            <span class="n">riscv_fixes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">([</span><span class="s2">&quot;s_imm5&quot;</span><span class="p">,</span> <span class="s2">&quot;s_imm7&quot;</span><span class="p">],</span> <span class="s2">&quot;s_imm12&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s2">&quot;sb_imm5&quot;</span><span class="p">,</span> <span class="s2">&quot;sb_imm7&quot;</span><span class="p">],</span> <span class="s2">&quot;sb_imm12&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s2">&quot;cd_imm3&quot;</span><span class="p">,</span> <span class="s2">&quot;c_imm2&quot;</span><span class="p">],</span> <span class="s2">&quot;c_imm5&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s2">&quot;cw_imm3&quot;</span><span class="p">,</span> <span class="s2">&quot;c_imm2&quot;</span><span class="p">],</span> <span class="s2">&quot;c_imm5&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s1">&#39;cb_imm5&#39;</span><span class="p">,</span> <span class="s1">&#39;c_imm3&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm8&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s1">&#39;cw_imm5&#39;</span><span class="p">,</span> <span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s1">&#39;cd_imm5&#39;</span><span class="p">,</span> <span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s1">&#39;ci_imm5&#39;</span><span class="p">,</span> <span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s1">&#39;cu_imm5&#39;</span><span class="p">,</span> <span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s1">&#39;cs_imm5&#39;</span><span class="p">,</span> <span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+                <span class="p">([</span><span class="s1">&#39;cls_imm5&#39;</span><span class="p">,</span> <span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+            <span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">fix</span> <span class="ow">in</span> <span class="n">riscv_fixes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">field</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fix</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="ow">and</span> <span class="n">fix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">insfmt</span><span class="p">):</span>
+                    <span class="n">asm_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;0x0&quot;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fixing in ASM&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">_find_instr_with_mnemonic</span><span class="p">(</span>
+                            <span class="n">mnemonic</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">target</span>
+                    <span class="p">)</span>
+
+    <span class="c1"># TODO: Remove from here, it should be in the target backend</span>
+    <span class="c1"># TODO: Remove from here, it should be in the target backend</span>
+
+    <span class="c1"># If no instructions found, check for extended mnemonics</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">base_instructions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># TODO: Implement</span>
+        <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">instr</span>
+                <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">instructions</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
+                <span class="p">)</span> <span class="k">if</span> <span class="n">instr</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="n">mnemonic</span>
+            <span class="p">]</span>
+        <span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to interpret asm mnemonic &#39;</span><span class="si">%s</span><span class="s2">&#39;. Number of operands &quot;</span>
+                <span class="s2">&quot;is not correct&quot;</span> <span class="o">%</span> <span class="n">mnemonic</span>
+            <span class="p">)</span>
+
+        <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+            <span class="s2">&quot;Unable to interpret_asm mnemonic &#39;</span><span class="si">%s</span><span class="s2">&#39;. Either the mnemonic is &quot;</span>
+            <span class="s2">&quot;invalid, the instruction is not supported or this is a not &quot;</span>
+            <span class="s2">&quot;supported extended mnemonic&quot;</span> <span class="o">%</span> <span class="n">mnemonic</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">instructions</span><span class="p">,</span> <span class="n">fixed_asm_operands</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_operands</span><span class="p">(</span><span class="n">base_asm</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">intr_types</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param base_asm:</span>
+<span class="sd">    :type base_asm:</span>
+<span class="sd">    :param asm_operands:</span>
+<span class="sd">    :type asm_operands:</span>
+<span class="sd">    :param intr_types:</span>
+<span class="sd">    :type intr_types:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    :param labels:</span>
+<span class="sd">    :type labels:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start extracting operands&quot;</span><span class="p">)</span>
+
+    <span class="n">operand_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">instr_type</span> <span class="ow">in</span> <span class="n">intr_types</span><span class="p">:</span>
+
+        <span class="n">operands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">instruction</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">new_instruction</span><span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instruction: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operands: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm_operands</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                <span class="s2">&quot;Mismatch in number of operands: &#39;</span><span class="si">%s</span><span class="s2">&#39; !=&quot;</span>
+                <span class="s2">&quot; &#39;</span><span class="si">%s</span><span class="s2">&#39;. Base asm: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">,</span> <span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">(),</span>
+                <span class="n">base_asm</span>
+            <span class="p">)</span>
+
+        <span class="n">sorted_asm_operands</span> <span class="o">=</span> <span class="n">_sort_asm_operands_by_intr_type</span><span class="p">(</span>
+            <span class="n">asm_operands</span><span class="p">,</span> <span class="n">instruction</span>
+        <span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sorted asm operands: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">sorted_asm_operands</span><span class="p">)</span>
+
+        <span class="n">operand_candidates</span> <span class="o">=</span> <span class="n">_generate_operand_candidates</span><span class="p">(</span>
+            <span class="n">sorted_asm_operands</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">instruction</span><span class="p">,</span> <span class="n">labels</span>
+        <span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand candidates: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">operand_candidates</span><span class="p">)</span>
+
+        <span class="n">operand_candidates</span> <span class="o">=</span> <span class="n">_filter_operands_by_type</span><span class="p">(</span>
+            <span class="n">operand_candidates</span><span class="p">,</span> <span class="n">instruction</span>
+        <span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Filtered operand candidates: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">operand_candidates</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">operand_candidate</span> <span class="ow">in</span> <span class="n">_find_operand_candidates</span><span class="p">(</span>
+            <span class="n">operand_candidates</span><span class="p">,</span> <span class="n">instruction</span>
+        <span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking ASM for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_candidate</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_check_assembly_string</span><span class="p">(</span>
+                <span class="n">base_asm</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">operand_candidate</span>
+            <span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ASM OK!&quot;</span><span class="p">)</span>
+                <span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_candidate</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">operands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">operand_dict</span><span class="p">[</span><span class="n">instr_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">operands</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+            <span class="s2">&quot;Unable to find operands for assembly: &#39;</span><span class="si">%s</span><span class="s2">&#39;. If the instruction &quot;</span>
+            <span class="s2">&quot;contains labels or symbols, make sure they are declared.&quot;</span>
+            <span class="s2">&quot; Otherwise, check the rest of operands&quot;</span> <span class="o">%</span> <span class="n">base_asm</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;Operands can be valid for multiple instruction definitions. &quot;</span>
+            <span class="s2">&quot;Check your architecture definition files and specify a particular&quot;</span>
+            <span class="s2">&quot; instruction variant. Base assembly: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">base_asm</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">operand_dict</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Possible instructions: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+    <span class="n">instr_type</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">operands</span> <span class="o">=</span> <span class="n">operand_dict</span><span class="p">[</span><span class="n">instr_type</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">operands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+            <span class="s2">&quot;Multiple operand possibilities for &quot;</span>
+            <span class="s2">&quot;instruction &#39;</span><span class="si">%s</span><span class="s2">&#39;. Possibilities: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">base_asm</span><span class="p">,</span> <span class="n">operands</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End extracting operands&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">instr_type</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_sort_asm_operands_by_intr_type</span><span class="p">(</span><span class="n">asm_operands</span><span class="p">,</span> <span class="n">instruction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param asm_operands:</span>
+<span class="sd">    :type asm_operands:</span>
+<span class="sd">    :param instruction:</span>
+<span class="sd">    :type instruction:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start: asm_operands: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">)</span>
+    <span class="n">new_operands</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">asm_fmt</span> <span class="o">=</span> <span class="n">instruction</span><span class="o">.</span><span class="n">architecture_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">assembly_format</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+    <span class="n">asm_fmt</span> <span class="o">=</span> <span class="n">asm_fmt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">asm_fmt</span> <span class="o">=</span> <span class="n">asm_fmt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">asm_fmt</span> <span class="o">=</span> <span class="n">asm_fmt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+    <span class="c1"># TODO: Hack for Z and RISC-V needs to be</span>
+    <span class="c1"># TODO: removed from here, it should be in the target backend</span>
+
+    <span class="n">fnames</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">architecture_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">fields</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Z hacks</span>
+    <span class="k">if</span> <span class="s2">&quot;DH1&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot;DL1&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot; D1 &quot;</span> <span class="ow">in</span> <span class="n">asm_fmt</span><span class="p">:</span>
+        <span class="n">asm_fmt</span> <span class="o">=</span> <span class="n">asm_fmt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; D1 &quot;</span><span class="p">,</span> <span class="s2">&quot; DL1 &quot;</span><span class="p">)</span>
+        <span class="n">asm_fmt</span> <span class="o">+=</span> <span class="s2">&quot; DH1 &quot;</span>
+
+    <span class="k">if</span> <span class="s2">&quot;DH2&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot;DL2&quot;</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="ow">and</span> <span class="s2">&quot; D2 &quot;</span> <span class="ow">in</span> <span class="n">asm_fmt</span><span class="p">:</span>
+        <span class="n">asm_fmt</span> <span class="o">=</span> <span class="n">asm_fmt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; D2 &quot;</span><span class="p">,</span> <span class="s2">&quot; DL2 &quot;</span><span class="p">)</span>
+        <span class="n">asm_fmt</span> <span class="o">+=</span> <span class="s2">&quot; DH2 &quot;</span>
+
+    <span class="c1"># RISC-V hacks</span>
+    <span class="c1"># The first element of the tuple is the field containing the actual value.</span>
+    <span class="c1"># The second element is an array containing dummy fields (i.e. fields with</span>
+    <span class="c1"># a zero value).</span>
+    <span class="c1"># The last element is the field which contains the value in the assembly</span>
+    <span class="c1"># format string.</span>
+    <span class="n">riscv_fixes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;s_imm7&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;s_imm5&quot;</span><span class="p">],</span> <span class="s2">&quot;s_imm12&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;sb_imm7&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;sb_imm5&quot;</span><span class="p">],</span> <span class="s2">&quot;sb_imm12&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;cd_imm3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;c_imm2&quot;</span><span class="p">],</span> <span class="s2">&quot;c_imm5&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;cw_imm3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;c_imm2&quot;</span><span class="p">],</span> <span class="s2">&quot;c_imm5&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;cb_imm5&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c_imm3&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm8&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;cw_imm5&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;cd_imm5&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;ci_imm5&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;cu_imm5&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;cs_imm5&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;cls_imm5&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c_imm1&#39;</span><span class="p">],</span> <span class="s2">&quot;c_imm6&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">fix_found</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">current_fix</span> <span class="ow">in</span> <span class="n">riscv_fixes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">current_fix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">fnames</span>
+                <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span> <span class="ow">in</span> <span class="n">fnames</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">current_fix</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="ow">and</span> <span class="n">current_fix</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">asm_fmt</span><span class="p">):</span>
+            <span class="n">fix</span> <span class="o">=</span> <span class="n">current_fix</span>
+            <span class="n">fix_found</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+
+    <span class="c1"># TODO: removed from here, it should be in the target backend</span>
+    <span class="c1"># TODO: removed from here, it should be in the target backend</span>
+
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">architecture_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot; </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">asm_fmt</span><span class="p">:</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">asm_fmt</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot; </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)])</span>
+        <span class="k">elif</span> <span class="n">fix_found</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">fix</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">asm_fmt</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot; </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="n">fix</span><span class="p">[</span><span class="mi">2</span><span class="p">])])</span>
+            <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">fix</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm_fmt</span><span class="p">)])</span>
+
+    <span class="n">sorted_fields</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">asm_operand</span><span class="p">,</span> <span class="n">sorted_field</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">asm_operands</span><span class="p">,</span> <span class="n">sorted_fields</span><span class="p">):</span>
+        <span class="n">sorted_field</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asm_operand</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+
+        <span class="n">field_name</span> <span class="o">=</span> <span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">new_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">elem</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">sorted_fields</span> <span class="k">if</span> <span class="n">elem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">field_name</span>
+            <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm_operands</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_operands</span><span class="p">):</span>
+        <span class="n">new_operands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">asm_operand</span> <span class="ow">in</span> <span class="n">asm_operands</span><span class="p">:</span>
+            <span class="c1"># if asm_operand not in new_operands:</span>
+            <span class="n">new_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asm_operand</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Asm operands: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">asm_operands</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;New operands: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">new_operands</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">asm_operands</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_operands</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span><span class="s2">&quot;Unable to interpret assembly operands&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_operands</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_filter_operands_by_type_pos</span><span class="p">(</span><span class="n">operands</span><span class="p">,</span> <span class="n">instruction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param operands:</span>
+<span class="sd">    :type operands:</span>
+<span class="sd">    :param instruction:</span>
+<span class="sd">    :type instruction:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">)</span>
+    <span class="n">new_operands</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">operand</span><span class="p">,</span> <span class="n">operand_values</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">(),</span> <span class="n">operands</span><span class="p">):</span>
+        <span class="n">valid_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">operand_val</span> <span class="ow">in</span> <span class="n">operand_values</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">operand_val</span><span class="p">)</span>
+                <span class="n">valid_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_val</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">MicroprobeValueError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+        <span class="n">new_operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;New operands: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">new_operands</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_operands</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_assembly_string</span><span class="p">(</span><span class="n">base_asm</span><span class="p">,</span> <span class="n">instr_type</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">operands</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param base_asm:</span>
+<span class="sd">    :type base_asm:</span>
+<span class="sd">    :param instr_type:</span>
+<span class="sd">    :type instr_type:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    :param operands:</span>
+<span class="sd">    :type operands:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start checking assembly string: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">base_asm</span><span class="p">)</span>
+
+    <span class="n">operands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operands</span><span class="p">)</span>
+
+    <span class="n">relocation_mode</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">operand</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">operands</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;@&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">operand</span><span class="p">:</span>
+            <span class="n">operands</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span><span class="n">base_address</span><span class="o">=</span><span class="n">operand</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">operand</span><span class="p">:</span>
+            <span class="n">relocation_mode</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">instruction</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">new_instruction</span><span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">relocation_mode</span><span class="p">:</span>
+            <span class="n">instruction</span><span class="o">.</span><span class="n">set_operands</span><span class="p">(</span><span class="n">operands</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Go one by one, and make relocation safe</span>
+            <span class="k">for</span> <span class="n">operand</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">(),</span> <span class="n">operands</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">OperandImmRange</span><span class="p">)</span> <span class="ow">and</span>
+                        <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">MicroprobeValueError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End checking assembly string: Operands not valid&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">except</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;End checking assembly string: Operands not valid for &quot;</span>
+            <span class="s2">&quot;callback&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">_normalize_asm</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">assembly</span><span class="p">())</span>
+    <span class="n">base_asm</span> <span class="o">=</span> <span class="n">_normalize_asm</span><span class="p">(</span><span class="n">base_asm</span><span class="p">)</span>
+    <span class="n">base_asm</span> <span class="o">=</span> <span class="n">base_asm</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">instr_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">instr_type</span><span class="o">.</span><span class="n">mnemonic</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; == &#39;</span><span class="si">%s</span><span class="s2">&#39; ?&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">,</span> <span class="n">base_asm</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nasm</span> <span class="o">==</span> <span class="n">base_asm</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End checking assembly string: Valid&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End checking assembly string: Not valid&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_operand_candidates</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">instruction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param candidates:</span>
+<span class="sd">    :type candidates:</span>
+<span class="sd">    :param instruction:</span>
+<span class="sd">    :type instruction:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">)</span>
+    <span class="c1"># flat_candidates = [candidate</span>
+    <span class="c1">#                    for candidate_pos in candidates</span>
+    <span class="c1">#                    for candidate in candidate_pos]</span>
+
+    <span class="n">validated_combinations</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">()):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No operand candidates, different number of operands&quot;</span><span class="p">)</span>
+        <span class="k">yield</span>
+
+    <span class="c1"># for candidate_combination in itertools.permutations(flat_candidates,</span>
+    <span class="c1">#                                                     len(candidates)):</span>
+
+    <span class="k">for</span> <span class="n">candidate_combination</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">candidates</span><span class="p">):</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Combination: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">candidate_combination</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">candidate_combination</span><span class="p">)</span> <span class="ow">in</span> <span class="n">validated_combinations</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Already validated&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">validated_combinations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">candidate_combination</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">_validate_operands</span><span class="p">(</span><span class="n">candidate_combination</span><span class="p">,</span> <span class="n">instruction</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Combination valid: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">candidate_combination</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">candidate_combination</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Combination not valid: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">candidate_combination</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_operands</span><span class="p">(</span><span class="n">operand_values</span><span class="p">,</span> <span class="n">instruction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param operand_values:</span>
+<span class="sd">    :type operand_values:</span>
+<span class="sd">    :param instruction:</span>
+<span class="sd">    :type instruction:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start validate operands&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">operand_value</span><span class="p">,</span> <span class="n">operand</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">operand_values</span><span class="p">,</span> <span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">()):</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validating: &#39;</span><span class="si">%s</span><span class="s2">&#39; &lt;-&gt; &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">operand_value</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Value is a string&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">OperandImmRange</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">operand_value</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Look like a relocation&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">InstructionAddressRelativeOperand</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Invalid: A string in a non-relative operand&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Value is not a string&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">InstructionAddressRelativeOperand</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Invalid: A not int in a relative operand&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="p">(</span>
+                            <span class="n">OperandImmRange</span><span class="p">,</span> <span class="n">OperandConst</span><span class="p">,</span> <span class="n">OperandValueSet</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                        <span class="n">operand_value</span><span class="p">,</span> <span class="nb">int</span>
+                    <span class="p">)</span>
+                <span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking int value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_value</span><span class="p">)</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">operand_value</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="p">(</span>
+                            <span class="n">OperandImmRange</span><span class="p">,</span> <span class="n">OperandConst</span><span class="p">,</span> <span class="n">OperandValueSet</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="p">):</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking not int value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_value</span><span class="p">)</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">operand_value</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="p">(</span><span class="n">InstructionAddressRelativeOperand</span><span class="p">)</span>
+                    <span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="p">):</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking relative int value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_value</span><span class="p">)</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">operand_value</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Combination of value and types not supported&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">except</span> <span class="n">MicroprobeValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_operand_candidates</span><span class="p">(</span><span class="n">operands</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">instruction</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param operands:</span>
+<span class="sd">    :type operands:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    :param instruction:</span>
+<span class="sd">    :type instruction:</span>
+<span class="sd">    :param labels:</span>
+<span class="sd">    :type labels:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start: operands=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operands</span><span class="p">)</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">operand</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">operands</span><span class="p">):</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">operdef</span> <span class="o">=</span> <span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">()[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">descriptor</span><span class="o">.</span><span class="n">type</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Processing operand: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+
+        <span class="n">operand_value</span> <span class="o">=</span> <span class="n">_numeric_format</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">operand_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand looks like a numeric value &#39;</span><span class="si">%d</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">operand_value</span><span class="p">)</span>
+
+            <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_value</span><span class="p">)</span>
+            <span class="n">options</span> <span class="o">+=</span> <span class="n">_generate_immediate_variations</span><span class="p">(</span>
+                <span class="n">operand_value</span><span class="p">,</span> <span class="n">instruction</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                <span class="n">options</span> <span class="o">+=</span> <span class="n">_generate_possible_registers</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Operand looks like a label, &quot;</span>
+                <span class="s2">&quot;register value, or a rounding mode&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">islabel</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">upper</span><span class="p">()):</span>
+                    <span class="n">islabel</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">islabel</span><span class="p">:</span>
+                <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">options</span> <span class="o">+=</span> <span class="n">_generate_possible_registers</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+                <span class="n">options</span> <span class="o">+=</span> <span class="n">_generate_possible_other_reps</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">operdef</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to generate operand candidates &quot;</span>
+                <span class="s2">&quot;for operand &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">operand</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;New candidate: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+            <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">candidates</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_immediate_variations</span><span class="p">(</span><span class="n">immediate</span><span class="p">,</span> <span class="n">instr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param immediate:</span>
+<span class="sd">    :type immediate:</span>
+<span class="sd">    :param instr:</span>
+<span class="sd">    :type instr:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">variations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="p">[</span><span class="n">oper</span> <span class="k">for</span> <span class="n">oper</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">()</span> <span class="k">if</span> <span class="n">oper</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">immediate</span><span class="p">]:</span>
+        <span class="n">new_val</span> <span class="o">=</span> <span class="n">_numeric_format</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">representation</span><span class="p">(</span><span class="n">immediate</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">new_val</span> <span class="o">!=</span> <span class="n">immediate</span><span class="p">:</span>
+            <span class="c1"># Relative represenation</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">new_val</span> <span class="o">-</span> <span class="n">immediate</span>
+            <span class="n">variation</span> <span class="o">=</span> <span class="n">immediate</span> <span class="o">-</span> <span class="n">diff</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">_numeric_format</span><span class="p">(</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">representation</span><span class="p">(</span><span class="n">variation</span><span class="p">)</span>
+                <span class="p">)</span> <span class="o">==</span> <span class="n">immediate</span> <span class="ow">and</span> <span class="n">variation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">variations</span>
+            <span class="p">):</span>
+                <span class="n">variations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variation</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">shift</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">new_val</span> <span class="o">=</span> <span class="n">immediate</span> <span class="o">&lt;&lt;</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">shift</span>
+            <span class="k">if</span> <span class="n">new_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">variations</span><span class="p">:</span>
+                <span class="n">variations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">variations</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_possible_other_reps</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">oper_def</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param operand:</span>
+<span class="sd">    :type operand:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Looking possible values for operand: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oper_def</span><span class="p">,</span> <span class="n">OperandValueSet</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">oper_def</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">oper_def</span><span class="o">.</span><span class="n">representation</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">operand</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">values</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_possible_registers</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param operand:</span>
+<span class="sd">    :type operand:</span>
+<span class="sd">    :param target:</span>
+<span class="sd">    :type target:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Looking possible registers for operand: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+
+    <span class="n">reg_repr</span> <span class="o">=</span> <span class="p">[</span><span class="n">reg</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">representation</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">operand</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reg_repr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">registers</span> <span class="o">=</span> <span class="n">reg_repr</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;[0-9]+&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">registers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">elif</span> <span class="n">operand</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">operand</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">registers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">elif</span> <span class="n">operand</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span> <span class="ow">and</span> <span class="n">operand</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">registers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="n">norm_operand</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[^0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+
+        <span class="n">registers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">register</span>
+            <span class="k">for</span> <span class="n">register</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">register</span><span class="o">.</span><span class="n">representation</span> <span class="o">==</span> <span class="n">norm_operand</span>
+        <span class="p">]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Registers for operand: &#39;</span><span class="si">%s</span><span class="s2">&#39; are: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">,</span> <span class="n">registers</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">registers</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_filter_operands_by_type</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">instruction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param candidates:</span>
+<span class="sd">    :type candidates:</span>
+<span class="sd">    :param instruction:</span>
+<span class="sd">    :type instruction:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">operand_types</span> <span class="o">=</span> <span class="n">_get_operand_types</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
+
+    <span class="n">new_candidates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+
+        <span class="n">operand_candidates</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">operand_option</span> <span class="ow">in</span> <span class="n">candidate</span><span class="p">:</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand option: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_option</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand_option</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;label&#39;</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="n">oper</span> <span class="k">for</span> <span class="n">oper</span> <span class="ow">in</span> <span class="n">operand_types</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oper</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="p">]</span> <span class="ow">or</span> <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">operand_option</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">operand_candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_option</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand_option</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="s1">&#39;label&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="n">oper</span> <span class="k">for</span> <span class="n">oper</span> <span class="ow">in</span> <span class="n">operand_types</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oper</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to find operand candidates when interpreting &quot;</span>
+                    <span class="s2">&quot;instruction &#39;</span><span class="si">%s</span><span class="s2">&#39;. Check the assembly provided &quot;</span> <span class="o">%</span>
+                    <span class="n">instruction</span><span class="o">.</span><span class="n">name</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand_option</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="c1"># and</span>
+                <span class="c1"># &#39;value&#39; in [oper for oper in operand_types</span>
+                <span class="c1">#            if isinstance(oper, str)]):</span>
+                <span class="n">operand_candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_option</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operand_option</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> \
+                    <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">oper</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+                     <span class="k">for</span> <span class="n">oper</span> <span class="ow">in</span> <span class="n">operand_types</span> <span class="k">if</span>
+                     <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oper</span><span class="p">,</span>
+                                    <span class="nb">tuple</span><span class="p">([</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]))</span> <span class="ow">and</span>
+                     <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">oper</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span>
+                                    <span class="nb">int</span><span class="p">)]:</span>
+                <span class="n">operand_candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_option</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">operand_option</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">oper</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span>
+                        <span class="k">for</span> <span class="n">oper</span> <span class="ow">in</span> <span class="n">operand_types</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">oper</span><span class="p">,</span>
+                                          <span class="nb">tuple</span><span class="p">([</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]))</span>
+                        <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                            <span class="nb">list</span><span class="p">(</span><span class="n">oper</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span>
+                        <span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">([</span><span class="n">oper</span> <span class="k">for</span> <span class="n">oper</span> <span class="ow">in</span> <span class="n">operand_types</span><span class="p">])</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Removing: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand_option</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">operand_candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to find operand candidates when interpreting &quot;</span>
+                <span class="s2">&quot;instruction &#39;</span><span class="si">%s</span><span class="s2">&#39;. Check the assembly provided &quot;</span> <span class="o">%</span>
+                <span class="n">instruction</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">)</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">operand_candidates</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+
+        <span class="n">new_candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand_candidates</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_candidates</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_operand_types</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param instruction:</span>
+<span class="sd">    :type instruction:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">)</span>
+
+    <span class="n">types</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand type: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">InstructionAddressRelativeOperand</span><span class="p">):</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="p">(</span><span class="n">OperandConst</span><span class="p">,</span> <span class="n">OperandImmRange</span><span class="p">)):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Current types: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
+        <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+        <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Final types: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">types</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_asm</span><span class="p">(</span><span class="n">asm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param asm:</span>
+<span class="sd">    :type asm:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start asm normalizing: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">asm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">asm</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">nasm</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\( +&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; +\)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; +\(&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\) +&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; +&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; [^0-9-]+([0-9]+),&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1,&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; [^0-9-]+([0-9]+)$&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\([^0-9-]+([0-9]+),&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;(\1,&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\([^0-9-]+([0-9]+)\)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;(\1)&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; [^0-9-]+([0-9]+)\)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1)&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">hexnum</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;0X[0-9ABCDEF]+&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">):</span>
+        <span class="n">nasm</span> <span class="o">=</span> <span class="n">nasm</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">hexnum</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">hexnum</span><span class="p">,</span> <span class="mi">16</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">octnum</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;0O[0-7]+&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">):</span>
+        <span class="n">nasm</span> <span class="o">=</span> <span class="n">nasm</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">octnum</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">octnum</span><span class="p">,</span> <span class="mi">8</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">binnum</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;0B[01]+&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">):</span>
+        <span class="n">nasm</span> <span class="o">=</span> <span class="n">nasm</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">binnum</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">binnum</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Replace the leading zeros</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; [0]+([0-9]+),&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1,&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; [0]+([0-9]+)$&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; [0]+([0-9]+)\(&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1(&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; [0]+([0-9]+)\)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1)&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; -[0]+([0-9]+),&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; -\1,&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; -[0]+([0-9]+)$&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; -\1&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; -[0]+([0-9]+)\(&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; -\1(&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+    <span class="n">nasm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; -[0]+([0-9]+)\)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; -\1)&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End asm normalizing: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">nasm</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nasm</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_numeric_format</span><span class="p">(</span><span class="n">operand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param operand:</span>
+<span class="sd">    :type operand:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">operand</span> <span class="o">=</span> <span class="n">operand</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="n">negative</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+        <span class="n">operand</span> <span class="o">=</span> <span class="n">operand</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">negative</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">operand</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;0X&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">c</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">hexdigits</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">operand</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">operand</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;0O&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">c</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">octdigits</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">operand</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">operand</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;0B&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="s2">&quot;01&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">operand</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+    <span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">negative</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_str_to_asmdef</span><span class="p">(</span><span class="n">asm_string</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param asm_string:</span>
+<span class="sd">    :type asm_string:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO: Add address SUPPORT</span>
+
+    <span class="n">comment</span> <span class="o">=</span> <span class="p">(</span><span class="n">asm_string</span> <span class="o">+</span> <span class="s2">&quot;;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">asm_string</span> <span class="o">=</span> <span class="n">asm_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># This is a work-around for RISC-V objdump implementation.</span>
+    <span class="c1"># It generates comments with &#39;#&#39; character</span>
+    <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">asm_string</span><span class="p">:</span>
+        <span class="n">asm_string</span> <span class="o">=</span> <span class="n">asm_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">label</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">asmfull</span> <span class="o">=</span> <span class="n">asm_string</span>
+    <span class="k">if</span> <span class="n">asm_string</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Has label/Address</span>
+        <span class="n">asmfull</span> <span class="o">=</span> <span class="n">asm_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">address_label</span> <span class="o">=</span> <span class="n">asm_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">address_label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">elem</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0x&quot;</span><span class="p">)</span> <span class="ow">or</span>
+                    <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[0-9a-fA-F]+$&quot;</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">)</span> <span class="ow">and</span> <span class="n">address</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="p">):</span>
+                <span class="n">address</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">elem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&lt;&#39;</span> <span class="ow">and</span> <span class="n">elem</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&gt;&#39;</span> <span class="ow">and</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span>
+            <span class="p">):</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">elem</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeAsmError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to interpret &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">asm_string</span>
+                <span class="p">)</span>
+
+    <span class="n">asm</span> <span class="o">=</span> <span class="n">asmfull</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">decorator</span> <span class="o">=</span> <span class="p">(</span><span class="n">asmfull</span> <span class="o">+</span> <span class="s1">&#39;@&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">decorator</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">decorator</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">address</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">MicroprobeAsmInstructionDefinition</span><span class="p">(</span>
+        <span class="n">asm</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">decorator</span><span class="p">,</span> <span class="n">comment</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="MicroprobeAsmInstructionDefinition">
+<a class="viewcode-back" href="../../../microprobe.utils.asm.MicroprobeAsmInstructionDefinition.html#microprobe.utils.asm.MicroprobeAsmInstructionDefinition">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MicroprobeAsmInstructionDefinition</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MicroprobeAsmInstructionDefinition.__init__">
+<a class="viewcode-back" href="../../../microprobe.utils.asm.MicroprobeAsmInstructionDefinition.html#microprobe.utils.asm.MicroprobeAsmInstructionDefinition.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assembly</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">decorators</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assembly</span> <span class="o">=</span> <span class="n">assembly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decorators</span> <span class="o">=</span> <span class="n">decorators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">=</span> <span class="n">comments</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">assembly</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">address</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">decorators</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__dict__</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

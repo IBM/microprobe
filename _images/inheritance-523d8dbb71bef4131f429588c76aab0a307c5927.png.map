@@ -1,0 +1,10 @@
+<map id="inheritance4b34d78082" name="inheritance4b34d78082">
+<area shape="rect" id="node1" href="microprobe.passes.Pass.html#microprobe.passes.Pass" target="_top" title="Class to represent a benchmak transformation pass." alt="" coords="5,153,184,179"/>
+<area shape="rect" id="node2" href="microprobe.passes.memory.FixMemoryReferencesPass.html#microprobe.passes.memory.FixMemoryReferencesPass" target="_top" title="FixMemoryReferencesPass pass." alt="" coords="258,5,637,31"/>
+<area shape="rect" id="node3" href="microprobe.passes.memory.GenericMemoryModelPass.html#microprobe.passes.memory.GenericMemoryModelPass" target="_top" title="GenericMemoryModelPass pass." alt="" coords="259,55,636,80"/>
+<area shape="rect" id="node4" href="microprobe.passes.memory.GenericMemoryStreamsPass.html#microprobe.passes.memory.GenericMemoryStreamsPass" target="_top" title="GenericMemoryStreamsPass pass." alt="" coords="251,104,643,129"/>
+<area shape="rect" id="node5" href="microprobe.passes.memory.GenericOldMemoryModelPass.html#microprobe.passes.memory.GenericOldMemoryModelPass" target="_top" title="GenericOldMemoryModelPass pass." alt="" coords="248,153,647,179"/>
+<area shape="rect" id="node6" href="microprobe.passes.memory.InitializeMemoryDecorator.html#microprobe.passes.memory.InitializeMemoryDecorator" target="_top" title="InitializeMemoryDecoratorPass pass." alt="" coords="258,203,637,228"/>
+<area shape="rect" id="node7" href="microprobe.passes.memory.SetMemoryOperandByOpcodePass.html#microprobe.passes.memory.SetMemoryOperandByOpcodePass" target="_top" title="SetMemoryOperandByOpcodePass pass." alt="" coords="232,252,663,277"/>
+<area shape="rect" id="node8" href="microprobe.passes.memory.SingleMemoryStreamPass.html#microprobe.passes.memory.SingleMemoryStreamPass" target="_top" title="SingleMemoryStreamPass pass." alt="" coords="260,301,635,327"/>
+</map>

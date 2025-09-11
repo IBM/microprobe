@@ -1,0 +1,621 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool: mp_objdump2mpt &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Tool: mp_seq" href="tools_mp_seq.html" />
+    <link rel="prev" title="Tool: mp_mpt2trace" href="tools_mp_mpt2trace.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tools.html">Command line tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tools_target_definition.html">Command line target definition scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mpt_format.html">Microprobe test (mpt) format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_ctest_format.html">C test format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2asm.html">Tool: mp_bin2asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2objdump.html">Tool: mp_bin2objdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_c2mpt.html">Tool: mp_c2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_epi.html">Tool: mp_epi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2bin.html">Tool: mp_mpt2bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2elf.html">Tool: mp_mpt2elf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2test.html">Tool: mp_mpt2test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2trace.html">Tool: mp_mpt2trace</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tool: mp_objdump2mpt</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-obtain-an-objdump-file">How to obtain an objdump file?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ensuring-the-application-binary-interface">Ensuring the Application Binary Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-usage">Full usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-outputs">Example outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seq.html">Tool: mp_seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seqtune.html">Tool: mp_seqtune</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_target.html">Tool: mp_target</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tools.html">Command line tools</a></li>
+      <li class="breadcrumb-item active">Tool: mp_objdump2mpt</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tools_mp_mpt2trace.html" class="btn btn-neutral float-left" title="Tool: mp_mpt2trace" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools_mp_seq.html" class="btn btn-neutral float-right" title="Tool: mp_seq" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tool-mp-objdump2mpt">
+<h1>Tool: mp_objdump2mpt<a class="headerlink" href="#tool-mp-objdump2mpt" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Objdump to MicroprobeTest (mpt) tool provides a command-line interface (CLI)
+to interpret objdump outputs and generate the corresponding MPT file
+(<a class="reference internal" href="tools_mpt_format.html"><span class="doc">Microprobe test (mpt) format</span></a>). From the MPT format the user can use existing
+tools (<a class="reference internal" href="tools.html"><span class="doc">Command line tools</span></a>) to produce test cases for different environments and
+formats.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The microbenchmark generation policy implemented in this tool reproduces
+exactly the code provided. It resolves any symbolic
+references (references to data, or branch targets), and only if specified
+by the user, it initializes some registers to not break the target
+Application Binary Interface.</p>
+</div>
+</section>
+<section id="basic-usage">
+<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_objdump2mpt</span> <span class="o">-</span><span class="n">T</span> <span class="n">TARGET</span> <span class="o">-</span><span class="n">i</span> <span class="n">OBJDUMP_FILE</span> <span class="o">-</span><span class="n">O</span> <span class="n">MPT_OUTPUT_FILE</span>
+</pre></div>
+</div>
+<p>where:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag/Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-T</span> <span class="pre">TARGET</span></code>, <code class="docutils literal notranslate"><span class="pre">--target</span> <span class="pre">TARGET</span></code></p></td>
+<td><p>Target definition string. Check: <a class="reference internal" href="tools_target_definition.html"><span class="doc">Command line target definition scheme</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-i</span> <span class="pre">OBJDUMP_FILE</span></code>, <code class="docutils literal notranslate"><span class="pre">--input-objdump-file</span> <span class="pre">OBJDUMP_FILE</span></code></p></td>
+<td><p>Objdump file generated with Objdump (see details in the following section)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-O</span> <span class="pre">MPT_OUTPUT_FILE</span></code>, <code class="docutils literal notranslate"><span class="pre">--mpt-output-file</span> <span class="pre">MPT_OUTPUT_FILE</span></code></p></td>
+<td><p>Output file name</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="how-to-obtain-an-objdump-file">
+<h2>How to obtain an objdump file?<a class="headerlink" href="#how-to-obtain-an-objdump-file" title="Link to this heading"></a></h2>
+<p><strong>objdump</strong> (part of the GNU Binutils) is a program for displaying various
+information about object files. An object file is a file containing object
+code, meaning relocatable format machine code that is usually not directly
+executable. There are various formats for object files, and the same object
+code can be packaged in different object files. In addition to the object code
+itself, object files may contain metadata used for linking or debugging,
+including: information to resolve symbolic cross-references between different
+modules, relocation information, stack unwinding information, comments, program
+symbols, debugging or profiling information.
+Consequently, <strong>objdump</strong> can be used as a disassembler to view an executable
+in assembly form. More details
+<a class="reference external" href="https://en.wikipedia.org/wiki/Objdump">on the wikipedia webpage</a>.</p>
+<p>The command to get an dump of a binary using <strong>objdump</strong> is the
+following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">objdump</span> <span class="o">-</span><span class="n">D</span> <span class="o">-</span><span class="n">z</span> <span class="n">your_binary_file</span> <span class="o">&gt;</span> <span class="n">mydump</span><span class="o">.</span><span class="n">dump</span>
+</pre></div>
+</div>
+<p>the <code class="docutils literal notranslate"><span class="pre">-D</span></code> flag forces the tool to dump also the data sections (not
+only the executable ones) and the <code class="docutils literal notranslate"><span class="pre">-z</span></code> flag instructs the tool to dump
+everything (long regions of zero values are typically excluded).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only dumps from GNU Binutils <strong>objdump</strong> are currently supported.</p>
+</div>
+</section>
+<section id="ensuring-the-application-binary-interface">
+<h2>Ensuring the Application Binary Interface<a class="headerlink" href="#ensuring-the-application-binary-interface" title="Link to this heading"></a></h2>
+<p>The ABI (Application Binary Interface) for a given environment (defined in
+<a class="reference external" href="http://refspecs.linuxbase.org/">here</a> ) specifies the semantics of registers
+and the calling conventions. For instance, usually a register is reserved
+to point to the stack. So, the code being extracted from the objdump output
+requires that these registers contain appropriate values. It is up to the user
+to initialize them correctly, although the tool provides some support for
+that.</p>
+<p>Currently, this tool supports the automatic definition of the stack,
+the automatic initialization of the stack pointer and the definition of the
+start symbol which will be called after initializing the environment.
+The user can use the following flags to change the different options:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag/Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--elf-abi</span></code></p></td>
+<td><p>Ensure ELF Application Binary Interface (e.g. define
+stack, stack pointer, etc.)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--stack-size</span> <span class="pre">STACK_SIZE</span></code></p></td>
+<td><p>Stack size in bytes (default: 4096)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--stack-name</span> <span class="pre">STACK_NAME</span></code></p></td>
+<td><p>Stack name (Default: microprobe_stack)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--stack-address</span> <span class="pre">STACK_ADDRESS</span></code></p></td>
+<td><p>Stack address (Default: allocated in the data area)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--start-symbol</span> <span class="pre">START_SYMBOL</span></code></p></td>
+<td><p>Symbol to call after initializing the stack. If not
+specified, no call is performed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--end-branch-to-itself</span></code></p></td>
+<td><p>End the code with a branch to itself instruction</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The necessary instructions required for initializing the stack pointer
+will be added at the beginning of the code (on lower addresses) and the
+start code address will be modified accordingly.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the start symbol is specified, function linkage instructions are used
+to call that symbol after initializing the environment. It is up to the
+user to define the behavior when the called function returns. That is, no
+specific instructions are added after the call (return address for the
+called function) and therefore the behavior is not specified.</p>
+</div>
+</section>
+<section id="full-usage">
+<h2>Full usage<a class="headerlink" href="#full-usage" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mp_objdump2mpt.py: INFO: Processing input arguments...
+usage: mp_objdump2mpt.py [-h] [-P SEARCH_PATH [SEARCH_PATH ...]] [-V] [-v]
+                         [-d] [-c CONFIG_FILE [CONFIG_FILE ...]]
+                         [-C FORCE_CONFIG_FILE]
+                         [--dump-configuration-file OUTPUT_CONFIG_FILE]
+                         [--dump-full-configuration-file OUTPUT_CONFIG_FILE]
+                         [-A ARCHITECTURE_PATHS] [-M MICROARCHITECTURE_PATHS]
+                         [-E ENVIRONMENT_PATHS] -T TARGET
+                         [--list-architectures] [--list-microarchitectures]
+                         [--list-environments] [--traceback]
+                         [--profile PROFILE_OUTPUT] [-i INPUT_OBJDUMP_FILE] -O
+                         OUTPUT_MPT_FILE [-S] [-s SECTIONS [SECTIONS ...]]
+                         [-f FROM_ADDRESS] [-t TO_ADDRESS]
+                         [-X DEFAULT_CODE_ADDRESS] [-D DEFAULT_DATA_ADDRESS]
+                         [--elf-abi] [--stack-size STACK_SIZE]
+                         [--stack-name STACK_NAME]
+                         [--stack-address STACK_ADDRESS]
+                         [--start-symbol START_SYMBOL]
+                         [--end-branch-to-itself]
+
+Microprobe Objdump to MPT tool
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -P SEARCH_PATH [SEARCH_PATH ...], --default_paths SEARCH_PATH [SEARCH_PATH ...]
+                        Default search paths for microprobe target definitions
+  -V, --version         Show Microprobe version and exit
+  -v, --verbosity       Verbosity level (Values: [0,1,2,3,4]). Each time this
+                        argument is specified the verbosity level is
+                        increased. By default, no logging messages are shown.
+                        These are the four levels available:
+                        
+                          -v (1): critical messages
+                          -v -v (2): critical and error messages
+                          -v -v -v (3): critical, error and warning messages
+                          -v -v -v -v (4): critical, error, warning and info messages
+                        
+                        Specifying more than four verbosity flags, will
+                        default to the maximum of four. If you need extra
+                        information, enable the debug mode (--debug or -d
+                        flags).
+  -d, --debug           Enable debug mode in Microprobe framework. Lots of
+                        output messages will be generated
+
+Configuration arguments:
+
+  Command arguments related to configuration file handling
+
+  -c CONFIG_FILE [CONFIG_FILE ...], --configuration CONFIG_FILE [CONFIG_FILE ...]
+                        Configuration file. The configuration files will be
+                        readed in order of appearance. Values are reset by the
+                        last configuration file in case of non-list values.
+                        List values will be appended (not reset)
+  -C FORCE_CONFIG_FILE, --force-configuration FORCE_CONFIG_FILE
+                        Force configuration file. Use this configuration file
+                        as the default start configuration. This disables any
+                        system-wide, or user-provided configuration.
+  --dump-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used
+  --dump-full-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used plus all the configuration options
+                        not set
+
+Target path arguments:
+
+  Command arguments related to target paths
+
+  -A ARCHITECTURE_PATHS, --architecture-paths ARCHITECTURE_PATHS
+                        Search path for architecture definitions. Microprobe
+                        will search in these paths for architecture
+                        definitions
+  -M MICROARCHITECTURE_PATHS, --microarchitecture-paths MICROARCHITECTURE_PATHS
+                        Search path for microarchitecture definitions.
+                        Microprobe will search in these paths for
+                        microarchitecture definitions
+  -E ENVIRONMENT_PATHS, --environment-paths ENVIRONMENT_PATHS
+                        Search path for environment definitions. Microprobe
+                        will search in these paths for environment definitions
+
+Target arguments:
+
+  Command arguments related to target specification and queries
+
+  -T TARGET, --target TARGET
+                        Target tuple. Microprobe follows a GCC-like target
+                        definition scheme, where a target is defined by a
+                        tuple as following:
+                        
+                          &lt;arch-name&gt;-&lt;uarch-name&gt;-&lt;env-name&gt;
+                        
+                        where:
+                        
+                          &lt;arch-name&gt;: is the name of the architecture
+                          &lt;uarch-name&gt;: is the name of the microarchitecture
+                          &lt;env-name&gt;: is the name of the environment
+                        
+                        One can use --list-* options to get the list of
+                        definitions available in the default search paths or
+                        the paths specified by the different --*-paths options
+  --list-architectures  Generate a list of architectures available in the
+                        defined search paths and exit
+  --list-microarchitectures
+                        Generate a list of microarchitectures available in the
+                        defined search paths and exit
+  --list-environments   Generate a list of environments available in the
+                        defined search paths and exit
+
+Debug arguments:
+
+  Command arguments related to debugging facilities
+
+  --traceback           show a traceback and starts a python debugger (pdb)
+                        when an error occurs. &#39;pdb&#39; is an interactive python
+                        shell that facilitates the debugging of errors
+  --profile PROFILE_OUTPUT
+                        dump profiling information into given file (see
+                        &#39;pstats&#39; module)
+
+Objdump to MPT arguments:
+
+  Command arguments related to Objdump to MPT tool
+
+  -i INPUT_OBJDUMP_FILE, --input-objdump-file INPUT_OBJDUMP_FILE
+                        Objdump file to process, if not provided, the input is
+                        read from standard input
+  -O OUTPUT_MPT_FILE, --output-mpt-file OUTPUT_MPT_FILE
+                        Output file name
+  -S, --strict          Be strict when parsing objdump input, if not set,
+                        silently skip unparsed elements
+  -s SECTIONS [SECTIONS ...], --sections SECTIONS [SECTIONS ...]
+                        Space separated CODE section names to interpret.
+                        (default: &#39;.text&#39; section)
+  -f FROM_ADDRESS, --from-address FROM_ADDRESS
+                        If set, start interpreting from this address
+  -t TO_ADDRESS, --to-address TO_ADDRESS
+                        If set, end interpreting at this address
+  -X DEFAULT_CODE_ADDRESS, --default-code-address DEFAULT_CODE_ADDRESS
+                        Default code address
+  -D DEFAULT_DATA_ADDRESS, --default-data-address DEFAULT_DATA_ADDRESS
+                        Default data address
+  --elf-abi             Ensure ELF Application Binary Interface (e.g. define
+                        stack, stack pointer, etc.)
+  --stack-size STACK_SIZE
+                        Stack size in bytes (Default: 4096)
+  --stack-name STACK_NAME
+                        Stack name (Default: microprobe_stack)
+  --stack-address STACK_ADDRESS
+                        Stack address (Default: allocated in the data area)
+  --start-symbol START_SYMBOL
+                        Symbol to call after initializing the stack. If not
+                        specified, no call is performed
+  --end-branch-to-itself
+                        A branch to itself instruction will be added at the
+                        end of the test
+
+Environment variables:
+
+  MICROPROBETEMPLATES    Default path for microprobe templates
+  MICROPROBEDEBUG        If set, enable debug
+  MICROPROBEDEBUGPASSES  If set, enable debug during passes
+  MICROPROBEASMHEXFMT    Assembly hexadecimal format. Options:
+                         &#39;all&#39; -&gt; All immediates in hex format
+                         &#39;address&#39; -&gt; Address immediates in hex format (default)
+                         &#39;none&#39; -&gt; All immediate in integer format
+</pre></div>
+</div>
+</section>
+<section id="example-outputs">
+<h2>Example outputs<a class="headerlink" href="#example-outputs" title="Link to this heading"></a></h2>
+<p class="rubric">Example 1:</p>
+<p>Command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_objdump2mpt</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">T</span> <span class="n">riscv_v22</span><span class="o">-</span><span class="n">riscv_generic</span><span class="o">-</span><span class="n">riscv64_linux_gcc</span> <span class="o">-</span><span class="n">O</span> <span class="n">output</span><span class="o">.</span><span class="n">mpt</span> <span class="o">-</span><span class="n">i</span> <span class="nb">input</span><span class="o">.</span><span class="n">objdump</span> <span class="o">-</span><span class="n">s</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">text</span> <span class="o">--</span><span class="n">elf</span><span class="o">-</span><span class="n">abi</span>
+</pre></div>
+</div>
+<p>Input file <code class="docutils literal notranslate"><span class="pre">input.objdump</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>
+<span class="linenos"> 2</span><span class="n">c2mpt_test003</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">bin</span><span class="p">:</span>     <span class="n">file</span> <span class="nb">format</span> <span class="n">elf64</span><span class="o">-</span><span class="n">littleriscv</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="n">Disassembly</span> <span class="n">of</span> <span class="n">section</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="mi">0000000010030000</span> <span class="o">&lt;</span><span class="n">c2mpt_function</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos"> 8</span>    <span class="mi">10030000</span><span class="p">:</span>	<span class="mi">10040637</span>          	<span class="n">lui</span>	<span class="n">a2</span><span class="p">,</span><span class="mh">0x10040</span>
+<span class="linenos"> 9</span>    <span class="mi">10030004</span><span class="p">:</span>	<span class="mi">00060613</span>          	<span class="n">mv</span>	<span class="n">a2</span><span class="p">,</span><span class="n">a2</span>
+<span class="linenos">10</span>    <span class="mi">10030008</span><span class="p">:</span>	<span class="mi">00863783</span>          	<span class="n">ld</span>	<span class="n">a5</span><span class="p">,</span><span class="mi">8</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span> <span class="c1"># 10040008 &lt;linkedlist+0x8&gt;</span>
+<span class="linenos">11</span>    <span class="mi">1003000</span><span class="n">c</span><span class="p">:</span>	<span class="mi">05063703</span>          	<span class="n">ld</span>	<span class="n">a4</span><span class="p">,</span><span class="mi">80</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
+<span class="linenos">12</span>    <span class="mi">10030010</span><span class="p">:</span>	<span class="mi">00078</span><span class="n">a63</span>          	<span class="n">beqz</span>	<span class="n">a5</span><span class="p">,</span><span class="mi">10030024</span> <span class="o">&lt;</span><span class="n">c2mpt_function</span><span class="o">+</span><span class="mh">0x24</span><span class="o">&gt;</span>
+<span class="linenos">13</span>    <span class="mi">10030014</span><span class="p">:</span>	<span class="mi">0007</span><span class="n">b683</span>          	<span class="n">ld</span>	<span class="n">a3</span><span class="p">,</span><span class="mi">0</span><span class="p">(</span><span class="n">a5</span><span class="p">)</span>
+<span class="linenos">14</span>    <span class="mi">10030018</span><span class="p">:</span>	<span class="mi">0087</span><span class="n">b783</span>          	<span class="n">ld</span>	<span class="n">a5</span><span class="p">,</span><span class="mi">8</span><span class="p">(</span><span class="n">a5</span><span class="p">)</span>
+<span class="linenos">15</span>    <span class="mi">1003001</span><span class="n">c</span><span class="p">:</span>	<span class="mi">00</span><span class="n">d70733</span>          	<span class="n">add</span>	<span class="n">a4</span><span class="p">,</span><span class="n">a4</span><span class="p">,</span><span class="n">a3</span>
+<span class="linenos">16</span>    <span class="mi">10030020</span><span class="p">:</span>	<span class="n">fe079ae3</span>          	<span class="n">bnez</span>	<span class="n">a5</span><span class="p">,</span><span class="mi">10030014</span> <span class="o">&lt;</span><span class="n">c2mpt_function</span><span class="o">+</span><span class="mh">0x14</span><span class="o">&gt;</span>
+<span class="linenos">17</span>    <span class="mi">10030024</span><span class="p">:</span>	<span class="mi">00171713</span>          	<span class="n">slli</span>	<span class="n">a4</span><span class="p">,</span><span class="n">a4</span><span class="p">,</span><span class="mh">0x1</span>
+<span class="linenos">18</span>    <span class="mi">10030028</span><span class="p">:</span>	<span class="mf">04e63823</span>          	<span class="n">sd</span>	<span class="n">a4</span><span class="p">,</span><span class="mi">80</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
+<span class="linenos">19</span>    <span class="mi">1003002</span><span class="n">c</span><span class="p">:</span>	<span class="mi">00008067</span>          	<span class="n">ret</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="mi">0000000010030030</span> <span class="o">&lt;</span><span class="n">my_subroutine</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos">22</span>    <span class="mi">10030030</span><span class="p">:</span>	<span class="mi">00151513</span>          	<span class="n">slli</span>	<span class="n">a0</span><span class="p">,</span><span class="n">a0</span><span class="p">,</span><span class="mh">0x1</span>
+<span class="linenos">23</span>    <span class="mi">10030034</span><span class="p">:</span>	<span class="mi">100407</span><span class="n">b7</span>          	<span class="n">lui</span>	<span class="n">a5</span><span class="p">,</span><span class="mh">0x10040</span>
+<span class="linenos">24</span>    <span class="mi">10030038</span><span class="p">:</span>	<span class="mi">04</span><span class="n">a7b823</span>          	<span class="n">sd</span>	<span class="n">a0</span><span class="p">,</span><span class="mi">80</span><span class="p">(</span><span class="n">a5</span><span class="p">)</span> <span class="c1"># 10040050 &lt;count&gt;</span>
+<span class="linenos">25</span>    <span class="mi">1003003</span><span class="n">c</span><span class="p">:</span>	<span class="mi">00008067</span>          	<span class="n">ret</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span><span class="n">Disassembly</span> <span class="n">of</span> <span class="n">section</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="mi">0000000010040000</span> <span class="o">&lt;</span><span class="n">linkedlist</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos">30</span>    <span class="mi">10040000</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">31</span>    <span class="mi">10040002</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">32</span>    <span class="mi">10040004</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">33</span>    <span class="mi">10040006</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">34</span>    <span class="mi">10040008</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">35</span>    <span class="mi">1004000</span><span class="n">a</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">36</span>    <span class="mi">1004000</span><span class="n">c</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">37</span>    <span class="mi">1004000</span><span class="n">e</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">38</span>    <span class="mi">10040010</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">39</span>    <span class="mi">10040012</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">40</span>    <span class="mi">10040014</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">41</span>    <span class="mi">10040016</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">42</span>    <span class="mi">10040018</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">43</span>    <span class="mi">1004001</span><span class="n">a</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">44</span>    <span class="mi">1004001</span><span class="n">c</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">45</span>    <span class="mi">1004001</span><span class="n">e</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">46</span>    <span class="mi">10040020</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">47</span>    <span class="mi">10040022</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">48</span>    <span class="mi">10040024</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">49</span>    <span class="mi">10040026</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">50</span>    <span class="mi">10040028</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">51</span>    <span class="mi">1004002</span><span class="n">a</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">52</span>    <span class="mi">1004002</span><span class="n">c</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">53</span>    <span class="mi">1004002</span><span class="n">e</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">54</span>    <span class="mi">10040030</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">55</span>    <span class="mi">10040032</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">56</span>    <span class="mi">10040034</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">57</span>    <span class="mi">10040036</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">58</span>    <span class="mi">10040038</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">59</span>    <span class="mi">1004003</span><span class="n">a</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">60</span>    <span class="mi">1004003</span><span class="n">c</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">61</span>    <span class="mi">1004003</span><span class="n">e</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">62</span>    <span class="mi">10040040</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">63</span>    <span class="mi">10040042</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">64</span>    <span class="mi">10040044</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">65</span>    <span class="mi">10040046</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">66</span>    <span class="mi">10040048</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">67</span>    <span class="mi">1004004</span><span class="n">a</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">68</span>    <span class="mi">1004004</span><span class="n">c</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">69</span>    <span class="mi">1004004</span><span class="n">e</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">70</span>
+<span class="linenos">71</span><span class="mi">0000000010040050</span> <span class="o">&lt;</span><span class="n">count</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos">72</span>    <span class="mi">10040050</span><span class="p">:</span>	<span class="n">cafe</span>                	<span class="n">sw</span>	<span class="n">t6</span><span class="p">,</span><span class="mi">84</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+<span class="linenos">73</span>    <span class="mi">10040052</span><span class="p">:</span>	<span class="n">cafe</span>                	<span class="n">sw</span>	<span class="n">t6</span><span class="p">,</span><span class="mi">84</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+<span class="linenos">74</span>    <span class="mi">10040054</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+<span class="linenos">75</span>    <span class="mi">10040056</span><span class="p">:</span>	<span class="mi">0000</span>                	<span class="n">unimp</span>
+</pre></div>
+</div>
+<p>Output file <code class="docutils literal notranslate"><span class="pre">output.mpt</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">;</span> <span class="n">Microprobe</span> <span class="n">Test</span> <span class="n">Definition</span> <span class="n">File</span>
+<span class="linenos"> 2</span><span class="p">[</span><span class="n">MPT</span><span class="p">]</span>
+<span class="linenos"> 3</span><span class="n">mpt_version</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="p">;</span>  <span class="n">Format</span> <span class="n">version</span> <span class="n">of</span> <span class="n">this</span> <span class="n">MPT</span> <span class="n">file</span><span class="o">.</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="p">[</span><span class="n">REGISTERS</span><span class="p">]</span> <span class="p">;</span> <span class="n">Section</span> <span class="n">to</span> <span class="n">specify</span> <span class="n">the</span> <span class="n">initial</span> <span class="n">register</span> <span class="n">values</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="p">;</span> <span class="n">Format</span><span class="p">:</span> <span class="n">register</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span> <span class="n">E</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">:</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="p">;</span> <span class="n">Set</span> <span class="n">GR0</span><span class="p">,</span> <span class="n">GR1</span> <span class="ow">and</span> <span class="n">GR2</span> <span class="n">register</span> <span class="n">to</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="n">values</span> <span class="n">respectively</span>
+<span class="linenos">10</span><span class="p">;</span><span class="n">GR0</span> <span class="o">=</span> <span class="mh">0x0</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="p">[</span><span class="n">DATA</span><span class="p">]</span> <span class="p">;</span> <span class="n">Section</span> <span class="n">to</span> <span class="n">specify</span> <span class="n">the</span> <span class="n">variables</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="p">;</span> <span class="n">Data</span> <span class="n">section</span> <span class="n">default</span> <span class="n">address</span><span class="o">.</span> <span class="n">Variables</span> <span class="n">will</span> <span class="n">be</span> <span class="n">placed</span> <span class="kn">from</span><span class="w"> </span><span class="nn">this</span> <span class="n">address</span>
+<span class="linenos">16</span><span class="p">;</span> <span class="k">if</span> <span class="n">their</span> <span class="n">address</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="n">default_address</span> <span class="o">=</span> <span class="mh">0x0000000000000000</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span><span class="p">;</span> <span class="n">Variable</span> <span class="n">Declaration</span>
+<span class="linenos">21</span><span class="p">;</span> <span class="n">Format</span><span class="p">:</span> <span class="n">var_name</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">nelems</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">alignment</span><span class="p">,</span> <span class="n">init_values</span> <span class="p">]</span>
+<span class="linenos">22</span><span class="p">;</span> <span class="n">where</span><span class="p">:</span>
+<span class="linenos">23</span><span class="p">;</span>   <span class="o">-</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">string</span> <span class="n">specifying</span> <span class="n">the</span> <span class="nb">type</span> <span class="n">of</span> <span class="n">elements</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">variable</span>
+<span class="linenos">24</span><span class="p">;</span>   <span class="o">-</span> <span class="n">nelems</span><span class="p">:</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">elements</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">variable</span>
+<span class="linenos">25</span><span class="p">;</span>   <span class="o">-</span> <span class="n">address</span> <span class="p">:</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">address</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="p">,</span> <span class="k">if</span> <span class="nb">set</span> <span class="n">the</span> <span class="n">address</span> <span class="n">will</span> <span class="n">be</span>
+<span class="linenos">26</span><span class="p">;</span>               <span class="n">fixed</span><span class="p">,</span> <span class="n">otherwise</span><span class="p">,</span> <span class="n">it</span> <span class="n">will</span> <span class="n">be</span> <span class="n">computer</span> <span class="n">by</span> <span class="n">microprobe</span>
+<span class="linenos">27</span><span class="p">;</span>   <span class="o">-</span> <span class="n">alignment</span> <span class="p">:</span> <span class="n">alignment</span> <span class="n">requirements</span> <span class="n">of</span> <span class="n">the</span> <span class="n">variable</span><span class="o">.</span> <span class="n">It</span> <span class="n">should</span> <span class="ow">not</span>
+<span class="linenos">28</span><span class="p">;</span>                 <span class="n">conflict</span> <span class="k">with</span> <span class="n">address</span> <span class="k">if</span> <span class="n">specified</span><span class="o">.</span> <span class="n">It</span> <span class="n">can</span> <span class="n">be</span> <span class="nb">set</span> <span class="n">to</span> <span class="kc">None</span>
+<span class="linenos">29</span><span class="p">;</span>   <span class="o">-</span> <span class="n">init_values</span> <span class="p">:</span> <span class="k">if</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">single</span> <span class="n">value</span><span class="p">,</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">elements</span> <span class="n">will</span> <span class="n">be</span>
+<span class="linenos">30</span><span class="p">;</span>                   <span class="n">initialized</span> <span class="n">to</span> <span class="n">that</span> <span class="n">value</span><span class="p">,</span> <span class="k">if</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">an</span> <span class="n">array</span><span class="p">,</span> <span class="n">elements</span>
+<span class="linenos">31</span><span class="p">;</span>                   <span class="n">will</span> <span class="n">be</span> <span class="n">initialized</span> <span class="n">to</span> <span class="n">the</span> <span class="n">values</span> <span class="n">specified</span> <span class="ow">in</span> <span class="n">a</span> <span class="nb">round</span><span class="o">-</span>
+<span class="linenos">32</span><span class="p">;</span>                   <span class="n">robin</span> <span class="n">fashion</span><span class="o">.</span> <span class="n">Two</span> <span class="n">special</span> <span class="n">keywords</span> <span class="n">can</span> <span class="n">be</span> <span class="n">specified</span><span class="p">:</span>
+<span class="linenos">33</span><span class="p">;</span>                   <span class="n">RNDFP</span> <span class="ow">and</span> <span class="n">RNDINT</span> <span class="n">to</span> <span class="n">initialize</span> <span class="n">the</span> <span class="n">elements</span> <span class="n">to</span> <span class="n">random</span> <span class="n">FP</span>
+<span class="linenos">34</span><span class="p">;</span>                   <span class="ow">and</span> <span class="n">random</span> <span class="n">INT</span> <span class="n">values</span>
+<span class="linenos">35</span><span class="p">;</span>
+<span class="linenos">36</span><span class="p">;</span> <span class="n">Note</span> <span class="n">that</span> <span class="n">variable</span> <span class="n">names</span> <span class="n">ARE</span> <span class="n">NOT</span> <span class="n">case</span> <span class="n">sensitive</span><span class="o">.</span> <span class="n">I</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="n">VAR</span> <span class="o">=</span> <span class="n">Var</span> <span class="o">=</span> <span class="n">var</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span><span class="n">linkedlist</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="mi">00000040</span><span class="p">,</span> <span class="mh">0x0000000010040000</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+<span class="linenos">39</span><span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;char&quot;</span><span class="p">,</span> <span class="mi">00000004</span><span class="p">,</span> <span class="mh">0x0000000010040050</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="mi">51966</span><span class="p">,</span> <span class="mi">51966</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="linenos">40</span><span class="n">microprobe</span> <span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;uint8_t&quot;</span><span class="p">,</span> <span class="mi">00004096</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mh">0x0010</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+<span class="linenos">41</span>
+<span class="linenos">42</span><span class="p">[</span><span class="n">CODE</span><span class="p">]</span> <span class="p">;</span> <span class="n">Section</span> <span class="n">to</span> <span class="n">specify</span> <span class="n">the</span> <span class="n">code</span>
+<span class="linenos">43</span>
+<span class="linenos">44</span><span class="p">;</span> <span class="n">Code</span> <span class="n">section</span> <span class="n">default</span> <span class="n">address</span><span class="o">.</span> <span class="n">Code</span> <span class="n">will</span> <span class="n">be</span> <span class="n">placed</span> <span class="kn">from</span><span class="w"> </span><span class="nn">this</span> <span class="n">address</span>
+<span class="linenos">45</span><span class="p">;</span> <span class="k">if</span> <span class="n">the</span> <span class="n">instruction</span> <span class="n">address</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">specified</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span><span class="n">default_address</span> <span class="o">=</span> <span class="mh">0x000000001002fff8</span>
+<span class="linenos">48</span>
+<span class="linenos">49</span><span class="p">;</span> <span class="n">The</span> <span class="n">code</span> <span class="n">specified</span> <span class="n">after</span> <span class="s1">&#39;instructions&#39;</span> <span class="n">entry</span> <span class="p">(</span><span class="n">below</span><span class="p">)</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">code</span> <span class="n">that</span> <span class="n">will</span> <span class="n">be</span>
+<span class="linenos">50</span><span class="p">;</span> <span class="n">processed</span> <span class="n">by</span> <span class="n">microprobe</span><span class="o">.</span> <span class="n">The</span> <span class="n">instruction</span> <span class="nb">format</span> <span class="ow">is</span> <span class="n">similar</span> <span class="n">to</span> <span class="n">GNU</span> <span class="n">assembler</span>
+<span class="linenos">51</span><span class="p">;</span> <span class="nb">format</span><span class="p">,</span> <span class="n">it</span> <span class="n">also</span> <span class="n">allows</span> <span class="n">the</span> <span class="n">specification</span> <span class="n">of</span> <span class="n">labels</span> <span class="p">(</span><span class="n">NOT</span> <span class="n">case</span> <span class="n">sensitive</span><span class="p">)</span> <span class="ow">and</span>
+<span class="linenos">52</span><span class="p">;</span> <span class="n">references</span> <span class="n">to</span> <span class="n">the</span> <span class="n">declared</span> <span class="n">variables</span><span class="o">.</span> <span class="n">It</span> <span class="ow">is</span> <span class="n">also</span> <span class="n">possible</span> <span class="n">to</span> <span class="n">specify</span> <span class="n">instruction</span>
+<span class="linenos">53</span><span class="p">;</span> <span class="n">addresses</span> <span class="ow">and</span> <span class="n">to</span> <span class="n">do</span> <span class="n">code</span> <span class="n">expansion</span> <span class="n">by</span> <span class="n">referencing</span> <span class="n">other</span> <span class="n">user</span>
+<span class="linenos">54</span><span class="p">;</span> <span class="n">defined</span> <span class="n">entries</span><span class="o">.</span> <span class="n">Check</span> <span class="n">the</span> <span class="n">example</span> <span class="n">below</span> <span class="n">to</span> <span class="n">see</span> <span class="n">examples</span> <span class="n">of</span> <span class="n">these</span> <span class="n">features</span><span class="o">.</span>
+<span class="linenos">55</span><span class="p">;</span>
+<span class="linenos">56</span><span class="p">;</span> <span class="o">*****************************************************************************</span>
+<span class="linenos">57</span><span class="p">;</span> <span class="o">******</span>  <span class="n">Although</span> <span class="n">Microprobe</span> <span class="n">performs</span> <span class="n">some</span> <span class="n">sanity</span> <span class="n">checks</span><span class="p">,</span> <span class="n">it</span> <span class="ow">is</span> <span class="n">the</span>   <span class="o">********</span>
+<span class="linenos">58</span><span class="p">;</span> <span class="o">******</span>  <span class="n">responsibility</span> <span class="n">of</span> <span class="n">the</span> <span class="n">user</span> <span class="n">to</span> <span class="n">define</span> <span class="n">correct</span> <span class="n">code</span><span class="o">.</span>           <span class="o">********</span>
+<span class="linenos">59</span><span class="p">;</span> <span class="o">******</span>                                                               <span class="o">********</span>
+<span class="linenos">60</span><span class="p">;</span> <span class="o">*****************************************************************************</span>
+<span class="linenos">61</span>
+<span class="linenos">62</span><span class="n">instructions</span> <span class="o">=</span>
+<span class="linenos">63</span>  <span class="o">&lt;</span><span class="n">ELF_ABI_START</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos">64</span>    <span class="n">AUIPC</span> <span class="n">x2</span><span class="p">,</span> <span class="o">%</span><span class="n">pcrel_hi</span><span class="p">(</span><span class="n">microprobe</span> <span class="n">stack</span><span class="p">)</span>             
+<span class="linenos">65</span>    <span class="n">ADDI</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="o">%</span><span class="n">pcrel_lo</span><span class="p">(</span><span class="n">microprobe</span> <span class="n">stack_pcrel_1</span><span class="p">)</span>  
+<span class="linenos">66</span>  <span class="mh">0x0000000010030000</span> <span class="o">&lt;</span><span class="n">C2MPT_FUNCTION</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos">67</span>    <span class="n">LUI</span> <span class="n">x12</span><span class="p">,</span> <span class="mi">65600</span>                                    
+<span class="linenos">68</span>    <span class="n">ADDI</span> <span class="n">x12</span><span class="p">,</span> <span class="n">x12</span><span class="p">,</span> <span class="mh">0x0</span>                                
+<span class="linenos">69</span>    <span class="n">LD</span> <span class="n">x15</span><span class="p">,</span> <span class="mh">0x8</span><span class="p">(</span><span class="n">x12</span><span class="p">)</span>                                  
+<span class="linenos">70</span>    <span class="n">LD</span> <span class="n">x14</span><span class="p">,</span> <span class="mh">0x50</span><span class="p">(</span><span class="n">x12</span><span class="p">)</span>                                 
+<span class="linenos">71</span>    <span class="n">BEQ</span> <span class="n">x15</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">C2MPT_FUNCTION</span><span class="o">+</span><span class="mh">0X24</span>                  
+<span class="linenos">72</span>    <span class="n">LD</span> <span class="n">x13</span><span class="p">,</span> <span class="mh">0x0</span><span class="p">(</span><span class="n">x15</span><span class="p">)</span>                                  
+<span class="linenos">73</span>    <span class="n">LD</span> <span class="n">x15</span><span class="p">,</span> <span class="mh">0x8</span><span class="p">(</span><span class="n">x15</span><span class="p">)</span>                                  
+<span class="linenos">74</span>    <span class="n">ADD</span> <span class="n">x14</span><span class="p">,</span> <span class="n">x14</span><span class="p">,</span> <span class="n">x13</span>                                 
+<span class="linenos">75</span>    <span class="n">BNE</span> <span class="n">x15</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">C2MPT_FUNCTION</span><span class="o">+</span><span class="mh">0X14</span>                  
+<span class="linenos">76</span>    <span class="n">SLLI</span> <span class="n">x14</span><span class="p">,</span> <span class="n">x14</span><span class="p">,</span> <span class="mi">1</span>                                  
+<span class="linenos">77</span>    <span class="n">SD</span> <span class="n">x14</span><span class="p">,</span> <span class="mh">0x50</span><span class="p">(</span><span class="n">x12</span><span class="p">)</span>                                 
+<span class="linenos">78</span>    <span class="n">JALR</span> <span class="n">x0</span><span class="p">,</span> <span class="mh">0x0</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>                                  
+<span class="linenos">79</span>  <span class="mh">0x0000000010030030</span> <span class="o">&lt;</span><span class="n">MY_SUBROUTINE</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos">80</span>    <span class="n">SLLI</span> <span class="n">x10</span><span class="p">,</span> <span class="n">x10</span><span class="p">,</span> <span class="mi">1</span>                                  
+<span class="linenos">81</span>    <span class="n">LUI</span> <span class="n">x15</span><span class="p">,</span> <span class="mi">65600</span>                                    
+<span class="linenos">82</span>    <span class="n">SD</span> <span class="n">x10</span><span class="p">,</span> <span class="mh">0x50</span><span class="p">(</span><span class="n">x15</span><span class="p">)</span>                                 
+<span class="linenos">83</span>    <span class="n">JALR</span> <span class="n">x0</span><span class="p">,</span> <span class="mh">0x0</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>                                  
+<span class="linenos">84</span>  <span class="o">&lt;</span><span class="n">ELF_ABI_EXIT</span><span class="o">&gt;</span><span class="p">:</span>
+<span class="linenos">85</span>    <span class="n">ADDI</span> <span class="n">x0</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="mh">0x0</span>                                  
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

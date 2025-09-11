@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.exceptions.MicroprobeError &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.exceptions.MicroprobeException" href="microprobe.exceptions.MicroprobeException.html" />
+    <link rel="prev" title="microprobe.exceptions.MicroprobeDuplicatedValueError" href="microprobe.exceptions.MicroprobeDuplicatedValueError.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeAddressTranslationError.html">microprobe.exceptions.MicroprobeAddressTranslationError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeArchitectureDefinitionError.html">microprobe.exceptions.MicroprobeArchitectureDefinitionError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeArchitectureFormatError.html">microprobe.exceptions.MicroprobeArchitectureFormatError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeAsmError.html">microprobe.exceptions.MicroprobeAsmError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeBinaryError.html">microprobe.exceptions.MicroprobeBinaryError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeBranchConditionError.html">microprobe.exceptions.MicroprobeBranchConditionError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeCacheError.html">microprobe.exceptions.MicroprobeCacheError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeCalledProcessError.html">microprobe.exceptions.MicroprobeCalledProcessError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeCodeGenerationError.html">microprobe.exceptions.MicroprobeCodeGenerationError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeConstantRegisterError.html">microprobe.exceptions.MicroprobeConstantRegisterError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeDMAFormatError.html">microprobe.exceptions.MicroprobeDMAFormatError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeDuplicatedValueError.html">microprobe.exceptions.MicroprobeDuplicatedValueError</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">microprobe.exceptions.MicroprobeError</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.exceptions.MicroprobeError"><code class="docutils literal notranslate"><span class="pre">MicroprobeError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeException.html">microprobe.exceptions.MicroprobeException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeImportDefinitionError.html">microprobe.exceptions.MicroprobeImportDefinitionError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeImportError.html">microprobe.exceptions.MicroprobeImportError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeLookupError.html">microprobe.exceptions.MicroprobeLookupError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeMPTFormatError.html">microprobe.exceptions.MicroprobeMPTFormatError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeModelError.html">microprobe.exceptions.MicroprobeModelError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeNoComparatorError.html">microprobe.exceptions.MicroprobeNoComparatorError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeNoGenerationPathError.html">microprobe.exceptions.MicroprobeNoGenerationPathError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeObjdumpError.html">microprobe.exceptions.MicroprobeObjdumpError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobePolicyError.html">microprobe.exceptions.MicroprobePolicyError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeRunCmdError.html">microprobe.exceptions.MicroprobeRunCmdError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeTargetDefinitionError.html">microprobe.exceptions.MicroprobeTargetDefinitionError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeTypeError.html">microprobe.exceptions.MicroprobeTypeError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeUncheckableEnvironmentWarning.html">microprobe.exceptions.MicroprobeUncheckableEnvironmentWarning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeValueError.html">microprobe.exceptions.MicroprobeValueError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeWarning.html">microprobe.exceptions.MicroprobeWarning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.exceptions.MicroprobeYamlFormatError.html">microprobe.exceptions.MicroprobeYamlFormatError</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+      <li class="breadcrumb-item active">microprobe.exceptions.MicroprobeError</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="microprobe.exceptions.MicroprobeDuplicatedValueError.html" class="btn btn-neutral float-left" title="microprobe.exceptions.MicroprobeDuplicatedValueError" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.exceptions.MicroprobeException.html" class="btn btn-neutral float-right" title="microprobe.exceptions.MicroprobeException" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="microprobe-exceptions-microprobeerror">
+<h1>microprobe.exceptions.MicroprobeError<a class="headerlink" href="#microprobe-exceptions-microprobeerror" title="Link to this heading"></a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MicroprobeError</span></span><a class="reference internal" href="_modules/microprobe/exceptions.html#MicroprobeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.exceptions.MicroprobeError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="microprobe.exceptions.MicroprobeException.html#microprobe.exceptions.MicroprobeException" title="microprobe.exceptions.MicroprobeException"><code class="xref py py-class docutils literal notranslate"><span class="pre">MicroprobeException</span></code></a>, <a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Base class for all Microprobe-defined Error Exceptions</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__cause__" title="Link to this definition"></a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__context__" title="Link to this definition"></a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__delattr__" title="Link to this definition"></a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__dict__">
+<span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({'__module__':</span> <span class="pre">'microprobe.exceptions',</span> <span class="pre">'__doc__':</span> <span class="pre">'Base</span> <span class="pre">class</span> <span class="pre">for</span> <span class="pre">all</span> <span class="pre">Microprobe-defined</span> <span class="pre">Error</span> <span class="pre">Exceptions',</span> <span class="pre">'__annotations__':</span> <span class="pre">{}})</span></em><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__dict__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__getattribute__" title="Link to this definition"></a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'microprobe.exceptions'</span></em><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__module__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__new__">
+<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__new__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__reduce__" title="Link to this definition"></a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__setattr__" title="Link to this definition"></a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__setstate__">
+<span class="sig-name descname"><span class="pre">__setstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__setstate__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__str__" title="Link to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__suppress_context__">
+<span class="sig-name descname"><span class="pre">__suppress_context__</span></span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__suppress_context__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__traceback__">
+<span class="sig-name descname"><span class="pre">__traceback__</span></span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__traceback__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.__weakref__" title="Link to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.args" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.exceptions.MicroprobeError.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#microprobe.exceptions.MicroprobeError.with_traceback" title="Link to this definition"></a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

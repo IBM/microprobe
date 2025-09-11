@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command line target definition scheme &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Microprobe test (mpt) format" href="tools_mpt_format.html" />
+    <link rel="prev" title="Command line tools" href="tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tools.html">Command line tools</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Command line target definition scheme</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generic-tool-options">Generic tool options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-outputs">Example outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mpt_format.html">Microprobe test (mpt) format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_ctest_format.html">C test format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2asm.html">Tool: mp_bin2asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2objdump.html">Tool: mp_bin2objdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_c2mpt.html">Tool: mp_c2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_epi.html">Tool: mp_epi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2bin.html">Tool: mp_mpt2bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2elf.html">Tool: mp_mpt2elf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2test.html">Tool: mp_mpt2test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2trace.html">Tool: mp_mpt2trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_objdump2mpt.html">Tool: mp_objdump2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seq.html">Tool: mp_seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seqtune.html">Tool: mp_seqtune</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_target.html">Tool: mp_target</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tools.html">Command line tools</a></li>
+      <li class="breadcrumb-item active">Command line target definition scheme</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tools.html" class="btn btn-neutral float-left" title="Command line tools" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools_mpt_format.html" class="btn btn-neutral float-right" title="Microprobe test (mpt) format" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-line-target-definition-scheme">
+<h1>Command line target definition scheme<a class="headerlink" href="#command-line-target-definition-scheme" title="Link to this heading"></a></h1>
+<p>In Microprobe, the concept <code class="docutils literal notranslate"><span class="pre">target</span></code> is used to define where the code being
+generated will be run/executed/simulated. Microprobe follows a GCC-like target
+definition scheme, where a target is defined by a tuple as following:</p>
+<blockquote>
+<div><p><strong>&lt;arch-name&gt;-&lt;uarch-name&gt;-&lt;env-name&gt;</strong></p>
+</div></blockquote>
+<p>where:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>&lt;arch-name&gt;</strong>: is the name of the architecture.</p></li>
+<li><p><strong>&lt;uarch-name&gt;</strong>: is the name of the microarchitecture.</p></li>
+<li><p><strong>&lt;env-name&gt;</strong>: is the name of the environment and format.</p></li>
+</ul>
+</div></blockquote>
+<p>Therefore, possible target definitions could be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>riscv_v22-riscv_generic-riscv64_linux_gcc</strong> for RISCV C/asm code.</p></li>
+<li><p><strong>riscv_v22-riscv_generic-riscv64_test_p</strong> for RISCV <a class="reference external" href="https://github.com/riscv/riscv-tests">riscv-tests</a> format.</p></li>
+<li><p><strong>z13-z13-z64_linuc_gcc</strong> for z13 C/asm code.</p></li>
+<li><p><strong>z14-z14-z64_linux_gcc</strong> for z14 C/asm code.</p></li>
+<li><p><strong>z15-z15-z64_linuc_gcc</strong> for z15 C/asm code.</p></li>
+<li><p><strong>power_v206-power7-ppc64_linux_gcc</strong> for POWER7 C/asm code.</p></li>
+<li><p><strong>power_v207-power8-ppc64_linux_gcc</strong> for POWER8 C/asm code.</p></li>
+<li><p><strong>power_v300-power9-ppc64_linux_gcc</strong> for POWER9 C/asm code.</p></li>
+<li><p><strong>power_v310-power10-ppc64_linux_gcc</strong> for POWER10 C/asm code.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some of the target definitions mentioned above might not be released on
+the public version of Microprobe but are listed to provide a comprehensive
+set of examples.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is up to the user to specify a valid target definition tuple. If an
+invalid target definition tuple is specified, the results are unpredictable.
+In the future, we might implement support to check valid target tuple
+definitions.</p>
+</div>
+<section id="generic-tool-options">
+<h2>Generic tool options<a class="headerlink" href="#generic-tool-options" title="Link to this heading"></a></h2>
+<p>In most of the tools provided, one can use <code class="docutils literal notranslate"><span class="pre">--list-*</span></code> options to get the list of
+definitions available in the default search paths or the paths specified by the
+different <code class="docutils literal notranslate"><span class="pre">--*-paths</span></code> options</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag/Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-P</span> <span class="pre">SEARCH_PATH</span> <span class="pre">[SEARCH_PATH</span> <span class="pre">...]</span></code>, <code class="docutils literal notranslate"><span class="pre">--default_paths</span> <span class="pre">SEARCH_PATH</span> <span class="pre">[SEARCH_PATH</span> <span class="pre">...]</span></code></p></td>
+<td><p>Default search paths for Microprobe target definitions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-A</span> <span class="pre">ARCHITECTURE_PATHS</span></code>, <code class="docutils literal notranslate"><span class="pre">--architecture-paths</span> <span class="pre">ARCHITECTURE_PATHS</span></code></p></td>
+<td><p>Search path for architecture definitions. Microprobe
+will search in these paths for architecture
+definitions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-M</span> <span class="pre">MICROARCHITECTURE_PATHS</span></code>, <code class="docutils literal notranslate"><span class="pre">--microarchitecture-paths</span> <span class="pre">MICROARCHITECTURE_PATHS</span></code></p></td>
+<td><p>Search path for microarchitecture definitions.
+Microprobe will search in these paths for
+microarchitecture definitions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-E</span> <span class="pre">ENVIRONMENT_PATHS</span></code>, <code class="docutils literal notranslate"><span class="pre">--environment-paths</span> <span class="pre">ENVIRONMENT_PATHS</span></code></p></td>
+<td><p>Search path for environment definitions. Microprobe
+will search in these paths for environment definitions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--list-architectures</span></code></p></td>
+<td><p>Generate a list of architectures available in the
+defined search paths and exit.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--list-microarchitectures</span></code></p></td>
+<td><p>Generate a list of microarchitectures available in the
+defined search paths and exit.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--list-environments</span></code></p></td>
+<td><p>Generate a list of environments available in the
+defined search paths and exit.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example-outputs">
+<h2>Example outputs<a class="headerlink" href="#example-outputs" title="Link to this heading"></a></h2>
+<p class="rubric">Example 1:</p>
+<p>Command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_target</span> <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">architectures</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mp_target.py: INFO: Processing input arguments...
+
+6 isa definitions detected. See table below:
+
+Name:&#39;        power_v206&#39;, Description:&#39;   Power ISA Version 2.06&#39;, File:&#39;/tmp/microprobe/targets/power/isa/p-v2_06/isa.yaml&#39;
+Name:&#39;        power_v207&#39;, Description:&#39;   Power ISA Version 2.07&#39;, File:&#39;/tmp/microprobe/targets/power/isa/p-v2_07/isa.yaml&#39;
+Name:&#39;        power_v300&#39;, Description:&#39;   Power ISA Version 3.00&#39;, File:&#39;/tmp/microprobe/targets/power/isa/p-v3_00/isa.yaml&#39;
+Name:&#39;        power_v310&#39;, Description:&#39;   Power ISA Version 3.10&#39;, File:&#39;/tmp/microprobe/targets/power/isa/p-v3_10/isa.yaml&#39;
+Name:&#39;        riscv_boom&#39;, Description:&#39;              RISC-V BOOM&#39;, File:&#39;/tmp/microprobe/targets/riscv/isa/riscv-boom/isa.yaml&#39;
+Name:&#39;         riscv_v22&#39;, Description:&#39;              RISC-V v2.2&#39;, File:&#39;/tmp/microprobe/targets/riscv/isa/riscv-v2_2/isa.yaml&#39;
+</pre></div>
+</div>
+<p class="rubric">Example 2:</p>
+<p>Command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_target</span> <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">microarchitectures</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mp_target.py: INFO: Processing input arguments...
+
+5 microarchitecture definitions detected. See table below:
+
+Name:&#39;           power10&#39;, Description:&#39;POWER10 microarchitecture&#39;, File:&#39;/tmp/microprobe/targets/power/uarch/p-power10/microarchitecture.yaml&#39;
+Name:&#39;            power7&#39;, Description:&#39; POWER7 microarchitecture&#39;, File:&#39;/tmp/microprobe/targets/power/uarch/p-power7/microarchitecture.yaml&#39;
+Name:&#39;            power8&#39;, Description:&#39; POWER8 microarchitecture&#39;, File:&#39;/tmp/microprobe/targets/power/uarch/p-power8/microarchitecture.yaml&#39;
+Name:&#39;            power9&#39;, Description:&#39; POWER9 microarchitecture&#39;, File:&#39;/tmp/microprobe/targets/power/uarch/p-power9/microarchitecture.yaml&#39;
+Name:&#39;     riscv_generic&#39;, Description:&#39;Generic RISC-V microarchitecture&#39;, File:&#39;/tmp/microprobe/targets/riscv/uarch/riscv-generic/microarchitecture.yaml&#39;
+</pre></div>
+</div>
+<p class="rubric">Example 3:</p>
+<p>Command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_target</span> <span class="o">--</span><span class="nb">list</span><span class="o">-</span><span class="n">environments</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mp_target.py: INFO: Processing input arguments...
+
+10 environment definitions detected. See table below:
+
+Name:&#39;   ppc64_linux_gcc&#39;, Description:&#39;POWERPC architecture BE (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/power/env/powerpc64_linux_gcc.py&#39;
+Name:&#39; ppc64le_linux_gcc&#39;, Description:&#39;POWERPC architecture LE (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/power/env/powerpc64_linux_gcc.py&#39;
+Name:&#39;       riscv64_bp3&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Assembly using RISC-V Banana Pi 3&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_bp3.py&#39;
+Name:&#39;riscv64_eprocessor_sim&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_eprocessor_sim.py&#39;
+Name:&#39; riscv64_linux_gcc&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_linux_gcc.py&#39;
+Name:&#39;riscv64_linux_gcc_nolibc&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_linux_gcc_nolibc.py&#39;
+Name:&#39; riscv64_riscy_sim&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_riscy_sim.py&#39;
+Name:&#39;riscv64_sargantana_sim&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_sargantana_sim.py&#39;
+Name:&#39; riscv64_spike_sim&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Linux operating system, GCC compiler&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_spike_sim.py&#39;
+Name:&#39;    riscv64_test_p&#39;, Description:&#39;RISC-V architecture (64bit addressing mode), Assembly using RISC-V test environment P&#39;, File:&#39;/tmp/microprobe/targets/riscv/env/riscv_test_p.py&#39;
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

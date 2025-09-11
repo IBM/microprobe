@@ -1,0 +1,74 @@
+microprobe.utils.mpt.MicroprobeTestDefinitionV0x5
+=================================================
+
+.. currentmodule:: microprobe.utils.mpt
+
+.. autoclass:: MicroprobeTestDefinitionV0x5
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroprobeTestDefinitionV0x5.__init__
+      ~MicroprobeTestDefinitionV0x5.register_dat_mapping
+      ~MicroprobeTestDefinitionV0x5.register_dat_property
+      ~MicroprobeTestDefinitionV0x5.register_instruction_definitions
+      ~MicroprobeTestDefinitionV0x5.register_raw_definition
+      ~MicroprobeTestDefinitionV0x5.register_register_definition
+      ~MicroprobeTestDefinitionV0x5.register_variable_definition
+      ~MicroprobeTestDefinitionV0x5.set_cycle_count
+      ~MicroprobeTestDefinitionV0x5.set_default_code_address
+      ~MicroprobeTestDefinitionV0x5.set_default_data_address
+      ~MicroprobeTestDefinitionV0x5.set_instruction_count
+      ~MicroprobeTestDefinitionV0x5.set_instruction_definitions
+      ~MicroprobeTestDefinitionV0x5.set_roi_cyc
+      ~MicroprobeTestDefinitionV0x5.set_roi_ins
+      ~MicroprobeTestDefinitionV0x5.set_roi_memory_access_trace
+      ~MicroprobeTestDefinitionV0x5.set_state
+      ~MicroprobeTestDefinitionV0x5.set_variables_definition
+      ~MicroprobeTestDefinitionV0x5.update_register_definition
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MicroprobeTestDefinitionV0x5.code
+      ~MicroprobeTestDefinitionV0x5.cycle_count
+      ~MicroprobeTestDefinitionV0x5.dat_mappings
+      ~MicroprobeTestDefinitionV0x5.dat_properties
+      ~MicroprobeTestDefinitionV0x5.default_code_address
+      ~MicroprobeTestDefinitionV0x5.default_data_address
+      ~MicroprobeTestDefinitionV0x5.instruction_count
+      ~MicroprobeTestDefinitionV0x5.raw
+      ~MicroprobeTestDefinitionV0x5.registers
+      ~MicroprobeTestDefinitionV0x5.roi_cyc
+      ~MicroprobeTestDefinitionV0x5.roi_ins
+      ~MicroprobeTestDefinitionV0x5.roi_memory_access_trace
+      ~MicroprobeTestDefinitionV0x5.state
+      ~MicroprobeTestDefinitionV0x5.variables
+      ~MicroprobeTestDefinitionV0x5.version
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

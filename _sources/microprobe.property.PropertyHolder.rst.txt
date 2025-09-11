@@ -1,0 +1,46 @@
+microprobe.property.PropertyHolder
+==================================
+
+.. currentmodule:: microprobe.property
+
+.. autoclass:: PropertyHolder
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PropertyHolder.__init__
+      ~PropertyHolder.list_properties
+      ~PropertyHolder.register_property
+      ~PropertyHolder.unregister_property
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PropertyHolder.properties
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

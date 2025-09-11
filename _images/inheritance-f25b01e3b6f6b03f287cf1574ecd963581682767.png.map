@@ -1,0 +1,5 @@
+<map id="inheritancecabf4622a3" name="inheritancecabf4622a3">
+<area shape="rect" id="node1" href="microprobe.property.PropertyHolder.html#microprobe.property.PropertyHolder" target="_top" title="Class to represent an object containing properties" alt="" coords="3,3,147,17"/>
+<area shape="rect" id="node3" href="microprobe.target.uarch.element_type.MicroarchitectureElementType.html#microprobe.target.uarch.element_type.MicroarchitectureElementType" target="_top" title="Abstract class to represent a microarchitecture element type." alt="" coords="174,3,442,17"/>
+<area shape="rect" id="node2" href="microprobe.target.uarch.element_type.GenericMicroarchitectureElementType.html#microprobe.target.uarch.element_type.GenericMicroarchitectureElementType" target="_top" title="Class to represent a generic microarchitecture element type." alt="" coords="469,3,765,17"/>
+</map>

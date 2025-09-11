@@ -1,0 +1,50 @@
+microprobe.target.uarch.cache.Cache
+===================================
+
+.. currentmodule:: microprobe.target.uarch.cache
+
+.. autoclass:: Cache
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Cache.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Cache.contains_data
+      ~Cache.contains_instructions
+      ~Cache.description
+      ~Cache.element
+      ~Cache.level
+      ~Cache.line_size
+      ~Cache.name
+      ~Cache.size
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

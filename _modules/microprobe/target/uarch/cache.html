@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.target.uarch.cache &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../target.html">microprobe.target</a></li>
+          <li class="breadcrumb-item"><a href="../uarch.html">microprobe.target.uarch</a></li>
+      <li class="breadcrumb-item active">microprobe.target.uarch.cache</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.target.uarch.cache</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.target.uarch.cache` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">annotations</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeArchitectureDefinitionError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.typeguard_decorator</span><span class="w"> </span><span class="kn">import</span> <span class="n">typeguard_testsuite</span>
+
+<span class="c1"># Type checking</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.uarch.element</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroarchitectureElement</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;cache_hierarchy_from_elements&quot;</span><span class="p">,</span> <span class="s2">&quot;Cache&quot;</span><span class="p">,</span> <span class="s2">&quot;SetAssociativeCache&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CacheHierarchy&quot;</span>
+<span class="p">]</span>
+
+
+<span class="c1"># Functions</span>
+<div class="viewcode-block" id="cache_hierarchy_from_elements">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.html#microprobe.target.uarch.cache.cache_hierarchy_from_elements">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cache_hierarchy_from_elements</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param elements:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">caches</span> <span class="o">=</span> <span class="n">_caches_from_elements</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeArchitectureDefinitionError</span><span class="p">(</span>
+            <span class="s2">&quot;Expecting cache hierarchy&quot;</span>
+            <span class="s2">&quot; elements in the microarchitecture&quot;</span>
+            <span class="s2">&quot; description, but none found.&quot;</span><span class="p">)</span>
+
+    <span class="n">cache_hierarchy</span> <span class="o">=</span> <span class="n">CacheHierarchy</span><span class="p">(</span><span class="n">caches</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cache_hierarchy</span></div>
+
+
+
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_caches_from_elements</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param elements:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">)</span>
+
+    <span class="n">caches</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cache</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">data_cache</span> <span class="ow">and</span> \
+                    <span class="ow">not</span> <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">instruction_cache</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeArchitectureDefinitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Microarchitecture &quot;</span>
+                <span class="s2">&quot;definition requires the definition of the &quot;</span>
+                <span class="s2">&quot;&#39;data_cache&#39; and &#39;instruction_cache&#39; properties &quot;</span>
+                <span class="s2">&quot;for the element types.&quot;</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cache element found:&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">cache_size</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="n">line_size</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">cache_linesize</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">cache_level</span>
+            <span class="n">address_size</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">cache_address_size</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="c1"># pylint: disable-msg=E1101</span>
+            <span class="k">raise</span> <span class="n">MicroprobeArchitectureDefinitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Element &#39;</span><span class="si">%s</span><span class="s2">&#39; defined as a cache, but required &quot;</span>
+                <span class="s2">&quot;property &#39;</span><span class="si">%s</span><span class="s2">&#39; not specified in its type &quot;</span>
+                <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">exc</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">],</span> <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+
+        <span class="c1"># Figuring out the cache type based on element attributes</span>
+        <span class="c1"># Right now, we only implement N-way set associative</span>
+
+        <span class="n">ways</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">&quot;cache_ways&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ways</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_cache</span> <span class="o">=</span> <span class="n">SetAssociativeCache</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">line_size</span><span class="p">,</span>
+                                            <span class="n">address_size</span><span class="p">,</span>
+                                            <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">data_cache</span><span class="p">,</span>
+                                            <span class="n">element</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">instruction_cache</span><span class="p">,</span>
+                                            <span class="n">ways</span><span class="p">)</span>
+            <span class="n">caches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_cache</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeArchitectureDefinitionError</span><span class="p">(</span>
+                <span class="s2">&quot;Element &#39;</span><span class="si">%s</span><span class="s2">&#39; defined &quot;</span>
+                <span class="s2">&quot;as a cache, but cache type can not be &quot;</span>
+                <span class="s2">&quot;determined. Please specify on of the &quot;</span>
+                <span class="s2">&quot;following properties: [&#39;cache_ways&#39;]&quot;</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">caches</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="Cache">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.Cache.html#microprobe.target.uarch.cache.Cache">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Cache</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a cache.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Cache.__init__">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.Cache.html#microprobe.target.uarch.cache.Cache.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">MicroarchitectureElement</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">line_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">address_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                 <span class="n">ins</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Cache object.</span>
+
+<span class="sd">        :param element: Micrarchitecture element</span>
+<span class="sd">        :type element: :class:`~.MicroarchitectureElement`</span>
+<span class="sd">        :param size: Cache size in kilobytes</span>
+<span class="sd">        :type size: :class:`~.int`</span>
+<span class="sd">        :param level: Cache level</span>
+<span class="sd">        :type level: :class:`~.int`</span>
+<span class="sd">        :param line_size: Line size in bytes</span>
+<span class="sd">        :type line_size: :class:`~.int`</span>
+<span class="sd">        :param address_size: Address size in bits</span>
+<span class="sd">        :type address_size: :class:`~.int`</span>
+<span class="sd">        :param data: Data cache flag</span>
+<span class="sd">        :type data: :class:`~.bool`</span>
+<span class="sd">        :param ins: Instruction cache flag</span>
+<span class="sd">        :type ins: :class:`~.bool`</span>
+<span class="sd">        :return: Cache instance</span>
+<span class="sd">        :rtype: :class:`~.Cache`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_element</span> <span class="o">=</span> <span class="n">element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_line_size</span> <span class="o">=</span> <span class="n">line_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address_size</span> <span class="o">=</span> <span class="n">address_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ins</span> <span class="o">=</span> <span class="n">ins</span></div>
+
+
+        <span class="c1"># Implement value checking for parameters</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">element</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Corresponding microarchitecture element</span>
+<span class="sd">        (:class:`~.MicroarchitectureElement`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache size in kilobytes (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">line_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache line size in bytes (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Data cache flag (class:`~.bool`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains_instructions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instruction cache (class:`~.bool`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ins</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache level (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_level</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache name (class:`~.str`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">full_name</span><span class="si">}</span><span class="s2"> Cache&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache description (class:`~.str`).&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_data</span> <span class="o">^</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_instructions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_data</span><span class="p">:</span>
+                <span class="n">dscr</span> <span class="o">=</span> <span class="s2">&quot;Data&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dscr</span> <span class="o">=</span> <span class="s2">&quot;Instruction&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dscr</span> <span class="o">=</span> <span class="s2">&quot;Mixed (instruction and data)&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;Level </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">,</span> <span class="n">dscr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;x.__str__() &lt;==&gt; str(x)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">(&#39;</span><span class="si">%s</span><span class="s2">&#39;)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SetAssociativeCache">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SetAssociativeCache</span><span class="p">(</span><span class="n">Cache</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a set-associative cache.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SetAssociativeCache.__init__">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">MicroarchitectureElement</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">line_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">address_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                 <span class="n">ins</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">ways</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SetAssociativeCache object.</span>
+
+<span class="sd">        :param element: Micrarchitecture element</span>
+<span class="sd">        :type element: :class:`~.MicroarchitectureElement`</span>
+<span class="sd">        :param size: Cache size in kilobytes</span>
+<span class="sd">        :type size: :class:`~.int`</span>
+<span class="sd">        :param level: Cache level</span>
+<span class="sd">        :type level: :class:`~.int`</span>
+<span class="sd">        :param line_size: Line size in bytes</span>
+<span class="sd">        :type line_size: :class:`~.int`</span>
+<span class="sd">        :param address_size: Address size in bits</span>
+<span class="sd">        :type address_size: :class:`~.int`</span>
+<span class="sd">        :param data: Data cache flag</span>
+<span class="sd">        :type data: :class:`~.bool`</span>
+<span class="sd">        :param ins: Instruction cache flag</span>
+<span class="sd">        :type ins: :class:`~.bool`</span>
+<span class="sd">        :param ins: Cache ways</span>
+<span class="sd">        :type ins: :class:`~.int`</span>
+<span class="sd">        :return: Cache instance</span>
+<span class="sd">        :rtype: :class:`~.Cache`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SetAssociativeCache</span><span class="p">,</span>
+              <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">line_size</span><span class="p">,</span> <span class="n">address_size</span><span class="p">,</span>
+                             <span class="n">data</span><span class="p">,</span> <span class="n">ins</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ways</span> <span class="o">=</span> <span class="n">ways</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address_size</span> <span class="o">=</span> <span class="n">address_size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sets</span> <span class="o">=</span> <span class="n">size</span> <span class="o">//</span> <span class="p">(</span><span class="n">ways</span> <span class="o">*</span> <span class="n">line_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_bits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sets</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span> <span class="o">=</span> <span class="n">size</span> <span class="o">//</span> <span class="p">(</span><span class="n">line_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lines_bits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset_bits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">line_size</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tag_bits</span> <span class="o">=</span> <span class="n">address_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_bits</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_bits</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setsways</span> <span class="o">=</span> <span class="n">size</span> <span class="o">//</span> <span class="n">line_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setways_bits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_setsways</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ways</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of cache ways (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ways</span>
+
+<div class="viewcode-block" id="SetAssociativeCache.sets">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache.sets">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of cache sets (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sets</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bits_x_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of bits per set (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_bits</span>
+
+<div class="viewcode-block" id="SetAssociativeCache.lines">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache.lines">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of lines (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">))</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bits_x_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of bits per line (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lines_bits</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bits_x_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of offset bits (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_bits</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_ways_bits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of bits per way (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setways_bits</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">offset_bits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of offset bits (class:`~.int`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_bits</span>
+
+<div class="viewcode-block" id="SetAssociativeCache.setsways">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache.setsways">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setsways</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of sets and ways.</span>
+
+<span class="sd">        :return: List of available sets * ways</span>
+<span class="sd">        :rtype: :class:`~.list` of :class:`~.int`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setsways</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SetAssociativeCache.congruence_class">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache.congruence_class">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">congruence_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the congruence class for a given *value*.</span>
+
+<span class="sd">        :param value: Address</span>
+<span class="sd">        :type value: :class:`~.int`</span>
+<span class="sd">        :return: Congruence class</span>
+<span class="sd">        :rtype: :class:`~.int`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cgc</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_bits</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_bits</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cgc</span></div>
+
+
+<div class="viewcode-block" id="SetAssociativeCache.offset">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache.offset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param value:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cgc</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cgc</span></div>
+
+
+<div class="viewcode-block" id="SetAssociativeCache.print_info">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.SetAssociativeCache.html#microprobe.target.uarch.cache.SetAssociativeCache.print_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.cmdline</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_info</span>
+        <span class="n">print_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset_bits</span><span class="p">)</span>
+        <span class="n">print_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_bits</span><span class="p">)</span>
+        <span class="n">print_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tag_bits</span><span class="p">)</span>
+        <span class="n">bit_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">offset_range</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_address_size</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_bits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address_size</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">]</span>
+
+        <span class="n">ccrange</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_address_size</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_bits</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_bits</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_address_size</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_bits</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">]</span>
+
+        <span class="n">print_info</span><span class="p">((</span><span class="n">bit_range</span><span class="p">,</span> <span class="n">offset_range</span><span class="p">,</span> <span class="n">ccrange</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CacheHierarchy">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.CacheHierarchy.html#microprobe.target.uarch.cache.CacheHierarchy">[docs]</a>
+<span class="nd">@typeguard_testsuite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CacheHierarchy</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a cache hierarchy.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CacheHierarchy.__init__">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.CacheHierarchy.html#microprobe.target.uarch.cache.CacheHierarchy.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caches</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param caches:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">first_data_levels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cache</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">caches</span>
+            <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cache</span><span class="o">.</span><span class="n">contains_data</span>
+        <span class="p">]</span>
+
+        <span class="n">first_ins_levels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cache</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">caches</span>
+            <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cache</span><span class="o">.</span><span class="n">contains_instructions</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">first_ins_levels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeArchitectureDefinitionError</span><span class="p">(</span>
+                <span class="s2">&quot;At least one cache&quot;</span>
+                <span class="s2">&quot;should be defined as first level instruction&quot;</span>
+                <span class="s2">&quot;cache.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">first_data_levels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeArchitectureDefinitionError</span><span class="p">(</span>
+                <span class="s2">&quot;At least one cache&quot;</span>
+                <span class="s2">&quot;should be defined as first level data cache&quot;</span><span class="p">)</span>
+
+        <span class="n">data_levels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="s2">&quot;MicroarchitectureElement&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Cache</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">first_data_levels</span><span class="p">:</span>
+            <span class="n">data_levels</span><span class="p">[</span><span class="n">cache</span><span class="o">.</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cache</span><span class="p">]</span>
+
+        <span class="n">ins_levels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="s2">&quot;MicroarchitectureElement&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Cache</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">first_ins_levels</span><span class="p">:</span>
+            <span class="n">ins_levels</span><span class="p">[</span><span class="n">cache</span><span class="o">.</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">cache</span><span class="p">]</span>
+
+        <span class="n">current_level</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">next_data_levels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cache</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">caches</span>
+            <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">current_level</span> <span class="ow">and</span> <span class="n">cache</span><span class="o">.</span><span class="n">contains_data</span>
+        <span class="p">]</span>
+        <span class="n">next_ins_levels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cache</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">caches</span>
+            <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">current_level</span> <span class="ow">and</span> <span class="n">cache</span><span class="o">.</span><span class="n">contains_instructions</span>
+        <span class="p">]</span>
+
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_data_levels</span> <span class="o">+</span> <span class="n">next_ins_levels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_data_levels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">data_levels</span><span class="p">:</span>
+
+                    <span class="n">data_level</span> <span class="o">=</span> <span class="n">data_levels</span><span class="p">[</span><span class="n">element</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="k">assert</span> <span class="n">data_level</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="p">(</span><span class="n">current_level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                    <span class="n">new_level</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">next_data_levels</span><span class="p">,</span>
+                                       <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">elem</span><span class="o">=</span><span class="n">element</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">element</span><span class="o">.</span>
+                                       <span class="n">closest_common_element</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span><span class="o">.</span><span class="n">depth</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="n">data_levels</span><span class="p">[</span><span class="n">element</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_level</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_ins_levels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">ins_levels</span><span class="p">:</span>
+
+                    <span class="n">ins_level</span> <span class="o">=</span> <span class="n">ins_levels</span><span class="p">[</span><span class="n">element</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="k">assert</span> <span class="n">ins_level</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="p">(</span><span class="n">current_level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                    <span class="k">def</span><span class="w"> </span><span class="nf">my_key</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
+<span class="w">                        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">                        :param elem:</span>
+<span class="sd">                        :type elem:</span>
+<span class="sd">                        &quot;&quot;&quot;</span>
+                        <span class="k">return</span> <span class="n">elem</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">closest_common_element</span><span class="p">(</span>
+                            <span class="n">element</span><span class="p">)</span><span class="o">.</span><span class="n">depth</span>
+
+                    <span class="n">new_level</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">next_ins_levels</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">my_key</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="n">ins_levels</span><span class="p">[</span><span class="n">element</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_level</span><span class="p">)</span>
+
+            <span class="n">current_level</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">next_data_levels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">cache</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">caches</span>
+                <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">current_level</span> <span class="ow">and</span> <span class="n">cache</span><span class="o">.</span><span class="n">contains_data</span>
+            <span class="p">]</span>
+            <span class="n">next_ins_levels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">cache</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">caches</span>
+                <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">current_level</span> <span class="ow">and</span> <span class="n">cache</span><span class="o">.</span><span class="n">contains_instructions</span>
+            <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_levels</span> <span class="o">=</span> <span class="n">data_levels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ins_levels</span> <span class="o">=</span> <span class="n">ins_levels</span></div>
+
+
+<div class="viewcode-block" id="CacheHierarchy.get_data_hierarchy_from_element">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.CacheHierarchy.html#microprobe.target.uarch.cache.CacheHierarchy.get_data_hierarchy_from_element">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_data_hierarchy_from_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                        <span class="n">element</span><span class="p">:</span> <span class="n">MicroarchitectureElement</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param element:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating hierarchy from &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+        <span class="n">rhierarchy</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">entry_level</span> <span class="k">for</span> <span class="n">entry_level</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_levels</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">element</span> <span class="ow">in</span> <span class="p">[</span><span class="n">cache</span><span class="o">.</span><span class="n">element</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">entry_level</span><span class="p">]</span>
+        <span class="p">]</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhierarchy</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Hierarchy: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">rhierarchy</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="k">return</span> <span class="n">rhierarchy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CacheHierarchy.get_instruction_hierarchy_from_element">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.CacheHierarchy.html#microprobe.target.uarch.cache.CacheHierarchy.get_instruction_hierarchy_from_element">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_instruction_hierarchy_from_element</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">MicroarchitectureElement</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param element:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating hierarchy from &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+        <span class="n">rhierarchy</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">entry_level</span> <span class="k">for</span> <span class="n">entry_level</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ins_levels</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">element</span> <span class="ow">in</span> <span class="p">[</span><span class="n">cache</span><span class="o">.</span><span class="n">element</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">entry_level</span><span class="p">]</span>
+        <span class="p">]</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhierarchy</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Hierarchy: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">rhierarchy</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+        <span class="k">return</span> <span class="n">rhierarchy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CacheHierarchy.data_linesize">
+<a class="viewcode-back" href="../../../../microprobe.target.uarch.cache.CacheHierarchy.html#microprobe.target.uarch.cache.CacheHierarchy.data_linesize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data_linesize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_levels</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data_levels</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">line_size</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

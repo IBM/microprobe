@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.passes.symbol &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../passes.html">microprobe.passes</a></li>
+      <li class="breadcrumb-item active">microprobe.passes.symbol</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.passes.symbol</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.passes.symbol` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.code.ins</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.passes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.utils.distrib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">MICROPROBE_RC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span><span class="p">,</span> <span class="n">InstructionAddress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.ins</span><span class="w"> </span><span class="kn">import</span> <span class="n">instruction_set_def_properties</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.var</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span> \
+    <span class="n">MicroprobeUncheckableEnvironmentWarning</span><span class="p">,</span> <span class="n">MicroprobeValueError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target.isa.instruction</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstructionType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.asm</span><span class="w"> </span><span class="kn">import</span> <span class="n">interpret_asm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.distrib</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_weighted_profile</span><span class="p">,</span> \
+    <span class="n">weighted_choice</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">RejectingDict</span><span class="p">,</span> <span class="n">closest_divisor</span><span class="p">,</span> \
+    <span class="n">Progress</span>
+
+<span class="c1"># Local modules</span>
+
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;SetInstructionLabelByIndexPass&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ResolveSymbolicReferencesPass&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Functions</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="SetInstructionLabelByIndexPass">
+<a class="viewcode-back" href="../../../microprobe.passes.symbol.SetInstructionLabelByIndexPass.html#microprobe.passes.symbol.SetInstructionLabelByIndexPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SetInstructionLabelByIndexPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SetInstructionLabelByIndexPass pass.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SetInstructionLabelByIndexPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.symbol.SetInstructionLabelByIndexPass.html#microprobe.passes.symbol.SetInstructionLabelByIndexPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param label:</span>
+<span class="sd">        :type label:</span>
+<span class="sd">        :param index:</span>
+<span class="sd">        :type index:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SetInstructionLabelByIndexPass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="s2">&quot;Set the label&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">dummy_target</span><span class="p">):</span>
+
+        <span class="n">cindex</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+                <span class="n">cindex</span> <span class="o">=</span> <span class="n">cindex</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">cindex</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span>
+                    <span class="n">instr</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">)</span>
+                    <span class="k">return</span>
+        <span class="k">return</span></div>
+
+
+
+<div class="viewcode-block" id="ResolveSymbolicReferencesPass">
+<a class="viewcode-back" href="../../../microprobe.passes.symbol.ResolveSymbolicReferencesPass.html#microprobe.passes.symbol.ResolveSymbolicReferencesPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResolveSymbolicReferencesPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ResolveSymbolicReferencesPass pass.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ResolveSymbolicReferencesPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.symbol.ResolveSymbolicReferencesPass.html#microprobe.passes.symbol.ResolveSymbolicReferencesPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">instructions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">onlyraw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ResolveSymbolicReferencesPass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="s2">&quot;Translate labels of address into values&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="n">RejectingDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_strict</span> <span class="o">=</span> <span class="n">strict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onlyraw</span> <span class="o">=</span> <span class="n">onlyraw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instructions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">instructions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_instructions</span> <span class="o">=</span> <span class="n">instructions</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">dummy_target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param dummy_target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="p">(</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">init</span>
+                      <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_register_label</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s1">&#39;verbose&#39;</span><span class="p">]:</span>
+                <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">),</span>
+                                    <span class="s2">&quot;Registering labels:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="p">(</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span>
+                          <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_register_label</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s1">&#39;verbose&#39;</span><span class="p">]:</span>
+                    <span class="n">progress</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="p">(</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">fini</span>
+                      <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_register_label</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">init</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_translate_label</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s1">&#39;verbose&#39;</span><span class="p">]:</span>
+                <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">),</span>
+                                    <span class="s2">&quot;Translating labels:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_translate_label</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s1">&#39;verbose&#39;</span><span class="p">]:</span>
+                    <span class="n">progress</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">fini</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_translate_label</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param instruction:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">[</span><span class="n">instruction</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="n">instruction</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_translate_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruction</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param instruction:</span>
+<span class="sd">        :param context:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onlyraw</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">instruction</span><span class="o">.</span><span class="n">disable_asm</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instructions</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instructions</span><span class="p">:</span>
+                <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Address</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">address</span> <span class="o">=</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Translating label: &#39;</span><span class="si">%s</span><span class="s2">&#39; of instruction &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span>
+                <span class="n">instruction</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">InstructionAddress</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">address</span><span class="o">.</span><span class="n">target_instruction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">target_address</span> <span class="o">=</span> <span class="n">address</span><span class="o">.</span><span class="n">target_instruction</span><span class="o">.</span><span class="n">address</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Reference to instruction at&quot;</span>
+
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="p">):</span>
+
+                    <span class="n">target_address</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">[</span>
+                        <span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> \
+                        <span class="n">address</span><span class="o">.</span><span class="n">displacement</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Reference to </span><span class="si">%s</span><span class="s2"> at&quot;</span> <span class="o">%</span> <span class="n">address</span>
+
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;CODE&quot;</span>
+                <span class="p">):</span>
+
+                    <span class="n">target_address</span> <span class="o">=</span> <span class="n">address</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Reference to </span><span class="si">%s</span><span class="s2"> at&quot;</span> <span class="o">%</span> <span class="n">address</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+                <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">address_relative</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">code_segment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                            <span class="nb">isinstance</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">code_segment</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+                        <span class="n">instruction</span><span class="o">.</span><span class="n">add_comment</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">comment</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span>
+                                    <span class="n">context</span><span class="o">.</span><span class="n">code_segment</span> <span class="o">+</span>
+                                    <span class="n">target_address</span><span class="o">.</span><span class="n">displacement</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">context</span><span class="o">.</span><span class="n">code_segment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">instruction</span><span class="o">.</span><span class="n">add_comment</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">+0X</span><span class="si">%X</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">comment</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">code_segment</span><span class="p">,</span>
+                                <span class="n">target_address</span><span class="o">.</span><span class="n">displacement</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+
+                    <span class="n">relative_offset</span> <span class="o">=</span> <span class="n">target_address</span> <span class="o">-</span> <span class="n">instruction</span><span class="o">.</span><span class="n">address</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">relative_offset</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_strict</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">,</span> <span class="n">Variable</span><span class="p">)</span> <span class="ow">or</span> \
+                    <span class="n">address</span><span class="o">.</span><span class="n">base_address</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">address</span><span class="o">.</span><span class="n">base_address</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+                    <span class="n">target_address</span> <span class="o">=</span> <span class="n">address</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">target_address</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span>
+                        <span class="n">base_address</span><span class="o">=</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                        <span class="n">displacement</span><span class="o">=</span><span class="n">address</span><span class="o">.</span><span class="n">displacement</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">address_relative</span><span class="p">:</span>
+
+                    <span class="c1"># Code referencing data, fix address taking into account</span>
+                    <span class="c1"># code and data offsets</span>
+                    <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span> <span class="o">==</span> <span class="s2">&quot;code&quot;</span> <span class="ow">and</span> \
+                            <span class="n">target_address</span><span class="o">.</span><span class="n">base_address</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span> <span class="ow">and</span> \
+                            <span class="n">context</span><span class="o">.</span><span class="n">data_segment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                            <span class="n">context</span><span class="o">.</span><span class="n">code_segment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                        <span class="n">instruction_address</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span>
+                            <span class="n">base_address</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span>
+                            <span class="n">displacement</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">code_segment</span> <span class="o">+</span>
+                            <span class="n">instruction</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">displacement</span>
+                        <span class="p">)</span>
+
+                        <span class="n">data_address</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span>
+                            <span class="n">base_address</span><span class="o">=</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span>
+                            <span class="n">displacement</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">data_segment</span> <span class="o">+</span>
+                            <span class="n">target_address</span><span class="o">.</span><span class="n">displacement</span>
+                        <span class="p">)</span>
+
+                        <span class="c1"># instruction_address = Address(base_address=&quot;data&quot;,</span>
+                        <span class="c1">#        displacement=instruction.address.displacement)</span>
+
+                        <span class="n">relative_offset</span> <span class="o">=</span> <span class="n">data_address</span> <span class="o">-</span> <span class="n">instruction_address</span>
+
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">relative_offset</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="n">MicroprobeValueError</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                                <span class="s2">&quot;Unable to codify the relative offset from &quot;</span>
+                                <span class="s2">&quot;instruction at 0x</span><span class="si">%x</span><span class="s2"> to data at 0x</span><span class="si">%x</span><span class="s2">. &quot;</span>
+                                <span class="s2">&quot;Review the correctness of the addresses and &quot;</span>
+                                <span class="s2">&quot;change them.&quot;</span> <span class="o">%</span>
+                                <span class="p">(</span><span class="n">instruction_address</span><span class="o">.</span><span class="n">displacement</span><span class="p">,</span>
+                                 <span class="n">data_address</span><span class="o">.</span><span class="n">displacement</span><span class="p">)</span>
+                            <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
+                            <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Reference to var &#39;</span><span class="si">%s</span><span class="s2">&#39; at&quot;</span> \
+                                <span class="o">%</span> <span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="o">.</span><span class="n">name</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Reference to data at&quot;</span>
+
+                        <span class="n">instruction</span><span class="o">.</span><span class="n">add_comment</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">comment</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span>
+                                    <span class="n">data_address</span><span class="o">.</span><span class="n">displacement</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">instruction</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">target_address</span><span class="o">.</span><span class="n">base_address</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">data_segment</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">code_segment</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">symbolic</span><span class="p">)</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">target_address</span><span class="p">)</span>
+
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="s2">&quot;Instr: </span><span class="si">%s</span><span class="s2"> Instr.Address: </span><span class="si">%s</span><span class="s2">, Address: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">instruction</span><span class="p">,</span> <span class="n">instruction</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">address</span>
+                <span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="s2">&quot;Base address: </span><span class="si">%s</span><span class="s2"> Type: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="p">(</span><span class="n">address</span><span class="o">.</span><span class="n">base_address</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

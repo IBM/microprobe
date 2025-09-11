@@ -1,0 +1,67 @@
+microprobe.code.wrapper.Wrapper
+===============================
+
+.. currentmodule:: microprobe.code.wrapper
+
+.. autoclass:: Wrapper
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Wrapper.__init__
+      ~Wrapper.context
+      ~Wrapper.declare_global_var
+      ~Wrapper.end_loop
+      ~Wrapper.end_main
+      ~Wrapper.footer
+      ~Wrapper.get_direct_init
+      ~Wrapper.headers
+      ~Wrapper.infinite
+      ~Wrapper.init_global_var
+      ~Wrapper.init_loop_pad
+      ~Wrapper.init_main_pad
+      ~Wrapper.outputname
+      ~Wrapper.post_var
+      ~Wrapper.register_direct_init
+      ~Wrapper.required_global_vars
+      ~Wrapper.reserved_registers
+      ~Wrapper.set_benchmark
+      ~Wrapper.set_target
+      ~Wrapper.start_loop
+      ~Wrapper.start_main
+      ~Wrapper.wrap_ins
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Wrapper.benchmark
+      ~Wrapper.direct_initialization_support
+      ~Wrapper.reset
+      ~Wrapper.target
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

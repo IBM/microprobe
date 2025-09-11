@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeNoGenerationPathError
+=====================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeNoGenerationPathError
+
+   
+
+   
+   
+
+   
+   
+   

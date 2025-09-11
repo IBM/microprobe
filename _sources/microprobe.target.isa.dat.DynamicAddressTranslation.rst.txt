@@ -1,0 +1,52 @@
+microprobe.target.isa.dat.DynamicAddressTranslation
+===================================================
+
+.. currentmodule:: microprobe.target.isa.dat
+
+.. autoclass:: DynamicAddressTranslation
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DynamicAddressTranslation.__init__
+      ~DynamicAddressTranslation.add_mapping
+      ~DynamicAddressTranslation.copy
+      ~DynamicAddressTranslation.raw_decorate
+      ~DynamicAddressTranslation.raw_parse
+      ~DynamicAddressTranslation.required_memory_values
+      ~DynamicAddressTranslation.required_register_values
+      ~DynamicAddressTranslation.translate
+      ~DynamicAddressTranslation.update_dat
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DynamicAddressTranslation.control
+      ~DynamicAddressTranslation.maps
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

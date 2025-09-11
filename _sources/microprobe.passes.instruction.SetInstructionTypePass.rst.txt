@@ -1,0 +1,41 @@
+microprobe.passes.instruction.SetInstructionTypePass
+====================================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: SetInstructionTypePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetInstructionTypePass.__init__
+      ~SetInstructionTypePass.check
+      ~SetInstructionTypePass.info
+      ~SetInstructionTypePass.report
+      ~SetInstructionTypePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

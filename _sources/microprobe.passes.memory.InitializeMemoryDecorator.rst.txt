@@ -1,0 +1,41 @@
+microprobe.passes.memory.InitializeMemoryDecorator
+==================================================
+
+.. currentmodule:: microprobe.passes.memory
+
+.. autoclass:: InitializeMemoryDecorator
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InitializeMemoryDecorator.__init__
+      ~InitializeMemoryDecorator.check
+      ~InitializeMemoryDecorator.info
+      ~InitializeMemoryDecorator.report
+      ~InitializeMemoryDecorator.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeObjdumpError
+============================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeObjdumpError
+
+   
+
+   
+   
+
+   
+   
+   

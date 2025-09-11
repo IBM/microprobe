@@ -1,0 +1,55 @@
+microprobe.code.bbl.Bbl
+=======================
+
+.. currentmodule:: microprobe.code.bbl
+
+.. autoclass:: Bbl
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Bbl.__init__
+      ~Bbl.distance
+      ~Bbl.get_instruction_by_distance
+      ~Bbl.get_instruction_index
+      ~Bbl.insert_instr
+      ~Bbl.remove_instructions_from
+      ~Bbl.replicate
+      ~Bbl.reset_instruction
+      ~Bbl.set_address
+      ~Bbl.set_displacement
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Bbl.address
+      ~Bbl.displacement
+      ~Bbl.instrs
+      ~Bbl.size
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

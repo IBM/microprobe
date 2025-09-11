@@ -1,0 +1,48 @@
+microprobe.target.isa.instruction_field.InstructionField
+========================================================
+
+.. currentmodule:: microprobe.target.isa.instruction_field
+
+.. autoclass:: InstructionField
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~InstructionField.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InstructionField.default_io
+      ~InstructionField.default_operand
+      ~InstructionField.default_show
+      ~InstructionField.description
+      ~InstructionField.name
+      ~InstructionField.size
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

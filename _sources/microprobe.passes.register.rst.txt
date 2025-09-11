@@ -1,0 +1,58 @@
+﻿==========================
+microprobe.passes.register
+==========================
+
+.. automodule:: microprobe.passes.register
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      CycleMinimalAllocationPass
+      DefaultRegisterAllocationPass
+      FixRegistersPass
+      NoHazardsAllocationPass
+      RandomAllocationPass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  CycleMinimalAllocationPass  DefaultRegisterAllocationPass  FixRegistersPass  NoHazardsAllocationPass  RandomAllocationPass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

@@ -1,0 +1,40 @@
+microprobe.target.uarch.cache.CacheHierarchy
+============================================
+
+.. currentmodule:: microprobe.target.uarch.cache
+
+.. autoclass:: CacheHierarchy
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CacheHierarchy.__init__
+      ~CacheHierarchy.data_linesize
+      ~CacheHierarchy.get_data_hierarchy_from_element
+      ~CacheHierarchy.get_instruction_hierarchy_from_element
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

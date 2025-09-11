@@ -1,0 +1,41 @@
+microprobe.passes.branch.RandomizeByTypePass
+============================================
+
+.. currentmodule:: microprobe.passes.branch
+
+.. autoclass:: RandomizeByTypePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RandomizeByTypePass.__init__
+      ~RandomizeByTypePass.check
+      ~RandomizeByTypePass.info
+      ~RandomizeByTypePass.report
+      ~RandomizeByTypePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

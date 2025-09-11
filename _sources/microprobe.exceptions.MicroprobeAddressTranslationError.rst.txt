@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobeAddressTranslationError
+=======================================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobeAddressTranslationError
+
+   
+
+   
+   
+
+   
+   
+   

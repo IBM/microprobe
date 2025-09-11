@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.code.Synthesizer &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.code.TraceSynthesizer" href="microprobe.code.TraceSynthesizer.html" />
+    <link rel="prev" title="microprobe.code" href="microprobe.code.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="microprobe.code.html">microprobe.code</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">microprobe.code.Synthesizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.code.Synthesizer"><code class="docutils literal notranslate"><span class="pre">Synthesizer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.code.TraceSynthesizer.html">microprobe.code.TraceSynthesizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.code.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="microprobe.code.html">microprobe.code</a></li>
+      <li class="breadcrumb-item active">microprobe.code.Synthesizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="microprobe.code.html" class="btn btn-neutral float-left" title="microprobe.code" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.code.TraceSynthesizer.html" class="btn btn-neutral float-right" title="microprobe.code.TraceSynthesizer" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="microprobe-code-synthesizer">
+<h1>microprobe.code.Synthesizer<a class="headerlink" href="#microprobe-code-synthesizer" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Synthesizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.target.Target.html#microprobe.target.Target" title="microprobe.target.Target"><span class="pre">Target</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><span class="pre">Wrapper</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><span class="pre">Wrapper</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_scratch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'random'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code.html#Synthesizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.Synthesizer" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Benchmark synthesizer.</p>
+<p>The Synthesizer objects are in charge of creating <a class="reference internal" href="microprobe.code.benchmark.Benchmark.html#microprobe.code.benchmark.Benchmark" title="microprobe.code.benchmark.Benchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">Benchmark</span></code></a>
+objects based on a set of passes that have been previously defined.</p>
+<p>The typical workflow will be as follow. User instantiates the synthesizer,
+specifying also the <a class="reference internal" href="microprobe.target.Target.html#microprobe.target.Target" title="microprobe.target.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> and the <a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>, which are
+required to know the target properties as well as how the code should be
+translated to the final representation. Then a set of <a class="reference internal" href="microprobe.passes.Pass.html#microprobe.passes.Pass" title="microprobe.passes.Pass"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pass</span></code></a> are
+registered using the <a class="reference internal" href="#microprobe.code.Synthesizer.add_pass" title="microprobe.code.Synthesizer.add_pass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_pass()</span></code></a> method. This passes will be applied
+in the provided order on a empty <a class="reference internal" href="microprobe.code.benchmark.Benchmark.html#microprobe.code.benchmark.Benchmark" title="microprobe.code.benchmark.Benchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">Benchmark</span></code></a> object when the
+<a class="reference internal" href="#microprobe.code.Synthesizer.synthesize" title="microprobe.code.Synthesizer.synthesize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">synthesize()</span></code></a> method is called. Finally, the generated benchmark
+can be saved to disk by using the <a class="reference internal" href="#microprobe.code.Synthesizer.save" title="microprobe.code.Synthesizer.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> method. A snippet of
+code of this process would be like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">synthesizer</span> <span class="o">=</span>  <span class="n">Synthesizer</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># Instantiate object</span>
+<span class="n">synthesizer</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>        <span class="c1"># Add transformation passes</span>
+<span class="o">...</span>
+<span class="n">synthesizer</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">synthesizer</span><span class="o">.</span><span class="n">synthesize</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>      <span class="c1"># Apply the passes and generate a</span>
+                                 <span class="c1"># benchmark</span>
+<span class="n">synthesizer</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>            <span class="c1"># Save the benchmark</span>
+</pre></div>
+</div>
+<p>The default structure of the benchmarks being synthesized is as follows:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extra_raw['FILE_HEADER']</span></code> contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrapper.headers()</span></code> contents</p></li>
+<li><p><strong>&lt;global variable declarations&gt;</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrapper.start_main()</span></code> contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extra_raw['CODE_HEADER']</span></code> contents</p></li>
+<li><p><strong>&lt;global variable initializations&gt;</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrapper.post_var()</span></code> contents</p></li>
+<li><p><strong>&lt;benchmark initialization code&gt;</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrapper.start_loop()</span></code> contents</p></li>
+<li><p><strong>&lt;benchmark building blocks&gt;</strong></p></li>
+<li><p><strong>&lt;benchmark finalization code&gt;</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrapper.end_loop()</span></code> contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extra_raw['CODE_FOOTER']</span></code> contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrapper.end_main()</span></code> contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wrapper.footer()</span></code> contents</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extra_raw['FILE_FOOTER']</span></code> contents</p></li>
+</ol>
+<p>where:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extra_raw</span></code> contents are provided at initialization (see below)</p></li>
+<li><p>wrapper object methods provide the decoupling between output format and
+the benchmark synthesizer</p></li>
+<li><p><strong>variables</strong> and <strong>building block</strong> contents are populated by the passes
+being applied</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>This default code layout can be changed by sub-classing this class.</p></li>
+<li><p>The <a class="reference internal" href="#microprobe.code.Synthesizer.synthesize" title="microprobe.code.Synthesizer.synthesize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">synthesize()</span></code></a> method and the <a class="reference internal" href="#microprobe.code.Synthesizer.save" title="microprobe.code.Synthesizer.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> method can be
+called multiple times to generate and save multiple benchmarks in
+case that some of the passes have some random behavior. Otherwise,
+it does not make sense ;).</p></li>
+</ul>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.target.Target.html#microprobe.target.Target" title="microprobe.target.Target"><span class="pre">Target</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><span class="pre">Wrapper</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><span class="pre">Wrapper</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_scratch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'random'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code.html#Synthesizer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.Synthesizer.__init__" title="Link to this definition"></a></dt>
+<dd><p>Create a Synthesizer object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<a class="reference internal" href="microprobe.target.Target.html#microprobe.target.Target" title="microprobe.target.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a>) – Benchmark target</p></li>
+<li><p><strong>wrapper</strong> (<a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>) – Wrapper object defining the output format</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Default immediate value used for non-initialized
+immediates (Default: random)</p></li>
+<li><p><strong>no_scratch</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Disable automatic declaration of scratch variables
+required for code generation support
+(Default: False)</p></li>
+<li><p><strong>extra_raw</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of elements containing a <code class="docutils literal notranslate"><span class="pre">name</span></code> and
+a <code class="docutils literal notranslate"><span class="pre">value</span></code> attributes (Default: [])) – List of extra raw strings to be embedded in the final
+output</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Synthesizer instance</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#microprobe.code.Synthesizer" title="microprobe.code.Synthesizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synthesizer</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.Synthesizer.__init__" title="microprobe.code.Synthesizer.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(target, wrapper[, no_scratch, ...])</p></td>
+<td><p>Create a Synthesizer object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.Synthesizer.add_pass" title="microprobe.code.Synthesizer.add_pass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_pass</span></code></a>(synth_pass[, thread_idx])</p></td>
+<td><p>Add a pass to the benchmark synthesizer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.Synthesizer.save" title="microprobe.code.Synthesizer.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(name[, bench, pad])</p></td>
+<td><p>Save a benchmark to disk.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.Synthesizer.set_current_thread" title="microprobe.code.Synthesizer.set_current_thread"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_current_thread</span></code></a>(idx)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.Synthesizer.synthesize" title="microprobe.code.Synthesizer.synthesize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">synthesize</span></code></a>()</p></td>
+<td><p>Synthesize a benchmark.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.Synthesizer.target" title="microprobe.code.Synthesizer.target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target</span></code></a></p></td>
+<td><p>Target attribute (<a class="reference internal" href="microprobe.target.Target.html#microprobe.target.Target" title="microprobe.target.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.Synthesizer.wrapper" title="microprobe.code.Synthesizer.wrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrapper</span></code></a></p></td>
+<td><p>Wrapper attribute (<a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>).</p></td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr width="75%">
+<br><dl class="py property">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer.target">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target</span></span><a class="headerlink" href="#microprobe.code.Synthesizer.target" title="Link to this definition"></a></dt>
+<dd><p>Target attribute (<a class="reference internal" href="microprobe.target.Target.html#microprobe.target.Target" title="microprobe.target.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer.wrapper">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrapper</span></span><a class="headerlink" href="#microprobe.code.Synthesizer.wrapper" title="Link to this definition"></a></dt>
+<dd><p>Wrapper attribute (<a class="reference internal" href="microprobe.code.wrapper.Wrapper.html#microprobe.code.wrapper.Wrapper" title="microprobe.code.wrapper.Wrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wrapper</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer.add_pass">
+<span class="sig-name descname"><span class="pre">add_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synth_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.passes.Pass.html#microprobe.passes.Pass" title="microprobe.passes.Pass"><span class="pre">Pass</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code.html#Synthesizer.add_pass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.Synthesizer.add_pass" title="Link to this definition"></a></dt>
+<dd><p>Add a pass to the benchmark synthesizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>synth_pass</strong> (<a class="reference internal" href="microprobe.passes.Pass.html#microprobe.passes.Pass" title="microprobe.passes.Pass"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pass</span></code></a>) – New pass to add.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bench</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.benchmark.Benchmark.html#microprobe.code.benchmark.Benchmark" title="microprobe.code.benchmark.Benchmark"><span class="pre">Benchmark</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code.html#Synthesizer.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.Synthesizer.save" title="Link to this definition"></a></dt>
+<dd><p>Save a benchmark to disk.</p>
+<p>Save a synthesized benchmark to disk. If bench is not specified a
+benchmark is automatically synthesized using the <a class="reference internal" href="#microprobe.code.Synthesizer.synthesize" title="microprobe.code.Synthesizer.synthesize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">synthesize()</span></code></a>
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Filename to save</p></li>
+<li><p><strong>bench</strong> (<a class="reference internal" href="microprobe.code.benchmark.Benchmark.html#microprobe.code.benchmark.Benchmark" title="microprobe.code.benchmark.Benchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">Benchmark</span></code></a>) – Benchmark to save (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer.synthesize">
+<span class="sig-name descname"><span class="pre">synthesize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code.html#Synthesizer.synthesize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.Synthesizer.synthesize" title="Link to this definition"></a></dt>
+<dd><p>Synthesize a benchmark.</p>
+<p>Synthesize a benchmark based on the set of passes that have been
+added using the <a class="reference internal" href="#microprobe.code.Synthesizer.add_pass" title="microprobe.code.Synthesizer.add_pass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_pass()</span></code></a> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A new synthesized benchmark</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="microprobe.code.benchmark.Benchmark.html#microprobe.code.benchmark.Benchmark" title="microprobe.code.benchmark.Benchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">Benchmark</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.Synthesizer.set_current_thread">
+<span class="sig-name descname"><span class="pre">set_current_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code.html#Synthesizer.set_current_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.Synthesizer.set_current_thread" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

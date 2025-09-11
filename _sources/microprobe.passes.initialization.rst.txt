@@ -1,0 +1,61 @@
+﻿================================
+microprobe.passes.initialization
+================================
+
+.. automodule:: microprobe.passes.initialization
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      AddFinalizationAssemblyPass
+      AddInitializationAssemblyPass
+      AddInitializationInstructionsPass
+      AutoAlignPass
+      InitializeRegisterPass
+      InitializeRegistersPass
+      ReserveRegistersPass
+      UnReserveRegistersPass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  AddFinalizationAssemblyPass  AddInitializationAssemblyPass  AddInitializationInstructionsPass  AutoAlignPass  InitializeRegisterPass  InitializeRegistersPass  ReserveRegistersPass  UnReserveRegistersPass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

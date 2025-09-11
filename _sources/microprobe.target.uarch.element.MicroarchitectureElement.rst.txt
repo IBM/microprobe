@@ -1,0 +1,57 @@
+microprobe.target.uarch.element.MicroarchitectureElement
+========================================================
+
+.. currentmodule:: microprobe.target.uarch.element
+
+.. autoclass:: MicroarchitectureElement
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroarchitectureElement.__init__
+      ~MicroarchitectureElement.closest_common_element
+      ~MicroarchitectureElement.list_properties
+      ~MicroarchitectureElement.register_property
+      ~MicroarchitectureElement.set_parent_element
+      ~MicroarchitectureElement.set_subelements
+      ~MicroarchitectureElement.unregister_property
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MicroarchitectureElement.depth
+      ~MicroarchitectureElement.description
+      ~MicroarchitectureElement.full_name
+      ~MicroarchitectureElement.name
+      ~MicroarchitectureElement.parent
+      ~MicroarchitectureElement.parents
+      ~MicroarchitectureElement.properties
+      ~MicroarchitectureElement.subelements
+      ~MicroarchitectureElement.type
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

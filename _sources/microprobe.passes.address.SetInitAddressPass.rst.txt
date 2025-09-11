@@ -1,0 +1,41 @@
+microprobe.passes.address.SetInitAddressPass
+============================================
+
+.. currentmodule:: microprobe.passes.address
+
+.. autoclass:: SetInitAddressPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetInitAddressPass.__init__
+      ~SetInitAddressPass.check
+      ~SetInitAddressPass.info
+      ~SetInitAddressPass.report
+      ~SetInitAddressPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

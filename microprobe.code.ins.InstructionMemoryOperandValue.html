@@ -1,0 +1,517 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.code.ins.InstructionMemoryOperandValue &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.code.ins.InstructionOperandValue" href="microprobe.code.ins.InstructionOperandValue.html" />
+    <link rel="prev" title="microprobe.code.ins.Instruction" href="microprobe.code.ins.Instruction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="microprobe.code.ins.Instruction.html">microprobe.code.ins.Instruction</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">microprobe.code.ins.InstructionMemoryOperandValue</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue"><code class="docutils literal notranslate"><span class="pre">InstructionMemoryOperandValue</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.code.ins.InstructionOperandValue.html">microprobe.code.ins.InstructionOperandValue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.code.ins.MicroprobeInstructionDefinition.html">microprobe.code.ins.MicroprobeInstructionDefinition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.code.ins.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.branch.html">microprobe.passes.branch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+      <li class="breadcrumb-item active">microprobe.code.ins.InstructionMemoryOperandValue</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="microprobe.code.ins.Instruction.html" class="btn btn-neutral float-left" title="microprobe.code.ins.Instruction" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.code.ins.InstructionOperandValue.html" class="btn btn-neutral float-right" title="microprobe.code.ins.InstructionOperandValue" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="microprobe-code-ins-instructionmemoryoperandvalue">
+<h1>microprobe.code.ins.InstructionMemoryOperandValue<a class="headerlink" href="#microprobe-code-ins-instructionmemoryoperandvalue" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InstructionMemoryOperandValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_operand_descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operand_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="microprobe.utils.misc.Pickable.html#microprobe.utils.misc.Pickable" title="microprobe.utils.misc.Pickable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pickable</span></code></a></p>
+<p>Class to represent an instruction operand value</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">memory_operand_descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operand_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>memory_operand_descriptor</strong></p></li>
+<li><p><strong>operand_values</strong></p></li>
+<li><p><strong>length_values</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.__init__" title="microprobe.code.ins.InstructionMemoryOperandValue.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(memory_operand_descriptor, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.alignment" title="microprobe.code.ins.InstructionMemoryOperandValue.alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">alignment</span></code></a>()</p></td>
+<td><p>Required alignment of the memory operand (:<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.possible_addresses" title="microprobe.code.ins.InstructionMemoryOperandValue.possible_addresses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">possible_addresses</span></code></a>(dummy_context)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.possible_lengths" title="microprobe.code.ins.InstructionMemoryOperandValue.possible_lengths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">possible_lengths</span></code></a>(context)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.register_mem_operand_callback" title="microprobe.code.ins.InstructionMemoryOperandValue.register_mem_operand_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_mem_operand_callback</span></code></a>(set_address, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_address" title="microprobe.code.ins.InstructionMemoryOperandValue.set_address"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_address</span></code></a>(address, context)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_alignment" title="microprobe.code.ins.InstructionMemoryOperandValue.set_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_alignment</span></code></a>(alignment)</p></td>
+<td><p>Set the required alignment of the memory operand.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_forbidden_address_range" title="microprobe.code.ins.InstructionMemoryOperandValue.set_forbidden_address_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_forbidden_address_range</span></code></a>(min_address, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_length" title="microprobe.code.ins.InstructionMemoryOperandValue.set_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_length</span></code></a>(length, context)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_possible_addresses" title="microprobe.code.ins.InstructionMemoryOperandValue.set_possible_addresses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_possible_addresses</span></code></a>(addreses, dummy_context)</p></td>
+<td><p>Set the possible addresses for the memory operand.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_possible_lengths" title="microprobe.code.ins.InstructionMemoryOperandValue.set_possible_lengths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_possible_lengths</span></code></a>(lengths, dummy_context)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.sets" title="microprobe.code.ins.InstructionMemoryOperandValue.sets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sets</span></code></a>()</p></td>
+<td><p>Return the list of registers set by the memory operand.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.unset_forbidden_address_range" title="microprobe.code.ins.InstructionMemoryOperandValue.unset_forbidden_address_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unset_forbidden_address_range</span></code></a>()</p></td>
+<td><p>Unset the forbiddend address range.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_addresses" title="microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_addresses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unset_possible_addresses</span></code></a>()</p></td>
+<td><p>Unset the possible addresses of the memory operand.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_lengths" title="microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_lengths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unset_possible_lengths</span></code></a>()</p></td>
+<td><p>Unset the possible lengths of the memory operand.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.update_address" title="microprobe.code.ins.InstructionMemoryOperandValue.update_address"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_address</span></code></a>(address)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.update_address_from_operands" title="microprobe.code.ins.InstructionMemoryOperandValue.update_address_from_operands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_address_from_operands</span></code></a>([context])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.uses" title="microprobe.code.ins.InstructionMemoryOperandValue.uses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uses</span></code></a>()</p></td>
+<td><p>Return the list of registers used by the memory operand.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.address" title="microprobe.code.ins.InstructionMemoryOperandValue.address"><code class="xref py py-obj docutils literal notranslate"><span class="pre">address</span></code></a></p></td>
+<td><p>Address of the memory operand (<a class="reference internal" href="microprobe.code.address.Address.html#microprobe.code.address.Address" title="microprobe.code.address.Address"><code class="xref py py-class docutils literal notranslate"><span class="pre">Address</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.descriptor" title="microprobe.code.ins.InstructionMemoryOperandValue.descriptor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code></a></p></td>
+<td><p>Descriptor of the memory operand (<a class="reference internal" href="microprobe.target.isa.operand.OperandDescriptor.html#microprobe.target.isa.operand.OperandDescriptor" title="microprobe.target.isa.operand.OperandDescriptor"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperandDescriptor</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.length" title="microprobe.code.ins.InstructionMemoryOperandValue.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></a></p></td>
+<td><p>Length of the memory operand (:<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.operands" title="microprobe.code.ins.InstructionMemoryOperandValue.operands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operands</span></code></a></p></td>
+<td><p>Memory operand values (list of <a class="reference internal" href="microprobe.code.ins.InstructionOperandValue.html#microprobe.code.ins.InstructionOperandValue" title="microprobe.code.ins.InstructionOperandValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstructionOperandValue</span></code></a>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#microprobe.code.ins.InstructionMemoryOperandValue.variable_length" title="microprobe.code.ins.InstructionMemoryOperandValue.variable_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable_length</span></code></a></p></td>
+<td><p>Variable length value(<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p></td>
+</tr>
+</tbody>
+</table>
+<br>
+<hr width="75%">
+<br><dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.register_mem_operand_callback">
+<span class="sig-name descname"><span class="pre">register_mem_operand_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unset_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Callable" title="(in Python v3.9)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unset_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Callable" title="(in Python v3.9)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.register_mem_operand_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.register_mem_operand_callback" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>set_address</strong></p></li>
+<li><p><strong>set_length</strong></p></li>
+<li><p><strong>unset_address</strong></p></li>
+<li><p><strong>unset_length</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.address">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.address" title="Link to this definition"></a></dt>
+<dd><p>Address of the memory operand (<a class="reference internal" href="microprobe.code.address.Address.html#microprobe.code.address.Address" title="microprobe.code.address.Address"><code class="xref py py-class docutils literal notranslate"><span class="pre">Address</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.descriptor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">descriptor</span></span><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.descriptor" title="Link to this definition"></a></dt>
+<dd><p>Descriptor of the memory operand (<a class="reference internal" href="microprobe.target.isa.operand.OperandDescriptor.html#microprobe.target.isa.operand.OperandDescriptor" title="microprobe.target.isa.operand.OperandDescriptor"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperandDescriptor</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.length">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.length" title="Link to this definition"></a></dt>
+<dd><p>Length of the memory operand (:<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.operands">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">operands</span></span><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.operands" title="Link to this definition"></a></dt>
+<dd><p>Memory operand values
+(list of <a class="reference internal" href="microprobe.code.ins.InstructionOperandValue.html#microprobe.code.ins.InstructionOperandValue" title="microprobe.code.ins.InstructionOperandValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">InstructionOperandValue</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.variable_length">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">variable_length</span></span><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.variable_length" title="Link to this definition"></a></dt>
+<dd><p>Variable length value(<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.possible_lengths">
+<span class="sig-name descname"><span class="pre">possible_lengths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.context.Context.html#microprobe.code.context.Context" title="microprobe.code.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.possible_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.possible_lengths" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.possible_addresses">
+<span class="sig-name descname"><span class="pre">possible_addresses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dummy_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.context.Context.html#microprobe.code.context.Context" title="microprobe.code.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.possible_addresses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.possible_addresses" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dummy_context</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.set_possible_addresses">
+<span class="sig-name descname"><span class="pre">set_possible_addresses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addreses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.context.Context.html#microprobe.code.context.Context" title="microprobe.code.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.set_possible_addresses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_possible_addresses" title="Link to this definition"></a></dt>
+<dd><p>Set the possible addresses for the memory operand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addreses</strong></p></li>
+<li><p><strong>dummy_context</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_addresses">
+<span class="sig-name descname"><span class="pre">unset_possible_addresses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.unset_possible_addresses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_addresses" title="Link to this definition"></a></dt>
+<dd><p>Unset the possible addresses of the memory operand.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.set_alignment">
+<span class="sig-name descname"><span class="pre">set_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alignment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.set_alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_alignment" title="Link to this definition"></a></dt>
+<dd><p>Set the required alignment of the memory operand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>alignment</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – alignment</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.alignment">
+<span class="sig-name descname"><span class="pre">alignment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.alignment" title="Link to this definition"></a></dt>
+<dd><p>Required alignment of the memory operand (:<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.set_possible_lengths">
+<span class="sig-name descname"><span class="pre">set_possible_lengths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lengths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.context.Context.html#microprobe.code.context.Context" title="microprobe.code.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.set_possible_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_possible_lengths" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lengths</strong></p></li>
+<li><p><strong>dummy_context</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_lengths">
+<span class="sig-name descname"><span class="pre">unset_possible_lengths</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.unset_possible_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.unset_possible_lengths" title="Link to this definition"></a></dt>
+<dd><p>Unset the possible lengths of the memory operand.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.set_forbidden_address_range">
+<span class="sig-name descname"><span class="pre">set_forbidden_address_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dummy_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.context.Context.html#microprobe.code.context.Context" title="microprobe.code.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.set_forbidden_address_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_forbidden_address_range" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_address</strong></p></li>
+<li><p><strong>max_address</strong></p></li>
+<li><p><strong>dummy_context</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.set_length">
+<span class="sig-name descname"><span class="pre">set_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.context.Context.html#microprobe.code.context.Context" title="microprobe.code.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.set_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_length" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong></p></li>
+<li><p><strong>context</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.update_address">
+<span class="sig-name descname"><span class="pre">update_address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.address.Address.html#microprobe.code.address.Address" title="microprobe.code.address.Address"><span class="pre">Address</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.update_address"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.update_address" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong></p></li>
+<li><p><strong>context</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.set_address">
+<span class="sig-name descname"><span class="pre">set_address</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.address.Address.html#microprobe.code.address.Address" title="microprobe.code.address.Address"><span class="pre">Address</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="microprobe.code.context.Context.html#microprobe.code.context.Context" title="microprobe.code.context.Context"><span class="pre">Context</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.set_address"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.set_address" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong></p></li>
+<li><p><strong>context</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.update_address_from_operands">
+<span class="sig-name descname"><span class="pre">update_address_from_operands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.update_address_from_operands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.update_address_from_operands" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.unset_forbidden_address_range">
+<span class="sig-name descname"><span class="pre">unset_forbidden_address_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.unset_forbidden_address_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.unset_forbidden_address_range" title="Link to this definition"></a></dt>
+<dd><p>Unset the forbiddend address range.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.sets">
+<span class="sig-name descname"><span class="pre">sets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.sets" title="Link to this definition"></a></dt>
+<dd><p>Return the list of registers set by the memory operand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="microprobe.target.isa.register.Register.html#microprobe.target.isa.register.Register" title="microprobe.target.isa.register.Register"><code class="xref py py-class docutils literal notranslate"><span class="pre">Register</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="microprobe.code.ins.InstructionMemoryOperandValue.uses">
+<span class="sig-name descname"><span class="pre">uses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/microprobe/code/ins.html#InstructionMemoryOperandValue.uses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#microprobe.code.ins.InstructionMemoryOperandValue.uses" title="Link to this definition"></a></dt>
+<dd><p>Return the list of registers used by the memory operand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="microprobe.target.isa.register.Register.html#microprobe.target.isa.register.Register" title="microprobe.target.isa.register.Register"><code class="xref py py-class docutils literal notranslate"><span class="pre">Register</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

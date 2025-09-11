@@ -1,0 +1,41 @@
+microprobe.passes.variable.UpdateVariableAddressesPass
+======================================================
+
+.. currentmodule:: microprobe.passes.variable
+
+.. autoclass:: UpdateVariableAddressesPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~UpdateVariableAddressesPass.__init__
+      ~UpdateVariableAddressesPass.check
+      ~UpdateVariableAddressesPass.info
+      ~UpdateVariableAddressesPass.report
+      ~UpdateVariableAddressesPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

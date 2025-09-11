@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.utils.distrib &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">microprobe.utils.distrib</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.utils.distrib</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.utils.distrib` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+
+<span class="c1"># Third party modules</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeValueError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">getnextf</span><span class="p">,</span> <span class="n">RND</span>
+
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Choice&quot;</span><span class="p">,</span> <span class="s2">&quot;weighted_choice&quot;</span><span class="p">,</span> <span class="s2">&quot;discrete_average&quot;</span><span class="p">,</span> <span class="s2">&quot;shuffle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;locality&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sort_by_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;sort_by_usage&quot;</span><span class="p">,</span> <span class="s2">&quot;generate_plain_profile&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;generate_weighted_profile&quot;</span><span class="p">,</span> <span class="s2">&quot;compute_weighted_profile_average&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;regular_seq&quot;</span><span class="p">,</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="s2">&quot;pstdev&quot;</span>
+<span class="p">]</span>
+
+<span class="c1"># Functions</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="Choice">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.Choice.html#microprobe.utils.distrib.Choice">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Choice</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable-msg=too-few-public-methods</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Choice &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Choice.__init__">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.Choice.html#microprobe.utils.distrib.Choice.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param items:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="n">items</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_oitems</span> <span class="o">=</span> <span class="n">items</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_random</span> <span class="o">=</span> <span class="n">RND</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rnd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bis</span><span class="o">=</span><span class="n">bisect</span><span class="o">.</span><span class="n">bisect</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param rnd:  (Default value = None)</span>
+<span class="sd">        :param bis:  (Default value = bisect.bisect)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">added_weights</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">last_sum</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">rnd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">random</span>
+
+        <span class="k">for</span> <span class="n">dummy</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="n">last_sum</span> <span class="o">+=</span> <span class="n">weight</span>
+            <span class="n">added_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_sum</span><span class="p">)</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="n">bis</span><span class="p">(</span><span class="n">added_weights</span><span class="p">,</span> <span class="n">rnd</span><span class="p">()</span> <span class="o">*</span> <span class="n">last_sum</span><span class="p">)</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">item</span></div>
+
+
+
+<div class="viewcode-block" id="weighted_choice">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.weighted_choice">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">weighted_choice</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a function that makes a weighted random choice from items.</span>
+
+<span class="sd">    :param items:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">items</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Choice</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="discrete_average">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.discrete_average">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">discrete_average</span><span class="p">(</span><span class="n">average_val</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param average_val:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">average_val</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">average_val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">average_val</span><span class="p">)</span>
+
+    <span class="n">low</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">average_val</span><span class="p">)</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">]</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">caverage</span> <span class="o">=</span> <span class="n">average</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+    <span class="k">while</span> <span class="nb">abs</span><span class="p">(</span><span class="n">caverage</span> <span class="o">-</span> <span class="n">average_val</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">caverage</span> <span class="o">&gt;</span> <span class="n">average_val</span><span class="p">:</span>
+            <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weights</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">caverage</span> <span class="o">=</span> <span class="n">average</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">weighted_choice</span><span class="p">((</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">weights</span><span class="p">))))</span></div>
+
+
+
+<div class="viewcode-block" id="average">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.average">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">average</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param array:</span>
+<span class="sd">    :type array:</span>
+<span class="sd">    :param weights:</span>
+<span class="sd">    :type weights:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">MicroprobeValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Length of weights not compatible with length of the array&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">ave_val</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">array</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">))</span>
+        <span class="p">]</span>
+    <span class="p">)</span> <span class="o">*</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ave_val</span></div>
+
+
+
+<div class="viewcode-block" id="pstdev">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.pstdev">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pstdev</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the population standard deviation&quot;&quot;&quot;</span>
+    <span class="n">ldata</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ldata</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">MicroprobeValueError</span><span class="p">(</span>
+            <span class="s2">&quot;variance requires at least two data points&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">data_ave</span> <span class="o">=</span> <span class="n">average</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">squared_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">data_ave</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="n">pvar</span> <span class="o">=</span> <span class="n">squared_sum</span> <span class="o">/</span> <span class="p">(</span><span class="n">ldata</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pvar</span><span class="o">**</span><span class="mf">0.5</span></div>
+
+
+
+<div class="viewcode-block" id="regular_seq">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.regular_seq">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">regular_seq</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param items:</span>
+<span class="sd">    :type items:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">weight</span>
+
+    <span class="n">sequence</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">weight</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">every</span> <span class="o">=</span> <span class="p">(</span><span class="n">total</span> <span class="o">//</span> <span class="n">weight</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sequence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">idx</span> <span class="o">%</span> <span class="n">every</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">sequence</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">getnextf</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">sequence</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="shuffle">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.shuffle">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">shuffle</span><span class="p">(</span><span class="n">slist</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param slist:</span>
+<span class="sd">    :param threshold:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rlist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">slist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">slist</span><span class="p">)</span>
+
+    <span class="n">random</span> <span class="o">=</span> <span class="n">RND</span>
+
+    <span class="k">if</span> <span class="n">threshold</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">slist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">slist</span>
+
+    <span class="k">if</span> <span class="n">threshold</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">slist</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">slist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">init_value</span> <span class="o">=</span> <span class="n">slist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">temp_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">init_value</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">slist</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="n">init_value</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">temp_list</span><span class="p">)</span>
+            <span class="n">rlist</span> <span class="o">=</span> <span class="n">rlist</span> <span class="o">+</span> <span class="n">temp_list</span>
+            <span class="n">init_value</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="n">temp_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">temp_list</span><span class="p">)</span>
+    <span class="n">rlist</span> <span class="o">=</span> <span class="n">rlist</span> <span class="o">+</span> <span class="n">temp_list</span>
+
+    <span class="k">return</span> <span class="n">rlist</span></div>
+
+
+
+<div class="viewcode-block" id="sort_by_distance">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.sort_by_distance">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_by_distance</span><span class="p">(</span>
+    <span class="n">regs</span><span class="p">,</span> <span class="n">distdict</span><span class="p">,</span> <span class="n">useddict</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">dummy_instr</span><span class="p">,</span> <span class="n">dummy_idx</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param regs:</span>
+<span class="sd">    :param distdict:</span>
+<span class="sd">    :param useddict:</span>
+<span class="sd">    :param distance:</span>
+<span class="sd">    :param dummy_instr:</span>
+<span class="sd">    :param dummy_idx:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">req</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">req</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># LOG.debug(&quot;: %s&quot;, req)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">distdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> : </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Valid: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">,</span> <span class="n">value</span> <span class="o">==</span> <span class="n">distance</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">regs</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="n">distance</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">key</span>
+
+        <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="s2">&quot;Unable to get a used register in the requested distance.&quot;</span>
+        <span class="s2">&quot; Failback to usage sorting.&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">sort_by_usage</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span> <span class="n">useddict</span><span class="p">,</span> <span class="n">distdict</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sort_by_usage">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.sort_by_usage">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_by_usage</span><span class="p">(</span><span class="n">regs</span><span class="p">,</span> <span class="n">lastdict</span><span class="p">,</span> <span class="n">dummy_defdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param regs:</span>
+<span class="sd">    :param lastdict:</span>
+<span class="sd">    :param dummy_defdict:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdict</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Dict key: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Last used register: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">reg</span>
+
+    <span class="c1"># None of the regs has ben used yet</span>
+    <span class="c1"># Return the first one</span>
+    <span class="k">return</span> <span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+    <span class="c1"># LOG.critical(&quot;Regs: %s&quot;, regs)</span>
+    <span class="c1"># LOG.critical(&quot;Dictionary keys: %s&quot;, lastdict.keys())</span>
+    <span class="c1"># raise MicroprobeException(&quot;Sort error&quot;)</span>
+
+
+<div class="viewcode-block" id="generate_plain_profile">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.generate_plain_profile">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_plain_profile</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param elements:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">elem</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="generate_weighted_profile">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.generate_weighted_profile">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_weighted_profile</span><span class="p">(</span>
+    <span class="n">elements</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span>
+    <span class="n">targetvalue</span><span class="p">,</span> <span class="n">maxvalue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">minvalue</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param elements:</span>
+<span class="sd">    :param attribute:</span>
+<span class="sd">    :param targetvalue:</span>
+<span class="sd">    :param maxvalue:  (Default value = None)</span>
+<span class="sd">    :param minvalue:  (Default value = None)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">generate_plain_profile</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">maxvalue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">maxvalue</span>
+        <span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">minvalue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">minvalue</span>
+        <span class="p">]</span>
+
+    <span class="n">aver</span> <span class="o">=</span> <span class="n">compute_weighted_profile_average</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">random</span> <span class="o">=</span> <span class="n">RND</span>
+
+    <span class="k">if</span> <span class="n">aver</span> <span class="o">&lt;</span> <span class="n">targetvalue</span><span class="p">:</span>
+
+        <span class="n">above</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">idx</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">targetvalue</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">above</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">aver</span> <span class="o">&lt;</span> <span class="n">targetvalue</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">above</span><span class="p">)</span>
+                <span class="n">above</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                <span class="n">profile</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">profile</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">step</span><span class="p">)</span>
+                <span class="n">aver</span> <span class="o">=</span> <span class="n">compute_weighted_profile_average</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">above</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">above</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">idx</span>
+                        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">targetvalue</span>
+                    <span class="p">]</span>
+
+                <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">step</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="mi">10</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">maximum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">maximum</span>
+            <span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">aver</span> <span class="o">&gt;</span> <span class="n">targetvalue</span><span class="p">:</span>
+
+        <span class="n">below</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">idx</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">targetvalue</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">below</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">aver</span> <span class="o">&gt;</span> <span class="n">targetvalue</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">below</span><span class="p">)</span>
+                <span class="n">below</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                <span class="n">profile</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">profile</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">step</span><span class="p">)</span>
+                <span class="n">aver</span> <span class="o">=</span> <span class="n">compute_weighted_profile_average</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">below</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">below</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">idx</span>
+                        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">targetvalue</span>
+                    <span class="p">]</span>
+
+                <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">count</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">step</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="mi">10</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">minimum</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="n">minimum</span>
+            <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">profile</span></div>
+
+
+
+<div class="viewcode-block" id="compute_weighted_profile_average">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.compute_weighted_profile_average">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_weighted_profile_average</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param profile:</span>
+<span class="sd">    :param attribute:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span> <span class="k">for</span>
+                <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span><span class="p">])</span> <span class="o">/</span> \
+        <span class="nb">sum</span><span class="p">([</span><span class="n">weight</span> <span class="k">for</span> <span class="n">entry</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">profile</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="locality">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.locality">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">locality</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">locdef</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">locdef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">repeat</span> <span class="o">=</span> <span class="n">locdef</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">repeat</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">values</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="n">length</span><span class="p">]</span> <span class="o">*</span> <span class="n">repeat</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="n">length</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">values</span></div>
+
+
+
+<div class="viewcode-block" id="probability">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.probability">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">probability</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Invalid probability&quot;</span>
+
+    <span class="n">crandom</span> <span class="o">=</span> <span class="n">RND</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">crandom</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">func</span></div>
+
+
+
+<div class="viewcode-block" id="regular_probability">
+<a class="viewcode-back" href="../../../microprobe.utils.distrib.html#microprobe.utils.distrib.regular_probability">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">regular_probability</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns callable that returns True every value calls</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">count</span> <span class="o">%</span> <span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">yield</span> <span class="n">ret</span>
+
+    <span class="n">generator</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">func2</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">func2</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

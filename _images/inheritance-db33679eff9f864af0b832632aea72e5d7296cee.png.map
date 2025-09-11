@@ -1,0 +1,5 @@
+<map id="inheritance6a8cbe1f85" name="inheritance6a8cbe1f85">
+<area shape="rect" id="node1" href="microprobe.property.PropertyHolder.html#microprobe.property.PropertyHolder" target="_top" title="Class to represent an object containing properties" alt="" coords="4,4,184,22"/>
+<area shape="rect" id="node3" href="microprobe.target.isa.instruction.InstructionType.html#microprobe.target.isa.instruction.InstructionType" target="_top" title="Abstract class to represent a machine instruction type." alt="" coords="217,4,456,22"/>
+<area shape="rect" id="node2" href="microprobe.target.isa.instruction.GenericInstructionType.html#microprobe.target.isa.instruction.GenericInstructionType" target="_top" title="Instruction generic class implementation" alt="" coords="490,4,764,22"/>
+</map>

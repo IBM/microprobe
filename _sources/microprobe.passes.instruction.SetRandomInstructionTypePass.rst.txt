@@ -1,0 +1,41 @@
+microprobe.passes.instruction.SetRandomInstructionTypePass
+==========================================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: SetRandomInstructionTypePass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetRandomInstructionTypePass.__init__
+      ~SetRandomInstructionTypePass.check
+      ~SetRandomInstructionTypePass.info
+      ~SetRandomInstructionTypePass.report
+      ~SetRandomInstructionTypePass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

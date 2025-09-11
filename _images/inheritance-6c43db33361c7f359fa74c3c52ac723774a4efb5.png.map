@@ -1,0 +1,5 @@
+<map id="inheritance36e12d0ad4" name="inheritance36e12d0ad4">
+<area shape="rect" id="node1" href="microprobe.passes.Pass.html#microprobe.passes.Pass" target="_top" title="Class to represent a benchmak transformation pass." alt="" coords="5,31,184,56"/>
+<area shape="rect" id="node2" href="microprobe.passes.structure.GenericCodeStructurePass.html#microprobe.passes.structure.GenericCodeStructurePass" target="_top" title="microprobe.passes.structure.GenericCodeStructurePass" alt="" coords="232,5,615,31"/>
+<area shape="rect" id="node3" href="microprobe.passes.structure.SimpleBuildingBlockPass.html#microprobe.passes.structure.SimpleBuildingBlockPass" target="_top" title="SimpleBuildingBlockPass Class." alt="" coords="236,55,611,80"/>
+</map>

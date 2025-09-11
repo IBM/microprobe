@@ -1,0 +1,60 @@
+﻿========================
+microprobe.passes.memory
+========================
+
+.. automodule:: microprobe.passes.memory
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      FixMemoryReferencesPass
+      GenericMemoryModelPass
+      GenericMemoryStreamsPass
+      GenericOldMemoryModelPass
+      InitializeMemoryDecorator
+      SetMemoryOperandByOpcodePass
+      SingleMemoryStreamPass
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  FixMemoryReferencesPass  GenericMemoryModelPass  GenericMemoryStreamsPass  GenericOldMemoryModelPass  InitializeMemoryDecorator  SetMemoryOperandByOpcodePass  SingleMemoryStreamPass 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   

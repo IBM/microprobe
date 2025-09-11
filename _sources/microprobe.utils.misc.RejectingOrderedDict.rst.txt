@@ -1,0 +1,49 @@
+microprobe.utils.misc.RejectingOrderedDict
+==========================================
+
+.. currentmodule:: microprobe.utils.misc
+
+.. autoclass:: RejectingOrderedDict
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RejectingOrderedDict.__init__
+      ~RejectingOrderedDict.clear
+      ~RejectingOrderedDict.copy
+      ~RejectingOrderedDict.fromkeys
+      ~RejectingOrderedDict.get
+      ~RejectingOrderedDict.items
+      ~RejectingOrderedDict.keys
+      ~RejectingOrderedDict.move_to_end
+      ~RejectingOrderedDict.pop
+      ~RejectingOrderedDict.popitem
+      ~RejectingOrderedDict.setdefault
+      ~RejectingOrderedDict.update
+      ~RejectingOrderedDict.values
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

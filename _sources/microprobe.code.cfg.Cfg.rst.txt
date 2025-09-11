@@ -1,0 +1,48 @@
+microprobe.code.cfg.Cfg
+=======================
+
+.. currentmodule:: microprobe.code.cfg
+
+.. autoclass:: Cfg
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Cfg.__init__
+      ~Cfg.add_bbl
+      ~Cfg.add_bbls
+      ~Cfg.get_bbl
+      ~Cfg.index
+      ~Cfg.last_bbl
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Cfg.bbls
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

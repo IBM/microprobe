@@ -1,0 +1,930 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.code &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">microprobe.code</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.code</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`~.code` generation package</span>
+
+<span class="sd">A package for driving the code generation process within microprobe.</span>
+<span class="sd">The sub-packages of this package are:</span>
+
+<span class="sd">- :mod:`~.wrapper`: Code generation wrapper package.</span>
+
+<span class="sd">and the modules in this package are the following:</span>
+
+<span class="sd">- :mod:`~.address`: Address object module.</span>
+<span class="sd">- :mod:`~.bbl`: Building block object module.</span>
+<span class="sd">- :mod:`~.benchmark`: Benchmark object module.</span>
+<span class="sd">- :mod:`~.cfg`: Control flow graph object module.</span>
+<span class="sd">- :mod:`~.context`: Context object module.</span>
+<span class="sd">- :mod:`~.ins`: Instruction object module.</span>
+<span class="sd">- :mod:`~.var`: Variable objects module.</span>
+
+<span class="sd">Visit their respective documentation for further details.</span>
+
+<span class="sd">This package defines the benchmark synthesizer (:class:`~.Synthesizer`),</span>
+<span class="sd">which is the main object driving the code generation process in the</span>
+<span class="sd">microprobe framework. This object provides a simple interface to define</span>
+<span class="sd">the set of passes (:class:`~.Pass`) to apply to generate a benchmark</span>
+<span class="sd">(:class:`~.Benchmark`).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">annotations</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span>
+
+<span class="c1"># Third party modules</span>
+
+
+<span class="c1"># Own modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.code.wrapper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.target</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cmd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">MICROPROBE_RC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstructionAddress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.benchmark</span><span class="w"> </span><span class="kn">import</span> <span class="n">benchmark_factory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span>
+    <span class="n">MicroprobeError</span><span class="p">,</span>
+    <span class="n">MicroprobeValueError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.imp</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_all_subclasses</span><span class="p">,</span> <span class="n">load_source</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">set_log_level</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Progress</span><span class="p">,</span> <span class="n">findfiles</span><span class="p">,</span> <span class="n">open_generic_fd</span>
+
+<span class="c1"># Type hinting</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.benchmark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Benchmark</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.ins</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instruction</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wrapper</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.passes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pass</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.target</span><span class="w"> </span><span class="kn">import</span> <span class="n">Target</span>
+
+<span class="c1"># Constants</span>
+
+<span class="c1">#: Package logger (:class:`~.logging.Logger`).</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_INIT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_wrapper&quot;</span><span class="p">,</span> <span class="s2">&quot;Synthesizer&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_wrapper_subclasses</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">Wrapper</span><span class="p">]]:</span>
+    <span class="k">return</span> <span class="n">get_all_subclasses</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">Wrapper</span><span class="p">)</span>
+
+
+<span class="c1"># Functions</span>
+<div class="viewcode-block" id="get_wrapper">
+<a class="viewcode-back" href="../../microprobe.code.html#microprobe.code.get_wrapper">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a wrapper object with name *name*.</span>
+
+<span class="sd">    Look for the registered :class:`~.Wrapper` objects and return and instance</span>
+<span class="sd">    of the one with name equal *name*.</span>
+
+<span class="sd">    :param name: Wrapper name</span>
+<span class="sd">    :type name: :class:`~.str`</span>
+<span class="sd">    :return: A wrapper instance</span>
+<span class="sd">    :rtype: :class:`~.Wrapper`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">_INIT</span>  <span class="c1"># pylint: disable=global-statement</span>
+    <span class="k">if</span> <span class="n">_INIT</span><span class="p">:</span>
+        <span class="n">_INIT</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_import_default_wrappers</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;debugwrapper&quot;</span><span class="p">]:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;DebugBinaryDouble&quot;</span>
+
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">_wrapper_subclasses</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">elem</span>
+
+    <span class="k">raise</span> <span class="n">MicroprobeValueError</span><span class="p">(</span>
+        <span class="s2">&quot;Unknown wrapper &#39;</span><span class="si">%s</span><span class="s2">&#39;. Available wrappers are: </span><span class="si">%s</span><span class="s2">. &quot;</span>
+        <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">[</span><span class="n">elem</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">_wrapper_subclasses</span><span class="p">()])</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_import_default_wrappers</span><span class="p">():</span>
+    <span class="n">modules</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrapper paths: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;wrapper_paths&quot;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;wrapper_paths&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">findfiles</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">path</span><span class="p">],</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;wrappers&quot;</span><span class="p">,</span> <span class="s2">&quot;[a-zA-Z0-9-]+.py$&quot;</span><span class="p">),</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">):</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">module</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">:</span>
+                <span class="n">modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+    <span class="n">lmodules</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">while</span> <span class="n">lmodules</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">modules</span><span class="p">):</span>
+        <span class="n">lmodules</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">modules</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">module_file</span> <span class="ow">in</span> <span class="n">modules</span><span class="p">[:]:</span>
+
+            <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">module_file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;__init__&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Wrapper module name &#39;</span><span class="si">%s</span><span class="s2">&#39; in &#39;</span><span class="si">%s</span><span class="s2">&#39; already loaded. &quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">module_file</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="n">load_source</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">module_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">MicroprobeValueError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">microprobe</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">module</span>
+            <span class="n">modules</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">module_file</span><span class="p">)</span>
+
+            <span class="n">current_wrappers</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">elem</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">_wrapper_subclasses</span><span class="p">()</span>
+            <span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_wrappers</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">current_wrappers</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">current_wrappers</span><span class="p">):</span>
+                    <span class="n">current_wrappers</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+                <span class="n">overwrapper</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">current_wrappers</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">raise</span> <span class="n">MicroprobeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Module name &#39;</span><span class="si">%s</span><span class="s2">&#39; in &#39;</span><span class="si">%s</span><span class="s2">&#39; overrides an existing wrapper &quot;</span>
+                    <span class="s2">&quot;with name &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">module_file</span><span class="p">,</span> <span class="n">overwrapper</span><span class="p">)</span>
+                <span class="p">)</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="Synthesizer">
+<a class="viewcode-back" href="../../microprobe.code.Synthesizer.html#microprobe.code.Synthesizer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Synthesizer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Benchmark synthesizer.</span>
+
+<span class="sd">    The Synthesizer objects are in charge of creating :class:`~.Benchmark`</span>
+<span class="sd">    objects based on a set of passes that have been previously defined.</span>
+
+<span class="sd">    The typical workflow will be as follow. User instantiates the synthesizer,</span>
+<span class="sd">    specifying also the :class:`~.Target` and the :class:`~.Wrapper`, which are</span>
+<span class="sd">    required to know the target properties as well as how the code should be</span>
+<span class="sd">    translated to the final representation. Then a set of :class:`~.Pass` are</span>
+<span class="sd">    registered using the :meth:`add_pass` method. This passes will be applied</span>
+<span class="sd">    in the provided order on a empty :class:`~.Benchmark` object when the</span>
+<span class="sd">    :meth:`~.synthesize` method is called. Finally, the generated benchmark</span>
+<span class="sd">    can be saved to disk by using the :meth:`~.save` method. A snippet of</span>
+<span class="sd">    code of this process would be like:</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        synthesizer =  Synthesizer(...)  # Instantiate object</span>
+<span class="sd">        synthesizer.add_pass(...)        # Add transformation passes</span>
+<span class="sd">        ...</span>
+<span class="sd">        synthesizer.add_pass(...)</span>
+<span class="sd">        synthesizer.synthesize(...)      # Apply the passes and generate a</span>
+<span class="sd">                                         # benchmark</span>
+<span class="sd">        synthesizer.save(...)            # Save the benchmark</span>
+
+<span class="sd">    The default structure of the benchmarks being synthesized is as follows:</span>
+
+<span class="sd">    #. ``extra_raw[&#39;FILE_HEADER&#39;]`` contents</span>
+<span class="sd">    #. ``wrapper.headers()`` contents</span>
+<span class="sd">    #. **&lt;global variable declarations&gt;**</span>
+<span class="sd">    #. ``wrapper.start_main()`` contents</span>
+<span class="sd">    #. ``extra_raw[&#39;CODE_HEADER&#39;]`` contents</span>
+<span class="sd">    #. **&lt;global variable initializations&gt;**</span>
+<span class="sd">    #. ``wrapper.post_var()`` contents</span>
+<span class="sd">    #. **&lt;benchmark initialization code&gt;**</span>
+<span class="sd">    #. ``wrapper.start_loop()`` contents</span>
+<span class="sd">    #. **&lt;benchmark building blocks&gt;**</span>
+<span class="sd">    #. **&lt;benchmark finalization code&gt;**</span>
+<span class="sd">    #. ``wrapper.end_loop()`` contents</span>
+<span class="sd">    #. ``extra_raw[&#39;CODE_FOOTER&#39;]`` contents</span>
+<span class="sd">    #. ``wrapper.end_main()`` contents</span>
+<span class="sd">    #. ``wrapper.footer()`` contents</span>
+<span class="sd">    #. ``extra_raw[&#39;FILE_FOOTER&#39;]`` contents</span>
+
+<span class="sd">    where:</span>
+
+<span class="sd">    - ``extra_raw`` contents are provided at initialization (see below)</span>
+<span class="sd">    - wrapper object methods provide the decoupling between output format and</span>
+<span class="sd">      the benchmark synthesizer</span>
+<span class="sd">    - **variables** and **building block** contents are populated by the passes</span>
+<span class="sd">      being applied</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        - This default code layout can be changed by sub-classing this class.</span>
+
+<span class="sd">        - The :meth:`~.synthesize` method and the :meth:`~.save` method can be</span>
+<span class="sd">          called multiple times to generate and save multiple benchmarks in</span>
+<span class="sd">          case that some of the passes have some random behavior. Otherwise,</span>
+<span class="sd">          it does not make sense ;).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Synthesizer.__init__">
+<a class="viewcode-back" href="../../microprobe.code.Synthesizer.html#microprobe.code.Synthesizer.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span>
+        <span class="n">wrapper</span><span class="p">:</span> <span class="n">Wrapper</span> <span class="o">|</span> <span class="n">List</span><span class="p">[</span><span class="n">Wrapper</span><span class="p">],</span>
+        <span class="n">no_scratch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">extra_raw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">value</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Synthesizer object.</span>
+
+<span class="sd">        :param target: Benchmark target</span>
+<span class="sd">        :type target: :class:`~.Target`</span>
+<span class="sd">        :param wrapper: Wrapper object defining the output format</span>
+<span class="sd">        :type wrapper: :class:`~.Wrapper`</span>
+<span class="sd">        :param value: Default immediate value used for non-initialized</span>
+<span class="sd">                      immediates (Default: random)</span>
+<span class="sd">        :type value: :class:`~.int`</span>
+<span class="sd">        :param no_scratch: Disable automatic declaration of scratch variables</span>
+<span class="sd">                           required for code generation support</span>
+<span class="sd">                           (Default: False)</span>
+<span class="sd">        :type no_scratch: :class:`~.bool`</span>
+<span class="sd">        :param extra_raw: List of extra raw strings to be embedded in the final</span>
+<span class="sd">                          output</span>
+<span class="sd">        :type extra_raw: :class:`~.list` of elements containing a ``name`` and</span>
+<span class="sd">                         a ``value`` attributes (Default: [])</span>
+<span class="sd">        :return: A Synthesizer instance</span>
+<span class="sd">        :rtype: :class:`~.Synthesizer`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">target</span>
+
+        <span class="c1"># Extra arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_no_scratch</span> <span class="o">=</span> <span class="n">no_scratch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="n">extra_raw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="n">threads</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_passes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Pass</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_passes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_thread</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Number of wrappers provided (</span><span class="si">%d</span><span class="s2">) is different from &quot;</span>
+                    <span class="s2">&quot;number of threads (</span><span class="si">%d</span><span class="s2">) specified in the Synthesizer&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wrapper</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span> <span class="o">=</span> <span class="n">wrapper</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span> <span class="o">=</span> <span class="p">[</span><span class="n">wrapper</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">):</span>
+                <span class="n">new_wrapper</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_wrapper</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+            <span class="n">wrapper</span><span class="o">.</span><span class="n">set_target</span><span class="p">(</span><span class="n">target</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Target attribute (:class:`~.Target`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper attribute (:class:`~.Wrapper`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_thread</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Synthesizer.add_pass">
+<a class="viewcode-back" href="../../microprobe.code.Synthesizer.html#microprobe.code.Synthesizer.add_pass">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">synth_pass</span><span class="p">:</span> <span class="n">Pass</span><span class="p">,</span> <span class="n">thread_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a pass to the benchmark synthesizer.</span>
+
+<span class="sd">        :param synth_pass: New pass to add.</span>
+<span class="sd">        :type synth_pass: :class:`~.Pass`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">thread_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_passes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_thread</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">synth_pass</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">thread_idx</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                    <span class="s2">&quot;Unknown thread id: </span><span class="si">%d</span><span class="s2"> (min: 1, max: </span><span class="si">%d</span><span class="s2">)&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">thread_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_passes</span><span class="p">[</span><span class="n">thread_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">synth_pass</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Synthesizer.save">
+<a class="viewcode-back" href="../../microprobe.code.Synthesizer.html#microprobe.code.Synthesizer.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">bench</span><span class="p">:</span> <span class="n">Benchmark</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a benchmark to disk.</span>
+
+<span class="sd">        Save a synthesized benchmark to disk. If bench is not specified a</span>
+<span class="sd">        benchmark is automatically synthesized using the :meth:`~.synthesize`</span>
+<span class="sd">        method.</span>
+
+<span class="sd">        :param name: Filename to save</span>
+<span class="sd">        :type name: :class:`~.str`</span>
+<span class="sd">        :param bench: Benchmark to save (Default value = None)</span>
+<span class="sd">        :type bench: :class:`~.Benchmark`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bench</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bench</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">synthesize</span><span class="p">()</span>
+
+        <span class="n">starttime</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">program_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap</span><span class="p">(</span><span class="n">bench</span><span class="p">)</span>
+        <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Pass wrap: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">starttime</span><span class="p">))</span>
+        <span class="p">)</span>
+
+        <span class="n">outputname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outputname</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">fdx</span> <span class="o">=</span> <span class="n">open_generic_fd</span><span class="p">(</span><span class="n">outputname</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">program_str</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">elem</span> <span class="o">==</span> <span class="p">[]:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">elem</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+            <span class="n">fdx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+
+        <span class="n">fdx</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">pad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">outputname</span><span class="p">)</span>
+            <span class="k">while</span> <span class="p">(</span><span class="n">file_size</span> <span class="o">%</span> <span class="n">pad</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fdx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">pad</span> <span class="o">-</span> <span class="p">(</span><span class="n">file_size</span> <span class="o">%</span> <span class="n">pad</span><span class="p">)))</span>
+                <span class="n">fdx</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">outputname</span><span class="p">)</span>
+        <span class="n">fdx</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Synthesizer.synthesize">
+<a class="viewcode-back" href="../../microprobe.code.Synthesizer.html#microprobe.code.Synthesizer.synthesize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">synthesize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Synthesize a benchmark.</span>
+
+<span class="sd">        Synthesize a benchmark based on the set of passes that have been</span>
+<span class="sd">        added using the :meth:`add_pass` method.</span>
+
+<span class="sd">        :return: A new synthesized benchmark</span>
+<span class="sd">        :rtype: :class:`~.Benchmark`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start synthesizing benchmark&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create benchmark object</span>
+        <span class="n">bench</span> <span class="o">=</span> <span class="n">benchmark_factory</span><span class="p">(</span><span class="n">threads</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">thread_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start synthesizing benchmark thread </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">thread_id</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">set_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">[</span><span class="n">thread_id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">bench</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+
+            <span class="c1"># Set default context -- environment context</span>
+            <span class="n">bench</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">context</span><span class="p">())</span>
+            <span class="c1"># bench.set_context(Context())</span>
+
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">required_global_vars</span><span class="p">():</span>
+                <span class="n">bench</span><span class="o">.</span><span class="n">register_var</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">bench</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_scratch</span><span class="p">:</span>
+                <span class="c1"># self._target.scratch_var.set_address(None)</span>
+                <span class="n">bench</span><span class="o">.</span><span class="n">register_var</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">scratch_var</span><span class="p">,</span> <span class="n">bench</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+            <span class="c1"># Basic context</span>
+            <span class="n">reserved_registers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">reserved_registers</span>
+            <span class="n">reserved_registers</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">reserved_registers</span><span class="p">(</span>
+                <span class="n">reserved_registers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span>
+            <span class="p">)</span>
+
+            <span class="n">bench</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">add_reserved_registers</span><span class="p">(</span><span class="n">reserved_registers</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;debugpasses&quot;</span><span class="p">]:</span>
+                <span class="n">previous_level</span> <span class="o">=</span> <span class="n">LOG</span><span class="o">.</span><span class="n">getEffectiveLevel</span><span class="p">()</span>
+                <span class="n">set_log_level</span><span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span>
+
+            <span class="n">passes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_passes</span><span class="p">[</span><span class="n">thread_id</span><span class="p">]</span>
+
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">passes</span><span class="p">):</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Applying pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]:</span>
+                    <span class="n">cmd</span><span class="o">.</span><span class="n">cmdline</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span>
+                        <span class="s2">&quot;Applying pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="n">step</span><span class="p">(</span><span class="n">bench</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+                <span class="n">bench</span><span class="o">.</span><span class="n">add_pass_info</span><span class="p">(</span><span class="n">step</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+                <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s2">&quot;Applying pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> : Execution time: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">idx</span><span class="p">,</span>
+                    <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">starttime</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="n">starttime</span> <span class="o">=</span> <span class="n">endtime</span>
+
+            <span class="n">starttime</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">passes</span><span class="p">):</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Checking pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pass_ok</span> <span class="o">=</span> <span class="n">step</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">bench</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Checking pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">. NOT IMPLEMENTED&quot;</span><span class="p">,</span>
+                        <span class="n">idx</span><span class="p">,</span>
+                        <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">pass_ok</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">pass_ok</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Checking pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">. Test result: FAIL&quot;</span><span class="p">,</span>
+                        <span class="n">idx</span><span class="p">,</span>
+                        <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                    <span class="n">bench</span><span class="o">.</span><span class="n">add_warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> did not pass the check test&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Checking pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">. Test result: OK&quot;</span><span class="p">,</span>
+                        <span class="n">idx</span><span class="p">,</span>
+                        <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s2">&quot;Checking pass </span><span class="si">%03d</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> : Execution time: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">idx</span><span class="p">,</span>
+                    <span class="n">step</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                    <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">endtime</span> <span class="o">-</span> <span class="n">starttime</span><span class="p">),</span>
+                <span class="p">)</span>
+
+                <span class="n">starttime</span> <span class="o">=</span> <span class="n">endtime</span>
+
+            <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;debugpasses&quot;</span><span class="p">]:</span>
+                <span class="n">set_log_level</span><span class="p">(</span><span class="n">previous_level</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bench</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrap_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bench</span><span class="p">:</span> <span class="n">Benchmark</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap a thread in benchmark.</span>
+
+<span class="sd">        This function wraps a thread using the synthesizer wrapper. The</span>
+<span class="sd">        wrapping process is the process of converting the internal</span>
+<span class="sd">        representation of the benchmark to the actual string that is written</span>
+<span class="sd">        to a file, adding the necessary prologue and epilogue bytes of</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        :param bench: Benchmark to wrap.</span>
+<span class="sd">        :type bench: :class:`~.Benchmark`</span>
+<span class="sd">        :param thread_id: Thread to wrap</span>
+<span class="sd">        :type thread_id : :class:`~.int`</span>
+<span class="sd">        :return: A string representation of the benchmark</span>
+<span class="sd">        :rtype: :class:`~.str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">bench</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+
+        <span class="n">thread_str</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">start_main</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="s2">&quot;CODE_HEADER&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">:</span>
+            <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">[</span><span class="s2">&quot;CODE_HEADER&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">bench</span><span class="o">.</span><span class="n">registered_global_vars</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">init_global_var</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">post_var</span><span class="p">())</span>
+
+        <span class="c1"># TODO: This is hardcoded and assumes a loop always. Needs to be more</span>
+        <span class="c1"># generic: pass a building block to a wrapper and it automatically</span>
+        <span class="c1"># returns the required string</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bench</span><span class="o">.</span><span class="n">init</span><span class="p">:</span>
+            <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wrap_ins</span><span class="p">(</span><span class="n">instr</span><span class="p">))</span>
+
+        <span class="n">code_str</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">instr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">bench</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">first</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="n">bench</span><span class="o">.</span><span class="n">init</span><span class="p">:</span>
+                        <span class="n">code_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">start_loop</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">bench</span><span class="o">.</span><span class="n">init</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">code_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">start_loop</span><span class="p">(</span><span class="n">instr</span><span class="p">,</span> <span class="n">instr</span><span class="p">))</span>
+                <span class="n">code_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wrap_ins</span><span class="p">(</span><span class="n">instr</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">instr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                <span class="s2">&quot;No instructions found in benchmark&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">thread_str</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">code_str</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bench</span><span class="o">.</span><span class="n">fini</span><span class="p">:</span>
+            <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wrap_ins</span><span class="p">(</span><span class="n">instr</span><span class="p">))</span>
+
+        <span class="n">last_instr</span> <span class="o">=</span> <span class="n">instr</span>
+        <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">end_loop</span><span class="p">(</span><span class="n">last_instr</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="s2">&quot;CODE_FOOTER&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">:</span>
+            <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">[</span><span class="s2">&quot;CODE_FOOTER&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">thread_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">end_main</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">thread_str</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bench</span><span class="p">:</span> <span class="n">Benchmark</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap a benchmark.</span>
+
+<span class="sd">        This function wraps a benchmark using the synthesizer wrapper. The</span>
+<span class="sd">        wrapping process is the process of converting the internal</span>
+<span class="sd">        representation of the benchmark to the actual string that is written</span>
+<span class="sd">        to a file, adding the necessary prologue and epilogue bytes of</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        :param bench: Benchmark to wrap.</span>
+<span class="sd">        :type bench: :class:`~.Benchmark`</span>
+<span class="sd">        :return: A string representation of the benchmark</span>
+<span class="sd">        :rtype: :class:`~.str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">wrapper</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrappers</span><span class="p">:</span>
+            <span class="n">wrapper</span><span class="o">.</span><span class="n">set_benchmark</span><span class="p">(</span><span class="n">bench</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">bench_str</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="s2">&quot;FILE_HEADER&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">:</span>
+            <span class="n">bench_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">[</span><span class="s2">&quot;FILE_HEADER&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">bench_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">headers</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">thread_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+            <span class="n">bench</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="n">bench</span><span class="o">.</span><span class="n">registered_global_vars</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">address</span>
+            <span class="p">):</span>
+                <span class="n">bench_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">declare_global_var</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">thread_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">bench_str</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wrap_thread</span><span class="p">(</span><span class="n">bench</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_current_thread</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bench_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">footer</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="s2">&quot;FILE_FOOTER&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">:</span>
+            <span class="n">bench_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">[</span><span class="s2">&quot;FILE_FOOTER&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">bench_str</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">bench_str</span> <span class="k">if</span> <span class="n">elem</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">bench_str</span>
+
+<div class="viewcode-block" id="Synthesizer.set_current_thread">
+<a class="viewcode-back" href="../../microprobe.code.Synthesizer.html#microprobe.code.Synthesizer.set_current_thread">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_current_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_thread</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                <span class="s2">&quot;Unknown thread id: </span><span class="si">%d</span><span class="s2"> (min: 1, max: </span><span class="si">%d</span><span class="s2">)&quot;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TraceSynthesizer">
+<a class="viewcode-back" href="../../microprobe.code.TraceSynthesizer.html#microprobe.code.TraceSynthesizer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TraceSynthesizer</span><span class="p">(</span><span class="n">Synthesizer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trace synthesizer.</span>
+
+<span class="sd">    The Trace Synthesizer objects are in charge of creating</span>
+<span class="sd">    :class:`~.Benchmark` objects based on a set of passes that have been</span>
+<span class="sd">    previously defined. They operate in a similar fashion as</span>
+<span class="sd">    :class:`~.Synthesizer` objects but differ on how the benchmark</span>
+<span class="sd">    object is dumped. In this case a dynamic execution trace is dumped (i.e.</span>
+<span class="sd">    an execution trace). Required dynamic information should be provided</span>
+<span class="sd">    by the registered passes.</span>
+
+<span class="sd">    The default structure of the benchmarks being synthesized is as follows:</span>
+
+<span class="sd">    #. ``wrapper.headers()`` contents</span>
+<span class="sd">    #. Dynamic execution trace from:</span>
+<span class="sd">      -  **&lt;benchmark initialization code&gt;**</span>
+<span class="sd">      -  **&lt;benchmark building blocks&gt;**</span>
+<span class="sd">      -  **&lt;benchmark finalization code&gt;**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TraceSynthesizer.__init__">
+<a class="viewcode-back" href="../../microprobe.code.TraceSynthesizer.html#microprobe.code.TraceSynthesizer.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Target</span><span class="p">,</span>
+        <span class="n">wrapper</span><span class="p">:</span> <span class="n">Wrapper</span><span class="p">,</span>
+        <span class="n">show_trace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">maxins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
+        <span class="n">start_addr</span><span class="p">:</span> <span class="n">Address</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">no_scratch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">extra_raw</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">value</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TraceSynthesizer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">,</span> <span class="n">no_scratch</span><span class="p">,</span> <span class="n">extra_raw</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">threads</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_trace</span> <span class="o">=</span> <span class="n">show_trace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxins</span> <span class="o">=</span> <span class="n">maxins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_addr</span> <span class="o">=</span> <span class="n">start_addr</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bench</span><span class="p">:</span> <span class="n">Benchmark</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap a benchmark.</span>
+
+<span class="sd">        This function wraps a benchmark using the synthesizer wrapper. The</span>
+<span class="sd">        wrapping process is the process of converting the internal</span>
+<span class="sd">        representation of the benchmark to the actual string that is written</span>
+<span class="sd">        to a file, adding the necessary prologue and epilogue bytes of</span>
+<span class="sd">        data.</span>
+
+<span class="sd">        :param bench: Benchmark to wrap.</span>
+<span class="sd">        :type bench: :class:`~.Benchmark`</span>
+<span class="sd">        :return: A string representation of the benchmark</span>
+<span class="sd">        :rtype: :class:`~.str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">set_benchmark</span><span class="p">(</span><span class="n">bench</span><span class="p">)</span>
+
+        <span class="n">bench_str</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bench_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">headers</span><span class="p">())</span>
+
+        <span class="n">instructions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instruction</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">instructions_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">InstructionAddress</span><span class="p">,</span> <span class="n">Instruction</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">instructions_next_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="n">InstructionAddress</span><span class="p">,</span> <span class="n">InstructionAddress</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bench</span><span class="o">.</span><span class="n">init</span><span class="p">:</span>
+            <span class="n">instructions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">bench</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+                <span class="n">instructions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bench</span><span class="o">.</span><span class="n">fini</span><span class="p">:</span>
+            <span class="n">instructions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">instructions</span><span class="p">:</span>
+            <span class="n">instructions_dict</span><span class="p">[</span><span class="n">instr</span><span class="o">.</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="n">instr</span>
+            <span class="k">if</span> <span class="n">instr</span><span class="o">.</span><span class="n">branch</span> <span class="ow">or</span> <span class="n">instr</span><span class="o">.</span><span class="n">syscall</span> <span class="ow">or</span> <span class="n">instr</span><span class="o">.</span><span class="n">trap</span><span class="p">:</span>
+                <span class="n">instructions_next_dict</span><span class="p">[</span><span class="n">instr</span><span class="o">.</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="n">instr</span><span class="o">.</span><span class="n">decorators</span><span class="p">[</span>
+                    <span class="s2">&quot;NI&quot;</span>
+                <span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">instructions_next_dict</span><span class="p">[</span><span class="n">instr</span><span class="o">.</span><span class="n">address</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">instr</span><span class="o">.</span><span class="n">address</span> <span class="o">+</span> <span class="n">instr</span><span class="o">.</span><span class="n">architecture_type</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">length</span>
+                <span class="p">)</span>
+
+        <span class="n">instr</span> <span class="o">=</span> <span class="n">instructions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_addr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;EA&quot;</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">decorators</span><span class="p">:</span>
+                <span class="n">instr</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">ins</span>
+                    <span class="k">for</span> <span class="n">ins</span> <span class="ow">in</span> <span class="n">instructions</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">ins</span><span class="o">.</span><span class="n">decorators</span><span class="p">[</span><span class="s2">&quot;EA&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+                    <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_addr</span>
+                <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">instr</span> <span class="o">=</span> <span class="n">instructions_dict</span><span class="p">[</span>
+                    <span class="n">InstructionAddress</span><span class="p">(</span>
+                        <span class="n">base_address</span><span class="o">=</span><span class="s2">&quot;code&quot;</span><span class="p">,</span>
+                        <span class="n">displacement</span><span class="o">=</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_start_addr</span> <span class="o">-</span> <span class="n">bench</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">code_segment</span>
+                        <span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">cmd</span><span class="o">.</span><span class="n">cmdline</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span>
+            <span class="s2">&quot;Maximum trace size: </span><span class="si">%s</span><span class="s2"> instructions &quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxins</span>
+        <span class="p">)</span>
+
+        <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxins</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;Instructions generated:&quot;</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxins</span><span class="p">:</span>
+                <span class="n">cmd</span><span class="o">.</span><span class="n">cmdline</span><span class="o">.</span><span class="n">print_info</span><span class="p">(</span>
+                    <span class="s2">&quot;Max number of instructions (</span><span class="si">%d</span><span class="s2">) reached. &quot;</span>
+                    <span class="s2">&quot;Stoping trace generation.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxins</span>
+                <span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">instr_address</span> <span class="o">=</span> <span class="n">instructions_next_dict</span><span class="p">[</span><span class="n">instr</span><span class="o">.</span><span class="n">address</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instr_address</span><span class="p">,</span> <span class="n">InstructionAddress</span><span class="p">):</span>
+                    <span class="n">instr_address</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">instr_address</span><span class="p">)</span>
+
+                <span class="n">next_instr</span> <span class="o">=</span> <span class="n">instructions_dict</span><span class="p">[</span><span class="n">instr_address</span><span class="p">]</span>
+
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">instr</span><span class="o">.</span><span class="n">mnemonic</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;ATTN&quot;</span><span class="p">:</span>
+                    <span class="n">cmd</span><span class="o">.</span><span class="n">cmdline</span><span class="o">.</span><span class="n">print_warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Processor ATTN instruction found. Stopping trace &quot;</span>
+                        <span class="s2">&quot;generation. &quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">break</span>
+
+                <span class="n">cmd</span><span class="o">.</span><span class="n">cmdline</span><span class="o">.</span><span class="n">print_error</span><span class="p">(</span>
+                    <span class="s2">&quot;Jump from 0x</span><span class="si">%X</span><span class="s2"> to an unknown instruction in address &quot;</span>
+                    <span class="s2">&quot;0x</span><span class="si">%X</span><span class="s2"> found. Stoping trace generation.&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">instr</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">displacement</span>
+                        <span class="o">+</span> <span class="n">bench</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">code_segment</span><span class="p">,</span>
+                        <span class="n">instr_address</span><span class="o">.</span><span class="n">displacement</span>
+                        <span class="o">+</span> <span class="n">bench</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">code_segment</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">progress</span><span class="p">()</span>
+            <span class="n">wrap_ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="o">.</span><span class="n">wrap_ins</span><span class="p">(</span>
+                <span class="n">instr</span><span class="p">,</span> <span class="n">next_instr</span><span class="o">=</span><span class="n">next_instr</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_show_trace</span>
+            <span class="p">)</span>
+
+            <span class="n">bench_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrap_ins</span><span class="p">)</span>
+
+            <span class="n">instr</span> <span class="o">=</span> <span class="n">next_instr</span>
+
+        <span class="n">bench_str</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">bench_str</span> <span class="k">if</span> <span class="n">elem</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">bench_str</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

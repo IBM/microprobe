@@ -1,0 +1,5 @@
+<map id="inheritance4e8331dc81" name="inheritance4e8331dc81">
+<area shape="rect" id="node1" href="microprobe.code.address.Address.html#microprobe.code.address.Address" target="_top" title="Class to represent an address." alt="" coords="23,55,266,80"/>
+<area shape="rect" id="node2" href="microprobe.code.address.InstructionAddress.html#microprobe.code.address.InstructionAddress" target="_top" title="Class to represent an instruction address." alt="" coords="332,55,643,80"/>
+<area shape="rect" id="node3" href="microprobe.code.address.MemoryValue.html#microprobe.code.address.MemoryValue" target="_top" title="Class to represent a value in memory." alt="" coords="5,5,284,31"/>
+</map>

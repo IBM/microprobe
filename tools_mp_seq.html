@@ -1,0 +1,468 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool: mp_seq &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Tool: mp_seqtune" href="tools_mp_seqtune.html" />
+    <link rel="prev" title="Tool: mp_objdump2mpt" href="tools_mp_objdump2mpt.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tools.html">Command line tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tools_target_definition.html">Command line target definition scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mpt_format.html">Microprobe test (mpt) format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_ctest_format.html">C test format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2asm.html">Tool: mp_bin2asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2objdump.html">Tool: mp_bin2objdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_c2mpt.html">Tool: mp_c2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_epi.html">Tool: mp_epi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2bin.html">Tool: mp_mpt2bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2elf.html">Tool: mp_mpt2elf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2test.html">Tool: mp_mpt2test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2trace.html">Tool: mp_mpt2trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_objdump2mpt.html">Tool: mp_objdump2mpt</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tool: mp_seq</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-usage">Full usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-use-case">Example use case</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seqtune.html">Tool: mp_seqtune</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_target.html">Tool: mp_target</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tools.html">Command line tools</a></li>
+      <li class="breadcrumb-item active">Tool: mp_seq</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tools_mp_objdump2mpt.html" class="btn btn-neutral float-left" title="Tool: mp_objdump2mpt" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools_mp_seqtune.html" class="btn btn-neutral float-right" title="Tool: mp_seqtune" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tool-mp-seq">
+<h1>Tool: mp_seq<a class="headerlink" href="#tool-mp-seq" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <strong>mp_seq</strong> tool provides an interface to generate stressmarks that
+execute sequences that combine the instructions provided in a certain
+way to comply the requirements provided.  Sequence stressmarks are loops
+with a particular sequence repeated several times. They are ideal to perform
+core characterizations during the first steps of the maximum power generation
+process (i.e. find the sequence that maximizes the power consumption of the
+cores). Users can control the level of instruction-level parallelism and the
+loop size via configurable parameters.</p>
+</section>
+<section id="basic-usage">
+<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_seq</span> <span class="o">-</span><span class="n">T</span> <span class="n">TARGET</span> <span class="o">-</span><span class="n">D</span> <span class="n">OUTPUT_DIR</span> <span class="o">-</span><span class="n">ig</span> <span class="n">group1</span> <span class="n">group2</span>
+</pre></div>
+</div>
+<p>where:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag/Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ig</span> <span class="pre">groups</span></code>, <code class="docutils literal notranslate"><span class="pre">--instruction-groups</span> <span class="pre">groups</span></code></p></td>
+<td><p>Comma separated list of instruction candidates per
+group. E.g. -ins ins1,ins2 ins3,ins4. Defines two
+groups of instruction candidates: group 1: ins1,ins2
+and group 2: ins3,ins4.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-T</span> <span class="pre">TARGET</span></code>, <code class="docutils literal notranslate"><span class="pre">--target</span> <span class="pre">TARGET</span></code></p></td>
+<td><p>Target definition string. Check: <a class="reference internal" href="tools_target_definition.html"><span class="doc">Command line target definition scheme</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-D</span> <span class="pre">OUTPUT_DIR</span></code>, <code class="docutils literal notranslate"><span class="pre">--seq-output-dir</span> <span class="pre">OUTPUTDIR</span></code></p></td>
+<td><p>Output directory.</p></td>
+</tr>
+</tbody>
+</table>
+<p>There are other parameters to tune the code being generated. Check the
+rest of this document for details. The example section provides a very
+detailed use case scenario that uses all the parameters.</p>
+</section>
+<section id="full-usage">
+<h2>Full usage<a class="headerlink" href="#full-usage" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mp_seq.py: INFO: Processing input arguments...
+usage: mp_seq.py [-h] [-P SEARCH_PATH [SEARCH_PATH ...]] [-V] [-v] [-d]
+                 [-c CONFIG_FILE [CONFIG_FILE ...]] [-C FORCE_CONFIG_FILE]
+                 [--dump-configuration-file OUTPUT_CONFIG_FILE]
+                 [--dump-full-configuration-file OUTPUT_CONFIG_FILE]
+                 [-A ARCHITECTURE_PATHS] [-M MICROARCHITECTURE_PATHS]
+                 [-E ENVIRONMENT_PATHS] -T TARGET [--list-architectures]
+                 [--list-microarchitectures] [--list-environments]
+                 [--traceback] [--profile PROFILE_OUTPUT] -D SEQ_OUTPUT_DIR
+                 [-is INSTRUCTION_SLOTS]
+                 [-ig INSTRUCTION_GROUPS [INSTRUCTION_GROUPS ...]]
+                 [-im INSTRUCTION_MAP [INSTRUCTION_MAP ...]] [-bs BASE_SEQ]
+                 [-gM GROUP_MAX [GROUP_MAX ...]]
+                 [-gm GROUP_MIN [GROUP_MIN ...]] [-B BENCHMARK_SIZE]
+                 [-dd DEPENDENCY_DISTANCE] [-fs] [-e] [-R] [-p]
+                 [-bn BATCH_NUMBER] [-nb NUM_BATCHES] [-s] [-ie]
+                 [-combinations] [-sn] [-CC] [-N]
+
+Microprobe seq tool
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -P SEARCH_PATH [SEARCH_PATH ...], --default_paths SEARCH_PATH [SEARCH_PATH ...]
+                        Default search paths for microprobe target definitions
+  -V, --version         Show Microprobe version and exit
+  -v, --verbosity       Verbosity level (Values: [0,1,2,3,4]). Each time this
+                        argument is specified the verbosity level is
+                        increased. By default, no logging messages are shown.
+                        These are the four levels available:
+                        
+                          -v (1): critical messages
+                          -v -v (2): critical and error messages
+                          -v -v -v (3): critical, error and warning messages
+                          -v -v -v -v (4): critical, error, warning and info messages
+                        
+                        Specifying more than four verbosity flags, will
+                        default to the maximum of four. If you need extra
+                        information, enable the debug mode (--debug or -d
+                        flags).
+  -d, --debug           Enable debug mode in Microprobe framework. Lots of
+                        output messages will be generated
+
+Configuration arguments:
+
+  Command arguments related to configuration file handling
+
+  -c CONFIG_FILE [CONFIG_FILE ...], --configuration CONFIG_FILE [CONFIG_FILE ...]
+                        Configuration file. The configuration files will be
+                        readed in order of appearance. Values are reset by the
+                        last configuration file in case of non-list values.
+                        List values will be appended (not reset)
+  -C FORCE_CONFIG_FILE, --force-configuration FORCE_CONFIG_FILE
+                        Force configuration file. Use this configuration file
+                        as the default start configuration. This disables any
+                        system-wide, or user-provided configuration.
+  --dump-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used
+  --dump-full-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used plus all the configuration options
+                        not set
+
+Target path arguments:
+
+  Command arguments related to target paths
+
+  -A ARCHITECTURE_PATHS, --architecture-paths ARCHITECTURE_PATHS
+                        Search path for architecture definitions. Microprobe
+                        will search in these paths for architecture
+                        definitions
+  -M MICROARCHITECTURE_PATHS, --microarchitecture-paths MICROARCHITECTURE_PATHS
+                        Search path for microarchitecture definitions.
+                        Microprobe will search in these paths for
+                        microarchitecture definitions
+  -E ENVIRONMENT_PATHS, --environment-paths ENVIRONMENT_PATHS
+                        Search path for environment definitions. Microprobe
+                        will search in these paths for environment definitions
+
+Target arguments:
+
+  Command arguments related to target specification and queries
+
+  -T TARGET, --target TARGET
+                        Target tuple. Microprobe follows a GCC-like target
+                        definition scheme, where a target is defined by a
+                        tuple as following:
+                        
+                          &lt;arch-name&gt;-&lt;uarch-name&gt;-&lt;env-name&gt;
+                        
+                        where:
+                        
+                          &lt;arch-name&gt;: is the name of the architecture
+                          &lt;uarch-name&gt;: is the name of the microarchitecture
+                          &lt;env-name&gt;: is the name of the environment
+                        
+                        One can use --list-* options to get the list of
+                        definitions available in the default search paths or
+                        the paths specified by the different --*-paths options
+  --list-architectures  Generate a list of architectures available in the
+                        defined search paths and exit
+  --list-microarchitectures
+                        Generate a list of microarchitectures available in the
+                        defined search paths and exit
+  --list-environments   Generate a list of environments available in the
+                        defined search paths and exit
+
+Debug arguments:
+
+  Command arguments related to debugging facilities
+
+  --traceback           show a traceback and starts a python debugger (pdb)
+                        when an error occurs. &#39;pdb&#39; is an interactive python
+                        shell that facilitates the debugging of errors
+  --profile PROFILE_OUTPUT
+                        dump profiling information into given file (see
+                        &#39;pstats&#39; module)
+
+SEQ arguments:
+
+  Command arguments related to Sequence generation
+
+  -D SEQ_OUTPUT_DIR, --seq-output-dir SEQ_OUTPUT_DIR
+                        Output directory name
+  -is INSTRUCTION_SLOTS, --instruction-slots INSTRUCTION_SLOTS
+                        Number of instructions slots in the sequence. E.g.
+                        &#39;-is 4&#39; will generate sequences of length 4.
+  -ig INSTRUCTION_GROUPS [INSTRUCTION_GROUPS ...], --instruction-groups INSTRUCTION_GROUPS [INSTRUCTION_GROUPS ...]
+                        Comma separated list of instruction candidates per
+                        group. E.g. -ins ins1,ins2 ins3,ins4. Defines two
+                        groups of instruction candidates: group 1: ins1,ins2
+                        and group 2: ins3,ins4.
+  -im INSTRUCTION_MAP [INSTRUCTION_MAP ...], --instruction-map INSTRUCTION_MAP [INSTRUCTION_MAP ...]
+                        Comma separated list specifying groups instruction
+                        candidate groups to be used on each instruction slot.
+                        The list length should match the number of instruction
+                        slots defined. A -1 value means all groups can be used
+                        for that slot. E.g. -im 1 2,3 will generate sequences
+                        containing in slot 1 instructions from group 1, and in
+                        slot 2 instructions from groups 2 and 3.
+  -bs BASE_SEQ, --base-seq BASE_SEQ
+                        Comma separated list specifying the base instruction
+                        sequence
+  -gM GROUP_MAX [GROUP_MAX ...], --group-max GROUP_MAX [GROUP_MAX ...]
+                        Comma separated list specifying the maximum number of
+                        instructions of each group to be used. E.g. -gM 1,3
+                        will generate sequences containing at most 1
+                        instruction of group 1 and 3 instructions of group 2.
+                        A -1 value means no maximum. The list length should
+                        match the number of instruction groups defined.
+  -gm GROUP_MIN [GROUP_MIN ...], --group-min GROUP_MIN [GROUP_MIN ...]
+                        Comma separated list specifying the minimum number of
+                        instructions of each group to be used. E.g. -gm 1,3
+                        will generate sequences containing at least 1
+                        instruction of group 1 and 3 instructions of group 2.
+                        A -1 value means no minimum. The list length should
+                        match the number of instruction groups defined.
+  -B BENCHMARK_SIZE, --benchmark-size BENCHMARK_SIZE
+                        Size in instructions of the microbenchmark. If more
+                        instruction are needed, nested loops are automatically
+                        generated
+  -dd DEPENDENCY_DISTANCE, --dependency-distance DEPENDENCY_DISTANCE
+                        Average dependency distance between instructions. A
+                        value below 1 means not dependency between
+                        instructions. A value of 1 means a chain of dependent
+                        instructions.
+  -fs, --force-switch   Force data switching in all instructions, fail if not
+                        supported.
+  -e, --endless         Some backends allow the control to wrap the sequence
+                        generated in an endless loop. Depending on the target
+                        specified, this flag will force to generate sequences
+                        in an endless loop (some targets might ignore it)
+  -R, --reset           Reset the register contents on each loop iteration
+  -p, --parallel        Generate benchmarks in parallel
+  -bn BATCH_NUMBER, --batch-number BATCH_NUMBER
+                        Batch number to generate. Check --num-batches option
+                        for more details
+  -nb NUM_BATCHES, --num-batches NUM_BATCHES
+                        Number of batches. The number of microbenchmark to
+                        generate is divided by this number, and the number the
+                        batch number specified using -bn option is generated.
+                        This is useful to split the generation of many test
+                        cases in various batches.
+  -s, --skip            Skip benchmarks already generated
+  -ie, --ignore-errors  Ignore error during code generation (continue in case
+                        of an error in a particular parameter combination)
+  -combinations, --combinations
+                        Only generate combinations of the given instructions
+  -sn, --shortnames     Use short output names
+  -CC, --compress       Compress output files
+  -N, --count           Only count the number of sequence to generate. Do not
+                        generate anything
+
+Environment variables:
+
+  MICROPROBETEMPLATES    Default path for microprobe templates
+  MICROPROBEDEBUG        If set, enable debug
+  MICROPROBEDEBUGPASSES  If set, enable debug during passes
+  MICROPROBEASMHEXFMT    Assembly hexadecimal format. Options:
+                         &#39;all&#39; -&gt; All immediates in hex format
+                         &#39;address&#39; -&gt; Address immediates in hex format (default)
+                         &#39;none&#39; -&gt; All immediate in integer format
+</pre></div>
+</div>
+</section>
+<section id="example-use-case">
+<h2>Example use case<a class="headerlink" href="#example-use-case" title="Link to this heading"></a></h2>
+<p>This use case is using the <strong>power_v300-power9-ppc64_linux_gcc</strong> target for
+illustrative purposes. The same can be done on other targets.</p>
+<p>Let’s assume that you have analyzed the ISA of the target and you have selected
+some instruction candidates you want to use for your exploration. For instance
+the following:</p>
+<ul class="simple">
+<li><p>Fix point instructions: ADDI_V0, ORI_V0, AND_V0</p></li>
+<li><p>Vector instructions: XVMULDP_V0, XVDIVDP_V0, XVMADDADP_V0</p></li>
+<li><p>Load instructions: LD_V0, LDX_V0, LBZ_V0</p></li>
+<li><p>Branch instructions: B_V0, BC_V0</p></li>
+</ul>
+<p>Then, you have to decide the instruction sequence length. In this case we pick 6
+because we know that the target machine can commit up to 6 instruction per
+cycle. You can increase that number further but the number of combinations
+will explode.</p>
+<p>To generate all the unique combination of length 6 of the instructions
+above you need to issue the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_seq</span> <span class="o">-</span><span class="n">T</span> <span class="n">power_v300</span><span class="o">-</span><span class="n">power9</span><span class="o">-</span><span class="n">ppc64_linux_gcc</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">D</span> <span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;</span> <span class="o">-</span><span class="ow">is</span> <span class="mi">6</span> <span class="o">-</span><span class="n">ig</span> <span class="n">ADDI_V0</span><span class="p">,</span><span class="n">ORI_V0</span><span class="p">,</span><span class="n">AND_V0</span> <span class="n">XVMULDP_V0</span><span class="p">,</span><span class="n">XVDIVDP_V0</span><span class="p">,</span><span class="n">XVMADDADP_V0</span> <span class="n">LD_V0</span><span class="p">,</span><span class="n">LDX_V0</span><span class="p">,</span><span class="n">LBZ_V0</span> <span class="n">B_V0</span><span class="p">,</span><span class="n">BC_V0</span>
+</pre></div>
+</div>
+<p>In the command above, we used the <code class="docutils literal notranslate"><span class="pre">-ig</span></code> parameter to specify 4 instruction
+groups (4 groups of comma-separated instructions names). Without any other
+restrictions the number of combinations to generate is 1771561.</p>
+<p>It is better to constraint the design space and discard the sequences
+that we know that will not be useful for our study. First, let’s put some
+maximum to the number of instructions of each group we want
+in the sequence. Let’s say that we want a maximum of 3 fix point instructions,
+2 vector instructions, 2 load instructions and 1 branch instruction
+per sequence.  We can specify that using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_seq</span> <span class="o">-</span><span class="n">T</span> <span class="n">power_v300</span><span class="o">-</span><span class="n">power9</span><span class="o">-</span><span class="n">ppc64_linux_gcc</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">D</span> <span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;</span> <span class="o">-</span><span class="ow">is</span> <span class="mi">6</span> <span class="o">-</span><span class="n">ig</span> <span class="n">ADDI_V0</span><span class="p">,</span><span class="n">ORI_V0</span><span class="p">,</span><span class="n">AND_V0</span> <span class="n">XVMULDP_V0</span><span class="p">,</span><span class="n">XVDIVDP_V0</span><span class="p">,</span><span class="n">XVMADDADP_V0</span> <span class="n">LD_V0</span><span class="p">,</span><span class="n">LDX_V0</span><span class="p">,</span><span class="n">LBZ_V0</span> <span class="n">B_V0</span><span class="p">,</span><span class="n">BC_V0</span> <span class="o">-</span><span class="n">gM</span> <span class="mi">3</span> <span class="mi">2</span> <span class="mi">2</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>That will reduce the number of combinations to 532170. We used the <code class="docutils literal notranslate"><span class="pre">-gM</span></code>
+parameter to specify a list of maximum instructions per group (<code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">2</span> <span class="pre">2</span> <span class="pre">1</span></code>).</p>
+<p>Similarly, we can constrain further the design space by specifying that
+we need at least one fixed point, one vector, one load and one branch
+instruction per sequence. We can specify that using the following
+command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_seq</span> <span class="o">-</span><span class="n">T</span> <span class="n">power_v300</span><span class="o">-</span><span class="n">power9</span><span class="o">-</span><span class="n">ppc64_linux_gcc</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">D</span> <span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;</span> <span class="o">-</span><span class="ow">is</span> <span class="mi">6</span> <span class="o">-</span><span class="n">ig</span> <span class="n">ADDI_V0</span><span class="p">,</span><span class="n">ORI_V0</span><span class="p">,</span><span class="n">AND_V0</span> <span class="n">XVMULDP_V0</span><span class="p">,</span><span class="n">XVDIVDP_V0</span><span class="p">,</span><span class="n">XVMADDADP_V0</span> <span class="n">LD_V0</span><span class="p">,</span><span class="n">LDX_V0</span><span class="p">,</span><span class="n">LBZ_V0</span> <span class="n">B_V0</span><span class="p">,</span><span class="n">BC_V0</span> <span class="o">-</span><span class="n">gM</span> <span class="mi">3</span> <span class="mi">2</span> <span class="mi">2</span> <span class="mi">1</span> <span class="o">-</span><span class="n">gm</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>and the number of combinations is reduced to 320760 combinations.
+We used the <code class="docutils literal notranslate"><span class="pre">-gm</span></code> parameter with to specify of list of maximum instructions
+per group (<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">1</span> <span class="pre">1</span> <span class="pre">1</span></code>).</p>
+<p>Finally, we control further the number of combinations to generate.
+Let’s say that we want the branches to be placed at the end of the
+sequence (position 6) and we want the vector instructions to be placed only
+at positions 1 or 4 of the sequence.  We can specify that using the following
+command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_seq</span> <span class="o">-</span><span class="n">T</span> <span class="n">power_v300</span><span class="o">-</span><span class="n">power9</span><span class="o">-</span><span class="n">ppc64_linux_gcc</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">D</span> <span class="o">&lt;</span><span class="n">output_dir</span><span class="o">&gt;</span> <span class="o">-</span><span class="ow">is</span> <span class="mi">6</span> <span class="o">-</span><span class="n">ig</span> <span class="n">ADDI_V0</span><span class="p">,</span><span class="n">ORI_V0</span><span class="p">,</span><span class="n">AND_V0</span> <span class="n">XVMULDP_V0</span><span class="p">,</span><span class="n">XVDIVDP_V0</span><span class="p">,</span><span class="n">XVMADDADP_V0</span> <span class="n">LD_V0</span><span class="p">,</span><span class="n">LDX_V0</span><span class="p">,</span><span class="n">LBZ_V0</span> <span class="n">B_V0</span><span class="p">,</span><span class="n">BC_V0</span> <span class="o">-</span><span class="n">gM</span> <span class="mi">3</span> <span class="mi">2</span> <span class="mi">2</span> <span class="mi">1</span> <span class="o">-</span><span class="n">gm</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="o">-</span><span class="n">im</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span> <span class="mi">1</span><span class="p">,</span><span class="mi">3</span> <span class="mi">1</span><span class="p">,</span><span class="mi">3</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span> <span class="mi">1</span><span class="p">,</span><span class="mi">3</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<p>We used the <code class="docutils literal notranslate"><span class="pre">-im</span></code> parameter to specify a list of the instructions groups
+allowed on each sequence slot (<code class="docutils literal notranslate"><span class="pre">1,2,3</span> <span class="pre">1,3</span> <span class="pre">1,3</span> <span class="pre">1,2,3</span> <span class="pre">1,3</span> <span class="pre">4</span></code>). Notice that
+group 1 (fixed point instruction) is allowed at positions 1,2,3,4,5 ;
+the group 2 (vector instructions) is allowed at positions 1 and 4; and so on.
+This instruction mask reduces the number of sequences to 12636.</p>
+<p>This example showed you how to constraint the number of combination to your
+needs. Notice that we use the <code class="docutils literal notranslate"><span class="pre">-p</span></code> flags to generate the microbenchmarks in
+parallel, and the <code class="docutils literal notranslate"><span class="pre">-s</span></code> flag to skip the benchmarks if they are already
+generated.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One can use the <code class="docutils literal notranslate"><span class="pre">-N</span></code> flag to check the sequence definition and the number
+of sequences that are going to be generated before starting the generation
+process.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

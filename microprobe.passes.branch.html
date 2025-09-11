@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.passes.branch &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="microprobe.passes.branch.BranchBraidNextPass" href="microprobe.passes.branch.BranchBraidNextPass.html" />
+    <link rel="prev" title="microprobe.passes.address.UpdateInstructionAddressesPass" href="microprobe.passes.address.UpdateInstructionAddressesPass.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microprobe.html">microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.html">microprobe.code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.address.html">microprobe.code.address</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.bbl.html">microprobe.code.bbl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.benchmark.html">microprobe.code.benchmark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.cfg.html">microprobe.code.cfg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.context.html">microprobe.code.context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.ins.html">microprobe.code.ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.var.html">microprobe.code.var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.code.wrapper.html">microprobe.code.wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.html">microprobe.driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.driver.guided.html">microprobe.driver.guided</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.exceptions.html">microprobe.exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.html">microprobe.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.model.memory.html">microprobe.model.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.html">microprobe.passes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.address.html">microprobe.passes.address</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">microprobe.passes.branch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.passes.branch.BranchBraidNextPass.html">microprobe.passes.branch.BranchBraidNextPass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.passes.branch.BranchNextPass.html">microprobe.passes.branch.BranchNextPass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.passes.branch.FixIndirectBranchPass.html">microprobe.passes.branch.FixIndirectBranchPass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.passes.branch.InitializeBranchDecorator.html">microprobe.passes.branch.InitializeBranchDecorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.passes.branch.LinkBbls.html">microprobe.passes.branch.LinkBbls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.passes.branch.NormalizeBranchTargetsPass.html">microprobe.passes.branch.NormalizeBranchTargetsPass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microprobe.passes.branch.RandomizeByTypePass.html">microprobe.passes.branch.RandomizeByTypePass</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.dat.html">microprobe.passes.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.decimal.html">microprobe.passes.decimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.float.html">microprobe.passes.float</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.ilp.html">microprobe.passes.ilp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.initialization.html">microprobe.passes.initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.instruction.html">microprobe.passes.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.memory.html">microprobe.passes.memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.register.html">microprobe.passes.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.structure.html">microprobe.passes.structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.symbol.html">microprobe.passes.symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.passes.variable.html">microprobe.passes.variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.schemas.html">microprobe.schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.property.html">microprobe.property</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.html">microprobe.target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.env.html">microprobe.target.env</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.html">microprobe.target.isa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.comparator.html">microprobe.target.isa.comparator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.dat.html">microprobe.target.isa.dat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.generator.html">microprobe.target.isa.generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_field.html">microprobe.target.isa.instruction_field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction_format.html">microprobe.target.isa.instruction_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.instruction.html">microprobe.target.isa.instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.operand.html">microprobe.target.isa.operand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register_type.html">microprobe.target.isa.register_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.isa.register.html">microprobe.target.isa.register</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.html">microprobe.target.uarch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.cache.html">microprobe.target.uarch.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element_type.html">microprobe.target.uarch.element_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.target.uarch.element.html">microprobe.target.uarch.element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.html">microprobe.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.asm.html">microprobe.utils.asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.bin.html">microprobe.utils.bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cache.html">microprobe.utils.cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.cmdline.html">microprobe.utils.cmdline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.config.html">microprobe.utils.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.distrib.html">microprobe.utils.distrib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.ieee.html">microprobe.utils.ieee</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.imp.html">microprobe.utils.imp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.info.html">microprobe.utils.info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.logger.html">microprobe.utils.logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.misc.html">microprobe.utils.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.mpt.html">microprobe.utils.mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.profile.html">microprobe.utils.profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microprobe.utils.yaml.html">microprobe.utils.yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">microprobe.passes.branch</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="microprobe.passes.address.UpdateInstructionAddressesPass.html" class="btn btn-neutral float-left" title="microprobe.passes.address.UpdateInstructionAddressesPass" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="microprobe.passes.branch.BranchBraidNextPass.html" class="btn btn-neutral float-right" title="microprobe.passes.branch.BranchBraidNextPass" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-microprobe.passes.branch">
+<span id="microprobe-passes-branch"></span><h1>microprobe.passes.branch<a class="headerlink" href="#module-microprobe.passes.branch" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="#module-microprobe.passes.branch" title="microprobe.passes.branch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">microprobe.passes.branch</span></code></a> module</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="microprobe.passes.branch.BranchBraidNextPass.html#microprobe.passes.branch.BranchBraidNextPass" title="microprobe.passes.branch.BranchBraidNextPass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BranchBraidNextPass</span></code></a>([branch, force, bbl])</p></td>
+<td><p>BranchBraidNextPass pass.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="microprobe.passes.branch.BranchNextPass.html#microprobe.passes.branch.BranchNextPass" title="microprobe.passes.branch.BranchNextPass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BranchNextPass</span></code></a>([branch, force])</p></td>
+<td><p>BranchNextPass pass.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="microprobe.passes.branch.FixIndirectBranchPass.html#microprobe.passes.branch.FixIndirectBranchPass" title="microprobe.passes.branch.FixIndirectBranchPass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FixIndirectBranchPass</span></code></a>()</p></td>
+<td><p>FixIndirectBranchPass pass.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="microprobe.passes.branch.InitializeBranchDecorator.html#microprobe.passes.branch.InitializeBranchDecorator" title="microprobe.passes.branch.InitializeBranchDecorator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InitializeBranchDecorator</span></code></a>([default, indirect])</p></td>
+<td><p>InitializeBranchDecoratorPass pass.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="microprobe.passes.branch.LinkBbls.html#microprobe.passes.branch.LinkBbls" title="microprobe.passes.branch.LinkBbls"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkBbls</span></code></a>()</p></td>
+<td><p>LinkBbls pass.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="microprobe.passes.branch.NormalizeBranchTargetsPass.html#microprobe.passes.branch.NormalizeBranchTargetsPass" title="microprobe.passes.branch.NormalizeBranchTargetsPass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NormalizeBranchTargetsPass</span></code></a>()</p></td>
+<td><p>NormalizeBranchTargetsPass pass.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="microprobe.passes.branch.RandomizeByTypePass.html#microprobe.passes.branch.RandomizeByTypePass" title="microprobe.passes.branch.RandomizeByTypePass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomizeByTypePass</span></code></a>(instr1, instr2, every, code)</p></td>
+<td><p>RandomizeByTypePass pass.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes diagram</p>
+<div class="graphviz"><img src="_images/inheritance-1271eb6a35bce1feb3027c3b37dff5be170bb1a7.png" alt="Inheritance diagram of BranchBraidNextPass, BranchNextPass, FixIndirectBranchPass, InitializeBranchDecorator, LinkBbls, NormalizeBranchTargetsPass, RandomizeByTypePass" usemap="#inheritance8c0e850bb9" class="inheritance graphviz" /></div>
+<map id="inheritance8c0e850bb9" name="inheritance8c0e850bb9">
+<area shape="rect" id="node1" href="microprobe.passes.Pass.html#microprobe.passes.Pass" target="_top" title="Class to represent a benchmak transformation pass." alt="" coords="5,153,184,179"/>
+<area shape="rect" id="node2" href="microprobe.passes.branch.BranchBraidNextPass.html#microprobe.passes.branch.BranchBraidNextPass" target="_top" title="BranchBraidNextPass pass." alt="" coords="257,5,593,31"/>
+<area shape="rect" id="node3" href="microprobe.passes.branch.BranchNextPass.html#microprobe.passes.branch.BranchNextPass" target="_top" title="BranchNextPass pass." alt="" coords="273,55,576,80"/>
+<area shape="rect" id="node4" href="microprobe.passes.branch.FixIndirectBranchPass.html#microprobe.passes.branch.FixIndirectBranchPass" target="_top" title="FixIndirectBranchPass pass." alt="" coords="255,104,594,129"/>
+<area shape="rect" id="node5" href="microprobe.passes.branch.InitializeBranchDecorator.html#microprobe.passes.branch.InitializeBranchDecorator" target="_top" title="InitializeBranchDecoratorPass pass." alt="" coords="243,153,606,179"/>
+<area shape="rect" id="node6" href="microprobe.passes.branch.LinkBbls.html#microprobe.passes.branch.LinkBbls" target="_top" title="LinkBbls pass." alt="" coords="299,203,551,228"/>
+<area shape="rect" id="node7" href="microprobe.passes.branch.NormalizeBranchTargetsPass.html#microprobe.passes.branch.NormalizeBranchTargetsPass" target="_top" title="NormalizeBranchTargetsPass pass." alt="" coords="232,252,617,277"/>
+<area shape="rect" id="node8" href="microprobe.passes.branch.RandomizeByTypePass.html#microprobe.passes.branch.RandomizeByTypePass" target="_top" title="RandomizeByTypePass pass." alt="" coords="251,301,598,327"/>
+</map><br>
+<hr width="75%">
+<br></section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

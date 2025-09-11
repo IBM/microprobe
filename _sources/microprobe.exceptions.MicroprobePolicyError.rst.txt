@@ -1,0 +1,15 @@
+microprobe.exceptions.MicroprobePolicyError
+===========================================
+
+.. currentmodule:: microprobe.exceptions
+
+.. autoexception:: MicroprobePolicyError
+
+   
+
+   
+   
+
+   
+   
+   

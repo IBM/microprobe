@@ -1,0 +1,41 @@
+microprobe.passes.register.RandomAllocationPass
+===============================================
+
+.. currentmodule:: microprobe.passes.register
+
+.. autoclass:: RandomAllocationPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RandomAllocationPass.__init__
+      ~RandomAllocationPass.check
+      ~RandomAllocationPass.info
+      ~RandomAllocationPass.report
+      ~RandomAllocationPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

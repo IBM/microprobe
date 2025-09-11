@@ -1,0 +1,41 @@
+microprobe.passes.initialization.AddFinalizationAssemblyPass
+============================================================
+
+.. currentmodule:: microprobe.passes.initialization
+
+.. autoclass:: AddFinalizationAssemblyPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AddFinalizationAssemblyPass.__init__
+      ~AddFinalizationAssemblyPass.check
+      ~AddFinalizationAssemblyPass.info
+      ~AddFinalizationAssemblyPass.report
+      ~AddFinalizationAssemblyPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

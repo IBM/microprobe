@@ -1,0 +1,196 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reporting issues and bugs &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Development road-map" href="devel_roadmap.html" />
+    <link rel="prev" title="Continuous integration" href="devel_continuous.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="devel.html">Development Corner</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="devel_contributing.html">Contributing to Microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_repository.html">Source code repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_code_style.html">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_patches.html">Submitting patches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devel_continuous.html">Continuous integration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Reporting issues and bugs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-github-to-report-a-bug">Using GitHub to report a bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation-bugs">Documentation bugs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="devel_roadmap.html">Development road-map</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="devel.html">Development Corner</a></li>
+      <li class="breadcrumb-item active">Reporting issues and bugs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="devel_continuous.html" class="btn btn-neutral float-left" title="Continuous integration" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="devel_roadmap.html" class="btn btn-neutral float-right" title="Development road-map" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="reporting-issues-and-bugs">
+<h1>Reporting issues and bugs<a class="headerlink" href="#reporting-issues-and-bugs" title="Link to this heading"></a></h1>
+<section id="using-github-to-report-a-bug">
+<h2>Using GitHub to report a bug<a class="headerlink" href="#using-github-to-report-a-bug" title="Link to this heading"></a></h2>
+<p>Bug reports for Microprobe itself should be submitted via the
+<a class="reference external" href="https://github.com/IBM/microprobe">Microprobe</a> GitHub . GitHub offers <strong>issue</strong> support which allows
+the user to enter information and share it to the developers.</p>
+<p>The first step in filing a report is to determine whether the problem has
+already been reported. The advantage in doing so, aside from saving the
+developers time, is that you learn what has been done to fix it; it may be
+that the problem has already been fixed for the next release, or additional
+information is needed (in which case you are welcome to provide it if you
+can!). To do this, search first for existing issues.</p>
+<p>If the problem you’re reporting is not already reported,
+create a new issue at <a class="reference external" href="https://github.com/IBM/microprobe/issues">https://github.com/IBM/microprobe/issues</a>.</p>
+<p>To create a new issue, just go to the <em>Issues</em> section and click the
+<em>New issue</em> button. The new issue form has various fields.
+For the “Title” field, enter a <strong>very</strong>
+short description of the problem; less than ten words is good.</p>
+<p>In the “Rich text” field, describe the problem in detail, including what you
+expected to happen and what did happen. Be sure to include whether any
+extension modules were involved, and what hardware and software platform you
+were using (including version information as appropriate) if you
+think the problem is related to that.</p>
+<p>Attach any necessary files to be able to reproduce the problem if needed.
+If you found the solution for the problem you can attach the patch in this
+section as well. See the section <strong>Submit patches</strong> to check how to create
+patch files.</p>
+<p>In the ‘labels’ section on the right, select the ones that apply
+to the current issue. You can also add any label as you wish to describe
+better the problem.</p>
+<p>Each bug report will be reviewed by a developer who will determine what needs
+to be done to correct the problem. You will receive an update each time action
+is taken on the bug.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference external" href="http://www.chiark.greenend.org.uk/~sgtatham/bugs.html">How to Report Bugs Effectively</a></dt><dd><p>Article which goes into some detail about how to create a useful bug report.
+This describes what kind of information is useful and why it is useful.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Mozilla/QA/Bug_writing_guidelines">Bug Writing Guidelines</a></dt><dd><p>Information about writing a good bug report.  Some of this is specific to the
+Mozilla project, but describes general good practices.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</section>
+<section id="documentation-bugs">
+<h2>Documentation bugs<a class="headerlink" href="#documentation-bugs" title="Link to this heading"></a></h2>
+<p>If you find a bug in this documentation (typos, …) or would like to propose
+an improvement (some explanation is not clear, …), please open a bug issue
+in the <a class="reference external" href="https://github.com/IBM/microprobe">Microprobe</a> repository (see instructions below). If you have
+a suggestion how to fix it, include that as well.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

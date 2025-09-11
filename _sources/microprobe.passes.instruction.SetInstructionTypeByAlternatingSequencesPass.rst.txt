@@ -1,0 +1,41 @@
+microprobe.passes.instruction.SetInstructionTypeByAlternatingSequencesPass
+==========================================================================
+
+.. currentmodule:: microprobe.passes.instruction
+
+.. autoclass:: SetInstructionTypeByAlternatingSequencesPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetInstructionTypeByAlternatingSequencesPass.__init__
+      ~SetInstructionTypeByAlternatingSequencesPass.check
+      ~SetInstructionTypeByAlternatingSequencesPass.info
+      ~SetInstructionTypeByAlternatingSequencesPass.report
+      ~SetInstructionTypeByAlternatingSequencesPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

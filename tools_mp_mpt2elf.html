@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool: mp_mpt2elf &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Tool: mp_mpt2test" href="tools_mp_mpt2test.html" />
+    <link rel="prev" title="Tool: mp_mpt2bin" href="tools_mp_mpt2bin.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tools.html">Command line tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tools_target_definition.html">Command line target definition scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mpt_format.html">Microprobe test (mpt) format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_ctest_format.html">C test format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2asm.html">Tool: mp_bin2asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2objdump.html">Tool: mp_bin2objdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_c2mpt.html">Tool: mp_c2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_epi.html">Tool: mp_epi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2bin.html">Tool: mp_mpt2bin</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tool: mp_mpt2elf</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-usage">Full usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fix-flags">Fix flags</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linker-script">Linker script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compiling">Compiling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2test.html">Tool: mp_mpt2test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2trace.html">Tool: mp_mpt2trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_objdump2mpt.html">Tool: mp_objdump2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seq.html">Tool: mp_seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seqtune.html">Tool: mp_seqtune</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_target.html">Tool: mp_target</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tools.html">Command line tools</a></li>
+      <li class="breadcrumb-item active">Tool: mp_mpt2elf</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tools_mp_mpt2bin.html" class="btn btn-neutral float-left" title="Tool: mp_mpt2bin" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools_mp_mpt2test.html" class="btn btn-neutral float-right" title="Tool: mp_mpt2test" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tool-mp-mpt2elf">
+<h1>Tool: mp_mpt2elf<a class="headerlink" href="#tool-mp-mpt2elf" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>MicroprobeTest (mpt) to ELF loop tool provides a command-line interface (CLI) to
+convert code snippets to assembly and ELF format. Using a test definition
+format (<a class="reference internal" href="tools_mpt_format.html"><span class="doc">Microprobe test (mpt) format</span></a>), the user can specify the initial state
+(initialization of the registers), the variables that have to be declared
+and the code snippet, which might contain references to those variables,
+branch labels, fixed addresses, etc. Check the <a class="reference internal" href="tools_mpt_format.html"><span class="doc">Microprobe test (mpt) format</span></a> for
+further details.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The microbenchmark generation policy implemented in this tool reproduces
+exactly the code provided. It resolves any symbolic
+references (references to data, or branch targets), and only if specified
+by the user, it also modifies memory accesses to avoid segmentation fault
+issues. The tool wraps the code provided within an endless loop.</p>
+</div>
+</section>
+<section id="basic-usage">
+<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_mpt2elf</span> <span class="o">-</span><span class="n">T</span> <span class="n">TARGET</span> <span class="o">-</span><span class="n">t</span> <span class="n">MPT_DEFINITION_FILE</span> <span class="o">-</span><span class="n">O</span> <span class="n">ASM_FILE</span> <span class="o">--</span><span class="n">compiler</span> <span class="n">COMPILER_PATH</span>
+</pre></div>
+</div>
+<p>where:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag/Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-T</span> <span class="pre">TARGET</span></code>, <code class="docutils literal notranslate"><span class="pre">--target</span> <span class="pre">TARGET</span></code></p></td>
+<td><p>Target definition string. Check: <a class="reference internal" href="tools_target_definition.html"><span class="doc">Command line target definition scheme</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">MPT_DEFINITION_FILE</span></code>, <code class="docutils literal notranslate"><span class="pre">--mpt-definition-file</span> <span class="pre">MPT_DEFINITION_FILE</span></code></p></td>
+<td><p>Microprobe test definition file. Check: <a class="reference internal" href="tools_mpt_format.html"><span class="doc">Microprobe test (mpt) format</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-O</span> <span class="pre">ASM_FILE</span></code>, <code class="docutils literal notranslate"><span class="pre">--mpt-output-file</span> <span class="pre">ASM_FILE</span></code></p></td>
+<td><p>Output file name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--compiler</span> <span class="pre">COMPILER_PATH</span></code></p></td>
+<td><p>Compiled binary. If provided the tools compiles the generated
+assembly file.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="full-usage">
+<h2>Full usage<a class="headerlink" href="#full-usage" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mp_mpt2elf.py: INFO: Processing input arguments...
+usage: mp_mpt2elf.py [-h] [-P SEARCH_PATH [SEARCH_PATH ...]] [-V] [-v] [-d]
+                     [-c CONFIG_FILE [CONFIG_FILE ...]] [-C FORCE_CONFIG_FILE]
+                     [--dump-configuration-file OUTPUT_CONFIG_FILE]
+                     [--dump-full-configuration-file OUTPUT_CONFIG_FILE]
+                     [-A ARCHITECTURE_PATHS] [-M MICROARCHITECTURE_PATHS]
+                     [-E ENVIRONMENT_PATHS] -T TARGET [--list-architectures]
+                     [--list-microarchitectures] [--list-environments]
+                     [--traceback] [--profile PROFILE_OUTPUT] -t
+                     MPT_DEFINITION_FILE -O ELF_OUTPUT_FILE
+                     [--compiler COMPILER] [--compiler-flags COMPILER_FLAGS]
+                     [--fix-indirect-branches] [--fix-branch-next]
+                     [--fix-memory-references] [--fix-memory-registers]
+                     [--fix-flatten-code] [--safe-bin] [--raw-bin]
+                     [--fix-long-jump] [-S FIX_START_ADDRESS]
+                     [-X FIX_32BIT_ADDRESS] [--no-wrap-test] [--wrap-endless]
+                     [--wrap-endless-threshold WRAP_ENDLESS_THRESHOLD]
+                     [--reset]
+
+MicroprobeTest (mpt) to ELF tool
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -P SEARCH_PATH [SEARCH_PATH ...], --default_paths SEARCH_PATH [SEARCH_PATH ...]
+                        Default search paths for microprobe target definitions
+  -V, --version         Show Microprobe version and exit
+  -v, --verbosity       Verbosity level (Values: [0,1,2,3,4]). Each time this
+                        argument is specified the verbosity level is
+                        increased. By default, no logging messages are shown.
+                        These are the four levels available:
+                        
+                          -v (1): critical messages
+                          -v -v (2): critical and error messages
+                          -v -v -v (3): critical, error and warning messages
+                          -v -v -v -v (4): critical, error, warning and info messages
+                        
+                        Specifying more than four verbosity flags, will
+                        default to the maximum of four. If you need extra
+                        information, enable the debug mode (--debug or -d
+                        flags).
+  -d, --debug           Enable debug mode in Microprobe framework. Lots of
+                        output messages will be generated
+
+Configuration arguments:
+
+  Command arguments related to configuration file handling
+
+  -c CONFIG_FILE [CONFIG_FILE ...], --configuration CONFIG_FILE [CONFIG_FILE ...]
+                        Configuration file. The configuration files will be
+                        readed in order of appearance. Values are reset by the
+                        last configuration file in case of non-list values.
+                        List values will be appended (not reset)
+  -C FORCE_CONFIG_FILE, --force-configuration FORCE_CONFIG_FILE
+                        Force configuration file. Use this configuration file
+                        as the default start configuration. This disables any
+                        system-wide, or user-provided configuration.
+  --dump-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used
+  --dump-full-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used plus all the configuration options
+                        not set
+
+Target path arguments:
+
+  Command arguments related to target paths
+
+  -A ARCHITECTURE_PATHS, --architecture-paths ARCHITECTURE_PATHS
+                        Search path for architecture definitions. Microprobe
+                        will search in these paths for architecture
+                        definitions
+  -M MICROARCHITECTURE_PATHS, --microarchitecture-paths MICROARCHITECTURE_PATHS
+                        Search path for microarchitecture definitions.
+                        Microprobe will search in these paths for
+                        microarchitecture definitions
+  -E ENVIRONMENT_PATHS, --environment-paths ENVIRONMENT_PATHS
+                        Search path for environment definitions. Microprobe
+                        will search in these paths for environment definitions
+
+Target arguments:
+
+  Command arguments related to target specification and queries
+
+  -T TARGET, --target TARGET
+                        Target tuple. Microprobe follows a GCC-like target
+                        definition scheme, where a target is defined by a
+                        tuple as following:
+                        
+                          &lt;arch-name&gt;-&lt;uarch-name&gt;-&lt;env-name&gt;
+                        
+                        where:
+                        
+                          &lt;arch-name&gt;: is the name of the architecture
+                          &lt;uarch-name&gt;: is the name of the microarchitecture
+                          &lt;env-name&gt;: is the name of the environment
+                        
+                        One can use --list-* options to get the list of
+                        definitions available in the default search paths or
+                        the paths specified by the different --*-paths options
+  --list-architectures  Generate a list of architectures available in the
+                        defined search paths and exit
+  --list-microarchitectures
+                        Generate a list of microarchitectures available in the
+                        defined search paths and exit
+  --list-environments   Generate a list of environments available in the
+                        defined search paths and exit
+
+Debug arguments:
+
+  Command arguments related to debugging facilities
+
+  --traceback           show a traceback and starts a python debugger (pdb)
+                        when an error occurs. &#39;pdb&#39; is an interactive python
+                        shell that facilitates the debugging of errors
+  --profile PROFILE_OUTPUT
+                        dump profiling information into given file (see
+                        &#39;pstats&#39; module)
+
+Microprobe Test arguments:
+
+  Command arguments related to Microprobe Test (mpt) generation
+
+  -t MPT_DEFINITION_FILE, --mpt-definition-file MPT_DEFINITION_FILE
+                        Microprobe test (mpt) definition file
+
+MPT to ELF arguments:
+
+  Command arguments related to MPT to ELF tool
+
+  -O ELF_OUTPUT_FILE, --elf-output-file ELF_OUTPUT_FILE
+                        ELF output file name
+  --compiler COMPILER   Path to the compiler
+  --compiler-flags COMPILER_FLAGS
+                        Compiler flags to use, if compiler is provided
+
+Fixing options:
+
+  Command arguments related to fixing options
+
+  --fix-indirect-branches
+                        Fix branches without known target
+  --fix-branch-next     Force target of branches to be the next sequential
+                        instruction
+  --fix-memory-references
+                        Ensure that registers used by instructions accessing
+                        storage are initialized to valid locations
+  --fix-memory-registers
+                        Fix non-storage instructions touching registers used
+                        for storage address computations (implies --fix-
+                        memory-references flag)
+  --fix-flatten-code    All code is flatten using consecutive addresses
+  --safe-bin            Ignore unrecognized binary codifications (do notfail).
+                        Useful when MPTs are generated by dumping directly
+                        code pages, which contain padding zeros and other non-
+                        code stuff)
+  --raw-bin             Process all instruction entries together. They all
+                        shoud be binary entries. Implies --safe-bin flag.
+                        Useful when MPTs are generated by dumping directly
+                        code pages, which contain padding zeros and other non-
+                        code stuff)
+  --fix-long-jump       Sometimes the generated code is unable compile due a
+                        long jump displacement required to jump to the start
+                        insturction.
+  -S FIX_START_ADDRESS, --fix-start-address FIX_START_ADDRESS
+                        Sometimes the user requires the main start point to be
+                        on specific address to avoid compilation issues or
+                        comply with the execution environment requirements.
+                        This flag forces the main entry point of execution to
+                        be at the specified address. It is up to the user to
+                        define a proper entry point that does not clash with
+                        existing code.
+  -X FIX_32BIT_ADDRESS, --fix-32bit-address FIX_32BIT_ADDRESS
+                        Sometimes the user requires the addresses of the
+                        content to be within a 32bit address space. However, a
+                        test may incorporate content outside of that address
+                        space. This flag forces the variables to be shifted to
+                        fit within this limit, starting at the specified
+                        address. It is up to the user to define a proper
+                        starting address that does not clash with the existing
+                        code.
+
+Wrapping options:
+
+  Command arguments related to wrapping options
+
+  --no-wrap-test        By default the code is wrapped like it was a function
+                        call, use this flag to disable the wrapping
+  --wrap-endless        Use this flag to wrap the code in an endless loop
+                        assuming it is a function. If needed (--reset option),
+                        additional instructions are added to reset the the
+                        initial state between loop iterations.
+  --wrap-endless-threshold WRAP_ENDLESS_THRESHOLD
+                        Maximum percentage of instructions allowed in the
+                        reset code if --wrap-endless and --reset is used. I.e.
+                        if 10 is set, the tool will fail if the reset code
+                        required is more than 10% of the actual code of the
+                        test case. Default is 1%.
+  --reset               Use this flag to enable the generation of reset code
+                        if wrap-endless is enabled.
+
+Environment variables:
+
+  MICROPROBETEMPLATES    Default path for microprobe templates
+  MICROPROBEDEBUG        If set, enable debug
+  MICROPROBEDEBUGPASSES  If set, enable debug during passes
+  MICROPROBEASMHEXFMT    Assembly hexadecimal format. Options:
+                         &#39;all&#39; -&gt; All immediates in hex format
+                         &#39;address&#39; -&gt; Address immediates in hex format (default)
+                         &#39;none&#39; -&gt; All immediate in integer format
+</pre></div>
+</div>
+</section>
+<section id="fix-flags">
+<h2>Fix flags<a class="headerlink" href="#fix-flags" title="Link to this heading"></a></h2>
+<p>As stated above, this tool does not ensure that the memory address accessed by
+the assembly code access valid storage regions. For that, one has to declare
+the appropriate variables and initialize valid register contents.
+Also, it might be the case that the code still is not correct and extra
+modifications are required.</p>
+<p>Going through the assembly to understand it and manually modify it to make
+sure it runs correctly can be a tedious task. This tool provide a set of flags
+that perform predefined modifications on that code with the aim to make
+sure that at least it will run correctly. One has to take into account that
+the modifications might change the performance profile of the code. So, we
+strongly suggest you to validate the code generated to make sure it is still
+valid for your needs.</p>
+<p>In the table below, we summarize the flags that
+enable extra modification to the code:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--fix-memory-references</span></code></p></td>
+<td><p>Fix registers that are used to compute addresses in
+instruction accessing that access storage locations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--fix-memory-registers</span></code></p></td>
+<td><p>Fix instructions touching registers used for storage
+address computations. If an instruction modifies a
+register that is used for storage address computation,
+the instruction is modified to not modify such register.
+Instead, a register that minimizes the dependency
+between instructions is used. Also, load and update
+or store and update instructions are replaced by their
+very same implementation without the update. Implies
+–fix-memory-references flag.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--fix-indirect-branches</span></code></p></td>
+<td><p>Fix branches without known target. Any branch with
+unknown target is replaced by an unconditional branch
+to the next instruction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--fix-branch-next</span></code></p></td>
+<td><p>Force target of branches to be the next sequential
+instruction.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="linker-script">
+<h2>Linker script<a class="headerlink" href="#linker-script" title="Link to this heading"></a></h2>
+<p>The assembly file generated provides the linker script required for compilation
+in comments. To extract it you should execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">grep</span> <span class="s2">&quot;MICROPROBE LD&quot;</span> <span class="n">assembly_file</span> <span class="o">|</span> <span class="n">cut</span> <span class="o">-</span><span class="n">d</span> <span class="s1">&#39;@&#39;</span> <span class="o">-</span><span class="n">f</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="n">custom</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">script</span>
+</pre></div>
+</div>
+</section>
+<section id="compiling">
+<h2>Compiling<a class="headerlink" href="#compiling" title="Link to this heading"></a></h2>
+<p>In order to maintain the memory layout in the generated binary, should
+provide the linker scripts during the program compilation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">gcc</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span> <span class="nb">input</span><span class="o">.</span><span class="n">s</span> <span class="o">-</span><span class="n">static</span> <span class="o">-</span><span class="n">T</span> <span class="n">custom</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">script</span> <span class="o">-</span><span class="n">T</span> <span class="n">default</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">script</span>
+</pre></div>
+</div>
+<p>To obtain the default system ld script one can execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">ld</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">&gt;</span> <span class="n">default</span><span class="o">.</span><span class="n">system</span><span class="o">.</span><span class="n">ld</span><span class="o">.</span><span class="n">script</span>
+</pre></div>
+</div>
+<p>and then remove the comments in the file (header and footer).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

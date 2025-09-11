@@ -1,0 +1,41 @@
+microprobe.passes.branch.BranchBraidNextPass
+============================================
+
+.. currentmodule:: microprobe.passes.branch
+
+.. autoclass:: BranchBraidNextPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BranchBraidNextPass.__init__
+      ~BranchBraidNextPass.check
+      ~BranchBraidNextPass.info
+      ~BranchBraidNextPass.report
+      ~BranchBraidNextPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

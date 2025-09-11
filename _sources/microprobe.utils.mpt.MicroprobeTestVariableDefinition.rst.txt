@@ -1,0 +1,38 @@
+microprobe.utils.mpt.MicroprobeTestVariableDefinition
+=====================================================
+
+.. currentmodule:: microprobe.utils.mpt
+
+.. autoclass:: MicroprobeTestVariableDefinition
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroprobeTestVariableDefinition.__init__
+      ~MicroprobeTestVariableDefinition.copy
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

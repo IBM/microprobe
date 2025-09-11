@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microprobe &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Getting started" href="start.html" />
+    <link rel="prev" title="Welcome to Microprobe Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Microprobe</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Microprobe</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Microprobe Documentation" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="start.html" class="btn btn-neutral float-right" title="Getting started" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="microprobe">
+<h1>Microprobe<a class="headerlink" href="#microprobe" title="Link to this heading"></a></h1>
+<p>Microprobe is a <strong>productive</strong> microbenchmark generation framework that an user
+can <strong>adapt</strong> towards exercising a complex multi-core, multi-threaded computing
+system in a variety of redundant ways for answering a range of questions
+related to energy and performance.</p>
+<p>The growth in complexity of microprocessor systems today –composed of
+multi-core, multi-threaded processors with multi-level cache hierarchies and
+giga-bytes of memory–, hardens the pre-silicon system modeling and the
+post-silicon system characterizations. We believe that microbenchmarks,
+generated with particular objectives in mind, hold the key to obtaining
+accurate characterizations of microprocessor systems. Specially crafted
+microbenchmarks may be run on simulators (pre-silicon stage) or real machines
+(post-silicon stage) to help understand, diagnose and fix deficiencies
+systematically. However, manual generation of such “stress-marks” is tedious,
+and requires intimate knowledge of the underlying microarchitecture pipeline
+semantics. Automated microbenchmark generation is therefore crucial in this
+regard. Microprobe is developed to fulfill that need.</p>
+<section id="key-features">
+<h2>Key features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<p>The automated generation facility must maximize the productivity
+of the end-user, allowing the generation of different classes of
+microbenchmarks that are useful in answering a range of different
+(<em>unknown</em>/<em>future</em>) questions.  Therefore, we develop Microprobe with the
+following features in mind:</p>
+<ul class="simple">
+<li><p><strong>Adaptive and flexible</strong>. We design the microbenchmark
+synthesizer of Microprobe to work in a compiler-like fashion, i.e.
+applying a set of passes to a internal representation of the
+microbenchmark. This allows the users to adapt the
+microbenchmark generation process to their needs,
+providing the flexibility and the extensibility required.</p></li>
+<li><p><strong>Microarchitecture semantics aware</strong>. Microprobe includes
+low-level information of the target microarchitectures.
+This information is crucial to assist the generation of
+microarchitecture aware microbenchmarks, allowing the definition
+of microbenchmark generation policies based on them.
+It provides a <em>white-box</em> solution to the users to define microbenchmarks
+with very specific microarchitecture properties, avoiding the need to
+master every detail of the complex underlying architectures.</p></li>
+<li><p><strong>Integrated design space exploration (DSE)</strong>. Design space explorations
+have become mandatory to understand the performance of computer architectures
+due to their increase in complexity. In addition, DSE are required to
+find microbenchmarks that fulfill a set of dynamic properties that cannot be
+ensured statically (during code generation). DSE support is therefore a basic
+functionality that any productive microbenchmark generation framework
+should have. Microprobe provides generic DSE support to be able to implement
+different  customizable search strategies within the design space defined
+by the user (<em>feature not yet released</em>)</p></li>
+<li><p><strong>Minimize tool-chain dependencies</strong>. Microbenchmarks are required
+during early stage of processor designs or even during design concept
+phases, where new ISA proposals are evaluated. At these
+stages of development, compiler tool-chains are typically not ready. This
+reason, in conjunction with the fact that existing product-level tool-chains
+are much more complex, makes the generation of microbenchmarks in early-stage
+design phases a tedious task.
+For this reason, Microprobe avoids having dependencies on existing
+tool-chains so that users can quickly add/modify instruction definitions
+and generate microbenchmarks using them.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

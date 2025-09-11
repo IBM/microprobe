@@ -1,0 +1,1279 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.passes.register &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../passes.html">microprobe.passes</a></li>
+      <li class="breadcrumb-item active">microprobe.passes.register</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.passes.register</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.passes.register` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.passes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">microprobe.utils.distrib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.code.address</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span><span class="p">,</span> <span class="n">MemoryValue</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MicroprobeCodeGenerationError</span><span class="p">,</span>
+    <span class="n">MicroprobeValueError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;DefaultRegisterAllocationPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CycleMinimalAllocationPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FixRegistersPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NoHazardsAllocationPass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RandomAllocationPass&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># Functions</span>
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="DefaultRegisterAllocationPass">
+<a class="viewcode-back" href="../../../microprobe.passes.register.DefaultRegisterAllocationPass.html#microprobe.passes.register.DefaultRegisterAllocationPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DefaultRegisterAllocationPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DefaultRegisterAllocationPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DefaultRegisterAllocationPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.register.DefaultRegisterAllocationPass.html#microprobe.passes.register.DefaultRegisterAllocationPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rand</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">,</span>
+        <span class="n">minimize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dd</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">relax</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param minimize:  (Default value = False)</span>
+<span class="sd">        :param value:  (Default value = None)</span>
+<span class="sd">        :param dd:  (Default value = 1)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DefaultRegisterAllocationPass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span> <span class="o">=</span> <span class="n">rand</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min</span> <span class="o">=</span> <span class="n">minimize</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Feature changed need to be&quot;</span> <span class="s2">&quot; reimplemented&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dd</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">dd</span>  <span class="c1"># Dependency distance</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dd</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">distrib</span><span class="o">.</span><span class="n">discrete_average</span><span class="p">(</span><span class="n">dd</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">dd</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dd</span> <span class="o">=</span> <span class="n">dd</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeValueError</span><span class="p">(</span><span class="s2">&quot;Invalid parameter&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_relax</span> <span class="o">=</span> <span class="n">relax</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;zero&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Default register allocation (required always to&quot;</span>
+            <span class="s2">&quot; set any remaining operand). minimize=</span><span class="si">%s</span><span class="s2">, &quot;</span>
+            <span class="s2">&quot;value=</span><span class="si">%s</span><span class="s2">, dd=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">minimize</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">dd</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">allregs</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">registers</span>
+        <span class="n">lastdefined</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">lastused</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rregs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span><span class="p">)</span>
+
+        <span class="c1"># TODO: All this pass has to be reimplemented</span>
+
+        <span class="n">allregs_vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">allregs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">allregs_vals</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">allregs_vals</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+                <span class="c1"># TODO:  rregs can be used but only as input, now we discard</span>
+                <span class="c1">#        them for input and output</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lastused</span><span class="p">:</span>
+                <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+                <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+            <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+
+                <span class="n">dependency_ok</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="n">used</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">defined</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dd</span><span class="p">()</span>
+
+                <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># operand already set</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand already set&quot;</span><span class="p">)</span>
+                        <span class="k">pass</span>
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">immediate</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand immediate&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">!=</span> <span class="s2">&quot;random&quot;</span><span class="p">:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">svalue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span>
+                                <span class="k">while</span> <span class="nb">callable</span><span class="p">(</span><span class="n">svalue</span><span class="p">):</span>
+                                    <span class="n">svalue</span> <span class="o">=</span> <span class="n">svalue</span><span class="p">()</span>
+                                <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="n">MicroprobeValueError</span><span class="p">:</span>
+
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                    <span class="s2">&quot;Operand &#39;</span><span class="si">%s</span><span class="s2">&#39; in instruction &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span>
+                                    <span class="s2">&quot;not modeled properly. Tried to &quot;</span>
+                                    <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; value ...&quot;</span><span class="p">,</span>
+                                    <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                                    <span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                    <span class="n">svalue</span><span class="p">,</span>
+                                <span class="p">)</span>
+
+                                <span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                                <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Operand set to: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span>
+                                <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">random_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">)</span>
+                            <span class="p">)</span>
+
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">address_relative</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="s2">&quot;Operand &#39;</span><span class="si">%s</span><span class="s2">&#39; in instruction &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span>
+                            <span class="s2">&quot;not modeled properly&quot;</span><span class="p">,</span>
+                            <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+                            <span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand is register&quot;</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span>
+                            <span class="ow">and</span> <span class="n">distance</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                            <span class="ow">and</span> <span class="ow">not</span> <span class="n">dependency_ok</span>
+                            <span class="ow">and</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="n">distance</span>
+                        <span class="p">):</span>
+
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting dependency distance&quot;</span><span class="p">)</span>
+
+                            <span class="n">regs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="c1"># There is not option</span>
+                                <span class="n">valid_values</span> <span class="o">=</span> <span class="n">regs</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">valid_values</span> <span class="o">=</span> <span class="p">[]</span>
+                                <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="p">(</span>
+                                        <span class="nb">len</span><span class="p">(</span>
+                                            <span class="n">rregs</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                                                <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                                            <span class="p">)</span>
+                                        <span class="p">)</span>
+                                        <span class="o">==</span> <span class="mi">0</span>
+                                    <span class="p">):</span>
+                                        <span class="n">valid_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="p">(</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+                                <span class="ow">and</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span>
+                                <span class="ow">and</span> <span class="ow">not</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span>
+                            <span class="p">):</span>
+                                <span class="c1"># Try to use reserved values</span>
+                                <span class="c1"># if the operand is read only</span>
+                                <span class="n">valid_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Current idx: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Requested idx: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">idx</span> <span class="o">-</span> <span class="n">distance</span><span class="p">)</span>
+
+                            <span class="n">reg</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">distrib</span><span class="o">.</span><span class="n">sort_by_distance</span><span class="p">(</span>
+                                <span class="n">valid_values</span><span class="p">,</span>
+                                <span class="n">lastdefined</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">],</span>
+                                <span class="n">lastused</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">],</span>
+                                <span class="n">idx</span> <span class="o">-</span> <span class="n">distance</span><span class="p">,</span>
+                                <span class="n">instr</span><span class="p">,</span>
+                                <span class="n">idx</span><span class="p">,</span>
+                            <span class="p">)</span>
+
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> selected&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                    <span class="s2">&quot;Last defined: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="n">lastdefined</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">],</span>
+                                <span class="p">)</span>
+
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastused</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                    <span class="s2">&quot;Last used: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="n">lastused</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">],</span>
+                                <span class="p">)</span>
+
+                            <span class="n">dependency_ok</span> <span class="o">=</span> <span class="kc">True</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;No need for distance&quot;</span><span class="p">)</span>
+
+                            <span class="n">regs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                            <span class="n">valid_values</span> <span class="o">=</span> <span class="p">[]</span>
+
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="c1"># There is not option</span>
+                                <span class="n">valid_values</span> <span class="o">=</span> <span class="n">regs</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="p">(</span>
+                                        <span class="nb">len</span><span class="p">(</span>
+                                            <span class="n">rregs</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                                                <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                                            <span class="p">)</span>
+                                        <span class="p">)</span>
+                                        <span class="o">==</span> <span class="mi">0</span>
+                                    <span class="p">):</span>
+                                        <span class="n">valid_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="p">(</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+                                <span class="ow">and</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span>
+                                <span class="ow">and</span> <span class="ow">not</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span>
+                            <span class="p">):</span>
+                                <span class="c1"># Try to use reserved values</span>
+                                <span class="c1"># if the operand is reading only</span>
+                                <span class="n">valid_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Instruction: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instr</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s2">&quot;Operand: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                                    <span class="s2">&quot;Possible all values: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="nb">sorted</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+                                <span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                                    <span class="s2">&quot;Possible values: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span>
+                                <span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                                    <span class="s2">&quot;Reserved values: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">rregs</span><span class="p">)</span>
+                                <span class="p">)</span>
+                                <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                                    <span class="s2">&quot;Unable to find proper operand&quot;</span>
+                                    <span class="s2">&quot; values for register allocation.&quot;</span>
+                                <span class="p">)</span>
+
+                            <span class="k">if</span> <span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lastused</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                                    <span class="s2">&quot;Unable to find proper operand&quot;</span>
+                                    <span class="s2">&quot; values for register allocation.&quot;</span>
+                                    <span class="s2">&quot; No registers of type &#39;</span><span class="si">%s</span><span class="s2">&#39; &quot;</span>
+                                    <span class="s2">&quot;available.&quot;</span> <span class="o">%</span> <span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+                                <span class="p">)</span>
+
+                            <span class="n">pregs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">lastused</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pregs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+                                <span class="n">pregsa</span> <span class="o">=</span> <span class="n">pregs</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                                <span class="n">pregsb</span> <span class="o">=</span> <span class="n">pregs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">pregsb</span><span class="p">)</span>
+                                <span class="n">pregs</span> <span class="o">=</span> <span class="n">pregsb</span> <span class="o">+</span> <span class="n">pregsa</span>
+
+                            <span class="n">reg</span> <span class="o">=</span> <span class="n">microprobe</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">distrib</span><span class="o">.</span><span class="n">sort_by_usage</span><span class="p">(</span>
+                                <span class="n">valid_values</span><span class="p">,</span> <span class="n">pregs</span><span class="p">,</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+                            <span class="p">)</span>
+
+                        <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">uses</span><span class="p">():</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating usage of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                                <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                                    <span class="k">del</span> <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                                <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                                <span class="n">used</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+                        <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">():</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating definition of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                                    <span class="k">del</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                                <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                                <span class="n">defined</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating usage of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                                <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                                    <span class="k">del</span> <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                                <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                                <span class="n">used</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+                <span class="c1"># if self._min is True:</span>
+                <span class="c1">#    for reg in instr.uses():</span>
+                <span class="c1">#        if reg in lastused[reg.type]:</span>
+                <span class="c1">#            del lastused[reg.type][reg]</span>
+                <span class="c1">#        lastused[reg.type][reg] = idx</span>
+                <span class="c1">#        used.append(reg)</span>
+                <span class="c1">#    for reg in instr.sets():</span>
+                <span class="c1">#        if reg in lastused[reg.type]:</span>
+                <span class="c1">#            del lastused[reg.type][reg]</span>
+                <span class="c1">#        lastused[reg.type][reg] = idx</span>
+                <span class="c1">#        used.append(reg)</span>
+
+                <span class="n">fail</span> <span class="o">=</span> <span class="n">rregs</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">instr</span><span class="o">.</span><span class="n">sets</span><span class="p">()))</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fail</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relax</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">fail</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">instr</span><span class="o">.</span><span class="n">allows</span><span class="p">(</span><span class="n">reg</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                                <span class="s2">&quot;Instruction &#39;</span><span class="si">%s</span><span class="s2">&#39; sets a reserved&quot;</span>
+                                <span class="s2">&quot; register but not allowed before:&quot;</span>
+                                <span class="s2">&quot;Register: </span><span class="si">%s</span><span class="s2">. Reserved: </span><span class="si">%s</span><span class="s2">&quot;</span>
+                                <span class="o">%</span> <span class="p">(</span>
+                                    <span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                    <span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                    <span class="nb">sorted</span><span class="p">([</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">]),</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">uses</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used</span> <span class="ow">and</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating usage of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                        <span class="n">lastused</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+
+                <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">sets</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">defined</span> <span class="ow">and</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Updating definition of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="k">del</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                        <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instruction: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instr</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Last used rank:&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">rtype</span> <span class="ow">in</span> <span class="n">lastused</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastused</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">lastused</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                            <span class="s2">&quot;GPR&quot;</span>
+                        <span class="p">):</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lastused</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">])</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Last defined rank:&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">rtype</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                            <span class="s2">&quot;GPR&quot;</span>
+                        <span class="p">):</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                            <span class="p">)</span>
+
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="CycleMinimalAllocationPass">
+<a class="viewcode-back" href="../../../microprobe.passes.register.CycleMinimalAllocationPass.html#microprobe.passes.register.CycleMinimalAllocationPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CycleMinimalAllocationPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CycleMinimalAllocationPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CycleMinimalAllocationPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.register.CycleMinimalAllocationPass.html#microprobe.passes.register.CycleMinimalAllocationPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">reads</span><span class="p">,</span> <span class="n">writes</span><span class="p">,</span> <span class="n">rand</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param size:</span>
+<span class="sd">        :param reads:</span>
+<span class="sd">        :param writes:</span>
+<span class="sd">        :param value:  (Default value = None)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CycleMinimalAllocationPass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>  <span class="c1"># groups size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reads</span> <span class="o">=</span> <span class="n">reads</span>  <span class="c1"># max reads in a group to the same register</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span> <span class="o">=</span> <span class="n">writes</span>  <span class="c1"># max writes in a group to the same register</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rdwr</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">reads</span><span class="p">,</span> <span class="n">writes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span> <span class="o">=</span> <span class="n">rand</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">lastdefined</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">lastreaded</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">lastdefread</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">reset_dictionaries</span><span class="p">():</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Reset the local dependency tracking dictionaries&quot;&quot;&quot;</span>
+
+            <span class="n">allregs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">allregs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))[</span><span class="mi">0</span><span class="p">]))</span>
+
+            <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">allregs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">:</span>
+                    <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">:</span>
+                    <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lastdefread</span><span class="p">:</span>
+                    <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+                <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="k">if</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span><span class="p">:</span>
+
+                    <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">remove_dict_key</span><span class="p">(</span><span class="n">reg</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            :param reg:</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                <span class="k">del</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update_dictionaries</span><span class="p">(</span><span class="n">instr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            :param instr:</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">for</span> <span class="n">reg</span><span class="p">,</span> <span class="n">arch_operands</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">instr</span><span class="o">.</span><span class="n">operand_fields</span><span class="p">(),</span> <span class="n">instr</span><span class="o">.</span><span class="n">architecture_type</span><span class="o">.</span><span class="n">operands</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="n">operand</span><span class="p">,</span> <span class="n">ins_input</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">arch_operands</span>
+                <span class="k">if</span> <span class="n">reg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">operand</span><span class="o">.</span><span class="n">immediate</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="n">ins_input</span> <span class="ow">and</span> <span class="n">output</span><span class="p">:</span>
+                        <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="k">del</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="k">del</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rdwr</span><span class="p">:</span>
+                            <span class="n">remove_dict_key</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">output</span><span class="p">:</span>
+                        <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="k">del</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="k">del</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span><span class="p">:</span>
+                            <span class="n">remove_dict_key</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">ins_input</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reads</span><span class="p">:</span>
+                                <span class="n">remove_dict_key</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="k">del</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">]:</span>
+                            <span class="k">del</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">reg</span><span class="o">.</span><span class="n">type</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update_group</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">            :param group:</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                <span class="n">instroperands</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">oper_idx_io</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">oper_idx_i</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">oper_idx_o</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">operand</span><span class="p">,</span> <span class="n">ins_input</span><span class="p">,</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">immediate</span><span class="p">():</span>
+
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">!=</span> <span class="s2">&quot;random&quot;</span> <span class="ow">and</span> <span class="n">operand</span><span class="o">.</span><span class="n">check</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">):</span>
+
+                            <span class="n">instroperands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span><span class="p">)</span>
+
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span> <span class="o">!=</span> <span class="s2">&quot;random&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">operand</span><span class="o">.</span><span class="n">check</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_immediate</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">):</span>
+
+                            <span class="n">instroperands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+
+                            <span class="n">instroperands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="n">operand</span><span class="o">.</span><span class="n">assembly</span><span class="p">(</span>
+                                    <span class="n">operand</span><span class="o">.</span><span class="n">random_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">)</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">operand</span><span class="o">.</span><span class="n">immediate</span><span class="p">():</span>
+
+                        <span class="n">regs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                        <span class="n">rtype</span> <span class="o">=</span> <span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+
+                        <span class="k">if</span> <span class="n">ins_input</span> <span class="ow">and</span> <span class="n">output</span><span class="p">:</span>
+
+                            <span class="n">regs</span> <span class="o">=</span> <span class="p">[</span>
+                                <span class="n">elem</span>
+                                <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">rtype</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">regs</span>
+                            <span class="p">]</span>
+                            <span class="n">regs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
+                                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">ltype</span><span class="o">=</span><span class="n">rtype</span><span class="p">:</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">ltype</span><span class="p">][</span>
+                                    <span class="n">x</span>
+                                <span class="p">],</span>
+                                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">reg</span> <span class="o">=</span> <span class="n">regs</span><span class="p">[</span><span class="n">oper_idx_io</span><span class="p">]</span>
+
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+
+                                <span class="k">del</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+
+                                <span class="k">del</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+
+                            <span class="n">oper_idx_io</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                        <span class="k">elif</span> <span class="n">ins_input</span><span class="p">:</span>
+
+                            <span class="n">regs</span> <span class="o">=</span> <span class="p">[</span>
+                                <span class="n">elem</span>
+                                <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">rtype</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">regs</span>
+                            <span class="p">]</span>
+                            <span class="n">regs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
+                                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">ltype</span><span class="o">=</span><span class="n">rtype</span><span class="p">:</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">ltype</span><span class="p">][</span>
+                                    <span class="n">x</span>
+                                <span class="p">],</span>
+                                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">reg</span> <span class="o">=</span> <span class="n">regs</span><span class="p">[</span><span class="n">oper_idx_i</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+                                <span class="k">del</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+                                <span class="k">del</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                            <span class="n">oper_idx_i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                        <span class="k">elif</span> <span class="n">output</span><span class="p">:</span>
+
+                            <span class="n">regs</span> <span class="o">=</span> <span class="p">[</span>
+                                <span class="n">elem</span>
+                                <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">rtype</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">regs</span>
+                            <span class="p">]</span>
+                            <span class="n">regs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
+                                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">ltype</span><span class="o">=</span><span class="n">rtype</span><span class="p">:</span> <span class="n">lastdefined</span><span class="p">[</span><span class="n">ltype</span><span class="p">][</span>
+                                    <span class="n">x</span>
+                                <span class="p">],</span>
+                                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="n">reg</span> <span class="o">=</span> <span class="n">regs</span><span class="p">[</span><span class="n">oper_idx_o</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+                                <span class="k">del</span> <span class="n">lastdefread</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">rtype</span><span class="p">]:</span>
+                                <span class="k">del</span> <span class="n">lastreaded</span><span class="p">[</span><span class="n">rtype</span><span class="p">][</span><span class="n">reg</span><span class="p">]</span>
+                            <span class="n">oper_idx_o</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Something wrong&quot;</span>
+
+                        <span class="n">instroperands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+                <span class="n">instr</span><span class="o">.</span><span class="n">set_operands</span><span class="p">(</span><span class="n">instroperands</span><span class="p">)</span>
+                <span class="n">instr</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
+                <span class="n">update_dictionaries</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">reset_dictionaries</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+                <span class="n">update_dictionaries</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">update_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+                    <span class="n">group</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">lastdefined</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">lastreaded</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">lastdefread</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="n">reset_dictionaries</span><span class="p">()</span>
+
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">update_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">lastdefined</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">lastreaded</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">lastdefread</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">reset_dictionaries</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+
+
+<div class="viewcode-block" id="NoHazardsAllocationPass">
+<a class="viewcode-back" href="../../../microprobe.passes.register.NoHazardsAllocationPass.html#microprobe.passes.register.NoHazardsAllocationPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoHazardsAllocationPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Avoid all possible data hazards:</span>
+
+<span class="sd">    read after write (RAW), a true dependency</span>
+<span class="sd">    write after read (WAR), an anti-dependency</span>
+<span class="sd">    write after write (WAW), an output dependency</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NoHazardsAllocationPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.register.NoHazardsAllocationPass.html#microprobe.passes.register.NoHazardsAllocationPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NoHazardsAllocationPass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Perform register allocation avoiding RAW, WAR &quot;</span>
+            <span class="s2">&quot;and WAR dependency hazards&quot;</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param building_block:</span>
+<span class="sd">        :param dummy_target:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rregs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span><span class="p">)</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">inputoutputs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">usedrregs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;BEGIN: Initial State&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;InputsOutputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputoutputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Outputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rregs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Used Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">usedrregs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+
+            <span class="n">allinstrs</span> <span class="o">=</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span>
+            <span class="k">if</span> <span class="n">bbl</span> <span class="o">==</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">allinstrs</span> <span class="o">+=</span> <span class="n">building_block</span><span class="o">.</span><span class="n">fini</span>
+
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">allinstrs</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">immediate</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Address</span><span class="p">):</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span>
+                        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                    <span class="p">):</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+
+                    <span class="n">skip</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">uses</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+                            <span class="n">skip</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="n">usedrregs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                            <span class="k">break</span>
+
+                    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+                            <span class="n">skip</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="n">usedrregs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                            <span class="k">break</span>
+
+                    <span class="k">if</span> <span class="n">skip</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span> <span class="ow">and</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">():</span>
+                            <span class="n">inputoutputs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">uses</span><span class="p">():</span>
+                            <span class="n">inputoutputs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">uses</span><span class="p">():</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">():</span>
+                            <span class="n">outputs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;REGUSTER USAGE Before allocating&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;InputsOutputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputoutputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Outputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rregs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Used Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">usedrregs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># All reserved registers not used in the main loop</span>
+        <span class="c1"># can be unreserved</span>
+        <span class="c1">#</span>
+        <span class="n">rregs</span> <span class="o">=</span> <span class="n">rregs</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">usedrregs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;New Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rregs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">reserved_registers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span><span class="p">:</span>
+                <span class="n">building_block</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">remove_reserved_registers</span><span class="p">([</span><span class="n">reg</span><span class="p">])</span>
+
+        <span class="c1"># Minimum allocation, make everybody happy with enough operand</span>
+        <span class="c1"># values</span>
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+
+                <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">immediate</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">regs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+                    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">:</span>
+
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="nb">len</span><span class="p">(</span><span class="n">rregs</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">reg</span><span class="p">)))</span>
+                            <span class="o">&gt;</span> <span class="mi">0</span>
+                        <span class="p">):</span>
+                            <span class="k">continue</span>
+
+                        <span class="n">values</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+
+                    <span class="c1"># values.difference_update(rregs)</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span> <span class="ow">and</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+
+                        <span class="c1"># values.difference_update(inputoutputs)</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+
+                                <span class="n">valid_val</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="n">to_add</span> <span class="o">=</span> <span class="p">[]</span>
+
+                                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+
+                                    <span class="n">to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+                                    <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">inputs</span> <span class="ow">or</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+                                        <span class="n">valid_val</span> <span class="o">=</span> <span class="kc">False</span>
+
+                                <span class="k">if</span> <span class="n">valid_val</span><span class="p">:</span>
+                                    <span class="n">inputoutputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">to_add</span><span class="p">))</span>
+
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+
+                        <span class="n">values</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">inputoutputs</span><span class="p">)</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+
+                                <span class="n">valid_val</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="n">to_add</span> <span class="o">=</span> <span class="p">[]</span>
+
+                                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+
+                                    <span class="n">to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+                                    <span class="k">if</span> <span class="p">(</span>
+                                        <span class="n">val</span> <span class="ow">in</span> <span class="n">inputoutputs</span>
+                                        <span class="ow">or</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">inputs</span>
+                                        <span class="ow">or</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">outputs</span>
+                                    <span class="p">):</span>
+                                        <span class="n">valid_val</span> <span class="o">=</span> <span class="kc">False</span>
+
+                                <span class="k">if</span> <span class="n">valid_val</span><span class="p">:</span>
+
+                                    <span class="n">outputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">to_add</span><span class="p">))</span>
+                                    <span class="k">break</span>
+
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span><span class="p">:</span>
+
+                        <span class="n">values</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">inputoutputs</span><span class="p">)</span>
+                        <span class="c1"># values.difference_update(inputs)</span>
+                        <span class="n">values</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+
+                                <span class="n">valid_val</span> <span class="o">=</span> <span class="kc">True</span>
+
+                                <span class="n">to_add</span> <span class="o">=</span> <span class="p">[]</span>
+                                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+
+                                    <span class="n">to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+                                    <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">inputoutputs</span> <span class="ow">or</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+                                        <span class="n">valid_val</span> <span class="o">=</span> <span class="kc">False</span>
+
+                                <span class="k">if</span> <span class="n">valid_val</span><span class="p">:</span>
+                                    <span class="n">inputs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">to_add</span><span class="p">))</span>
+                                    <span class="k">break</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">MicroprobeCodeGenerationError</span><span class="p">(</span>
+                            <span class="s2">&quot;Unknown operand type&quot;</span>
+                        <span class="p">)</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span>
+        <span class="n">inputoutputs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">inputoutputs</span><span class="p">))</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">outputs</span><span class="p">))</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;BEFORE ALLOCATING&quot;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;InputsOutputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputoutputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Outputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rregs</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;#&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;BEGIN INSTRUCTION </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;InputsOutputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputoutputs</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Outputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rregs</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;BEGIN OPERAND&quot;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Inputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;InputsOutputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">inputoutputs</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Outputs: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reserved </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rregs</span><span class="p">)</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;BEGIN OPERAND&quot;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">immediate</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMMEDIATE&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Address</span><span class="p">):</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ADDRESS&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">constant</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;CONSTANT&quot;</span><span class="p">)</span>
+
+                        <span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="c1"># Update queues</span>
+                        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+
+                            <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputoutputs</span><span class="p">:</span>
+                                <span class="n">inputoutputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="n">inputoutputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                            <span class="k">elif</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+                                    <span class="n">inputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                    <span class="n">inputoutputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">inputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                    <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                            <span class="k">elif</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span><span class="p">:</span>
+                                    <span class="n">outputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                    <span class="n">inputoutputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">outputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                    <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span> <span class="ow">and</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+                        <span class="n">queue</span> <span class="o">=</span> <span class="n">inputoutputs</span>
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_input</span><span class="p">:</span>
+                        <span class="n">queue</span> <span class="o">=</span> <span class="n">inputs</span>
+                    <span class="k">elif</span> <span class="n">operand</span><span class="o">.</span><span class="n">is_output</span><span class="p">:</span>
+                        <span class="n">queue</span> <span class="o">=</span> <span class="n">outputs</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">queue</span> <span class="o">=</span> <span class="n">inputoutputs</span>
+
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ALREADY SET&quot;</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Set value: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">queue</span><span class="p">:</span>
+
+                                <span class="n">queue</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                            <span class="k">elif</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+
+                                <span class="n">inputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                            <span class="k">elif</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+
+                                <span class="n">outputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                            <span class="k">elif</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputoutputs</span><span class="p">:</span>
+
+                                <span class="n">inputoutputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                                <span class="n">inputoutputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="k">continue</span>
+
+                    <span class="c1"># get the operand type</span>
+                    <span class="n">regt</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;NOT SET&quot;</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;TYPE: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">regt</span><span class="p">)</span>
+
+                    <span class="n">regs</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">reg</span>
+                        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">queue</span>
+                        <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">regt</span>
+                        <span class="ow">and</span> <span class="n">reg</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                        <span class="ow">and</span> <span class="n">reg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rregs</span>
+                    <span class="p">]</span>
+
+                    <span class="c1"># if values are not found, fail-back to input output list</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SWITCH!&quot;</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">inputoutputs</span><span class="p">)</span>
+                        <span class="n">queue</span> <span class="o">=</span> <span class="n">inputoutputs</span>
+                        <span class="n">regs</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">reg</span>
+                            <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">queue</span>
+                            <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">regt</span>
+                            <span class="ow">and</span> <span class="n">reg</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                        <span class="p">]</span>
+
+                    <span class="c1"># Check if all possible values are reserved, if so, just</span>
+                    <span class="c1"># pick one and add a comment</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="nb">set</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">rregs</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+                    <span class="p">):</span>
+
+                        <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;Operand forced to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="p">)</span>
+                        <span class="n">instr</span><span class="o">.</span><span class="n">add_comment</span><span class="p">(</span>
+                            <span class="s2">&quot;Operand &#39;</span><span class="si">%s</span><span class="s2">&#39; using reserved value&quot;</span> <span class="o">%</span> <span class="n">operand</span>
+                        <span class="p">)</span>
+                        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">():</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">instr</span><span class="o">.</span><span class="n">allows</span><span class="p">(</span><span class="n">reg</span><span class="p">):</span>
+                                <span class="n">instr</span><span class="o">.</span><span class="n">add_allow_register</span><span class="p">([</span><span class="n">reg</span><span class="p">])</span>
+
+                        <span class="k">continue</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                            <span class="s2">&quot;Operand forced to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="p">)</span>
+                        <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">instr</span><span class="o">.</span><span class="n">add_comment</span><span class="p">(</span>
+                            <span class="s2">&quot;Operand &#39;</span><span class="si">%s</span><span class="s2">&#39; using first value&quot;</span> <span class="o">%</span> <span class="n">operand</span>
+                        <span class="p">)</span>
+                        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">():</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">instr</span><span class="o">.</span><span class="n">allows</span><span class="p">(</span><span class="n">reg</span><span class="p">):</span>
+                                <span class="n">instr</span><span class="o">.</span><span class="n">add_allow_register</span><span class="p">([</span><span class="n">reg</span><span class="p">])</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">regs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># Fall-back in case not regs are provided</span>
+                        <span class="n">regs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Operand set to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">regs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+                    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+
+                        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputoutputs</span><span class="p">:</span>
+                            <span class="n">inputoutputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+                            <span class="n">inputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
+                            <span class="n">outputs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                        <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FixRegistersPass">
+<a class="viewcode-back" href="../../../microprobe.passes.register.FixRegistersPass.html#microprobe.passes.register.FixRegistersPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FixRegistersPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DefaultRegisterAllocationPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FixRegistersPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.register.FixRegistersPass.html#microprobe.passes.register.FixRegistersPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forbid_writes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">forbid_reads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FixRegistersPass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="s2">&quot;Fix readed/written register&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span> <span class="o">=</span> <span class="n">forbid_writes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reads</span> <span class="o">=</span> <span class="n">forbid_reads</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">target</span><span class="o">.</span><span class="n">registers</span><span class="p">[</span><span class="n">regname</span><span class="p">]</span> <span class="k">for</span> <span class="n">regname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span>
+            <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">sets</span> <span class="o">=</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writes</span><span class="p">:</span>
+                                <span class="n">operand</span><span class="o">.</span><span class="n">unset_value</span><span class="p">()</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">uses</span> <span class="o">=</span> <span class="n">operand</span><span class="o">.</span><span class="n">sets</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">uses</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reads</span><span class="p">:</span>
+                                <span class="n">operand</span><span class="o">.</span><span class="n">unset_value</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="RandomAllocationPass">
+<a class="viewcode-back" href="../../../microprobe.passes.register.RandomAllocationPass.html#microprobe.passes.register.RandomAllocationPass">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RandomAllocationPass</span><span class="p">(</span><span class="n">microprobe</span><span class="o">.</span><span class="n">passes</span><span class="o">.</span><span class="n">Pass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;RandomAllocationPass pass.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RandomAllocationPass.__init__">
+<a class="viewcode-back" href="../../../microprobe.passes.register.RandomAllocationPass.html#microprobe.passes.register.RandomAllocationPass.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rand</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RandomAllocationPass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="s2">&quot;Random Allocation of operands&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rand</span> <span class="o">=</span> <span class="n">rand</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">building_block</span><span class="p">,</span> <span class="n">dummy_target</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">bbl</span> <span class="ow">in</span> <span class="n">building_block</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">bbls</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">bbl</span><span class="o">.</span><span class="n">instrs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">operand</span> <span class="ow">in</span> <span class="n">instr</span><span class="o">.</span><span class="n">operands</span><span class="p">():</span>
+                    <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">random_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">))</span>
+                    <span class="c1"># TODO: This is a POWERPC hack (remove in future)</span>
+                    <span class="k">if</span> <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;BO_Values&quot;</span><span class="p">:</span>
+                        <span class="k">while</span> <span class="n">operand</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">21</span><span class="p">]:</span>
+                            <span class="n">operand</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span>
+                                <span class="n">operand</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">random_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rand</span><span class="p">)</span>
+                            <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

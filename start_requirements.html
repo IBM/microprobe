@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Requirements &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Microprobe package organization" href="start_organization.html" />
+    <link rel="prev" title="Quick start guide" href="start_quick.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="start.html">Getting started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="start_quick.html">Quick start guide</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation-upgrading-requirements">Installation/Upgrading requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runtime-requirements">Runtime requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="start_organization.html">Microprobe package organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_install.html">Installing Microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_update.html">Upgrading Microprobe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start_check.html">Checking Microprobe installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="start.html">Getting started</a></li>
+      <li class="breadcrumb-item active">Requirements</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="start_quick.html" class="btn btn-neutral float-left" title="Quick start guide" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="start_organization.html" class="btn btn-neutral float-right" title="Microprobe package organization" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="requirements">
+<h1>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h1>
+<p><strong>Microprobe</strong> is written in Python, so you need a
+<a class="reference external" href="http://www.python.org">Python</a> installation to run it. As a result,
+the basic requirements are the following:</p>
+<ul class="simple">
+<li><p><strong>python</strong> &gt;= 3.7, 3.8, 3.9: Older/Newer Python versions may work but
+we have not tested them.</p></li>
+<li><p><strong>virtualenv</strong> : A Python environment virtualizer that provides all the
+necessary tools to manage Python packages and execution environment.</p></li>
+</ul>
+<p>The code is targeted to be architecture agnostic and OS agnostic, so it
+should run on PPC, Z or x86 platforms as well as on Linux or AIX
+systems. The code has been validated on the following platforms:</p>
+<ul class="simple">
+<li><p>PPC64/Linux with Python 3.9</p></li>
+<li><p>Z/Linux with Python 3.9</p></li>
+<li><p>x86_64/Linux with Python 3.9</p></li>
+</ul>
+<p>If you have another environment that you would like to be tested, let us
+know (<a class="reference internal" href="support_contact.html"><span class="doc">Contact</span></a>).</p>
+<section id="installation-upgrading-requirements">
+<h2>Installation/Upgrading requirements<a class="headerlink" href="#installation-upgrading-requirements" title="Link to this heading"></a></h2>
+<p>Microprobe is distributed using a package manager. This allows the centralized
+management of new releases, updates and bug fixes via a set repositories.</p>
+<ul class="simple">
+<li><p><strong>virtualenv</strong> : Necessary to ensure a clean installation and avoid
+environment related Python configuration issues. Check
+the <a class="reference external" href="https://virtualenv.pypa.io/en/stable/">documentation</a>
+to install it on your system if you do not already have it.</p></li>
+<li><p><strong>pip</strong> : <a class="reference external" href="http://pip.readthedocs.org/en/latest/quickstart.html">Python package manager</a>.
+It is included by default in Python &gt;= 3.7 and within any <em>virtualenv</em> environments
+created. You should have it installed in your <em>virtualenv</em> environment by
+default. Check the <a class="reference external" href="http://pip.readthedocs.org/en/latest/installing.html">installation guide</a>
+if you want to customize your own setup.</p></li>
+</ul>
+</section>
+<section id="runtime-requirements">
+<h2>Runtime requirements<a class="headerlink" href="#runtime-requirements" title="Link to this heading"></a></h2>
+<p>Some of the functionalities implemented within Microprobe require extra
+Python packages. The installation instructions provided in this documentation
+already take care of installing them but we provide the information in
+case you want to do a custom manual Microprobe installation.</p>
+<p>The extra Python packages required are the following:</p>
+<ul class="simple">
+<li><p><strong>PyYAML</strong> : YAML parsing package.  This is usually included
+in a typical installation of Python and it is available as a binary
+package in major Linux distributions. In case you do not have it, this
+package can be found at <a class="reference external" href="http://pyyaml.org/">PyYAML</a> or installed
+using <strong>pip</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--pre</span> <span class="pre">pyaml</span></code>).</p></li>
+<li><p><strong>argparse</strong> : Command line parsing package.  This is usually included
+in a typical installation of Python and it is available as a binary
+package in major Linux distributions. In case you do not have it, this
+package can be found at <a class="reference external" href="https://pypi.python.org/pypi/argparse/">argparse</a> or installed
+using <strong>pip</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--pre</span> <span class="pre">argparse</span></code>).</p></li>
+<li><p><strong>rxjson</strong> : Schema validation package. In case you do not have it, this
+package can be found at <a class="reference external" href="https://github.com/spiral-project/rxjson">rxjson</a> or
+installed using <strong>pip</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--pre</span> <span class="pre">rxjson</span></code>).</p></li>
+<li><p><strong>fasteners</strong> : Cross platform locks for threads and processes.
+This package can be found at <a class="reference external" href="https://github.com/harlowja/fasteners/">fasteners</a>
+or installed using <strong>pip</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--pre</span> <span class="pre">fasteners</span></code>).</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool: mp_seqtune &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="_static/minilogo_white_256px2.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Tool: mp_target" href="tools_mp_target.html" />
+    <link rel="prev" title="Tool: mp_seq" href="tools_mp_seq.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tools.html">Command line tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tools_target_definition.html">Command line target definition scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mpt_format.html">Microprobe test (mpt) format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_ctest_format.html">C test format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2asm.html">Tool: mp_bin2asm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_bin2objdump.html">Tool: mp_bin2objdump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_c2mpt.html">Tool: mp_c2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_epi.html">Tool: mp_epi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2bin.html">Tool: mp_mpt2bin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2elf.html">Tool: mp_mpt2elf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2test.html">Tool: mp_mpt2test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_mpt2trace.html">Tool: mp_mpt2trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_objdump2mpt.html">Tool: mp_objdump2mpt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_seq.html">Tool: mp_seq</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tool: mp_seqtune</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-usage">Full usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-use-case">Example use case</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tools_mp_target.html">Tool: mp_target</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tools.html">Command line tools</a></li>
+      <li class="breadcrumb-item active">Tool: mp_seqtune</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tools_mp_seq.html" class="btn btn-neutral float-left" title="Tool: mp_seq" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools_mp_target.html" class="btn btn-neutral float-right" title="Tool: mp_target" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tool-mp-seqtune">
+<h1>Tool: mp_seqtune<a class="headerlink" href="#tool-mp-seqtune" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <strong>mp_seqtune</strong> tool provides an interface to generate stressmarks around
+a base instruction sequence. Given a base instruction sequence, the
+tool generates variations around it based on the user input parameters. One
+can modify the memory access patterns, add instructions from time to time,
+replace other instructions from time to time, maximize the data switching
+factors, model the branch behavior, etc. All these transformations are usually
+useful during the search of maximum power stressmarks.</p>
+</section>
+<section id="basic-usage">
+<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_seqtune</span> <span class="o">-</span><span class="n">T</span> <span class="n">TARGET</span> <span class="o">-</span><span class="n">D</span> <span class="n">OUTPUT_DIR</span> <span class="o">-</span><span class="n">seq</span> <span class="n">INSTRUCTION_SEQUENCE</span>
+</pre></div>
+</div>
+<p>where:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag/Argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-seq</span> <span class="pre">INSTRS</span></code>, <code class="docutils literal notranslate"><span class="pre">--sequence</span> <span class="pre">INSTRS</span></code></p></td>
+<td><p>Comma separated list of instructions that define the base
+sequence.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-T</span> <span class="pre">TARGET</span></code>, <code class="docutils literal notranslate"><span class="pre">--target</span> <span class="pre">TARGET</span></code></p></td>
+<td><p>Target definition string. Check: <a class="reference internal" href="tools_target_definition.html"><span class="doc">Command line target definition scheme</span></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-D</span> <span class="pre">OUTPUT_DIR</span></code>, <code class="docutils literal notranslate"><span class="pre">--seq-output-dir</span> <span class="pre">OUTPUTDIR</span></code></p></td>
+<td><p>Output directory.</p></td>
+</tr>
+</tbody>
+</table>
+<p>There are other parameters to tune the code being generated. Check the
+rest of this document for details. The example section provides a
+detailed use case scenario that uses some of the extra parameters.</p>
+</section>
+<section id="full-usage">
+<h2>Full usage<a class="headerlink" href="#full-usage" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mp_seqtune.py: INFO: Processing input arguments...
+usage: mp_seqtune.py [-h] [-P SEARCH_PATH [SEARCH_PATH ...]] [-V] [-v] [-d]
+                     [-c CONFIG_FILE [CONFIG_FILE ...]] [-C FORCE_CONFIG_FILE]
+                     [--dump-configuration-file OUTPUT_CONFIG_FILE]
+                     [--dump-full-configuration-file OUTPUT_CONFIG_FILE]
+                     [-A ARCHITECTURE_PATHS] [-M MICROARCHITECTURE_PATHS]
+                     [-E ENVIRONMENT_PATHS] -T TARGET [--list-architectures]
+                     [--list-microarchitectures] [--list-environments]
+                     [--traceback] [--profile PROFILE_OUTPUT] -D
+                     SEQ_OUTPUT_DIR -seq SEQUENCE [SEQUENCE ...] [-r REPEAT]
+                     [-re REPLACE_EVERY] [-ae ADD_EVERY] [-be BRANCH_EVERY]
+                     [-bp BRANCH_PATTERN] [-ds] [-sb] [-ms]
+                     [-me MEMORY_STREAM] [-B BENCHMARK_SIZE]
+                     [-dd DEPENDENCY_DISTANCE] [-R] [-e] [-p]
+                     [-bn BATCH_NUMBER] [-nb NUM_BATCHES] [-s] [-sn] [-CC]
+                     [-N] [-Mm MAX_MEMORY] [-mm MIN_MEMORY] [-Mr MAX_REGSETS]
+                     [-ie]
+
+Microprobe seqtune tool
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -P SEARCH_PATH [SEARCH_PATH ...], --default_paths SEARCH_PATH [SEARCH_PATH ...]
+                        Default search paths for microprobe target definitions
+  -V, --version         Show Microprobe version and exit
+  -v, --verbosity       Verbosity level (Values: [0,1,2,3,4]). Each time this
+                        argument is specified the verbosity level is
+                        increased. By default, no logging messages are shown.
+                        These are the four levels available:
+                        
+                          -v (1): critical messages
+                          -v -v (2): critical and error messages
+                          -v -v -v (3): critical, error and warning messages
+                          -v -v -v -v (4): critical, error, warning and info messages
+                        
+                        Specifying more than four verbosity flags, will
+                        default to the maximum of four. If you need extra
+                        information, enable the debug mode (--debug or -d
+                        flags).
+  -d, --debug           Enable debug mode in Microprobe framework. Lots of
+                        output messages will be generated
+
+Configuration arguments:
+
+  Command arguments related to configuration file handling
+
+  -c CONFIG_FILE [CONFIG_FILE ...], --configuration CONFIG_FILE [CONFIG_FILE ...]
+                        Configuration file. The configuration files will be
+                        readed in order of appearance. Values are reset by the
+                        last configuration file in case of non-list values.
+                        List values will be appended (not reset)
+  -C FORCE_CONFIG_FILE, --force-configuration FORCE_CONFIG_FILE
+                        Force configuration file. Use this configuration file
+                        as the default start configuration. This disables any
+                        system-wide, or user-provided configuration.
+  --dump-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used
+  --dump-full-configuration-file OUTPUT_CONFIG_FILE
+                        Dump a configuration file with the actual
+                        configuration used plus all the configuration options
+                        not set
+
+Target path arguments:
+
+  Command arguments related to target paths
+
+  -A ARCHITECTURE_PATHS, --architecture-paths ARCHITECTURE_PATHS
+                        Search path for architecture definitions. Microprobe
+                        will search in these paths for architecture
+                        definitions
+  -M MICROARCHITECTURE_PATHS, --microarchitecture-paths MICROARCHITECTURE_PATHS
+                        Search path for microarchitecture definitions.
+                        Microprobe will search in these paths for
+                        microarchitecture definitions
+  -E ENVIRONMENT_PATHS, --environment-paths ENVIRONMENT_PATHS
+                        Search path for environment definitions. Microprobe
+                        will search in these paths for environment definitions
+
+Target arguments:
+
+  Command arguments related to target specification and queries
+
+  -T TARGET, --target TARGET
+                        Target tuple. Microprobe follows a GCC-like target
+                        definition scheme, where a target is defined by a
+                        tuple as following:
+                        
+                          &lt;arch-name&gt;-&lt;uarch-name&gt;-&lt;env-name&gt;
+                        
+                        where:
+                        
+                          &lt;arch-name&gt;: is the name of the architecture
+                          &lt;uarch-name&gt;: is the name of the microarchitecture
+                          &lt;env-name&gt;: is the name of the environment
+                        
+                        One can use --list-* options to get the list of
+                        definitions available in the default search paths or
+                        the paths specified by the different --*-paths options
+  --list-architectures  Generate a list of architectures available in the
+                        defined search paths and exit
+  --list-microarchitectures
+                        Generate a list of microarchitectures available in the
+                        defined search paths and exit
+  --list-environments   Generate a list of environments available in the
+                        defined search paths and exit
+
+Debug arguments:
+
+  Command arguments related to debugging facilities
+
+  --traceback           show a traceback and starts a python debugger (pdb)
+                        when an error occurs. &#39;pdb&#39; is an interactive python
+                        shell that facilitates the debugging of errors
+  --profile PROFILE_OUTPUT
+                        dump profiling information into given file (see
+                        &#39;pstats&#39; module)
+
+SEQTUNE arguments:
+
+  Command arguments related to Sequence tuner generator
+
+  -D SEQ_OUTPUT_DIR, --seq-output-dir SEQ_OUTPUT_DIR
+                        Output directory name
+  -seq SEQUENCE [SEQUENCE ...], --sequence SEQUENCE [SEQUENCE ...]
+                        Base instruction sequence to modify (command separated
+                        list of instructions). If multiple sequences are
+                        provided (separated by a space) they are combined
+                        (product).
+  -r REPEAT, --repeat REPEAT
+                        If multiple sequences are provided in --sequence, this
+                        parameter specifies how many of them are concated to
+                        generate the final sequence.
+  -re REPLACE_EVERY, --replace-every REPLACE_EVERY
+                        Replace every. String with the format
+                        &#39;INSTR1:INSTR2:RANGE&#39; to specfy that INSTR1 will be
+                        replaced by INSTR2 every RANGE instructions. Range can
+                        be just an integer or a RANGE specifier of the form:
+                        #1:#2 to generate a range from #1 to #2, or #1:#2:#3
+                        to generate a range between #1 to #2 with step #3.
+                        E.g. 10:20 generates 10, 11, 12 ... 19, 20 and 10:20:2
+                        generates 10, 12, 14, ... 18, 20.
+  -ae ADD_EVERY, --add-every ADD_EVERY
+                        Add every. String with the format &#39;INSTR1:RANGE&#39; to
+                        specfy that INSTR1 will be added to the sequence every
+                        RANGE instructions. Range can be just an integer or a
+                        RANGE specifier of the form: #1-#2 to generate a range
+                        from #1 to #2, or #1-#2-#3 to generate a range between
+                        #1 to #2 with step #3. E.g. 10:20 generates 10, 11, 12
+                        ... 19, 20 and 10:20:2 generates 10, 12, 14, ... 18,
+                        20.
+  -be BRANCH_EVERY, --branch-every BRANCH_EVERY
+                        Conditional branches are modeled not taken by default.
+                        Using this paratemeter, every N will be taken.
+  -bp BRANCH_PATTERN, --branch-pattern BRANCH_PATTERN
+                        Branch pattern (in binary) to be generated. E.g 0010
+                        will model the conditional branches as NotTaken
+                        NotTaken Taken NotTaken in a round robin fashion. One
+                        can use &#39;L&lt;range&gt;&#39; to generate all the patterns
+                        possible of length #. E.g. &#39;L2-5&#39; will generate all
+                        unique possible branch patterns of length 2,3,4 and 5.
+  -ds, --data-switch    Enable data switching for instruction. It tries to
+                        maximize the data switching factor on inputs and
+                        outputs of instructions.
+  -sb, --switch-branch  Switch branch pattern in each iteration.
+  -ms, --memory-switch  Enable data switching for memory operations. It tries
+                        to maximize the data switching factor on loads and
+                        store operations.
+  -me MEMORY_STREAM, --memory-stream MEMORY_STREAM
+                        Memory stream definition. String with the format
+                        NUM:SIZE:WEIGHT:STRIDE:REGS:RND:LOC1:LOC2 where NUM is
+                        the number of streams of this type, SIZE is the
+                        working set size of the stream in bytes, WEIGHT is the
+                        probability of the stream. E.g. streams with the
+                        sameweight will have same probability to be generated.
+                        STRIDE is the stride access patern between the
+                        elements of the stream and REGS is the number of
+                        register sets (address base + address index) to be
+                        used for each stream. RND controls the randomess of
+                        the generated memory access stream. -1 is full
+                        randomness, 0 is not randomness, and any value above 0
+                        control the randomness range. E.g. a value of 1024
+                        randomizes the accesses within 1024 bytes memory
+                        ranges.LOC1 and LOC2 control the temporal locality of
+                        the memory access stream in the following way: the
+                        last LOC1 accesses are going to be accessed again LOC2
+                        times before moving forward to the next addresses. If
+                        LOC2 is 0 not temporal locality is generated besides
+                        the implicit one from the memory access stream
+                        definition. All the elements of this format stream can
+                        be just a number or a range specfication (start-end)
+                        or (start-end-step). This flag can be specified
+                        multiple times
+  -B BENCHMARK_SIZE, --benchmark-size BENCHMARK_SIZE
+                        Size in instructions of the microbenchmark main loop.
+  -dd DEPENDENCY_DISTANCE, --dependency-distance DEPENDENCY_DISTANCE
+                        Average dependency distance between instructions. A
+                        value below 1 means not dependency between
+                        instructions. A value of 1 means a chain of dependent
+                        instructions.
+  -R, --reset           Reset the register contents on each loop iteration
+  -e, --endless         Some backends allow the control to wrap the sequence
+                        generated in an endless loop. Depending on the target
+                        specified, this flag will force to generate sequences
+                        in an endless loop (some targets might ignore it)
+  -p, --parallel        Generate benchmarks in parallel
+  -bn BATCH_NUMBER, --batch-number BATCH_NUMBER
+                        Batch number to generate. Check --num-batches option
+                        for more details
+  -nb NUM_BATCHES, --num-batches NUM_BATCHES
+                        Number of batches. The number of microbenchmark to
+                        generate is divided by this number, and the number the
+                        batch number specified using -bn option is generated.
+                        This is useful to split the generation of many test
+                        cases in various batches.
+  -s, --skip            Skip benchmarks already generated
+  -sn, --shortnames     Use short output names
+  -CC, --compress       Compress output files
+  -N, --count           Only count the number of sequence to generate. Do not
+                        generate anything
+  -Mm MAX_MEMORY, --max-memory MAX_MEMORY
+                        Maximum memory for all the streams generated
+  -mm MIN_MEMORY, --min-memory MIN_MEMORY
+                        Minimum memory for all the streams generated
+  -Mr MAX_REGSETS, --max-regsets MAX_REGSETS
+                        Maximum number of regsets for all the streams
+                        generated
+  -ie, --ignore-errors  Ignore error during code generation (continue in case
+                        of an error in a particular parameter combination)
+
+Environment variables:
+
+  MICROPROBETEMPLATES    Default path for microprobe templates
+  MICROPROBEDEBUG        If set, enable debug
+  MICROPROBEDEBUGPASSES  If set, enable debug during passes
+  MICROPROBEASMHEXFMT    Assembly hexadecimal format. Options:
+                         &#39;all&#39; -&gt; All immediates in hex format
+                         &#39;address&#39; -&gt; Address immediates in hex format (default)
+                         &#39;none&#39; -&gt; All immediate in integer format
+</pre></div>
+</div>
+</section>
+<section id="example-use-case">
+<h2>Example use case<a class="headerlink" href="#example-use-case" title="Link to this heading"></a></h2>
+<p>This use case is using the <strong>power_v300-power9-ppc64_linux_gcc</strong> target for
+illustrative purposes. The same can be done on other targets.</p>
+<p>Let’s assume that you have analyzed different instruction sequences
+(check <a class="reference internal" href="tools_mp_seq.html"><span class="doc">Tool: mp_seq</span></a>) on the target and you have decided
+a base instruction sequence to be the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">SUBFIC_V0</span><span class="p">,</span><span class="n">LVXL_V0</span><span class="p">,</span><span class="n">LWA_V0</span><span class="p">,</span><span class="n">SUBFIC_V0</span><span class="p">,</span><span class="n">LXVW4X_V0</span><span class="p">,</span><span class="n">VMHADDSHS_V0</span>
+</pre></div>
+</div>
+<p>Then, you want to generate variations around that base sequence that
+generate different memory access patterns that do the following:</p>
+<ul class="simple">
+<li><p>Four memory access patterns that access, each of them, a memory range from
+2K to 32K in steps of 1K.</p></li>
+<li><p>Each memory access pattern access its own memory range in a round-robin
+fashion using a minimum stride of 144 bytes.</p></li>
+<li><p>Each memory access pattern has the same probability to be used.</p></li>
+<li><p>Each memory access pattern use a single set for base/index registers.</p></li>
+<li><p>No added randomness in the memory access pattern.</p></li>
+<li><p>No added temporal locality in the memory access pattern.</p></li>
+</ul>
+<p>To do so, we need to issue the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mp_seqtune</span> <span class="o">-</span><span class="n">T</span> <span class="n">power_v300</span><span class="o">-</span><span class="n">power9</span><span class="o">-</span><span class="n">ppc64_linux_gcc</span> <span class="o">-</span><span class="n">D</span> <span class="o">.</span> <span class="o">-</span><span class="n">seq</span> <span class="n">SUBFIC_V0</span><span class="p">,</span><span class="n">LVXL_V0</span><span class="p">,</span><span class="n">LWA_V0</span><span class="p">,</span><span class="n">SUBFIC_V0</span><span class="p">,</span><span class="n">LXVW4X_V0</span><span class="p">,</span><span class="n">VMHADDSHS_V0</span> <span class="o">-</span><span class="n">me</span> <span class="mi">4</span><span class="p">:</span><span class="mi">2048</span><span class="o">-</span><span class="mi">32768</span><span class="o">-</span><span class="mi">1024</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">144</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>This will generate 31 microbenchmarks in the current directory. One with
+4 streams accessing each 2K memory region, one with 4 streams accessing each a
+3K memory reagion, etc. up to 32K memory region.</p>
+<p>In the command above, we used the <code class="docutils literal notranslate"><span class="pre">-me</span></code> parameter to specify the
+variations to be generated around the memory behavior. The parameter value
+is split in 8 fields using <code class="docutils literal notranslate"><span class="pre">:</span></code> symbol. The meaning of the fields is the
+following:</p>
+<ul class="simple">
+<li><p>4 : number of memory streams</p></li>
+<li><p>2048-32768-1024 : memory sizes for each stream. This tuple is interpreted as
+<code class="docutils literal notranslate"><span class="pre">&lt;start&gt;-&lt;end&gt;-&lt;step&gt;</span></code>. Note that the <code class="docutils literal notranslate"><span class="pre">&lt;step&gt;</span></code> field is optional.
+This format can be used in other parameters and fields.</p></li>
+<li><p>1 : weight these streams. This directly translates to the probability of a
+given stream to be used. E.g.
+if we define 3 memory streams with one having a weight of 2 and the other
+2 a weight of 1, the probability will be: 50%, 25% and 25% for each of them.
+This results in that every 4 memory accesses 2 will use stream 1, and the
+other 2 stream 2 and 3, respectively.</p></li>
+<li><p>144 : stream stride in bytes. Stride between consecutive accesses in the same
+stream. In this case, the stream will access positions 0, 144, 288, etc.
+until the maximum size is reached. Then, it will start from zero again.</p></li>
+<li><p>1 : number of register sets to be use for the stream. Streams require the
+reservation of base/index registers for address computations. If there are
+enough registers available, one might want to increase this number to
+increase the ILP between address computation and usage.</p></li>
+<li><p>0 : No randomness. Memory accesses will be performance sequentially using
+stride specified. If the value is set to -1, the memory access stream is
+completelly random. If set to a value &gt; 0, the memory access stream is
+random within the specified range.</p></li>
+<li><p>1:0 : No added temporaral locality since last 1 memory access will be repeated
+0 times before moving to next memory address.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One can use the <code class="docutils literal notranslate"><span class="pre">-N</span></code> flag to check the sequence definition and the number
+of sequences that are going to be generated before starting the generation
+process.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

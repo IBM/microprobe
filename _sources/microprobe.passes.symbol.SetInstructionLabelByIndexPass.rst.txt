@@ -1,0 +1,41 @@
+microprobe.passes.symbol.SetInstructionLabelByIndexPass
+=======================================================
+
+.. currentmodule:: microprobe.passes.symbol
+
+.. autoclass:: SetInstructionLabelByIndexPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SetInstructionLabelByIndexPass.__init__
+      ~SetInstructionLabelByIndexPass.check
+      ~SetInstructionLabelByIndexPass.info
+      ~SetInstructionLabelByIndexPass.report
+      ~SetInstructionLabelByIndexPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

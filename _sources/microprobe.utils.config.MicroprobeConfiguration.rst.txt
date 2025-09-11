@@ -1,0 +1,48 @@
+microprobe.utils.config.MicroprobeConfiguration
+===============================================
+
+.. currentmodule:: microprobe.utils.config
+
+.. autoclass:: MicroprobeConfiguration
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MicroprobeConfiguration.__init__
+      ~MicroprobeConfiguration.clear
+      ~MicroprobeConfiguration.copy
+      ~MicroprobeConfiguration.fromkeys
+      ~MicroprobeConfiguration.get
+      ~MicroprobeConfiguration.items
+      ~MicroprobeConfiguration.keys
+      ~MicroprobeConfiguration.pop
+      ~MicroprobeConfiguration.popitem
+      ~MicroprobeConfiguration.setdefault
+      ~MicroprobeConfiguration.update
+      ~MicroprobeConfiguration.values
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

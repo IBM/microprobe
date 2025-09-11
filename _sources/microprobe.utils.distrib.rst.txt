@@ -1,0 +1,92 @@
+﻿========================
+microprobe.utils.distrib
+========================
+
+.. automodule:: microprobe.utils.distrib
+   :no-members:
+   :no-show-inheritance:
+   :no-inherited-members:
+   :no-undoc-members:
+   :no-special-members:
+   :no-private-members:
+   
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      average
+      compute_weighted_profile_average
+      discrete_average
+      generate_plain_profile
+      generate_weighted_profile
+      locality
+      probability
+      pstdev
+      regular_probability
+      regular_seq
+      shuffle
+      sort_by_distance
+      sort_by_usage
+      weighted_choice
+   
+   
+
+   
+   
+
+   .. rubric:: Classes
+
+   .. autosummary::
+      :template: myclass2.rst 
+      :toctree:
+   
+      Choice
+
+   .. rubric:: Classes diagram
+
+   .. inheritance-diagram::  Choice 
+
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
+   
+
+   
+   ---------
+   Functions
+   ---------
+   
+   .. autofunction:: average
+   .. autofunction:: compute_weighted_profile_average
+   .. autofunction:: discrete_average
+   .. autofunction:: generate_plain_profile
+   .. autofunction:: generate_weighted_profile
+   .. autofunction:: locality
+   .. autofunction:: probability
+   .. autofunction:: pstdev
+   .. autofunction:: regular_probability
+   .. autofunction:: regular_seq
+   .. autofunction:: shuffle
+   .. autofunction:: sort_by_distance
+   .. autofunction:: sort_by_usage
+   .. autofunction:: weighted_choice
+   

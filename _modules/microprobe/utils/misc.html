@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>microprobe.utils.misc &mdash; Microprobe v0.5 - HEAD  Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/minilogo_white_256px2.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34ebda9d"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Microprobe: Microbenchmark Generation Framework
+              <img src="../../../_static/minilogo_whiteb_150px.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_microprobe.html">Microprobe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../start.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Command line tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../devel.html">Development Corner</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../index_publications.html">Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../copyright.html">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Microprobe: Microbenchmark Generation Framework</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">microprobe.utils.misc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for microprobe.utils.misc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2011-2021 IBM Corporation</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;:mod:`microprobe.utils.misc` module</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># Built-in modules</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bz2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">timeit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="c1"># Own modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe</span><span class="w"> </span><span class="kn">import</span> <span class="n">MICROPROBE_RC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicroprobeDuplicatedValueError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">microprobe.utils.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="c1"># Constants</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;natural_sort&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dict2OrderedDict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RejectingDict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RejectingOrderedDict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Pickable&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;primes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;closest_divisor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;smart_copy_dict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;findfiles&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RNDINT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RNDFP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;twocs_to_int&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;int_to_twocs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;iter_flatten&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;which&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Progress&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;range_to_sequence&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longest_common_substr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;open_generic_fd&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;getnextf&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;move_file&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;compress_file&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RND&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_RND_SEED</span> <span class="o">=</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;seed&quot;</span><span class="p">]</span>  <span class="c1"># My favorite number ;)</span>
+
+<span class="n">RND</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">()</span>
+<span class="n">RND</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">_RND_SEED</span><span class="p">)</span>
+<span class="n">_RNDINT</span> <span class="o">=</span> <span class="n">RND</span>
+<span class="n">_RNDFP</span> <span class="o">=</span> <span class="n">RND</span>
+
+
+<span class="c1"># Functions</span>
+<div class="viewcode-block" id="getnextf">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.getnextf">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">getnextf</span><span class="p">(</span><span class="n">itr</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">next_function</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">itr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">next_function</span></div>
+
+
+
+<div class="viewcode-block" id="natural_sort">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.natural_sort">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">natural_sort</span><span class="p">(</span><span class="n">input_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param input_list:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param text:</span>
+<span class="sd">        :type text:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">alphanum_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param key:</span>
+<span class="sd">        :type key:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">convert</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;([0-9]+)&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">alphanum_key</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="dict2OrderedDict">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.dict2OrderedDict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dict2OrderedDict</span><span class="p">(</span><span class="n">my_dict</span><span class="p">):</span>  <span class="c1"># pylint: disable-msg=C0103</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param my_dict:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">odict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">natural_sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">my_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+
+        <span class="n">odict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">odict</span></div>
+
+
+
+<div class="viewcode-block" id="twocs_to_int">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.twocs_to_int">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">twocs_to_int</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">bits</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;compute the int value of a two compliment int&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">bits</span><span class="p">,</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">bits</span><span class="p">)</span>  <span class="c1"># check if it fits</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">bits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if sign bit is set -&gt; 8bit: 128-255</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bits</span><span class="p">)</span>  <span class="c1"># compute negative value</span>
+    <span class="k">return</span> <span class="n">val</span>  <span class="c1"># return positive value as is</span></div>
+
+
+
+<div class="viewcode-block" id="int_to_twocs">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.int_to_twocs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">int_to_twocs</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">bits</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;compute the two compliment of a int&quot;&quot;&quot;</span>
+
+    <span class="c1"># check if it fits</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">&lt;=</span> <span class="n">bits</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">bits</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">bin</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">bits</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">val</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;0b</span><span class="si">{</span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">bits</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="shift_with_sign">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.shift_with_sign">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">shift_with_sign</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">bits</span><span class="p">,</span> <span class="n">shift</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;shift value extending sign in twocs format&quot;&quot;&quot;</span>
+
+    <span class="c1"># check if it fits</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">&lt;=</span> <span class="n">bits</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">val</span><span class="p">))</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">bits</span>
+
+    <span class="n">ormask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="o">*</span> <span class="n">shift</span> <span class="o">+</span> <span class="s2">&quot;0&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">bits</span> <span class="o">-</span> <span class="n">shift</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="o">*</span> <span class="n">bits</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">val</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span><span class="p">)</span> <span class="o">|</span> <span class="n">ormask</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span></div>
+
+
+
+<div class="viewcode-block" id="primes">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.primes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">primes</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param number:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">primfac</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">divisor</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">while</span> <span class="n">divisor</span> <span class="o">*</span> <span class="n">divisor</span> <span class="o">&lt;=</span> <span class="n">number</span><span class="p">:</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">number</span> <span class="o">%</span> <span class="n">divisor</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># supposing you want multiple factors repeated</span>
+            <span class="n">primfac</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">divisor</span><span class="p">)</span>
+            <span class="n">number</span> <span class="o">/=</span> <span class="n">divisor</span>
+        <span class="n">divisor</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">number</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">primfac</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">primfac</span></div>
+
+
+
+<div class="viewcode-block" id="closest_divisor">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.closest_divisor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">closest_divisor</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">closer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param target:</span>
+<span class="sd">    :param closer:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mprimes</span> <span class="o">=</span> <span class="n">primes</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">mprimes</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="o">*</span> <span class="n">elem</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">closer</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="n">elem</span>
+
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">closer</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">closer</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="smart_copy_dict">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.smart_copy_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">smart_copy_dict</span><span class="p">(</span><span class="n">olddict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param olddict:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">new_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">olddict</span><span class="p">,</span> <span class="n">RejectingDict</span><span class="p">):</span>
+        <span class="n">new_dict</span> <span class="o">=</span> <span class="n">RejectingDict</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">olddict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">[:]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">RejectingDict</span><span class="p">)):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">smart_copy_dict</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[:]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">RejectingDict</span><span class="p">)):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">smart_copy_dict</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">new_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">new_dict</span></div>
+
+
+
+<div class="viewcode-block" id="findfiles">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.findfiles">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">findfiles</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">regexp</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">maxcount</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param paths:</span>
+<span class="sd">    :type paths:</span>
+<span class="sd">    :param regexp:</span>
+<span class="sd">    :type regexp:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Start find files&quot;</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Paths: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Regexp: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">regexp</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">:</span>
+        <span class="n">regexp</span> <span class="o">=</span> <span class="n">regexp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">re_obj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">regexp</span><span class="p">)</span>
+
+    <span class="n">path_seen</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">path_seen</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">all_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">base_path</span><span class="p">,</span> <span class="n">dummy_dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">all_files</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="n">maxcount</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Maximum number of files checked.&quot;</span>
+                        <span class="s2">&quot; Stopping the search.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">break</span>
+
+                <span class="n">fullname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">fullname</span>
+
+                <span class="k">if</span> <span class="n">fullname</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">re_obj</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;File match: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="n">maxcount</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="n">maxcount</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">path_seen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;End find files&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<div class="viewcode-block" id="RNDINT">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.RNDINT">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">RNDINT</span><span class="p">(</span><span class="n">maxmin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># pylint: disable-msg=invalid-name</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a random integer between 0 and 2^64.&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;random&quot;</span><span class="p">:</span>
+        <span class="c1"># Make the call to maintain same state</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">_RNDINT</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">64</span><span class="p">))</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;pattern_update&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;negate&quot;</span><span class="p">:</span>
+            <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">~</span><span class="n">val</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFFFFFFFFFF</span>
+        <span class="k">if</span> <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;pattern_update&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;rotate&quot;</span><span class="p">:</span>
+            <span class="n">MICROPROBE_RC</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">val</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">val</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">64</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFFFFFFFFFF</span>
+
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="k">if</span> <span class="n">maxmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_RNDINT</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">64</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_RNDINT</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="n">maxmin</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RNDFP">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.RNDFP">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">RNDFP</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>  <span class="c1"># pylint: disable-msg=invalid-name</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a random floating point between x and y&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_RNDFP</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="iter_flatten">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.iter_flatten">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">iter_flatten</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param iterable:</span>
+<span class="sd">    :type iterable:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">another_element</span> <span class="ow">in</span> <span class="n">iter_flatten</span><span class="p">(</span><span class="n">element</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">another_element</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">element</span></div>
+
+
+
+<div class="viewcode-block" id="range_to_sequence">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.range_to_sequence">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">range_to_sequence</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;This function does not support more than 3 arguments&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">retval</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span>
+            <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="n">step</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">step</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">))</span> <span class="o">//</span> <span class="n">step</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">end</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">retval</span><span class="p">:</span>
+        <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">retval</span></div>
+
+
+
+<div class="viewcode-block" id="range_to_sequence_float">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.range_to_sequence_float">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">range_to_sequence_float</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;This function does not support more than 3 arguments&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">end</span> <span class="o">+</span> <span class="mf">0.0000000000001</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">retval</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span>
+    <span class="n">cval</span> <span class="o">=</span> <span class="n">start</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">cval</span> <span class="o">+</span> <span class="n">step</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+        <span class="n">retval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cval</span> <span class="o">+</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">cval</span> <span class="o">+=</span> <span class="n">step</span>
+
+    <span class="k">return</span> <span class="n">retval</span></div>
+
+
+
+<div class="viewcode-block" id="which">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.which">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param program:</span>
+<span class="sd">    :type program:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_exe</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param fpath:</span>
+<span class="sd">        :type fpath:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ext_candidates</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param fpath:</span>
+<span class="sd">        :type fpath:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">yield</span> <span class="n">fpath</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PATHEXT&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">fpath</span> <span class="o">+</span> <span class="n">ext</span>
+
+    <span class="n">fpath</span><span class="p">,</span> <span class="n">dummy_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">program</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fpath</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_exe</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">program</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PATH&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pathsep</span><span class="p">):</span>
+            <span class="n">exe_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">program</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">ext_candidates</span><span class="p">(</span><span class="n">exe_file</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">is_exe</span><span class="p">(</span><span class="n">candidate</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">candidate</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="longest_common_substr">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.longest_common_substr">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">longest_common_substr</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="n">str2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param str1:</span>
+<span class="sd">    :type str1:</span>
+<span class="sd">    :param str2:</span>
+<span class="sd">    :type str2:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">str1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">str2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="n">str1_char</span><span class="p">,</span> <span class="n">str1_rest</span><span class="p">,</span> <span class="n">str2_char</span><span class="p">,</span> <span class="n">str2_rest</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">str1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">str1</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+        <span class="n">str2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">str2</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">str1_char</span> <span class="o">==</span> <span class="n">str2_char</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">str1_char</span> <span class="o">+</span> <span class="n">longest_common_substr</span><span class="p">(</span><span class="n">str1_rest</span><span class="p">,</span> <span class="n">str2_rest</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="n">longest_common_substr</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="n">str2_rest</span><span class="p">),</span>
+            <span class="n">longest_common_substr</span><span class="p">(</span><span class="n">str1_rest</span><span class="p">,</span> <span class="n">str2</span><span class="p">),</span>
+            <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="c1"># Classes</span>
+<div class="viewcode-block" id="RejectingDict">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.RejectingDict.html#microprobe.utils.misc.RejectingDict">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RejectingDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dictionary that raise an exception if the key is already set.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param key:</span>
+<span class="sd">        :param value:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeDuplicatedValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Key &#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; is already present&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RejectingDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RejectingOrderedDict">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.RejectingOrderedDict.html#microprobe.utils.misc.RejectingOrderedDict">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RejectingOrderedDict</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An ordered dictionary that raises an exception if key is already set.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>  <span class="c1"># pylint: disable=arguments-differ</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param key:</span>
+<span class="sd">        :param value:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MicroprobeDuplicatedValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Key &#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; is already present&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RejectingOrderedDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Pickable">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.Pickable.html#microprobe.utils.misc.Pickable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pickable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable-msg=R0903</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A helper class to implement the pickling interface.</span>
+
+<span class="sd">    Objects that inherit from this class are automatically serialized/</span>
+<span class="sd">    deserialized to disk whenever is needed. Check what is &#39;pickle&#39; in</span>
+<span class="sd">    python for more details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param state:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Progress">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.Progress.html#microprobe.utils.misc.Progress">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Progress</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable-msg=too-few-public-methods</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A counting progress indicator.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Progress.__init__">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.Progress.html#microprobe.utils.misc.Progress.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :arg total: Objective progress count.</span>
+<span class="sd">        :type total: int</span>
+
+<span class="sd">        :arg msg: Message to prefix to the progress indicator.</span>
+<span class="sd">        :type msg: str</span>
+
+<span class="sd">        :arg out: Output file.</span>
+<span class="sd">        :type out: file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="o">=</span> <span class="n">total</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fd</span> <span class="o">=</span> <span class="n">out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fmt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot; </span><span class="si">%%</span><span class="s2">s  </span><span class="si">%%%%%d</span><span class="s2">d / </span><span class="si">%%</span><span class="s2">d (</span><span class="si">%%%%</span><span class="s2">2.1f/100) &quot;</span>
+            <span class="s2">&quot;ETA: </span><span class="si">%%%%</span><span class="s2">s                         </span><span class="se">\r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_total</span><span class="p">)))</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fmt</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_eta</span> <span class="o">=</span> <span class="s2">&quot;???&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skip_delete</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment the progress indicator by *increment*.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="n">increment</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">required_time</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">module</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">:</span>
+
+            <span class="n">time_per_increment</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span>
+            <span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span>
+
+            <span class="n">required_time</span> <span class="o">=</span> <span class="n">time_per_increment</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">)</span>
+
+            <span class="n">minut</span><span class="p">,</span> <span class="n">sec</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">required_time</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="n">hour</span><span class="p">,</span> <span class="n">minut</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">minut</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eta</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">h:</span><span class="si">%02d</span><span class="s2">m:</span><span class="si">%02d</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minut</span><span class="p">,</span> <span class="n">sec</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="n">module</span>
+
+        <span class="k">if</span> <span class="n">required_time</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fmt</span>
+                <span class="o">%</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">,</span>
+                    <span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_eta</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete the progress indicator from screen.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fmt</span> <span class="o">%</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">length</span><span class="si">}</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span>
+        <span class="n">minut</span><span class="p">,</span> <span class="n">sec</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">total_time</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">hour</span><span class="p">,</span> <span class="n">minut</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">minut</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">minut</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">time_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> Elapsed time: </span><span class="si">%d</span><span class="s2">h:</span><span class="si">%02d</span><span class="s2">m:</span><span class="si">%02d</span><span class="s2">s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_msg</span><span class="p">,</span>
+                <span class="n">hour</span><span class="p">,</span>
+                <span class="n">minut</span><span class="p">,</span>
+                <span class="n">sec</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">time_str</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="open_generic_fd">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.open_generic_fd">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">open_generic_fd</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;b&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">+=</span> <span class="s2">&quot;b&quot;</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.bz2&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;b&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">+=</span> <span class="s2">&quot;b&quot;</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fd</span></div>
+
+
+
+<div class="viewcode-block" id="compress_file">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.compress_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compress_file</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="n">move_file</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">.gz&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="move_file">
+<a class="viewcode-back" href="../../../microprobe.utils.misc.html#microprobe.utils.misc.move_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_file</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="n">sfd</span> <span class="o">=</span> <span class="n">open_generic_fd</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+    <span class="n">tfd</span> <span class="o">=</span> <span class="n">open_generic_fd</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+    <span class="c1"># tfd.write(&quot;&quot;.join(sfd.readlines()).encode())</span>
+    <span class="n">tfd</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">sfd</span><span class="p">)</span>
+    <span class="n">sfd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">tfd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">source</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; <a href="../../../copyright.html">Copyright</a> IBM Corporation, 2011-2020.
+ v0.5 - HEAD .
+      <span class="lastupdated">Last updated on Sep 11, 2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

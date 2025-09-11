@@ -1,0 +1,42 @@
+microprobe.passes.branch.FixIndirectBranchPass
+==============================================
+
+.. currentmodule:: microprobe.passes.branch
+
+.. autoclass:: FixIndirectBranchPass
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~FixIndirectBranchPass.__init__
+      ~FixIndirectBranchPass.check
+      ~FixIndirectBranchPass.check_branch
+      ~FixIndirectBranchPass.info
+      ~FixIndirectBranchPass.report
+      ~FixIndirectBranchPass.requires
+   
+   
+
+   
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+

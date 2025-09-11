@@ -1,0 +1,55 @@
+microprobe.target.Target
+========================
+
+.. currentmodule:: microprobe.target
+
+.. autoclass:: Target
+   :members:
+   :no-private-members:
+   :no-special-members:
+   :undoc-members:
+   :inherited-members:
+   
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Target.__init__
+      ~Target.full_report
+      ~Target.property_isa_map
+      ~Target.set_env
+      ~Target.set_isa
+      ~Target.set_uarch
+      ~Target.set_wrapper
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Target.description
+      ~Target.environment
+      ~Target.isa
+      ~Target.microarchitecture
+      ~Target.name
+      ~Target.reserved_registers
+      ~Target.wrapper
+   
+   
+
+   
+   .. raw:: html
+      
+      <br>
+      <hr width="75%">  
+      <br>
+
+   
+
