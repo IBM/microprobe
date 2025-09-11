@@ -16,12 +16,13 @@
 """
 
 # Futures
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, annotations
 
 # Built-in modules
 import abc
 import os
 import random
+from typing import Dict, List, TYPE_CHECKING, cast
 
 # Third party modules
 
@@ -36,6 +37,10 @@ from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import OrderedDict, natural_sort
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.utils.yaml import read_yaml
+
+# Type hinting
+if TYPE_CHECKING:
+    from microprobe.code.context import Context
 
 # Constants
 SCHEMA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schemas",
@@ -283,7 +288,7 @@ class OperandDescriptor:
 
     """
 
-    def __init__(self, mtype, is_input, is_output):
+    def __init__(self, mtype: Operand, is_input, is_output):
         """
 
         :param mtype:
@@ -310,7 +315,7 @@ class OperandDescriptor:
         """Is output flag (:class:`~.bool`) """
         return self._is_output
 
-    def set_type(self, new_type):
+    def set_type(self, new_type: Operand):
         """
 
         :param new_type:
@@ -614,7 +619,14 @@ class Operand(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def values(self):
+    def values(self) -> List[Register]:
+        """Return the possible value of the operand."""
+        raise NotImplementedError
+
+    # TODO: Consider making filtered_values into values.
+    def filtered_values(
+        self, context: Context, fieldname: str
+    ) -> List[Register]:
         """Return the possible value of the operand."""
         raise NotImplementedError
 
@@ -765,8 +777,14 @@ class OperandReg(Operand):
 
     """
 
-    def __init__(self, name, descr, regs, address_base, address_index,
-                 floating_point, vector):
+    def __init__(self,
+                 name: str,
+                 descr: str,
+                 regs: List[Register] | Dict[Register, List[Register]],
+                 address_base,
+                 address_index: int,
+                 floating_point: bool | None,
+                 vector: bool | None):
         """
 
         :param name:
@@ -781,7 +799,7 @@ class OperandReg(Operand):
         super(OperandReg, self).__init__(name, descr)
 
         if isinstance(regs, list):
-            self._regs = OrderedDict()
+            self._regs: Dict[Register, List[Register]] = OrderedDict()
             for reg in regs:
                 self._regs[reg] = [reg]
         else:
@@ -806,6 +824,57 @@ class OperandReg(Operand):
         :rtype: :class:`list` of :class:`~.Register`
         """
         return list(self._regs.keys())
+
+    def filtered_values(self, context: Context, fieldname: str):
+        lmul_sew = cast(int | None, context.get_registername_value("LMUL"))
+
+        if lmul_sew is None or not fieldname.startswith("v"):
+            return self.values()
+
+        sew = lmul_sew & 127
+        lmul = lmul_sew >> 9
+
+        if fieldname in ["vd", "vmd", "vrs1", "vrs2", "vmask"]:
+            lmul *= 1
+        elif fieldname in ["vdd", "vdmd", "vdrs1", "vdrs2", "vnd", "vnmd"]:
+            lmul *= 2
+        elif fieldname in []:
+            lmul *= 4
+        elif fieldname in []:
+            lmul *= 8
+        else:
+            raise ValueError(f"Unhandled LMUL operand name: {fieldname}")
+
+        regs = list(self._regs.keys())
+
+        class LMULRegs:
+            lmul1 = regs
+            lmul2 = [
+                reg
+                for reg in self._regs.keys()
+                if reg.name in set([f"V{i}" for i in range(0, 32, 2)])
+            ]
+            lmul4 = [
+                reg
+                for reg in self._regs.keys()
+                if reg.name in set([f"V{i}" for i in range(0, 32, 4)])
+            ]
+            lmul8 = [
+                reg
+                for reg in self._regs.keys()
+                if reg.name in set([f"V{i}" for i in range(0, 32, 8)])
+            ]
+
+        if lmul == 1:
+            return LMULRegs.lmul1
+        elif lmul == 2:
+            return LMULRegs.lmul2
+        elif lmul == 4:
+            return LMULRegs.lmul4
+        elif lmul == 8:
+            return LMULRegs.lmul8
+        else:
+            raise ValueError(f"Unhandled LMUL value: {lmul}")
 
     def representation(self, value):
         """
@@ -924,6 +993,11 @@ class OperandImmRange(Operand):
                 if elem not in self._novalues
             ]
         return self._computed_values
+
+    def filtered_values(
+        self, context: Context, fieldname: str
+    ):
+        return super().filtered_values(context, fieldname)
 
     def set_valid_values(self, values):
         """
@@ -1081,6 +1155,11 @@ class OperandValueSet(Operand):
         """
         return self._values
 
+    def filtered_values(
+        self, context: Context, fieldname: str
+    ):
+        return super().filtered_values(context, fieldname)
+
     def representation(self, value):
         """
 
@@ -1174,6 +1253,11 @@ class OperandConst(Operand):
         :rtype: list of ::class:`~.int`
         """
         return [self._value]
+
+    def filtered_values(
+        self, context: Context, fieldname: str
+    ):
+        return super().filtered_values(context, fieldname)
 
     def representation(self, value):
         """
@@ -1283,6 +1367,11 @@ class OperandConstReg(Operand):
         """
         return [self._reg]
 
+    def filtered_values(
+        self, context: Context, fieldname: str
+    ):
+        return super().filtered_values(context, fieldname)
+
     def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.
 
@@ -1390,6 +1479,11 @@ class InstructionAddressRelativeOperand(Operand):
         :rtype: list of ::class:`~.int`
         """
         return [self._mindispl << self._shift]
+
+    def filtered_values(
+        self, context: Context, fieldname: str
+    ):
+        return super().filtered_values(context, fieldname)
 
     def random_value(self, rand: random.Random):
         """Return a random possible value for the operand.

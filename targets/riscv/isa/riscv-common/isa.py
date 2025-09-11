@@ -66,6 +66,7 @@ class RISCVISA(GenericISA):
         self._scratch_registers += [
             self.registers["X31"],
             self.registers["F7"],
+            self.registers["V24"], # Safe for all lmuls
         ]
         self._control_registers += [
             reg for reg in self.registers.values() if reg.type.name == "rm"
@@ -232,9 +233,60 @@ class RISCVISA(GenericISA):
                 instr.set_operands([int(value & 0x3FF), register, register])
                 instrs.append(instr)
 
+        elif register.type.name == "vreg":
+            LOG.debug("Vector register")
+
+            if present_reg is not None:
+                LOG.debug("Value already present")
+
+                instr = self.new_instruction("VMV.V.V_V0")
+                instr.set_operands([register, present_reg])
+                instrs.append(instr)
+
+            else:
+                # Load the value into the vector register 1 chunk at a time.
+
+                chunks = [
+                    (value >> 1024 - (64 * i)) & 0xFFFFFFFFFFFFFFFF
+                    for i in range(1, 17)
+                ]
+
+                for chunk in chunks:
+                    # Set int register to chunk
+                    shiftleft = self.new_instruction("VSLIDE1UP.VX_V0")
+                    instrs.extend(
+                        self.set_register(
+                            self._scratch_registers[0], chunk, context)
+                    )
+
+                    # Shift existing vector register value and insert chunk
+                    shiftleft.set_operands(
+                        [self._scratch_registers[2], register, self._scratch_registers[0]]
+                    )
+                    instrs.append(shiftleft)
+
+                    vmove = self.new_instruction("VMV1R.V_V0")
+                    vmove.set_operands(
+                        [register, self._scratch_registers[2]]
+                    )
+                    instrs.append(vmove)
+
+            LOG.debug(f"Register: {register.name} set to value {value}")
+        elif register.type.name == "LMUL" and value in [lmul << 9 | sew & 127 for lmul in [1, 2, 4, 8] for sew in [8, 16, 32, 64]]:
+            sew = value & 127
+            lmul = value >> 9
+            vset = self.new_instruction(f"vsetivli_lmul{lmul}_e{sew}")
+            instrs.append(vset)
+            LOG.debug(f"Register: {register.name} set to value {value}")
         else:
-            LOG.debug("Register: %s set to value %d", register.name, value)
-            raise NotImplementedError
+            if register.type.name == "LMUL":
+                raise NotImplementedError(
+                    f"Don't know how to initialize {register.type.name} register with value {value}. LMUL: {value >> 9} SEW: {value & 127}"
+                )
+            else:
+                raise NotImplementedError(
+                    f"Don't know how to initialize {register.type.name} register with value {value}."
+                )
 
         if len(instrs) > 0:
             return instrs

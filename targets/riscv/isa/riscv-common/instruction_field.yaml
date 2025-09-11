@@ -83,6 +83,12 @@
   Show: False
   IO: "I"
   Operand: "imm10"
+- Name: "funct20"
+  Size: 20
+  Description: "funct20"
+  Show: False
+  IO: "?"
+  Operand: "imm20"
 - Name: "funct25"
   Size: 25
   Description: "funct25"
@@ -101,6 +107,18 @@
   Show: True
   IO: "I"
   Operand: "u.imm12"
+- Name: "i_imm5"
+  Size: 5
+  Description: "imm5"
+  Show: True
+  IO: "I"
+  Operand: "simm5"
+- Name: "ioff_imm5"
+  Size: 5
+  Description: "imm5 offset by 1"
+  Show: True
+  IO: "I"
+  Operand: "soimm5"
 - Name: "i_imm6"
   Size: 6
   Description: "i_imm6"
@@ -483,3 +501,70 @@
   Show: True
   IO: "I"
   Operand: "spreg"
+# Vector
+- Name: "vd"
+  Size: 5
+  Description: "vd"
+  Show: True
+  IO: "O"
+  Operand: "vreg"
+- Name: "vmd"
+  Size: 5
+  Description: "vd excluding V0"
+  Show: True
+  IO: "O"
+  Operand: "vnotmask"
+- Name: "vrs1"
+  Size: 5
+  Description: "vrs1"
+  Show: True
+  IO: "I"
+  Operand: "vreg"
+- Name: "vrs2"
+  Size: 5
+  Description: "vrs2"
+  Show: True
+  IO: "I"
+  Operand: "vreg"
+- Name: "vmask"
+  Size: 5
+  Description: "vmask"
+  Show: True
+  IO: "I"
+  Operand: "vmask"
+- Name: "vdd"
+  Size: 5
+  Description: "vd double the lmul"
+  Show: True
+  IO: "O"
+  Operand: "vreg"
+- Name: "vdmd"
+  Size: 5
+  Description: "vd excluding V0 double the lmul"
+  Show: True
+  IO: "O"
+  Operand: "vnotmask"
+- Name: "vnd"
+  Size: 5
+  Description: "vd narrowing insn"
+  Show: True
+  IO: "O"
+  Operand: "vreg"
+- Name: "vnmd"
+  Size: 5
+  Description: "vd excluding V0 narrowing insn"
+  Show: True
+  IO: "O"
+  Operand: "vnotmask"
+- Name: "vdrs1"
+  Size: 5
+  Description: "vrs1 double the lmul"
+  Show: True
+  IO: "I"
+  Operand: "vreg"
+- Name: "vdrs2"
+  Size: 5
+  Description: "vrs2  double the lmul"
+  Show: True
+  IO: "I"
+  Operand: "vreg"
