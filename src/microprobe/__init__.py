@@ -279,6 +279,14 @@ else:
             update = False
 
         MICROPROBE_RC["pattern"] = int(val, 0)
+
+        if val.upper().startswith("0B"):
+            minwidth = len(val) - 2
+        elif val.upper().startswith("0X"):
+            minwidth = (len(val) - 2) * 4
+        else:
+            minwidth = 0
+
         MICROPROBE_RC["pattern_update"] = update
 
         if MICROPROBE_RC["pattern"] < 0 or update not in [
@@ -296,6 +304,8 @@ else:
             MICROPROBE_RC["pattern"] = 0
         else:
             width = MICROPROBE_RC["pattern"].bit_length()
+            if width < minwidth:
+                width = minwidth
             pattern = MICROPROBE_RC["pattern"] & ((1 << width) - 1)
             if width >= 64:
                 MICROPROBE_RC["pattern"] = pattern & ((1 << 64) - 1)
@@ -304,12 +314,14 @@ else:
             while shift < 64:
                 result |= pattern << shift
                 shift += width
+
             MICROPROBE_RC["pattern"] = result & ((1 << 64) - 1)
 
     except ValueError:
-        warnings.warn(
-            "Ignoring option: %s in env var MICROPROBEPATTERN"
-            % os.environ["MICROPROBEPATTERN"]
-        )
+        if os.environ["MICROPROBEPATTERN"] not in ['rnd', 'random']:
+            warnings.warn(
+                "Ignoring option: %s in env var MICROPROBEPATTERN"
+                % os.environ["MICROPROBEPATTERN"]
+            )
         MICROPROBE_RC["pattern"] = "random"
         MICROPROBE_RC["pattern_update"] = False

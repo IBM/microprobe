@@ -44,12 +44,18 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
 
         """
         super().__init__()
+
+        if callable(value):
+            ival = value 
+        else:
+            ival = lambda: value
+
         self._var = microprobe.code.var.VariableSingle(
-            "FP_INITVAL", "double", value=f"{value:.20f}"
+            "FP_INITVAL", "double", value=f"{ival():.20f}"
         )
         self._varaddress = Address(base_address=self._var)
 
-        self._value = value
+        self._value = ival
         self._memvalue = MemoryValue(self._varaddress, value, 8)
         self._description = (
             "Initialize all the memory location accessed by"
@@ -101,12 +107,13 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
         addresses_set = sorted(addresses_set)
 
         for address in addresses_set:
+            store_val = self._value()
             if variable_to_declare is False:
                 variable_to_declare = True
                 reg2 = target.scratch_registers[0]
 
                 instrs = target.set_register(
-                    reg2, ieee_float_to_int64(self._value), context
+                    reg2, ieee_float_to_int64(store_val), context
                 )
 
                 for instr in instrs:
@@ -115,7 +122,7 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
                 building_block.add_init(instrs)
 
                 context.set_register_value(
-                    reg2, ieee_float_to_int64(self._value)
+                    reg2, ieee_float_to_int64(store_val)
                 )
 
                 reg1 = target.scratch_registers[1]
@@ -136,10 +143,11 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
 
                 instrs = target.store_integer(reg2, address, 64, context)
 
-            context.set_memory_value(MemoryValue(address, self._value, 8))
+            context.set_memory_value(MemoryValue(address, store_val, 8))
 
             for instr in instrs:
                 instr.add_comment(f"Initialize memory float: {address}")
+                instr.add_comment(f"Initialize memory float value: {store_val}")
 
             building_block.add_init(instrs)
 

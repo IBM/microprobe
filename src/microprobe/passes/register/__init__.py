@@ -22,6 +22,7 @@ from __future__ import absolute_import, print_function
 import itertools
 import random
 import re
+import os
 from typing import Union
 
 # Own modules
@@ -893,6 +894,56 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
         LOG.debug("Reserved %s", rregs)
         LOG.debug("-" * 80)
 
+        # Balance things: in case there are lots of inputs/outputs and few inputs or outputs.
+        # Make sure we always have a minimum of 4 outputs and inputs
+        
+        rtypes = set([reg.type for reg in inputoutputs + inputs + outputs])
+        for rtype in rtypes:
+            for cset in [inputs, outputs]:
+                rcset = set([reg for reg in cset if reg.type == rtype])
+                while len(rcset) < 5:
+                    vset = [reg for reg in inputoutputs if reg.type == rtype]
+                    bset = inputoutputs
+                    if len(vset) == 0:
+                        if cset == inputs:
+                            bset = outputs
+                        elif cset == outputs:
+                            bset = inputs
+                        vset = [reg for reg in bset if reg.type == rtype]
+                        if len(vset) == 0:
+                            break
+
+                    cset.append(vset[0]) 
+                    bset.remove(vset[0])
+                    rcset = set([reg for reg in cset if reg.type == rtype])
+        
+
+        LOG.debug("-" * 80)
+        LOG.debug("BEFORE ALLOCATING 2")
+        LOG.debug("Inputs: %s", inputs)
+        LOG.debug("InputsOutputs: %s", inputoutputs)
+        LOG.debug("Outputs: %s", outputs)
+        LOG.debug("Reserved %s", rregs)
+        LOG.debug("-" * 80)
+
+        
+        for s1, s2 in zip(
+                [inputs, inputoutputs, outputs, rregs],
+                [inputs, inputoutputs, outputs, rregs]):
+
+            if s1 == s2 : continue
+            assert set(s1).isdisjoint(set(s2))
+
+        if "MICROPROBEMAXREG" in os.environ:
+            mreg = int(os.environ["MICROPROBEMAXREG"])
+
+            for clist in [inputs, inputoutputs, outputs]:
+                clist_base = clist[:]
+                clist.clear()
+                for ctype in rtypes:
+                    valid = sorted([x for x in clist_base if x.type == ctype])[0:mreg]
+                    clist.extend(valid)
+
         for bbl in building_block.cfg.bbls:
             for instr in bbl.instrs:
 
@@ -1037,6 +1088,7 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
                         continue
                     elif len(regs) == 0:
+
                         LOG.debug(
                             "Operand forced to: %s",
                             list(operand.type.values())[0],
@@ -1056,6 +1108,7 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
                     LOG.debug("Operand set to: %s", regs[0])
                     operand.set_value(regs[0])
+
 
                     for value in operand.type.access(operand.value):
 

@@ -862,7 +862,7 @@ def _main(arguments):
         arguments["shortnames"] = False
 
     # process batches
-    print_info(f"Num configurations difined: {len(configurations)}")
+    print_info(f"Num configurations defined: {len(configurations)}")
     print_info("Number of batches: %d " % arguments["num_batches"])
     print_info("Batch number: %d " % arguments["batch_number"])
 

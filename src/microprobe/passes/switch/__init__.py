@@ -384,13 +384,6 @@ class SwitchingInstructions(microprobe.passes.Pass):
                     not oper.type.constant
                 ]
 
-                # if len(operand_list) == 0:
-                #    for oper in instr.operands():
-                #        LOG.debug(oper)
-                #    raise MicroprobeCodeGenerationError(
-                #        "No operand to switch. All already set?"
-                #    )
-
                 LOG.debug("Switching instruction: %s", instr)
                 LOG.debug("Operands to switch:")
                 for oper in operand_list:

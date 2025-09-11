@@ -76,6 +76,7 @@ last_modified_year () {
         date=${date% *}
     fi
     year=${date##* }
+    # shellcheck disable=SC3015
     if ! [[ $year =~ ^[0-9]{4}$ ]]; then
         echo "Year parsing is not a year, got \"$year\"" >&2
         exit 1
@@ -147,6 +148,7 @@ fi
 
 # Determine if we need to skip over a shebang
 start=1
+# shellcheck disable=SC3015
 if [[ $first_line =~ ^#! ]]; then
     start=2
 fi
@@ -155,6 +157,7 @@ fi
 maybe_copyright_line=$(sed "$start q;d" "$1")
 copyright_re="(^.+(Copyright|copyright).+)[0-9]{4}(.+IBM.+$)"
 
+# shellcheck disable=SC3015
 if [ "$(grep "^$comment Copyright" < $1 | grep -c "IBM Corporation")" -gt 1 ]; then
     echo "File needs review (duplicated): $1"
     exit

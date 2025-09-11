@@ -1062,7 +1062,39 @@ class OperandImmRange(Operand):
                     (val << 1) | (val >> (64 - 1))
                 ) & 0xFFFFFFFFFFFFFFFF
 
-            return value
+
+            valid = False
+            count = 0
+            nvalue = value
+            while not valid:  
+                try:
+                    valid = self.check(nvalue)
+                except MicroprobeValueError:
+                    valid = False
+                    nvalue = nvalue + 1
+                    count = count + 1
+
+                if count == 1000:
+                    break
+
+            if not valid:
+                count = 0
+                nvalue = value
+                while not valid:  
+                    try:
+                        valid = self.check(nvalue)
+                    except MicroprobeValueError:
+                        valid = False
+                        nvalue = nvalue - 1
+                        count = count + 1
+
+                    if count == 1000:
+                        break
+
+            if not valid:
+                nvalue = rand.randrange(self._min, self._max + 1, self._step)
+
+            return nvalue
 
         value = rand.randrange(self._min, self._max + 1, self._step)
 
