@@ -16,35 +16,46 @@
 """
 
 # Futures
-from __future__ import absolute_import, division, print_function, annotations
+from __future__ import absolute_import, annotations, division, print_function
 
 # Built-in modules
 import copy
 from itertools import product
 from typing import TYPE_CHECKING, Callable, List
 
-# Third party modules
-
-
 # Own modules
 from microprobe.code.address import Address, InstructionAddress
-from microprobe.exceptions import MicroprobeArchitectureDefinitionError, \
-    MicroprobeCodeGenerationError, MicroprobeDuplicatedValueError, \
-    MicroprobeLookupError, MicroprobeValueError
-from microprobe.target.isa.operand import Operand, \
-    OperandConstReg, OperandDescriptor, OperandImmRange
+from microprobe.exceptions import (
+    MicroprobeArchitectureDefinitionError,
+    MicroprobeCodeGenerationError,
+    MicroprobeDuplicatedValueError,
+    MicroprobeLookupError,
+    MicroprobeValueError,
+)
+from microprobe.target.isa.operand import (
+    Operand,
+    OperandConstReg,
+    OperandDescriptor,
+    OperandImmRange,
+)
 from microprobe.target.isa.register import Register
 from microprobe.utils.asm import interpret_asm
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import OrderedDict, \
-    Pickable, RejectingDict, RejectingOrderedDict
+from microprobe.utils.misc import (
+    RND,
+    OrderedDict,
+    Pickable,
+    RejectingDict,
+    RejectingOrderedDict,
+)
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 # Type hinting
 if TYPE_CHECKING:
-    from microprobe.target.isa.instruction import InstructionType
+    # Own modules
     from microprobe.code.context import Context
     from microprobe.target import Target
+    from microprobe.target.isa.instruction import InstructionType
 
 # Constants
 LOG = get_logger(__name__)
@@ -58,7 +69,7 @@ __all__ = [
     "instruction_set_def_properties",
     "instructions_from_asm",
     "MicroprobeInstructionDefinition",
-    'instruction_factory',
+    "instruction_factory",
 ]
 
 _LABEL_COUNTER = 0
@@ -90,13 +101,19 @@ def instruction_to_definition(instr: Instruction):
 
     return MicroprobeInstructionDefinition(
         instr.architecture_type,
-        [operand.value for operand in instr.operands()], label, instr.address,
-        asm, instr.decorators, comments)
+        [operand.value for operand in instr.operands()],
+        label,
+        instr.address,
+        asm,
+        instr.decorators,
+        comments,
+    )
 
 
 @typeguard_testsuite
-def instruction_from_definition(definition: MicroprobeInstructionDefinition,
-                                fix_relative: bool = True):
+def instruction_from_definition(
+    definition: MicroprobeInstructionDefinition, fix_relative: bool = True
+):
     """
     Return the instruction from a definition.
 
@@ -109,20 +126,22 @@ def instruction_from_definition(definition: MicroprobeInstructionDefinition,
     """
 
     ninstr = Instruction()
-    instruction_set_def_properties(ninstr,
-                                   definition,
-                                   fix_relative=fix_relative)
+    instruction_set_def_properties(
+        ninstr, definition, fix_relative=fix_relative
+    )
     return ninstr
 
 
 @typeguard_testsuite
-def instruction_set_def_properties(instr,
-                                   definition,
-                                   building_block=None,
-                                   target=None,
-                                   allowed_registers=None,
-                                   fix_relative=True,
-                                   label_displ=None):
+def instruction_set_def_properties(
+    instr,
+    definition,
+    building_block=None,
+    target=None,
+    allowed_registers=None,
+    fix_relative=True,
+    label_displ=None,
+):
     """
     Set instruction properties from an intruction definition.
 
@@ -178,26 +197,30 @@ def instruction_set_def_properties(instr,
         for idx, operand in enumerate(operands):
             LOG.debug("Fixing operands: %s", operand)
 
-            if (isinstance(operand, int)
-                    and instr.operands()[idx].type.address_relative
-                    and fix_relative):
+            if (
+                isinstance(operand, int)
+                and instr.operands()[idx].type.address_relative
+                and fix_relative
+            ):
                 LOG.debug("Hardcoded displacement")
                 if instr.branch:
 
                     LOG.debug("Branch label")
                     if label is None:
                         if label_displ is not None:
-                            label = "instr_displ_label_%s" % (label_displ)
-                            _LABEL_COUNTER = max(_LABEL_COUNTER,
-                                                 label_displ + 1)
+                            label = f"instr_displ_label_{label_displ}"
+                            _LABEL_COUNTER = max(
+                                _LABEL_COUNTER, label_displ + 1
+                            )
                         else:
-                            label = "instr_displ_label_%s" % (_LABEL_COUNTER)
+                            label = f"instr_displ_label_{_LABEL_COUNTER}"
                             _LABEL_COUNTER += 1
 
                         instr.set_label(label)
 
-                    iaddress = InstructionAddress(base_address=label,
-                                                  displacement=operand)
+                    iaddress = InstructionAddress(
+                        base_address=label, displacement=operand
+                    )
                     fixed_operands.append(iaddress)
                     continue
 
@@ -213,13 +236,15 @@ def instruction_set_def_properties(instr,
                 for var in building_block.registered_global_vars():
                     if operand.startswith(var.name) and "@" not in operand:
                         if operand.replace(var.name, "") != "":
-                            displacement = int(operand.replace(var.name, ""),
-                                               base=0)
+                            displacement = int(
+                                operand.replace(var.name, ""), base=0
+                            )
                             operand = var.name
                             break
 
                 possible_vars = [
-                    var for var in building_block.registered_global_vars()
+                    var
+                    for var in building_block.registered_global_vars()
                     if var.name == operand
                 ]
 
@@ -227,39 +252,45 @@ def instruction_set_def_properties(instr,
 
                 if len(possible_vars) == 1:
                     LOG.debug("Operand variable")
-                    taddress = Address(base_address=possible_vars[0],
-                                       displacement=displacement)
+                    taddress = Address(
+                        base_address=possible_vars[0],
+                        displacement=displacement,
+                    )
                     fixed_operands.append(taddress)
                     continue
 
             # Check if there is displacement from a label
-            if operand.find('-') > -1:
-                displacement = int('-' + operand.split('-')[1], base=0)
-                operand = operand.split('-')[0]
-            elif operand.find('+') > -1:
-                displacement = int('+' + operand.split('+')[1], base=0)
-                operand = operand.split('+')[0]
+            if operand.find("-") > -1:
+                displacement = int(f"-{operand.split('-')[1]}", base=0)
+                operand = operand.split("-")[0]
+            elif operand.find("+") > -1:
+                displacement = int(f"+{operand.split('+')[1]}", base=0)
+                operand = operand.split("+")[0]
 
             if instr.operands()[idx].type.address_relative:
 
                 if instr.branch:
 
                     LOG.debug("Branch label")
-                    iaddress = InstructionAddress(base_address=operand,
-                                                  displacement=displacement)
+                    iaddress = InstructionAddress(
+                        base_address=operand, displacement=displacement
+                    )
                     fixed_operands.append(iaddress)
                     continue
 
                 else:
 
                     LOG.debug("Branch label")
-                    taddress = Address(base_address=operand,
-                                       displacement=displacement)
+                    taddress = Address(
+                        base_address=operand, displacement=displacement
+                    )
                     fixed_operands.append(taddress)
                     continue
 
-            if (isinstance(instr.operands()[idx].type, OperandImmRange)
-                    and "@" in operand):
+            if (
+                isinstance(instr.operands()[idx].type, OperandImmRange)
+                and "@" in operand
+            ):
 
                 LOG.debug("Relocation in immediate")
                 fixed_operands.append(operand)
@@ -268,7 +299,8 @@ def instruction_set_def_properties(instr,
 
             raise MicroprobeCodeGenerationError(
                 "I do not know how to set operand '%s' in instruction "
-                "'%s'" % (operand, asm))
+                "'%s'" % (operand, asm)
+            )
 
         assert len(fixed_operands) == len(operands)
 
@@ -277,8 +309,7 @@ def instruction_set_def_properties(instr,
             instr.set_operands(fixed_operands)
         else:
             for operand, value in zip(instr.operands(), fixed_operands):
-                if (isinstance(operand.type, OperandImmRange)
-                        and "@" in value):
+                if isinstance(operand.type, OperandImmRange) and "@" in value:
                     operand.set_value(value, check=False)
                 else:
                     operand.set_value(value)
@@ -287,30 +318,30 @@ def instruction_set_def_properties(instr,
         instr.set_address(address.copy())
 
     for comment in comments:
-        instr.add_comment("MPT comment: %s" % comment)
+        instr.add_comment(f"MPT comment: {comment}")
 
     for decorator_key, decorator_value in decorators.items():
 
-        if decorator_key in ['MA', 'BT', 'EA']:
+        if decorator_key in ["MA", "BT", "EA"]:
             if not isinstance(decorator_value, list):
                 decorator_value = [decorator_value]
-            decorator_value = ["0x%016X" % elem for elem in decorator_value]
+            decorator_value = [f"0x{elem:016X}" for elem in decorator_value]
 
-        instr.add_comment("Decorator: %s = %s" %
-                          (decorator_key, decorator_value))
+        instr.add_comment(f"Decorator: {decorator_key} = {decorator_value}")
         instr.add_decorator(decorator_key, decorator_value)
 
     for register_name in allowed_registers:
         assert target is not None
         if register_name not in list(target.isa.registers.keys()):
             raise MicroprobeCodeGenerationError(
-                "Unknown register '%s'. Known registers: %s" %
-                (register_name, list(target.isa.registers.keys())))
+                "Unknown register '%s'. Known registers: %s"
+                % (register_name, list(target.isa.registers.keys()))
+            )
 
         if target.isa.registers[register_name] in instr.sets() + instr.uses():
             instr.add_allow_register(target.isa.registers[register_name])
 
-    # TODO : NO NEED TO CHECK ANYTHING JUST REPRODUCING!
+    # TODO: NO NEED TO CHECK ANYTHING JUST REPRODUCING!
     # reserve implicit operands (if they are not already
     # reserved) and add them as allowed
     # for operand_descriptor in instr.implicit_operands:
@@ -400,8 +431,9 @@ class InstructionOperandValue(Pickable):
         newobj = InstructionOperandValue(self._operand_descriptor)
         if self.value is not None:
             newobj.set_value(self.value)
-        newobj.register_operand_callbacks(self._set_function,
-                                          self._unset_function)
+        newobj.register_operand_callbacks(
+            self._set_function, self._unset_function
+        )
         return newobj
 
     def set_descriptor(self, descriptor: OperandDescriptor):
@@ -431,9 +463,7 @@ class InstructionOperandValue(Pickable):
             self._set_function(value)
 
     def unset_value(self):
-        """Unsets the operand value.
-
-        """
+        """Unsets the operand value."""
         self.set_value(None, check=False)
 
     def sets(self):
@@ -468,12 +498,12 @@ class InstructionOperandValue(Pickable):
 
     @property
     def is_input(self):
-        """Is input flag (:class:`~.bool`) """
+        """Is input flag (:class:`~.bool`)"""
         return self._operand_descriptor._is_input
 
     @property
     def is_output(self):
-        """Is output flag (:class:`~.bool`) """
+        """Is output flag (:class:`~.bool`)"""
         return self._operand_descriptor._is_output
 
     def set_type(self, new_type):
@@ -486,11 +516,15 @@ class InstructionOperandValue(Pickable):
 
     def __repr__(self):
         """ """
-        return "%s(Type: %s, Value: %s)" % (self.__class__.__name__, self.type,
-                                            self.value)
+        return "%s(Type: %s, Value: %s)" % (
+            self.__class__.__name__,
+            self.type,
+            self.value,
+        )
 
-    def register_operand_callbacks(self, set_function,
-                                   unset_function: Callable[[], None] | None):
+    def register_operand_callbacks(
+        self, set_function, unset_function: Callable[[], None] | None
+    ):
         """
 
         :param set_function:
@@ -508,8 +542,9 @@ class InstructionOperandValue(Pickable):
 class InstructionMemoryOperandValue(Pickable):
     """Class to represent an instruction operand value"""
 
-    def __init__(self, memory_operand_descriptor, operand_values,
-                 length_values):
+    def __init__(
+        self, memory_operand_descriptor, operand_values, length_values
+    ):
         """
 
         :param memory_operand_descriptor:
@@ -539,9 +574,13 @@ class InstructionMemoryOperandValue(Pickable):
         if not self.variable_length:
             self._length = self._compute_length()
 
-    def register_mem_operand_callback(self, set_address, set_length,
-                                      unset_address: Callable[[], None],
-                                      unset_length: Callable[[], None]):
+    def register_mem_operand_callback(
+        self,
+        set_address,
+        set_length,
+        unset_address: Callable[[], None],
+        unset_length: Callable[[], None],
+    ):
         """
 
         :param set_address:
@@ -573,7 +612,7 @@ class InstructionMemoryOperandValue(Pickable):
 
     @property
     def length(self):
-        """Length of the memory operand (::class:`~.int`). """
+        """Length of the memory operand (::class:`~.int`)."""
         return self._length
 
     @property
@@ -587,9 +626,13 @@ class InstructionMemoryOperandValue(Pickable):
         """Variable length value(:class:`~.bool`)."""
 
         operand_values = [
-            operand for operand in self._length_values
-            if (isinstance(operand, InstructionOperandValue) or isinstance(
-                operand, OperandDescriptor) or isinstance(operand, tuple))
+            operand
+            for operand in self._length_values
+            if (
+                isinstance(operand, InstructionOperandValue)
+                or isinstance(operand, OperandDescriptor)
+                or isinstance(operand, tuple)
+            )
         ]
 
         if len(operand_values) > 0:
@@ -599,8 +642,8 @@ class InstructionMemoryOperandValue(Pickable):
                 elif len(list(operand.type.values())) > 1:
                     return True
                 elif not isinstance(
-                        list(operand.type.values())[0],
-                        tuple([str, int])):
+                    list(operand.type.values())[0], tuple([str, int])
+                ):
                     return True
 
         return False
@@ -636,24 +679,30 @@ class InstructionMemoryOperandValue(Pickable):
             return
 
         operand_values = [
-            operand for operand in self._length_values
+            operand
+            for operand in self._length_values
             if isinstance(operand, InstructionOperandValue)
         ]
 
         operand_constants = [
-            operand for operand in self._length_values
-            if (not isinstance(operand, InstructionOperandValue)
+            operand
+            for operand in self._length_values
+            if (
+                not isinstance(operand, InstructionOperandValue)
                 and not isinstance(operand, tuple)
-                and not isinstance(operand, OperandDescriptor))
+                and not isinstance(operand, OperandDescriptor)
+            )
         ]
 
         operand_register_const = [
-            operand for operand in self._length_values
+            operand
+            for operand in self._length_values
             if isinstance(operand, OperandDescriptor)
         ]
 
         operand_special = [
-            operand for operand in self._length_values
+            operand
+            for operand in self._length_values
             if isinstance(operand, tuple)
         ]
 
@@ -665,8 +714,12 @@ class InstructionMemoryOperandValue(Pickable):
             operand for operand in operand_special if operand[1] == "MASK"
         ]
 
-        assert ((len(operand_registers_diff) > 0) ^ (len(operand_values) > 0) ^
-                (len(operand_masks) > 0) ^ (len(operand_register_const) > 0))
+        assert (
+            (len(operand_registers_diff) > 0)
+            ^ (len(operand_values) > 0)
+            ^ (len(operand_masks) > 0)
+            ^ (len(operand_register_const) > 0)
+        )
 
         lengths = OrderedDict()
 
@@ -689,12 +742,15 @@ class InstructionMemoryOperandValue(Pickable):
 
                     # Check if the operand is negated
                     preindex = [
-                        lidx for lidx, elem in enumerate(self._length_values)
+                        lidx
+                        for lidx, elem in enumerate(self._length_values)
                         if elem == operand
                     ][0]
 
-                    if (preindex > 0
-                            and self._length_values[preindex - 1] == "-"):
+                    if (
+                        preindex > 0
+                        and self._length_values[preindex - 1] == "-"
+                    ):
                         LOG.debug("Negated Immediate operand")
                         operand_lengths[operand] = [
                             elem * (-1) for elem in operand.type.values()
@@ -706,9 +762,11 @@ class InstructionMemoryOperandValue(Pickable):
 
                 else:
 
-                    assert len(
-                        operand_values) == 1, "More than one non immediate "\
-                        "operand " "not implemented."
+                    assert len(operand_values) == 1, (
+                        "More than one non immediate "
+                        "operand "
+                        "not implemented."
+                    )
                     register_based = True
 
             if register_based:
@@ -749,8 +807,9 @@ class InstructionMemoryOperandValue(Pickable):
 
             LOG.debug("Operand register diff")
 
-            if isinstance(operand_registers_diff[0][2],
-                          InstructionOperandValue):
+            if isinstance(
+                operand_registers_diff[0][2], InstructionOperandValue
+            ):
 
                 reg2_vals = list(operand_registers_diff[0][2].type.values())
 
@@ -760,8 +819,9 @@ class InstructionMemoryOperandValue(Pickable):
 
             LOG.debug("Register 2 values: %s", reg2_vals)
 
-            if isinstance(operand_registers_diff[0][1],
-                          InstructionOperandValue):
+            if isinstance(
+                operand_registers_diff[0][1], InstructionOperandValue
+            ):
 
                 reg1_vals = list(operand_registers_diff[0][1].type.values())
                 allow_reserved = False
@@ -785,8 +845,10 @@ class InstructionMemoryOperandValue(Pickable):
 
                 for val2 in reg2_vals:
 
-                    if (val2 in context.reserved_registers
-                            and not allow_reserved):
+                    if (
+                        val2 in context.reserved_registers
+                        and not allow_reserved
+                    ):
                         LOG.debug("%s in reserved registers", val2)
                         continue
 
@@ -808,8 +870,10 @@ class InstructionMemoryOperandValue(Pickable):
                         skip = False
 
                         for reserved in context.reserved_registers:
-                            if (int(reserved.representation) > ival2
-                                    and int(reserved.representation) < ival1):
+                            if (
+                                int(reserved.representation) > ival2
+                                and int(reserved.representation) < ival1
+                            ):
                                 skip = True
                                 break
 
@@ -887,8 +951,8 @@ class InstructionMemoryOperandValue(Pickable):
 
                         if (lengths[length] % ceil_value) != 0:
                             lengths[length] = (
-                                (lengths[length] // ceil_value) + 1) * \
-                                ceil_value
+                                (lengths[length] // ceil_value) + 1
+                            ) * ceil_value
                         else:
                             lengths[length] = lengths[length]
 
@@ -898,8 +962,10 @@ class InstructionMemoryOperandValue(Pickable):
 
                         # TODO: Maximum length is hard-coded to 1024 bytes
                         for elem in range(
-                                0, min((2**length[0].type.size) - 1, 1024),
-                                ceil_value):
+                            0,
+                            min((2 ** length[0].type.size) - 1, 1024),
+                            ceil_value,
+                        ):
                             newlengths[(length[0], elem)] = elem
 
                 elif operand_constant.startswith("min"):
@@ -925,15 +991,16 @@ class InstructionMemoryOperandValue(Pickable):
 
                             elif isinstance(length, tuple):
 
-                                if (isinstance(length[0], Register)
-                                        and isinstance(length[1], Register)):
+                                if isinstance(
+                                    length[0], Register
+                                ) and isinstance(length[1], Register):
 
                                     if lengths[length] > maxvalue:
                                         lengths_to_remove.append(length)
 
-                                elif (isinstance(length[0], Register)
-                                      and isinstance(length[1],
-                                                     int)):
+                                elif isinstance(
+                                    length[0], Register
+                                ) and isinstance(length[1], int):
 
                                     if lengths[length] > maxvalue:
                                         # TODO: Assuming that min value is
@@ -1058,8 +1125,9 @@ class InstructionMemoryOperandValue(Pickable):
         """Unset the possible lengths of the memory operand."""
         self._possible_lengths_set = None
 
-    def set_forbidden_address_range(self, min_address, max_address,
-                                    dummy_context: Context):
+    def set_forbidden_address_range(
+        self, min_address, max_address, dummy_context: Context
+    ):
         """
 
         :param min_address:
@@ -1087,7 +1155,8 @@ class InstructionMemoryOperandValue(Pickable):
         self._compute_possible_lengths(context)
 
         operand_values = [
-            key for key in self._possible_lengths
+            key
+            for key in self._possible_lengths
             if self._possible_lengths[key] == length
         ]
 
@@ -1098,18 +1167,21 @@ class InstructionMemoryOperandValue(Pickable):
 
         operands = []
         for operand in self._length_values:
-            if isinstance(operand,
-                          (InstructionOperandValue, OperandDescriptor)):
+            if isinstance(
+                operand, (InstructionOperandValue, OperandDescriptor)
+            ):
                 operands.append(operand)
             elif isinstance(operand, tuple):
                 if operand[1] == "MASK":
                     operands.append(operand[0])
-                elif (isinstance(operand[1], InstructionOperandValue)
-                      and isinstance(operand[2], InstructionOperandValue)):
+                elif isinstance(
+                    operand[1], InstructionOperandValue
+                ) and isinstance(operand[2], InstructionOperandValue):
                     operands.append(operand[1])
                     operands.append(operand[2])
-                elif (operand[1] == "REGMAX"
-                      and isinstance(operand[2], InstructionOperandValue)):
+                elif operand[1] == "REGMAX" and isinstance(
+                    operand[2], InstructionOperandValue
+                ):
                     # operands.append(max(operand[2].type.values()))
                     operands.append(operand[2])
                 else:
@@ -1138,16 +1210,18 @@ class InstructionMemoryOperandValue(Pickable):
             operand_values = operand_values[0]
 
         elif len(operand_values) == 0:
-            raise MicroprobeCodeGenerationError("Unable to generate the "
-                                                "requested length")
+            raise MicroprobeCodeGenerationError(
+                "Unable to generate the " "requested length"
+            )
 
         LOG.debug("Operand to use: %s", operands)
 
         # TODO: Why this check?
         if isinstance(operand_values, tuple):
 
-            if (isinstance(operand_values[0], Register)
-                    and isinstance(operand_values[1], Register)):
+            if isinstance(operand_values[0], Register) and isinstance(
+                operand_values[1], Register
+            ):
 
                 operand_values = [operand_values[0], operand_values[1]]
 
@@ -1171,8 +1245,9 @@ class InstructionMemoryOperandValue(Pickable):
 
                     raise MicroprobeCodeGenerationError(
                         "Unable to generate the requested length. Need the "
-                        "register '%s' to be set to '%s' value" %
-                        (register, value))
+                        "register '%s' to be set to '%s' value"
+                        % (register, value)
+                    )
 
                 # Register used for length (conservative approach, reserve it)
                 if register not in context.reserved_registers:
@@ -1185,15 +1260,18 @@ class InstructionMemoryOperandValue(Pickable):
 
                 operand.set_value(register)
 
-                if (value is not None
-                        and context.get_register_value(register) != value):
+                if (
+                    value is not None
+                    and context.get_register_value(register) != value
+                ):
 
                     LOG.debug("Context: %s", context.dump())
                     LOG.debug("Register used: %s", register)
 
                     raise MicroprobeCodeGenerationError(
                         "Unable to generate the requested length. Need a "
-                        "register initialized to value: %s" % value)
+                        "register initialized to value: %s" % value
+                    )
 
                 # Register used for length (conservative approach, reserve it)
                 if register not in context.reserved_registers:
@@ -1255,18 +1333,24 @@ class InstructionMemoryOperandValue(Pickable):
                 LOG.debug("Base operand %d: %s", idx, operand)
                 base_operand = operand
 
-            if (operand.descriptor.type.address_index
-                    and index_operand_reg is None):
+            if (
+                operand.descriptor.type.address_index
+                and index_operand_reg is None
+            ):
                 LOG.debug("Index operand %d: %s", idx, operand)
                 index_operand_reg = operand
 
-            if (operand.descriptor.type.address_immediate
-                    and index_operand_imm is None):
+            if (
+                operand.descriptor.type.address_immediate
+                and index_operand_imm is None
+            ):
                 LOG.debug("Immediate operand %d: %s", idx, operand)
                 index_operand_imm = operand
 
-            if (operand.descriptor.type.address_relative
-                    and relative_operand is None):
+            if (
+                operand.descriptor.type.address_relative
+                and relative_operand is None
+            ):
                 LOG.debug("Relative operand %d: %s", idx, operand)
                 relative_operand = operand
 
@@ -1284,22 +1368,26 @@ class InstructionMemoryOperandValue(Pickable):
 
         if self.descriptor.is_agen and base_operand is None:
             raise MicroprobeCodeGenerationError(
-                "I do not know how to generate this address: %s" % address)
+                f"I do not know how to generate this address: {address}"
+            )
 
         if base_operand is None:
             raise MicroprobeCodeGenerationError(
                 "I do not know how to generate "
-                "this address: %s (no base operand)" % address)
+                "this address: %s (no base operand)" % address
+            )
 
         if not base_operand.descriptor.is_input:
             raise MicroprobeCodeGenerationError(
                 "I do not know how to generate "
-                "this address: %s (no base operand input)" % address)
+                "this address: %s (no base operand input)" % address
+            )
 
         fast_path = False
         if context.register_has_value(address):
-            if context.registers_get_value(address)[0] in \
-                    list(base_operand.type.values()):
+            if context.registers_get_value(address)[0] in list(
+                base_operand.type.values()
+            ):
                 fast_path = True
 
         if fast_path:
@@ -1308,7 +1396,10 @@ class InstructionMemoryOperandValue(Pickable):
 
             # Check if the address is already in a register
             # FAST PATH
-            register_base = context.registers_get_value(address)[0]
+            # register_base = context.registers_get_value(address)[0]
+            valid_values = context.registers_get_value(address)
+            RND.shuffle(valid_values)
+            register_base = valid_values[0]
             base_operand.set_value(register_base)
 
             if index_operand_imm is not None:
@@ -1320,7 +1411,8 @@ class InstructionMemoryOperandValue(Pickable):
                 if context.register_has_value(0):
 
                     register_zero_list = [
-                        reg for reg in context.registers_get_value(0)
+                        reg
+                        for reg in context.registers_get_value(0)
                         if reg in list(index_operand_reg.type.values())
                     ]
 
@@ -1328,8 +1420,9 @@ class InstructionMemoryOperandValue(Pickable):
                     raise MicroprobeCodeGenerationError(
                         "I do not know how to generate this address: %s. "
                         "One of the following registers should be set to zero:"
-                        " %s" %
-                        (address, list(index_operand_reg.type.values())))
+                        " %s"
+                        % (address, list(index_operand_reg.type.values()))
+                    )
 
                 index_operand_reg.set_value(register_zero_list[0])
 
@@ -1342,7 +1435,7 @@ class InstructionMemoryOperandValue(Pickable):
             # Get all the addresses in the context that have
             # a base address as 'address_base', if none,
             # raise an exception
-            possible_base_regs = []
+            possible_base_regs: dict[Address, List] = {}
 
             for reg, value in context.register_values.items():
 
@@ -1353,9 +1446,15 @@ class InstructionMemoryOperandValue(Pickable):
                     continue
 
                 if Address(base_address=value.base_address) == address_base:
-                    possible_base_regs.append((reg, value))
-                    LOG.debug("Possible base reg: '%s', Address: '%s'",
-                              reg.name, value)
+                    if value not in possible_base_regs:
+                        possible_base_regs[value] = []
+
+                    possible_base_regs[value].append(reg)
+                    LOG.debug(
+                        "Possible base reg: '%s', Address: '%s'",
+                        reg.name,
+                        value,
+                    )
 
             # ensure that we have at least one
             if len(possible_base_regs) == 0:
@@ -1364,33 +1463,42 @@ class InstructionMemoryOperandValue(Pickable):
 
                 raise MicroprobeCodeGenerationError(
                     "I do not know how to generate that address. Base address "
-                    "not set. Address: %s Context:\n%s" %
-                    (address, context.dump()))
+                    "not set. Address: %s Context:\n%s"
+                    % (address, context.dump())
+                )
 
             # get the closest address in the context
-            closest_index = index - possible_base_regs[0][1].displacement
-            closest_reg = possible_base_regs[0][0]
-            closest_address = possible_base_regs[0][1]
+            closest_index = (
+                index - list(possible_base_regs.keys())[0].displacement
+            )
+            closest_address = list(possible_base_regs.keys())[0]
 
-            for reg, paddress in possible_base_regs[1:]:
+            # closest_reg = possible_base_regs[0]
+
+            for paddress in list(possible_base_regs.keys())[1:]:
                 if index - paddress.displacement > 0 and (
-                        abs(index - paddress.displacement)
-                        < abs(closest_index)):
+                    abs(index - paddress.displacement) < abs(closest_index)
+                ):
 
-                    if ((index_operand_imm is None)
-                            and not context.register_has_value(
-                                index - paddress.displacement)):
+                    if (
+                        index_operand_imm is None
+                    ) and not context.register_has_value(
+                        index - paddress.displacement
+                    ):
                         continue
 
                     closest_index = index - paddress.displacement
-                    closest_reg = reg
                     closest_address = paddress
 
-            register_base = closest_reg
+            closest_regs = possible_base_regs[closest_address]
+            RND.shuffle(closest_regs)
+
+            register_base = closest_regs[0]
             base_operand.set_value(register_base)
             generated_address = Address(
                 base_address=closest_address.base_address,
-                displacement=closest_address.displacement)
+                displacement=closest_address.displacement,
+            )
             index = closest_index
 
             LOG.debug("Register base: '%s'", register_base.name)
@@ -1401,13 +1509,20 @@ class InstructionMemoryOperandValue(Pickable):
         #    assert address == generated_address
 
         set_index = False
-        if (index_operand_imm is not None and not set_index
-                and generated_address != address):
+        if (
+            index_operand_imm is not None
+            and not set_index
+            and generated_address != address
+        ):
 
-            LOG.debug("The instruction has immediate operand, and the "
-                      "generated address still needs some extra displacement")
-            assert (index_operand_imm.descriptor.is_input
-                    and not index_operand_imm.descriptor.is_output)
+            LOG.debug(
+                "The instruction has immediate operand, and the "
+                "generated address still needs some extra displacement"
+            )
+            assert (
+                index_operand_imm.descriptor.is_input
+                and not index_operand_imm.descriptor.is_output
+            )
 
             try:
                 LOG.debug("Setting immediate displacement")
@@ -1415,39 +1530,56 @@ class InstructionMemoryOperandValue(Pickable):
                 set_index = True
                 generated_address += index
             except MicroprobeValueError:
-                LOG.debug("Unable to generate the address with the current "
-                          "context")
+                LOG.debug(
+                    "Unable to generate the address with the current "
+                    "context"
+                )
                 raise MicroprobeCodeGenerationError(
                     "I do not know how to generate that address. Index "
-                    "register not set.")
+                    "register not set."
+                )
 
-        if (index_operand_reg is not None and not set_index
-                and generated_address != address):
+        if (
+            index_operand_reg is not None
+            and not set_index
+            and generated_address != address
+        ):
 
-            LOG.debug("The instruction has index register operand, and the "
-                      "generated address still needs some extra displacement")
-            assert (index_operand_reg.descriptor.is_input
-                    and not index_operand_reg.descriptor.is_output)
+            LOG.debug(
+                "The instruction has index register operand, and the "
+                "generated address still needs some extra displacement"
+            )
+            assert (
+                index_operand_reg.descriptor.is_input
+                and not index_operand_reg.descriptor.is_output
+            )
 
             if not context.register_has_value(index):
-                LOG.debug("Unable to generate the address with the current "
-                          "context")
+                LOG.debug(
+                    "Unable to generate the address with the current "
+                    "context"
+                )
                 raise MicroprobeCodeGenerationError(
                     "I do not know how to generate that address. Index "
-                    "register not set. Change the generation policy.")
+                    "register not set. Change the generation policy."
+                )
 
             registers_index = context.registers_get_value(index)
             registers_index = [
-                reg for reg in registers_index
+                reg
+                for reg in registers_index
                 if reg in list(index_operand_reg.type.values())
             ]
 
             if len(registers_index) == 0:
-                LOG.debug("Unable to generate the address with the current "
-                          "context")
+                LOG.debug(
+                    "Unable to generate the address with the current "
+                    "context"
+                )
                 raise MicroprobeCodeGenerationError(
                     "I do not know how to generate that address. Index "
-                    "register not set. Change the generation policy.")
+                    "register not set. Change the generation policy."
+                )
 
             register_index = registers_index[0]
             index_operand_reg.set_value(register_index)
@@ -1455,16 +1587,22 @@ class InstructionMemoryOperandValue(Pickable):
             generated_address += index
             LOG.debug("Using register: %s", register_index.name)
 
-        if (index_operand_imm is not None and set_index
-                and generated_address == address
-                and index_operand_imm.value is None):
+        if (
+            index_operand_imm is not None
+            and set_index
+            and generated_address == address
+            and index_operand_imm.value is None
+        ):
 
             LOG.debug("Setting index immediate operand to zero")
             index_operand_imm.set_value(0)
 
-        if (index_operand_reg is not None and set_index
-                and generated_address == address
-                and index_operand_reg.value is None):
+        if (
+            index_operand_reg is not None
+            and set_index
+            and generated_address == address
+            and index_operand_reg.value is None
+        ):
 
             LOG.debug("Setting index register operand to zero")
             register_zero = context.registers_get_value(0)[0]
@@ -1473,8 +1611,9 @@ class InstructionMemoryOperandValue(Pickable):
         if address != generated_address:
             LOG.debug("Unable to generate the address. Raising exception.")
             raise MicroprobeCodeGenerationError(
-                "I do not know how to generate that address. %s != %s" %
-                (address, generated_address))
+                "I do not know how to generate that address. %s != %s"
+                % (address, generated_address)
+            )
 
         for operand in self.operands:
 
@@ -1497,8 +1636,10 @@ class InstructionMemoryOperandValue(Pickable):
             # TODO: sometimes the base register is also an output (the
             # generated address is placed there. Implement that case (update
             # context accordingly).
-            LOG.warning("Base address register is an output. The memory model"
-                        " pass should take that into account")
+            LOG.warning(
+                "Base address register is an output. The memory model"
+                " pass should take that into account"
+            )
 
         LOG.debug("End setting address")
 
@@ -1516,8 +1657,11 @@ class InstructionMemoryOperandValue(Pickable):
                 return
 
         # Only fixing relative operands.
-        if (len(self.operands) == 1 and self.operands[0].type.address_relative
-                and isinstance(self.operands[0].value, InstructionAddress)):
+        if (
+            len(self.operands) == 1
+            and self.operands[0].type.address_relative
+            and isinstance(self.operands[0].value, InstructionAddress)
+        ):
             self._address = self.operands[0].value
 
         if context is not None:
@@ -1535,11 +1679,14 @@ class InstructionMemoryOperandValue(Pickable):
 
         if self._forbidden_max is None and self._forbidden_min is None:
             return
-        elif (self._forbidden_max is not None
-              and self._forbidden_min is not None):
+        elif (
+            self._forbidden_max is not None and self._forbidden_min is not None
+        ):
 
-            assert self._address > self._forbidden_max or \
-                (self._address + self._length) < self._forbidden_min
+            assert (
+                self._address > self._forbidden_max
+                or (self._address + self._length) < self._forbidden_min
+            )
 
     def unset_forbidden_address_range(self):
         """Unset the forbiddend address range."""
@@ -1577,13 +1724,18 @@ class InstructionMemoryOperandValue(Pickable):
         try:
             return self._memory_operand_descriptor.__getattribute__(name)
         except AttributeError:
-            raise AttributeError("'%s' object has no attribute '%s'" %
-                                 (self.__class__.__name__, name))
+            raise AttributeError(
+                "'%s' object has no attribute '%s'"
+                % (self.__class__.__name__, name)
+            )
 
     def __repr__(self):
         """ """
-        return "%s(Type: %s, Address: %s)" % (self.__class__.__name__,
-                                              str(self.type), self.address)
+        return "%s(Type: %s, Address: %s)" % (
+            self.__class__.__name__,
+            str(self.type),
+            self.address,
+        )
 
 
 @typeguard_testsuite
@@ -1627,8 +1779,10 @@ class Instruction(Pickable):
 
         for mem_operand_descr in instrtype.memory_operand_descriptors:
             operand_values = []
-            for field, operand_type in \
-                    mem_operand_descr.type.address_operands.items():
+            for (
+                field,
+                operand_type,
+            ) in mem_operand_descr.type.address_operands.items():
 
                 if field in self._operands:
                     operand_value = self._operands[field]
@@ -1655,10 +1809,16 @@ class Instruction(Pickable):
                     # needed for POWERPC branches to CTR or LR
 
                     operand_value.descriptor.set_type(
-                        OperandConstReg(operand_value.type.name,
-                                        operand_value.type.description,
-                                        list(operand_value.type.values())[0],
-                                        True, False, False, False))
+                        OperandConstReg(
+                            operand_value.type.name,
+                            operand_value.type.description,
+                            list(operand_value.type.values())[0],
+                            True,
+                            False,
+                            False,
+                            False,
+                        )
+                    )
                     operand_value.descriptor.set_type(operand_value.type)
 
                     operand_value.set_value(operand_value.type.values()[0])
@@ -1666,10 +1826,12 @@ class Instruction(Pickable):
                     operand_values.append(operand_value)
 
             length_values = []
-            for field, operand_type in \
-                    mem_operand_descr.type.length_operands.items():
+            for (
+                field,
+                operand_type,
+            ) in mem_operand_descr.type.length_operands.items():
 
-                if isinstance(operand_type, Operand) and field.startswith('M'):
+                if isinstance(operand_type, Operand) and field.startswith("M"):
 
                     length_value = self._operands[field]
                     assert operand_type == length_value.type
@@ -1683,8 +1845,8 @@ class Instruction(Pickable):
 
                 elif str(operand_type).startswith("#"):
 
-                    rfirst = str(operand_type)[1:].split('-')[0]
-                    rsecond = str(operand_type)[1:].split('-')[1]
+                    rfirst = str(operand_type)[1:].split("-")[0]
+                    rsecond = str(operand_type)[1:].split("-")[1]
 
                     if rfirst in self._operands:
                         length_value_a = self._operands[rfirst]
@@ -1700,22 +1862,26 @@ class Instruction(Pickable):
 
                     # assert operand_type == length_value.type
                     length_values.append(
-                        (operand_type, length_value_a, length_value_b))
+                        (operand_type, length_value_a, length_value_b)
+                    )
 
                 else:
 
                     length_values.append(operand_type)
 
             self._mem_operands.append(
-                InstructionMemoryOperandValue(mem_operand_descr,
-                                              operand_values, length_values))
+                InstructionMemoryOperandValue(
+                    mem_operand_descr, operand_values, length_values
+                )
+            )
 
         for value in instrtype.instruction_checks.values():
             function, args = value
             function(self, *args)
 
-    def register_context_callback(self, key, checking_function,
-                                  fixing_function):
+    def register_context_callback(
+        self, key, checking_function, fixing_function
+    ):
         """
 
         :param key:
@@ -1730,9 +1896,14 @@ class Instruction(Pickable):
     @property
     def context_callbacks(self):
         """Returns the list of context callbacks registered."""
-        return [(key, self._context_callback_check[key],
-                 self._context_callback_fix[key])
-                for key in self._context_callback_check.keys()]
+        return [
+            (
+                key,
+                self._context_callback_check[key],
+                self._context_callback_fix[key],
+            )
+            for key in self._context_callback_check.keys()
+        ]
 
     def check_context(self, context: Context):
         """
@@ -1755,7 +1926,7 @@ class Instruction(Pickable):
 
     @property
     def decorators(self):
-        """Instruction decorators (:class:`~.dict`). """
+        """Instruction decorators (:class:`~.dict`)."""
         return self._decorators
 
     def memory_operands(self):
@@ -1784,8 +1955,9 @@ class Instruction(Pickable):
         for callback in self.context_callbacks:
             new_instruction.register_context_callback(*callback)
 
-        new_instruction.set_operands([op.value for op in self.operands()],
-                                     check=False)
+        new_instruction.set_operands(
+            [op.value for op in self.operands()], check=False
+        )
 
         for reg in self.allowed_regs:
             new_instruction.add_allow_register(reg)
@@ -1812,7 +1984,8 @@ class Instruction(Pickable):
 
         try:
             fieldnames = [
-                key for key in self._operands.keys()
+                key
+                for key in self._operands.keys()
                 if key.startswith(fieldname)
             ]
             fieldname = fieldnames[0]
@@ -1821,12 +1994,14 @@ class Instruction(Pickable):
                 raise MicroprobeArchitectureDefinitionError(
                     "Looking for field name with multiple options. "
                     "Check the definition of instruction type "
-                    "'%s'" % self._arch_type)
+                    "'%s'" % self._arch_type
+                )
 
             return self._operands[fieldname]
         except (KeyError, IndexError):
             raise MicroprobeLookupError(
-                "'%s' not in %s" % (fieldname, list(self._operands.keys())))
+                f"'{fieldname}' not in {list(self._operands.keys())}"
+            )
 
     def operand_fields(self):
         """Instruction field names of the operands.
@@ -1840,8 +2015,10 @@ class Instruction(Pickable):
         """ """
 
         if self._arch_type is None:
-            return "Generic '%s' instr. Dep. distance: %d" % \
-                (self._generic_type, self._dependency_distance)
+            return "Generic '%s' instr. Dep. distance: %d" % (
+                self._generic_type,
+                self._dependency_distance,
+            )
 
         return str(self._arch_type)
 
@@ -1855,8 +2032,9 @@ class Instruction(Pickable):
             raise MicroprobeCodeGenerationError(
                 "Invalid number of operands specified for instruction "
                 "'%s'. # Accepted operands: %s\n # Provided operands: %s"
-                "\n Operands: %s" %
-                (self, len(self.operands()), len(values), self.operands()))
+                "\n Operands: %s"
+                % (self, len(self.operands()), len(values), self.operands())
+            )
 
         try:
             for operand, value in zip(self.operands(), values):
@@ -1932,24 +2110,24 @@ class Instruction(Pickable):
 
         try:
             self._decorators[name] = {}
-            self._decorators[name]['value'] = value
+            self._decorators[name]["value"] = value
         except MicroprobeDuplicatedValueError:
             raise MicroprobeCodeGenerationError(
-                "Decorator '%s' already defined for this instruction." % name)
+                f"Decorator '{name}' already defined for this instruction."
+            )
 
     def rm_decorator(self, name):
-        """
-
-        """
+        """ """
         try:
             self._decorators.pop(name)
         except KeyError:
             raise MicroprobeCodeGenerationError(
-                "Decorator '%s' not defined for this instruction." % name)
+                f"Decorator '{name}' not defined for this instruction."
+            )
 
     @property
     def comments(self):
-        """List of comments of the instruction (:class:`~.list`). """
+        """List of comments of the instruction (:class:`~.list`)."""
         return self._comments
 
     def allows(self, reg):
@@ -1962,7 +2140,7 @@ class Instruction(Pickable):
 
     @property
     def allowed_regs(self):
-        """List of allowed registers of the instructon. """
+        """List of allowed registers of the instructon."""
         return self._allowed_regs
 
     def set_label(self, label: str | None):
@@ -1973,10 +2151,12 @@ class Instruction(Pickable):
         """
 
         if label == "":
-            raise MicroprobeCodeGenerationError("Do not set the instruction"
-                                                " label to an empty string."
-                                                "Set it to None if you want"
-                                                " to remove it.")
+            raise MicroprobeCodeGenerationError(
+                "Do not set the instruction"
+                " label to an empty string."
+                "Set it to None if you want"
+                " to remove it."
+            )
 
         self._label = label
 
@@ -1995,13 +2175,17 @@ class Instruction(Pickable):
             if operand.value is None:
                 raise MicroprobeCodeGenerationError(
                     "Unable to generate the assembly of an instruction without"
-                    " all the operand values specified")
+                    " all the operand values specified"
+                )
 
         if self._label is None:
             return self._arch_type.assembly(list(self._operands.values()))
 
-        return self._label + ":" + \
-            self._arch_type.assembly(list(self._operands.values()))
+        return (
+            self._label
+            + ":"
+            + self._arch_type.assembly(list(self._operands.values()))
+        )
 
     def binary(self):
         """Binary representation of the instruction.
@@ -2013,7 +2197,8 @@ class Instruction(Pickable):
             if operand.value is None:
                 raise MicroprobeCodeGenerationError(
                     "Unable to generate the binary of an instruction without"
-                    " all the operand values specified")
+                    " all the operand values specified"
+                )
 
         return self._arch_type.binary(list(self._operands.values()))
 
@@ -2037,9 +2222,9 @@ class Instruction(Pickable):
     def __repr__(self):
         """ """
         if self._arch_type is not None:
-            return "%s(%s)" % (self._arch_type.name, self._operands)
+            return f"{self._arch_type.name}({self._operands})"
         else:
-            return "%s(%s)" % (self.__class__.__name__, "empty")
+            return f"{self.__class__.__name__}(empty)"
 
     def __getattr__(self, name):
         """If attribute not found, check if the architecture type implements it
@@ -2053,11 +2238,13 @@ class Instruction(Pickable):
             try:
                 return self._arch_type.__getattr__(name)
             except AttributeError:
-                raise AttributeError("'%s' object has no attribute '%s'" %
-                                     (self.__class__.__name__, name))
+                raise AttributeError(
+                    "'%s' object has no attribute '%s'"
+                    % (self.__class__.__name__, name)
+                )
 
     def __getstate__(self):
-        """  """
+        """ """
 
         # We can not pickle/unpickle some functions.
         # Therefore, we miss that call-back control to maintain
@@ -2070,11 +2257,11 @@ class Instruction(Pickable):
         state["_context_callback_check"] = RejectingDict()
         state["_context_callback_fix"] = RejectingDict()
 
-        for operand in state['_operands'].values():
+        for operand in state["_operands"].values():
             operand._set_function = None
             operand._unset_function = None
 
-        for memoperand in state['_mem_operands']:
+        for memoperand in state["_mem_operands"]:
             memoperand._set_address_function = None
             memoperand._unset_address_function = None
             memoperand._set_length_function = None
@@ -2084,8 +2271,9 @@ class Instruction(Pickable):
 
 
 @typeguard_testsuite
-def create_dependency_between_ins(output_ins: Instruction,
-                                  input_ins: Instruction, context: Context):
+def create_dependency_between_ins(
+    output_ins: Instruction, input_ins: Instruction, context: Context
+):
     """
 
     :param output_ins:
@@ -2097,28 +2285,34 @@ def create_dependency_between_ins(output_ins: Instruction,
     reserved_registers = set(context.reserved_registers)
 
     output_operands = [
-        operand for operand in output_ins.operands() if operand.is_output
-        and not operand.type.immediate and not operand.type.address_relative
-        and not operand.type.address_base and not operand.type.address_index
+        operand
+        for operand in output_ins.operands()
+        if operand.is_output
+        and not operand.type.immediate
+        and not operand.type.address_relative
+        and not operand.type.address_base
+        and not operand.type.address_index
     ]
 
     input_operands = [
-        operand for operand in input_ins.operands() if operand.is_input
-        and not operand.type.immediate and not operand.type.address_relative
-        and not operand.type.address_base and not operand.type.address_index
+        operand
+        for operand in input_ins.operands()
+        if operand.is_input
+        and not operand.type.immediate
+        and not operand.type.address_relative
+        and not operand.type.address_base
+        and not operand.type.address_index
     ]
 
     # prioritize the operands that are only inputs or only outputs
 
-    output_operands = [operand for operand in output_operands
-                       if not operand.is_input] + \
-                      [operand for operand in output_operands
-                       if operand.is_input]
+    output_operands = [
+        operand for operand in output_operands if not operand.is_input
+    ] + [operand for operand in output_operands if operand.is_input]
 
-    input_operands = [operand for operand in input_operands
-                      if not operand.is_output] + \
-                     [operand for operand in input_operands
-                      if operand.is_output]
+    input_operands = [
+        operand for operand in input_operands if not operand.is_output
+    ] + [operand for operand in input_operands if operand.is_output]
 
     dependency_set = False
     for output_operand in output_operands:
@@ -2162,8 +2356,16 @@ def create_dependency_between_ins(output_ins: Instruction,
 @typeguard_testsuite
 class MicroprobeInstructionDefinition(object):
 
-    def __init__(self, instruction_type: InstructionType, operands, label,
-                 address: Address | None, asm, decorators, comments):
+    def __init__(
+        self,
+        instruction_type: InstructionType,
+        operands,
+        label,
+        address: Address | None,
+        asm,
+        decorators,
+        comments,
+    ):
 
         self._type = instruction_type
         self._operands = operands
@@ -2235,23 +2437,40 @@ class MicroprobeInstructionDefinition(object):
         if self._comments is not None:
             comments = self._comments[:]
 
-        return MicroprobeInstructionDefinition(self._type, operands,
-                                               self._label, address, self._asm,
-                                               decorators, comments)
+        return MicroprobeInstructionDefinition(
+            self._type,
+            operands,
+            self._label,
+            address,
+            self._asm,
+            decorators,
+            comments,
+        )
 
-    instruction_type = property(get_instruction_type, set_instruction_type,
-                                None, "type's docstring")
-    operands = property(get_operands, set_operands, None,
-                        "operands's docstring")
+    instruction_type = property(
+        get_instruction_type, set_instruction_type, None, "type's docstring"
+    )
+    operands = property(
+        get_operands, set_operands, None, "operands's docstring"
+    )
     label = property(get_label, set_label, None, "label's docstring")
     address = property(get_address, set_address, None, "address's docstring")
     asm = property(get_asm, set_asm, None, "asm's docstring")
-    decorators = property(get_decorators, set_decorators, None,
-                          "decorators's docstring")
-    comments = property(get_comments, set_comments, None,
-                        "comments's docstring")
+    decorators = property(
+        get_decorators, set_decorators, None, "decorators's docstring"
+    )
+    comments = property(
+        get_comments, set_comments, None, "comments's docstring"
+    )
 
     def __str__(self):
         return "%s(%s,%s,%s,%s,%s,%s,%s)" % (
-            self.__class__.__name__, self.instruction_type, self.operands,
-            self.label, self.address, self.asm, self.decorators, self.comments)
+            self.__class__.__name__,
+            self.instruction_type,
+            self.operands,
+            self.label,
+            self.address,
+            self.asm,
+            self.decorators,
+            self.comments,
+        )

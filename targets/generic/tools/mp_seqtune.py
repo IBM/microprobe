@@ -119,7 +119,13 @@ def _generic_policy_wrapper(all_arguments):
             )
         )
 
-    outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
+    if "MICROPROBEFORCEOUTPUTFILE" in os.environ:
+        outputfile = os.path.join(
+            outputdir, os.environ["MICROPROBEFORCEOUTPUTFILE"]
+        )
+    else:
+        outputfile = os.path.join(outputdir, "%DIRTREE%", outputname)
+
     outputfile = outputfile.replace(
         "%DIRTREE%",
         os.path.join(*([instr.name for instr in instructions] + extrapath)),

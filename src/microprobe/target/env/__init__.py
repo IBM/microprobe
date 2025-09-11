@@ -20,6 +20,7 @@ from __future__ import absolute_import, annotations
 
 # Built-in modules
 import abc
+import os
 from typing import TYPE_CHECKING, List
 
 # Third party modules
@@ -29,8 +30,10 @@ from microprobe import MICROPROBE_RC
 from microprobe.code.address import Address
 from microprobe.code.context import Context
 from microprobe.code.var import VariableArray
-from microprobe.exceptions import MicroprobeImportDefinitionError, \
-    MicroprobeValueError
+from microprobe.exceptions import (
+    MicroprobeImportDefinitionError,
+    MicroprobeValueError,
+)
 from microprobe.property import Property, PropertyHolder
 from microprobe.utils.imp import find_subclasses
 from microprobe.utils.logger import get_logger
@@ -53,16 +56,18 @@ LOG = get_logger(__name__)
 _INIT = True
 _ENV_DEFINITIONS = None
 __all__ = [
-    "import_env_definition", "find_env_definitions", "Environment",
-    "GenericEnvironment"
+    "import_env_definition",
+    "find_env_definitions",
+    "Environment",
+    "GenericEnvironment",
 ]
 
 
 # Functions
 @typeguard_testsuite
-def import_env_definition(module,
-                          isa: ISA,
-                          definition_name: str | None = None):
+def import_env_definition(
+    module, isa: ISA, definition_name: str | None = None
+):
     """
 
     :param module:
@@ -73,9 +78,10 @@ def import_env_definition(module,
 
     LOG.info("Start Environment import")
     envcls = list(
-        find_subclasses(module,
-                        GenericEnvironment,
-                        extra_import_name=definition_name))
+        find_subclasses(
+            module, GenericEnvironment, extra_import_name=definition_name
+        )
+    )
 
     LOG.debug("Definition name: %s", definition_name)
     LOG.debug("Classes: %s", envcls)
@@ -84,16 +90,20 @@ def import_env_definition(module,
         envcls = [cls for cls in envcls if cls.__name__ == definition_name]
 
     if len(envcls) > 1 and definition_name is None:
-        LOG.warning("Multiple environment definitions found and a specific"
-                    " name not provided. Taking the first one.")
+        LOG.warning(
+            "Multiple environment definitions found and a specific"
+            " name not provided. Taking the first one."
+        )
     elif len(envcls) < 1 and definition_name is None:
         raise MicroprobeImportDefinitionError(
-            "No environment definitions found in '%s'" % module)
+            "No environment definitions found in '%s'" % module
+        )
 
     elif len(envcls) < 1:
         raise MicroprobeImportDefinitionError(
             "No environment definitions found in '%s' with name"
-            " '%s'" % (module, definition_name))
+            " '%s'" % (module, definition_name)
+        )
 
     environment = envcls[0](isa)
 
@@ -117,14 +127,18 @@ def find_env_definitions(paths: List[str] | None = None):
     if paths is None:
         paths = []
 
-    paths = paths + MICROPROBE_RC["environment_paths"] \
+    paths = (
+        paths
+        + MICROPROBE_RC["environment_paths"]
         + MICROPROBE_RC["default_paths"]
+    )
 
     results: List["Definition"] = []
-    files = findfiles(paths, "env/.*.py$", full=True)
+    files = findfiles(paths, os.path.join("env", ".*.py$"), full=True)
 
     if len(files) > 0:
         from microprobe.target import Definition
+
         LOG.debug("Files found")
 
         for modfile in files:
@@ -139,7 +153,9 @@ def find_env_definitions(paths: List[str] | None = None):
                 LOG.debug("Trying class: '%s'", envcls)
                 try:
                     env = envcls(None)
-                    definition = Definition(modfile, env.name, env.description)
+                    definition = Definition(
+                        modfile, env.name, env.description
+                    )
                     if definition not in results:
                         results.append(definition)
                 except TypeError as exc:
@@ -291,11 +307,9 @@ class GenericEnvironment(Environment):
 
     _cmp_attributes = ["name", "descr"]
 
-    def __init__(self,
-                 name: str,
-                 descr: str,
-                 isa: ISA,
-                 little_endian: bool = False):
+    def __init__(
+        self, name: str, descr: str, isa: ISA, little_endian: bool = False
+    ):
         """
 
         :param name:
@@ -314,9 +328,13 @@ class GenericEnvironment(Environment):
         self._little_endian = little_endian
         self.register_property(
             Property(
-                "problem_state", "Boolean indicating if the program"
+                "problem_state",
+                "Boolean indicating if the program"
                 " is executed in the problem state"
-                " (not privilege level)", True))
+                " (not privilege level)",
+                True,
+            )
+        )
 
     @property
     def name(self):
@@ -369,8 +387,9 @@ class GenericEnvironment(Environment):
         """
         raise NotImplementedError(
             "Register name translation requested but not implemented. Check"
-            " if you are targeting the appropriate environment (%s)" %
-            register)
+            " if you are targeting the appropriate environment (%s)"
+            % register
+        )
 
     def full_report(self):
         return str(self)
@@ -379,27 +398,33 @@ class GenericEnvironment(Environment):
     def default_wrapper(self):
         return self._default_wrapper
 
-    def elf_abi(self,
-                stack_size: int,
-                start_symbol,
-                stack_name: str = "microprobe stack",
-                stack_alignment: int = 16,
-                stack_address: Address | None = None,
-                **kwargs):
+    def elf_abi(
+        self,
+        stack_size: int,
+        start_symbol,
+        stack_name: str = "microprobe stack",
+        stack_alignment: int = 16,
+        stack_address: Address | None = None,
+        **kwargs,
+    ):
 
-        stack = VariableArray(stack_name,
-                              "uint8_t",
-                              stack_size,
-                              align=stack_alignment,
-                              address=stack_address)
+        stack = VariableArray(
+            stack_name,
+            "uint8_t",
+            stack_size,
+            align=stack_alignment,
+            address=stack_address,
+        )
 
         instructions: List[Instruction] = []
         instructions += self.target.set_register_to_address(
-            self.stack_pointer, Address(base_address=stack_name), Context())
+            self.stack_pointer, Address(base_address=stack_name), Context()
+        )
 
         if self.stack_direction == "decrease":
             instructions += self.target.add_to_register(
-                self.stack_pointer, stack_size)
+                self.stack_pointer, stack_size
+            )
 
         if start_symbol is not None:
             instructions += self.target.function_call(start_symbol)
@@ -409,10 +434,12 @@ class GenericEnvironment(Environment):
 
         return [stack], instructions
 
-    def function_call(self,
-                      target: Target,
-                      return_address_reg: Register | None = None,
-                      long_jump: bool = False):
+    def function_call(
+        self,
+        target: Target,
+        return_address_reg: Register | None = None,
+        long_jump: bool = False,
+    ):
         raise NotImplementedError
 
     def function_return(self, return_address_reg: Register | None = None):
@@ -437,8 +464,9 @@ class GenericEnvironment(Environment):
     def _check_cmp(self, other):
 
         if not isinstance(other, self.__class__):
-            raise NotImplementedError("%s != %s" %
-                                      (other.__class__, self.__class__))
+            raise NotImplementedError(
+                "%s != %s" % (other.__class__, self.__class__)
+            )
 
     def __eq__(self, other):
         """x.__eq__(y) <==> x==y"""

@@ -104,7 +104,7 @@ test5: ./source/examples_outputs/example_mp_c2mpt.mpt
 ./source/examples_outputs/example_mp_c2mpt.mpt: ../targets/riscv/tests/tools/c2mpt_test003.c ../targets/generic/tools/mp_c2mpt.py
 	rm -f ./source/examples_outputs/example_mp_c2mpt.mpt
 	mkdir -p ./source/examples_outputs/
-	mp_c2mpt.py -T riscv_v22-riscv_generic-riscv64_linux_gcc -P ../targets -i ../targets/riscv/tests/tools/c2mpt_test003.c -O ./source/examples_outputs/example_mp_c2mpt.mpt --target-c-compiler riscv64-linux-gnu-gcc-8 --target-objdump riscv64-linux-gnu-objdump --target-c-compiler-flags="-O3 -march=rv64gc"
+	mp_c2mpt.py -T riscv_v22-riscv_generic-riscv64_linux_gcc -P ../targets -i ../targets/riscv/tests/tools/c2mpt_test003.c -O ./source/examples_outputs/example_mp_c2mpt.mpt --target-c-compiler riscv64-linux-gnu-gcc --target-objdump riscv64-linux-gnu-objdump --target-c-compiler-flags="-O3 -march=rv64gc"
 
 test6: ./source/examples_outputs/example_mpt2trace.output
 

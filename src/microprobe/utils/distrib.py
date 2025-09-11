@@ -21,14 +21,13 @@ from __future__ import absolute_import, division
 # Built-in modules
 import bisect
 import itertools
-from random import Random
 
 # Third party modules
 
 # Own modules
 from microprobe.exceptions import MicroprobeValueError
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import getnextf
+from microprobe.utils.misc import getnextf, RND
 
 
 # Constants
@@ -56,8 +55,7 @@ class Choice(object):  # pylint: disable-msg=too-few-public-methods
         """
         self._items = items[:]
         self._oitems = items[:]
-        self._random = Random()
-        self._random.seed(10)
+        self._random = RND
 
     def __call__(self, rnd=None, bis=bisect.bisect):
         """
@@ -202,8 +200,7 @@ def shuffle(slist, threshold):
     rlist = []
     slist = sorted(slist)
 
-    random = Random()
-    random.seed(10)
+    random = RND
 
     if threshold == -1:
         random.shuffle(slist)
@@ -336,8 +333,7 @@ def generate_weighted_profile(
     count = 0
     step = 1
 
-    random = Random()
-    random.seed(10)
+    random = RND
 
     if aver < targetvalue:
 
@@ -454,8 +450,7 @@ def probability(value):
     """
     assert value >= 0 and value <= 1, "Invalid probability"
 
-    crandom = Random()
-    crandom.seed(10)
+    crandom = RND
 
     def func():
         return crandom.uniform(0, 1) <= value

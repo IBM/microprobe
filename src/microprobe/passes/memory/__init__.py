@@ -22,8 +22,6 @@ from __future__ import absolute_import, division, print_function
 import collections
 import itertools
 
-# Third party modules
-
 # Own modules
 import microprobe.code.var
 import microprobe.passes
@@ -43,6 +41,7 @@ from microprobe.target.isa.operand import (
 from microprobe.utils.distrib import regular_seq
 from microprobe.utils.logger import get_logger, set_log_level
 from microprobe.utils.misc import (
+    RNDINT,
     getnextf,
     longest_common_substr,
     range_to_sequence,
@@ -85,7 +84,16 @@ class GenericMemoryModelPass(microprobe.passes.Pass):
 
         """
 
-        if not building_block.context.register_has_value(0):
+        if building_block.context.register_has_value(0):
+            regs = building_block.context.registers_get_value(0)
+            need_init = True
+            for reg in regs:
+                if reg.type.used_for_address_arithmetic:
+                    need_init = False
+        else:
+            need_init = True
+
+        if need_init:
             reg = target.get_register_for_address_arithmetic(
                 building_block.context
             )
@@ -1167,12 +1175,21 @@ class SingleMemoryStreamPass(microprobe.passes.Pass):
                     ):
                         # Warm stores
                         mycontext = target.wrapper.context()
+
                         ninstr = target.set_register_to_address(
                             target.scratch_registers[0], taddress, mycontext
                         )
                         mycontext.set_register_value(
                             target.scratch_registers[0], taddress
                         )
+
+                        ninstr += target.set_register(
+                            target.scratch_registers[1], 0, mycontext
+                        )
+                        mycontext.set_register_value(
+                            target.scratch_registers[1], 0
+                        )
+
                         ninstr += target.load(
                             target.scratch_registers[0], taddress, mycontext
                         )
@@ -2031,9 +2048,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             loc,
         ) in self._model:
             var = microprobe.code.var.VariableArray(
-                "stream%d" % sid, "char", size, align=4 * 1024
+                "stream%d" % sid, "char", size, align=4 * 1024, value=RNDINT
             )
-
             building_block.register_var(var, building_block.context)
 
             if ratio > 0:
@@ -2073,6 +2089,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     reduced,
                     max_value,
                     0,
+                    shuffle,
+                    loc,
                 ]
                 descriptors2[sid] = [0]
 
@@ -2089,6 +2107,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
             reduced,
             max_value,
             sind,
+            shuffle,
+            loc,
         ) in descriptors.values():
             for sind in range(0, len(reg_base_vall)):
                 building_block.add_init(
@@ -2157,6 +2177,7 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                     and not (is_load and self._so)
                 ):
                     mcomp = self._func()
+
                     (
                         var,
                         reg_basel,
@@ -2170,6 +2191,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         reduced,
                         max_value,
                         sind,
+                        shuffle,
+                        loc,
                     ) = descriptors[mcomp]
 
                     reg_base = reg_basel[sind]
@@ -2196,6 +2219,15 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
 
                     if module > 0:
                         value = self._sets[mcomp][count % (module)]
+                        if count % module == 0 and count > 1:
+                            values = list(set(list(sorted(self._sets[mcomp]))))
+                            values = microprobe.utils.distrib.shuffle(
+                                values, shuffle
+                            )
+                            values = microprobe.utils.distrib.locality(
+                                values, (loc[0], loc[1] + 1)
+                            )
+                            self._sets[mcomp] = values
                     else:
                         value = 0
 
@@ -2380,6 +2412,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                                     reduced,
                                     max_value,
                                     sind,
+                                    shuffle,
+                                    loc,
                                 ]
                             else:
                                 calc_instrsl[sind] = []
@@ -2397,6 +2431,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                                     reduced,
                                     max_value,
                                     sind,
+                                    shuffle,
+                                    loc,
                                 ]
 
                         # Remove touched instructions from all the streams
@@ -2565,10 +2601,10 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                         for mkreg in instr.sets():
                             if not instr.allows(mkreg):
                                 instr.add_allow_register(mkreg)
-
+                            bb = building_block
                             if (
-                                mkreg not
-                                in building_block.context.reserved_registers
+                                mkreg
+                                not in bb.context.reserved_registers
                             ):
                                 building_block.context.add_reserved_registers(
                                     [mkreg]
@@ -2659,6 +2695,8 @@ class GenericMemoryStreamsPass(microprobe.passes.Pass):
                 reduced,
                 max_value,
                 sind,
+                shuffle2,
+                loc2,
             ) = descriptors[sid]
 
             if max_value == 0:

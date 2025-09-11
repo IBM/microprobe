@@ -18,7 +18,6 @@ docstring
 from __future__ import absolute_import
 
 # Built-in modules
-import random
 
 # Own modules
 import microprobe.code
@@ -31,6 +30,7 @@ import microprobe.passes.symbol
 from microprobe.exceptions import MicroprobePolicyError
 from microprobe.target import Target
 from microprobe.utils.logger import get_logger
+from microprobe.utils.misc import RND, RNDINT
 
 # Constants
 LOG = get_logger(__name__)
@@ -65,14 +65,13 @@ def policy(target: Target, wrapper, **kwargs):
             "Policy '%s' not valid for target '%s'. Supported targets are:"
             " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS)))
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     sequence = [kwargs['instruction']]
     synth = microprobe.code.Synthesizer(target, wrapper)
     synth.add_pass(
         microprobe.passes.initialization.InitializeRegistersPass(
-            value=0b0101010))
+            value=RNDINT))
     synth.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
             kwargs['benchmark_size']))

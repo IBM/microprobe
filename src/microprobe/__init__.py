@@ -44,11 +44,11 @@ Configuration options
 - **verbosity** (:class:`~.int`): Verbosity level. It controls the verbosity
   level of the logger (Default: 0). Valid values are:
 
-  - 0 : quiet
-  - 1 : critical messages
-  - 2 : error messages
-  - 3 : warning messages
-  - 4 : info messages
+  - 0: quiet
+  - 1: critical messages
+  - 2: error messages
+  - 3: warning messages
+  - 4: info messages
 
 - **debug** (:class:`bool`): Enable debug mode (Default: False). If enabled,
   lots of output is generated, useful for developers.
@@ -117,17 +117,12 @@ from __future__ import absolute_import
 
 # Built-in modules
 import ast
+import configparser
 import os
 import warnings
-import configparser
-
-# Third party modules
 
 # Own modules
 from microprobe.utils.config import MicroprobeDefaultConfiguration
-
-# Local modules
-
 
 # Constants
 
@@ -143,11 +138,9 @@ _DEFAULT_CONFIG_FILE_NAME = "microprobe.cfg"
 #: installation directory, at the user home directory or in the current
 #: execution directory.
 _DEFAULT_CONFIG_FILE_LOCATIONS = [
-    os.path.join(
-        os.path.dirname(__file__), _DEFAULT_CONFIG_FILE_NAME
-    ),
-    os.path.expanduser('~/.%s' % _DEFAULT_CONFIG_FILE_NAME),
-    os.path.join(os.getcwd(), _DEFAULT_CONFIG_FILE_NAME)
+    os.path.join(os.path.dirname(__file__), _DEFAULT_CONFIG_FILE_NAME),
+    os.path.expanduser(f"~/.{_DEFAULT_CONFIG_FILE_NAME}"),
+    os.path.join(os.getcwd(), _DEFAULT_CONFIG_FILE_NAME),
 ]
 
 #: Generic configparser to support the reading of configuration files
@@ -162,8 +155,9 @@ __all__ = ["MICROPROBE_RC"]
 
 # Initialization
 if "MICROPROBERC" in os.environ:
-    _DEFAULT_CONFIG_FILE_LOCATIONS = os.environ["MICROPROBERC"].split(":") \
-        + _DEFAULT_CONFIG_FILE_LOCATIONS
+    _DEFAULT_CONFIG_FILE_LOCATIONS = (
+        os.environ["MICROPROBERC"].split(":") + _DEFAULT_CONFIG_FILE_LOCATIONS
+    )
 
 _CONFIG.read(_DEFAULT_CONFIG_FILE_LOCATIONS)
 
@@ -171,41 +165,47 @@ for section in ["DEFAULT"] + _CONFIG.sections():
     for option, value in _CONFIG.items(section):
         value = value.strip()
         if option in MICROPROBE_RC:
-            value = value.replace("MICROPROBE_INSTALL_DIR",
-                                  os.path.dirname(__file__))
-            if ((value.endswith(']') and value.startswith('[')) or
-                    value.replace("0x", "").replace(".", "").isdigit() or
-                    value in ['True', 'False']):
+            value = value.replace(
+                "MICROPROBE_INSTALL_DIR", os.path.dirname(__file__)
+            )
+            if (
+                (value.endswith("]") and value.startswith("["))
+                or value.replace("0x", "").replace(".", "").isdigit()
+                or value in ["True", "False"]
+            ):
+                # value = r'{}'.format(value)
+                value = value.encode("unicode_escape").decode()
                 MICROPROBE_RC[option] = ast.literal_eval(value)
             else:
                 MICROPROBE_RC[option] = value
         else:
-            warnings.warn("Ignoring option: %s" % option)
+            warnings.warn(f"Ignoring option: {option}")
 
 # Environment configuration
 if "MICROPROBEDATA" in os.environ:
     MICROPROBE_RC["default_paths"] += [
         os.path.abspath(path)
-        for path in os.environ["MICROPROBEDATA"].split(":")
-        if path != ''
+        for path in os.environ["MICROPROBEDATA"].split(";")
+        if path != ""
     ]
     MICROPROBE_RC["architecture_paths"] += MICROPROBE_RC["default_paths"][:]
-    MICROPROBE_RC["microarchitecture_paths"] += \
-        MICROPROBE_RC["default_paths"][:]
+    MICROPROBE_RC["microarchitecture_paths"] += MICROPROBE_RC["default_paths"][
+        :
+    ]
     MICROPROBE_RC["environment_paths"] += MICROPROBE_RC["default_paths"][:]
 
 if "MICROPROBETEMPLATES" in os.environ:
-    MICROPROBE_RC['template_paths'] += [
+    MICROPROBE_RC["template_paths"] += [
         os.path.abspath(elem)
-        for elem in os.environ["MICROPROBETEMPLATES"].split(":")
-        if elem != ''
+        for elem in os.environ["MICROPROBETEMPLATES"].split(";")
+        if elem != ""
     ]
 
 if "MICROPROBEWRAPPERS" in os.environ:
     MICROPROBE_RC["wrapper_paths"] += [
         os.path.abspath(elem)
-        for elem in os.environ["MICROPROBEWRAPPERS"].split(":")
-        if elem != ''
+        for elem in os.environ["MICROPROBEWRAPPERS"].split(";")
+        if elem != ""
     ]
 
 if "MICROPROBEDEBUG" in os.environ:
@@ -225,26 +225,91 @@ if "MICROPROBEASMHEXFMT" in os.environ:
     elif os.environ["MICROPROBEASMHEXFMT"].strip() == "none":
         MICROPROBE_RC["hex_none"] = True
     else:
-        warnings.warn("Ignoring option: %s in env var MICROPROBEASMHEXFMT" %
-                      os.environ["MICROPROBEASMHEXFMT"])
+        warnings.warn(
+            "Ignoring option: %s in env var MICROPROBEASMHEXFMT"
+            % os.environ["MICROPROBEASMHEXFMT"]
+        )
 
 if "MICROPROBEPARALLELTHRESHOLD" in os.environ:
     try:
-        MICROPROBE_RC["parallel_threshold"] = \
-            int(os.environ["MICROPROBEPARALLELTHRESHOLD"].strip())
+        MICROPROBE_RC["parallel_threshold"] = int(
+            os.environ["MICROPROBEPARALLELTHRESHOLD"].strip()
+        )
     except ValueError:
         warnings.warn(
-            "Ignoring option: %s in env var MICROPROBEPARALLELTHRESHOLD" %
-            os.environ["MICROPROBEPARALLELTHRESHOLD"])
+            "Ignoring option: %s in env var MICROPROBEPARALLELTHRESHOLD"
+            % os.environ["MICROPROBEPARALLELTHRESHOLD"]
+        )
 
 if "MICROPROBECPUS" in os.environ:
     try:
-        MICROPROBE_RC["cpus"] = \
-            int(os.environ["MICROPROBECPUS"].strip())
+        MICROPROBE_RC["cpus"] = int(os.environ["MICROPROBECPUS"].strip())
     except ValueError:
         warnings.warn(
-            "Ignoring option: %s in env var MICROPROBECPUS" %
-            os.environ["MICROPROBECPUS"])
+            "Ignoring option: %s in env var MICROPROBECPUS"
+            % os.environ["MICROPROBECPUS"]
+        )
 
 if "MICROPROBENOCACHE" in os.environ:
-    MICROPROBE_RC['no_cache'] = True
+    MICROPROBE_RC["no_cache"] = True
+
+
+if "MICROPROBESEED" not in os.environ:
+    MICROPROBE_RC["seed"] = 13
+else:
+    try:
+        MICROPROBE_RC["seed"] = int(os.environ["MICROPROBESEED"].strip())
+    except ValueError:
+        warnings.warn(
+            "Ignoring option: %s in env var MICROPROBESEED"
+            % os.environ["MICROPROBESEED"]
+        )
+        MICROPROBE_RC["seed"] = 13
+
+if "MICROPROBEPATTERN" not in os.environ:
+    MICROPROBE_RC["pattern"] = "random"
+    MICROPROBE_RC["pattern_update"] = False
+else:
+    try:
+        if "_" in os.environ["MICROPROBEPATTERN"].strip():
+            val = os.environ["MICROPROBEPATTERN"].strip().split("_")[0]
+            update = os.environ["MICROPROBEPATTERN"].strip().split("_")[1]
+        else:
+            val = os.environ["MICROPROBEPATTERN"].strip()
+            update = False
+
+        MICROPROBE_RC["pattern"] = int(val, 0)
+        MICROPROBE_RC["pattern_update"] = update
+
+        if MICROPROBE_RC["pattern"] < 0 or update not in [
+            "rotate",
+            "negate",
+            False,
+        ]:
+            warnings.warn(
+                "Ignoring option: %s in env var MICROPROBEPATTERN"
+                % os.environ["MICROPROBEPATTERN"]
+            )
+            MICROPROBE_RC["pattern"] = "random"
+            MICROPROBE_RC["pattern_update"] = False
+        elif MICROPROBE_RC["pattern"].bit_length() == 0:
+            MICROPROBE_RC["pattern"] = 0
+        else:
+            width = MICROPROBE_RC["pattern"].bit_length()
+            pattern = MICROPROBE_RC["pattern"] & ((1 << width) - 1)
+            if width >= 64:
+                MICROPROBE_RC["pattern"] = pattern & ((1 << 64) - 1)
+            result = 0
+            shift = 0
+            while shift < 64:
+                result |= pattern << shift
+                shift += width
+            MICROPROBE_RC["pattern"] = result & ((1 << 64) - 1)
+
+    except ValueError:
+        warnings.warn(
+            "Ignoring option: %s in env var MICROPROBEPATTERN"
+            % os.environ["MICROPROBEPATTERN"]
+        )
+        MICROPROBE_RC["pattern"] = "random"
+        MICROPROBE_RC["pattern_update"] = False

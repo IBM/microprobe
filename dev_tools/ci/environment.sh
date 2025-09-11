@@ -53,7 +53,7 @@ if [ "$TRAVIS" = "true" ] && [ "$CI" = "true" ]; then
     MAXJOBS=1
     export NOSEOPTS=" -d -v -e load_tests --exe --processes=$MAXJOBS --detailed-errors --process-timeout=$TIMEOUT "
 
-    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-linux-gnu-gcc-8)
+    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-linux-gnu-gcc)
     export MP_TESTING_COMPILER_RISCV_V22
 else
     export NICE="nice -n 1"
@@ -66,7 +66,7 @@ else
     # export NOSEOPTS="-d -v -e load_tests --exe --processes=$MAXJOBS -x --detailed-errors --process-timeout=$TIMEOUT"
 
     set +e
-    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-linux-gnu-gcc-8)
+    MP_TESTING_COMPILER_RISCV_V22=$(command -v riscv64-linux-gnu-gcc)
     export MP_TESTING_COMPILER_RISCV_V22
     set -e
 
@@ -280,9 +280,9 @@ fi
 # Add PATHs
 export PYTHONPATH="$WORKSPACE/src/:$PYTHONPATH"
 export MICROPROBEDATA="$WORKSPACE/targets/"
-MICROPROBETEMPLATES="$(find "$(pwd)"/targets -type d -name templates -exec echo -n {}: \;)"
+MICROPROBETEMPLATES="$(find "$(pwd)"/targets -type d -name templates -exec echo -n {}\; \;)"
 export MICROPROBETEMPLATES
-MICROPROBEWRAPPERS="$(find "$(pwd)"/targets -type d -name wrappers -exec echo -n {}: \;)"
+MICROPROBEWRAPPERS="$(find "$(pwd)"/targets -type d -name wrappers -exec echo -n {}\; \;)"
 export MICROPROBEWRAPPERS
 PATH=$PATH:$(find "$(pwd)/targets" -type d -name tools -exec echo -n {}: \;)
 export PATH

@@ -408,29 +408,29 @@ def _shift_and_fix_variables(
 
                 nvalue = value + offset
                 fmt_str = "%%0%dX" % (2 * cbytes)
-                nvalue = fmt_str % nvalue
+                nvalue_str = fmt_str % nvalue
 
                 print_info(
                     "Shifting pointer in variable: '%s' at"
                     " address '0x%016X' from '0x%s' to value "
                     "'0x%s" % (variable.name, variable.address + idx,
-                               value_str, nvalue), )
+                               value_str, nvalue_str), )
 
-                if len(nvalue) > (2 * cbytes):
+                if len(nvalue_str) > (2 * cbytes):
                     raise MicroprobeValueError(
                         "Overflow during variable shifting", )
                 if big_endian:
-                    nvalue = [
-                        int(nvalue[idx2:idx2 + 2], 16)
+                    nvalue_list = [
+                        int(nvalue_str[idx2:idx2 + 2], 16)
                         for idx2 in range(0, 2 * cbytes, 2)
                     ]
                 else:
-                    nvalue = [
-                        int(nvalue[idx2:idx2 + 2], 16)
+                    nvalue_list = [
+                        int(nvalue_str[idx2:idx2 + 2], 16)
                         for idx2 in reversed(range(0, 2 * cbytes, 2))
                     ]
 
-                variable.init_value[idx:idx + cbytes] = nvalue
+                variable.init_value[idx:idx + cbytes] = nvalue_list
         else:
             raise NotImplementedError("Unable to shift variable "
                                       "type '%s'" % variable.var_type)

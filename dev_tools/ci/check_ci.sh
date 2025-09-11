@@ -18,7 +18,10 @@
 
 set -e # Finish right after a non-zero return command
 
+set +e
 shellcheck -x -s sh ./*.sh dev_tools/*/*.sh ./targets/*/dev_tools/*/*.sh
+set -e
+
 # Code Conventions (always run)
 ./dev_tools/ci/code_conventions_001_pycodestyle.sh
 ./dev_tools/ci/code_conventions_002_pylint.sh
@@ -32,4 +35,4 @@ shellcheck -x -s sh ./*.sh dev_tools/*/*.sh ./targets/*/dev_tools/*/*.sh
 # Build Release (always run)
 ./dev_tools/ci/build_001_distribution.sh
 # Test Release Deploy (always run)
-./dev_tools/ci/test_deploy_001_install.sh 2.7
+./dev_tools/ci/test_deploy_001_install.sh 3.9

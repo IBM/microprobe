@@ -53,7 +53,6 @@ import os
 import sys
 import time as runtime
 from typing import List, Tuple
-import random
 
 # Own modules
 import microprobe.code
@@ -66,7 +65,7 @@ import microprobe.passes.structure
 from microprobe.exceptions import MicroprobeTargetDefinitionError
 from microprobe.target import import_definition
 from microprobe.utils.cmdline import print_error, print_info, print_warning
-from microprobe.utils.misc import RNDINT
+from microprobe.utils.misc import RND, RNDINT
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 __author__ = "Ramon Bertran"
@@ -89,7 +88,7 @@ try:
     TARGET = import_definition("power_v206-power7-ppc64_linux_gcc")
 except MicroprobeTargetDefinitionError as exc:
     print_error("Unable to import target definition")
-    print_error("Exception message: %s" % str(exc))
+    print_error(f"Exception message: {str(exc)}")
     exit(-1)
 
 
@@ -117,25 +116,30 @@ def generate_genetic(compname: str, ipc: float):
     bcomps = []
     any_comp: bool = False
 
-    assert TARGET.microarchitecture is not None, \
-        "Target must have a defined microarchitecture"
+    assert (
+        TARGET.microarchitecture is not None
+    ), "Target must have a defined microarchitecture"
 
     if compname.find("FXU") >= 0:
         comps.append(
-            TARGET.microarchitecture.elements["FXU0_Core0_SCM_Processor"])
+            TARGET.microarchitecture.elements["FXU0_Core0_SCM_Processor"]
+        )
 
     if compname.find("VSU") >= 0:
         comps.append(
-            TARGET.microarchitecture.elements["VSU0_Core0_SCM_Processor"])
+            TARGET.microarchitecture.elements["VSU0_Core0_SCM_Processor"]
+        )
 
     if len(comps) == 2:
         any_comp = True
     elif compname.find("noLSU") >= 0:
         bcomps.append(
-            TARGET.microarchitecture.elements["LSU0_Core0_SCM_Processor"])
+            TARGET.microarchitecture.elements["LSU0_Core0_SCM_Processor"]
+        )
     elif compname.find("LSU") >= 0:
         comps.append(
-            TARGET.microarchitecture.elements["LSU_Core0_SCM_Processor"])
+            TARGET.microarchitecture.elements["LSU_Core0_SCM_Processor"]
+        )
 
     if (len(comps) == 1 and ipc > 2) or (len(comps) == 2 and ipc > 4):
         return True
@@ -143,7 +147,7 @@ def generate_genetic(compname: str, ipc: float):
     for elem in os.listdir(DIRECTORY):
         if not elem.endswith(".c"):
             continue
-        if elem.startswith("%s:IPC:%.2f:DIST" % (compname, ipc)):
+        if elem.startswith(f"{compname}:IPC:{ipc:.2f}:DIST"):
             print_info("Already generated: %s %d" % (compname, ipc))
             return True
 
@@ -157,24 +161,30 @@ def generate_genetic(compname: str, ipc: float):
         """
         wrapper = microprobe.code.get_wrapper("CInfPpc")
         synth = microprobe.code.Synthesizer(TARGET, wrapper())
-        rand = random.Random()
-        rand.seed(13)
+        rand = RND
         synth.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                value=RNDINT))
+                value=RNDINT
+            )
+        )
         synth.add_pass(
-            microprobe.passes.structure.SimpleBuildingBlockPass(
-                BENCHMARK_SIZE))
+            microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
+        )
         synth.add_pass(
             microprobe.passes.instruction.SetInstructionTypeByElementPass(
                 TARGET,
-                comps, {},
+                comps,
+                {},
                 block=bcomps,
                 avelatency=latency,
-                any_comp=any_comp))
+                any_comp=any_comp,
+            )
+        )
         synth.add_pass(
             microprobe.passes.register.DefaultRegisterAllocationPass(
-                rand, dd=dist))
+                rand, dd=dist
+            )
+        )
         bench = synth.synthesize()
         synth.save(name, bench=bench)
 
@@ -185,7 +195,8 @@ def generate_genetic(compname: str, ipc: float):
 
     # Set up the search driver
     driver = microprobe.driver.genetic.ExecCmdDriver(
-        generate, 20, 30, 30, f"'{COMMAND}' {ipc} ", ga_params)
+        generate, 20, 30, 30, f"'{COMMAND}' {ipc} ", ga_params
+    )
 
     starttime = runtime.time()
     print_info("Start search...")
@@ -193,8 +204,9 @@ def generate_genetic(compname: str, ipc: float):
     print_info("Search end")
     endtime = runtime.time()
 
-    print_info("Genetic time::"
-               f"{datetime.timedelta(seconds=endtime - starttime)}")
+    print_info(
+        "Genetic time::" f"{datetime.timedelta(seconds=endtime - starttime)}"
+    )
 
     # Check if we found a solution
     ga_sol_params: Tuple[float, float] = driver.solution()
@@ -208,28 +220,34 @@ def generate_genetic(compname: str, ipc: float):
         generate(
             f"{DIRECTORY}/{compname}:IPC:{ipc:.2f}:"
             f"DIST:{ga_sol_params[0]:.2f}:LAT:{ga_sol_params[1]:.2f}-check",
-            ga_sol_params[0], ga_sol_params[1])
+            ga_sol_params[0],
+            ga_sol_params[1],
+        )
         print_info("Closest solution generated")
     else:
-        print_info("Solution found for %s and IPC %f -> dist: %f , "
-                   "latency: %f " %
-                   (compname, ipc, ga_sol_params[0], ga_sol_params[1]))
+        print_info(
+            "Solution found for %s and IPC %f -> dist: %f , "
+            "latency: %f "
+            % (compname, ipc, ga_sol_params[0], ga_sol_params[1])
+        )
         print_info("Generating solution...")
         generate(
             f"{DIRECTORY}/{compname}:IPC:{ipc:.2f}:"
             f"DIST:{ga_sol_params[0]:.2f}:LAT:{ga_sol_params[1]:.2f}",
-            ga_sol_params[0], ga_sol_params[1])
+            ga_sol_params[0],
+            ga_sol_params[1],
+        )
         print_info("Solution generated")
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # run main if executed from the COMMAND line
     # and the main method exists
 
     if len(sys.argv) != 3:
         print_info("Usage:")
-        print_info("%s output_dir eval_cmd" % (sys.argv[0]))
+        print_info(f"{sys.argv[0]} output_dir eval_cmd")
         print_info("")
         print_info("Output dir: output directory for the generated benchmarks")
         print_info("eval_cmd: command accepting 2 parameters: the target IPC")
@@ -244,12 +262,12 @@ if __name__ == '__main__':
     COMMAND = sys.argv[2]
 
     if not os.path.isdir(DIRECTORY):
-        print_info("Output DIRECTORY '%s' does not exists" % (DIRECTORY))
+        print_info(f"Output DIRECTORY '{DIRECTORY}' does not exists")
         exit(-1)
 
     if not os.path.isfile(COMMAND):
-        print_info("The COMMAND '%s' does not exists" % (COMMAND))
+        print_info(f"The COMMAND '{COMMAND}' does not exists")
         exit(-1)
 
-    if callable(locals().get('main')):
+    if callable(locals().get("main")):
         main()

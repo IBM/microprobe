@@ -108,9 +108,11 @@ def c2mpt_local_run(input_file: str, arguments):
                                           compile_file)
 
     print_info("Executing compilation command")
+    print_info("Cmd: " + cmd)
     run_cmd(cmd)
 
     print_info("Executing the compiled program")
+    print_info("Cmd: " + compile_file)
     vardefinitions = run_cmd_output("%s" % compile_file)
 
     return vardefinitions
@@ -150,6 +152,7 @@ def c2mpt_objdump(input_file: str, arguments):
     cmd = "\"%s\" %s \"%s\" -o \"%s\"" % (cprog, cflags, input_file,
                                           compile_file)
     print_info("Executing compilation command")
+    print_info("Cmd: " + cmd)
     run_cmd(cmd)
 
     objdumpprog = arguments["target_objdump"]
@@ -163,8 +166,9 @@ def c2mpt_objdump(input_file: str, arguments):
         _RM_FILES.append(objdump_file)
 
     cmd = "\"%s\" %s \"%s\"" % (objdumpprog, objdumpflags, compile_file)
-    run_cmd_output_redirect(cmd, objdump_file)
     print_info("Executing objdump command")
+    print_info("Cmd: " + cmd)
+    run_cmd_output_redirect(cmd, objdump_file)
     return objdump_file
 
 

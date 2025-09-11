@@ -24,7 +24,6 @@ from __future__ import absolute_import
 # Built-in modules
 import multiprocessing as mp
 import os
-import random
 import sys
 from typing import List
 
@@ -39,12 +38,15 @@ import microprobe.passes.memory
 import microprobe.passes.register
 import microprobe.passes.structure
 from microprobe import MICROPROBE_RC
-from microprobe.exceptions import MicroprobeError, \
-    MicroprobeTargetDefinitionError
+from microprobe.exceptions import (
+    MicroprobeError,
+    MicroprobeTargetDefinitionError,
+)
 from microprobe.model.memory import EndlessLoopDataMemoryModel
 from microprobe.target import import_definition
 from microprobe.target.isa.instruction import InstructionType
 from microprobe.utils.cmdline import print_error, print_info
+from microprobe.utils.misc import RND
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
 
 __author__ = "Ramon Bertran"
@@ -64,18 +66,22 @@ try:
     TARGET = import_definition("power_v206-power7-ppc64_linux_gcc")
 except MicroprobeTargetDefinitionError as exc:
     print_error("Unable to import target definition")
-    print_error("Exception message: %s" % str(exc))
+    print_error(f"Exception message: {str(exc)}")
     exit(-1)
 
-assert TARGET.microarchitecture is not None, \
-    "Target must have a defined microarchitecture"
+assert (
+    TARGET.microarchitecture is not None
+), "Target must have a defined microarchitecture"
 BASE_ELEMENT = [
-    element for element in TARGET.microarchitecture.elements.values()
-    if element.name == 'L1D'
+    element
+    for element in TARGET.microarchitecture.elements.values()
+    if element.name == "L1D"
 ][0]
-CACHE_HIERARCHY = \
+CACHE_HIERARCHY = (
     TARGET.microarchitecture.cache_hierarchy.get_data_hierarchy_from_element(
-     BASE_ELEMENT)
+        BASE_ELEMENT
+    )
+)
 
 PARALLEL = True
 
@@ -84,9 +90,9 @@ DIRECTORY = None
 
 @typeguard_testsuite
 def main():
-    """ Main program. """
+    """Main program."""
     if PARALLEL:
-        pool = mp.Pool(processes=MICROPROBE_RC['cpus'])
+        pool = mp.Pool(processes=MICROPROBE_RC["cpus"])
         pool.map(generate, list(range(0, 100)), 1)
     else:
         list(map(generate, list(range(0, 100))))
@@ -94,7 +100,7 @@ def main():
 
 @typeguard_testsuite
 def generate(name: str):
-    """ Benchmark generation policy. """
+    """Benchmark generation policy."""
 
     assert DIRECTORY is not None, "DIRECTORY variable cannot be None"
 
@@ -105,8 +111,7 @@ def generate(name: str):
     print_info(f"Generating {name}...")
 
     # Seed the randomness
-    rand = random.Random()
-    rand.seed(64)  # My favorite number ;)
+    rand = RND
 
     # Generate a random memory model (used afterwards)
     model: List[int] = []
@@ -138,7 +143,7 @@ def generate(name: str):
 
     # Define function to return random numbers (used afterwards)
     def rnd():
-        """Return a random value. """
+        """Return a random value."""
         return rand.randrange(0, (1 << 64) - 1)
 
     # Create the benchmark synthesizer
@@ -150,11 +155,13 @@ def generate(name: str):
 
     # --> Init registers to random values
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=rnd))
+        microprobe.passes.initialization.InitializeRegistersPass(value=rnd)
+    )
 
     # --> Add a single basic block of size size
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
+    )
 
     # --> Fill the basic block with instructions picked randomly from the list
     #     provided
@@ -174,8 +181,13 @@ def generate(name: str):
             continue
         if "Multiple" in instr.description:  # Skip unsupported mult. ld/sts
             continue
-        if instr.category in ['LMA', 'LMV', 'DS', 'EC',
-                              'WT']:  # Skip unsupported categories
+        if instr.category in [
+            "LMA",
+            "LMV",
+            "DS",
+            "EC",
+            "WT",
+        ]:  # Skip unsupported categories
             continue
         if instr.access_storage_with_update:  # Not supported by mem. model
             continue
@@ -186,9 +198,9 @@ def generate(name: str):
         if "Conitional Indexed" in instr.description:  # Skip (illegal intr.)
             continue
         if instr.name in [
-                'LD_V1',
-                'LWZ_V1',
-                'STW_V1',
+            "LD_V1",
+            "LWZ_V1",
+            "STW_V1",
         ]:
             continue
 
@@ -196,7 +208,9 @@ def generate(name: str):
 
     synth.add_pass(
         microprobe.passes.instruction.SetRandomInstructionTypePass(
-            instructions, rand))
+            instructions, rand
+        )
+    )
 
     # --> Set the memory operations parameters to fulfill the given model
     synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(modelobj))
@@ -209,7 +223,9 @@ def generate(name: str):
     #     distance is randomly picked
     synth.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            rand, dd=rand.randint(1, 20)))
+            rand, dd=rand.randint(1, 20)
+        )
+    )
 
     # Generate the benchmark (applies the passes)
     # Since it is a randomly generated code, the generation might fail
@@ -227,13 +243,13 @@ def generate(name: str):
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # run main if executed from the command line
     # and the main method exists
 
     if len(sys.argv) != 2:
         print_info("Usage:")
-        print_info("%s output_dir" % (sys.argv[0]))
+        print_info(f"{sys.argv[0]} output_dir")
         exit(-1)
 
     DIRECTORY = sys.argv[1]
@@ -242,5 +258,5 @@ if __name__ == '__main__':
         print_error(f"Output directory '{DIRECTORY}' does not exists")
         exit(-1)
 
-    if callable(locals().get('main')):
+    if callable(locals().get("main")):
         main()

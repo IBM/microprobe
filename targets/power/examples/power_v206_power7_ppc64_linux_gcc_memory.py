@@ -25,7 +25,6 @@ from __future__ import absolute_import
 # Built-in modules
 import multiprocessing as mp
 import os
-import random
 import sys
 from typing import List, Tuple
 
@@ -46,6 +45,7 @@ from microprobe.target.isa.instruction import InstructionType
 from microprobe.target.uarch.cache import SetAssociativeCache
 from microprobe.utils.cmdline import print_error, print_info
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
+from microprobe.utils.misc import RND
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -177,13 +177,12 @@ def generate(model: Tuple[str, List[SetAssociativeCache], List[int]]):
     # Define function to return random numbers (used afterwards)
     def rnd():
         """Return a random value. """
-        return random.randrange(0, (1 << 64) - 1)
+        return RND.randrange(0, (1 << 64) - 1)
 
     # Create the benchmark synthesizer
     synth = microprobe.code.Synthesizer(garch, cwrapper())
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     ##########################################################################
     # Add the passes we want to apply to synthesize benchmarks               #

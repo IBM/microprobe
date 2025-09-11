@@ -21,7 +21,6 @@ from __future__ import absolute_import, print_function
 # Built-in modules
 import copy
 import itertools
-import random
 
 # Third party modules
 
@@ -40,6 +39,7 @@ from microprobe.utils.distrib import generate_weighted_profile, \
     weighted_choice
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, closest_divisor
+from microprobe.utils.misc import RND as random
 
 # Local modules
 

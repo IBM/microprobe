@@ -25,7 +25,6 @@ from __future__ import absolute_import
 
 # Built-in modules
 import os
-from random import Random
 import sys
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
@@ -36,6 +35,7 @@ from microprobe.passes import initialization, instruction, register, \
     structure, memory, branch
 from microprobe.target import import_definition
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
+from microprobe.utils.misc import RNDINT, RND
 
 
 @typeguard_testsuite
@@ -103,8 +103,7 @@ class RiscvIpcTest(object):
             str.format("{}-{}-{}",
                        self.args.isa, self.args.uarch, self.args.env)
         )
-        self._rand = Random()
-        self._rand.seed(64)  # My favorite number ;)
+        self._rand = RND
 
     def emit(self):
         # Do not touch pointer registers
@@ -135,7 +134,7 @@ class RiscvIpcTest(object):
                     # Remove the endless parameter to not generate
                     # an endless loop
                     cwrapper(endless=True),
-                    value=0b01010101,
+                    value=RNDINT,
                 )
                 passes = [
                     structure.SimpleBuildingBlockPass(self.args.loop_size),

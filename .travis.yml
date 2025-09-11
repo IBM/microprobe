@@ -36,9 +36,7 @@ addons:
             - zlib1g-dev
             - graphviz
             - shellcheck
-            - gcc-8-riscv64-linux-gnu
             - gcc-riscv64-linux-gnu
-            - g++-8-riscv64-linux-gnu
             - g++-riscv64-linux-gnu
 
 stages:

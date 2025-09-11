@@ -27,9 +27,6 @@ import multiprocessing as mp
 import os
 import sys
 import traceback
-import random
-
-# Third party modules
 
 # Own modules
 import microprobe.code.ins
@@ -47,9 +44,15 @@ import microprobe.utils.cmdline
 from microprobe import MICROPROBE_RC
 from microprobe.exceptions import MicroprobeException
 from microprobe.target import import_definition
-from microprobe.utils.cmdline import existing_dir, \
-    int_type, print_error, print_info, print_warning
+from microprobe.utils.cmdline import (
+    existing_dir,
+    int_type,
+    print_error,
+    print_info,
+    print_warning,
+)
 from microprobe.utils.logger import get_logger
+from microprobe.utils.misc import RND, RNDINT
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -74,10 +77,12 @@ def main_setup():
     args = sys.argv[1:]
 
     # Create the CLI interface object
-    cmdline = microprobe.utils.cmdline.CLI("ISA power v206 profile example",
-                                           config_options=False,
-                                           target_options=False,
-                                           debug_options=False)
+    cmdline = microprobe.utils.cmdline.CLI(
+        "ISA power v206 profile example",
+        config_options=False,
+        target_options=False,
+        debug_options=False,
+    )
 
     # Add the different parameters for this particular tool
     cmdline.add_option(
@@ -87,7 +92,8 @@ def main_setup():
         "Instruction names to generate. Default: All instructions",
         required=False,
         nargs="+",
-        metavar="INSTRUCTION_NAME")
+        metavar="INSTRUCTION_NAME",
+    )
 
     cmdline.add_option(
         "output_prefix",
@@ -96,40 +102,48 @@ def main_setup():
         "Output prefix of the generated files. Default: POWER_V206_PROFILE",
         opt_type=str,
         required=False,
-        metavar="PREFIX")
+        metavar="PREFIX",
+    )
 
-    cmdline.add_option("output_path",
-                       "O",
-                       "./",
-                       "Output path. Default: current path",
-                       opt_type=existing_dir,
-                       metavar="PATH")
+    cmdline.add_option(
+        "output_path",
+        "O",
+        "./",
+        "Output path. Default: current path",
+        opt_type=existing_dir,
+        metavar="PATH",
+    )
 
     cmdline.add_option(
         "parallel",
         "p",
-        MICROPROBE_RC['cpus'],
-        "Number of parallel jobs. Default: number of CPUs available (%s)" %
-        mp.cpu_count(),
+        MICROPROBE_RC["cpus"],
+        "Number of parallel jobs. Default: number of CPUs available (%s)"
+        % mp.cpu_count(),
         opt_type=int,
-        choices=list(range(1, MICROPROBE_RC['cpus'] + 1)),
-        metavar="NUM_JOBS")
+        choices=list(range(1, MICROPROBE_RC["cpus"] + 1)),
+        metavar="NUM_JOBS",
+    )
 
     cmdline.add_option(
         "size",
         "S",
-        64, "Benchmark size (number of instructions in the endless loop). "
+        64,
+        "Benchmark size (number of instructions in the endless loop). "
         "Default: 64 instructions",
         opt_type=int_type(1, 2**20),
-        metavar="BENCHMARK_SIZE")
+        metavar="BENCHMARK_SIZE",
+    )
 
-    cmdline.add_option("dependency_distance",
-                       "D",
-                       1000,
-                       "Average dependency distance between the instructions. "
-                       "Default: 1000 (no dependencies)",
-                       opt_type=int_type(1, 1000),
-                       metavar="DEPENDECY_DISTANCE")
+    cmdline.add_option(
+        "dependency_distance",
+        "D",
+        1000,
+        "Average dependency distance between the instructions. "
+        "Default: 1000 (no dependencies)",
+        opt_type=int_type(1, 1000),
+        metavar="DEPENDECY_DISTANCE",
+    )
 
     # Start the main
     print_info("Processing input arguments...")
@@ -144,8 +158,9 @@ def _main(arguments):
 
     print_info("Arguments processed!")
 
-    print_info("Importing target definition "
-               "'power_v206-power7-ppc64_linux_gcc'...")
+    print_info(
+        "Importing target definition " "'power_v206-power7-ppc64_linux_gcc'..."
+    )
     target = import_definition("power_v206-power7-ppc64_linux_gcc")
 
     # Get the arguments
@@ -172,9 +187,14 @@ def _main(arguments):
         # set_log_level(10)
         #
         list(
-            map(_generate_benchmark,
-                [(instruction, prefix, output_path, target, size, distance)
-                 for instruction in instructions]))
+            map(
+                _generate_benchmark,
+                [
+                    (instruction, prefix, output_path, target, size, distance)
+                    for instruction in instructions
+                ],
+            )
+        )
 
     else:
 
@@ -192,13 +212,29 @@ def _main(arguments):
             pool = mp.Pool(processes=parallel_jobs)
             pool.map(
                 _generate_benchmark,
-                [(instruction, prefix, output_path, target, size, distance)
-                 for instruction in instructions], 1)
+                [
+                    (instruction, prefix, output_path, target, size, distance)
+                    for instruction in instructions
+                ],
+                1,
+            )
         else:
             list(
-                map(_generate_benchmark,
-                    [(instruction, prefix, output_path, target, size, distance)
-                     for instruction in instructions]))
+                map(
+                    _generate_benchmark,
+                    [
+                        (
+                            instruction,
+                            prefix,
+                            output_path,
+                            target,
+                            size,
+                            distance,
+                        )
+                        for instruction in instructions
+                    ],
+                )
+            )
 
 
 def _validate_instructions(instructions, target):
@@ -210,8 +246,9 @@ def _validate_instructions(instructions, target):
     for instruction in instructions:
 
         if instruction not in list(target.isa.instructions.keys()):
-            print_warning("'%s' not defined in the ISA. Skipping..." %
-                          instruction)
+            print_warning(
+                "'%s' not defined in the ISA. Skipping..." % instruction
+            )
             continue
         nins.append(instruction)
     return nins
@@ -233,13 +270,18 @@ def _generate_instructions(target, path, prefix):
             # Skip branch absolute due to relocation problems
             continue
 
-        if instr.category in ['LMA', 'LMV', 'DS', 'EC']:
+        if instr.category in ["LMA", "LMV", "DS", "EC"]:
             # Skip some instruction categories
             continue
 
         if name in [
-                'LSWI_V0', 'LSWX_V0', 'LMW_V0', 'STSWX_V0', 'LD_V1', 'LWZ_V1',
-                'STW_V1'
+            "LSWI_V0",
+            "LSWX_V0",
+            "LMW_V0",
+            "STSWX_V0",
+            "LD_V1",
+            "LWZ_V1",
+            "STW_V1",
         ]:
             # Some instructions are not completely supported yet
             # String-related instructions and load multiple
@@ -248,16 +290,17 @@ def _generate_instructions(target, path, prefix):
 
         # Skip if the files already exists
 
-        fname = "%s/%s_%s.c" % (path, prefix, name)
-        ffname = "%s/%s_%s.c.fail" % (path, prefix, name)
+        fname = f"{path}/{prefix}_{name}.c"
+        ffname = f"{path}/{prefix}_{name}.c.fail"
 
         if os.path.isfile(fname):
-            print_warning("Skip %s. '%s' already generated" % (name, fname))
+            print_warning(f"Skip {name}. '{fname}' already generated")
             continue
 
         if os.path.isfile(ffname):
-            print_warning("Skip %s. '%s' already generated (failed)" %
-                          (name, ffname))
+            print_warning(
+                "Skip %s. '%s' already generated (failed)" % (name, ffname)
+            )
             continue
 
         instructions.append(name)
@@ -276,12 +319,12 @@ def _generate_benchmark(args):
     try:
 
         # Name of the output file
-        fname = "%s/%s_%s" % (output_path, prefix, instr_name)
+        fname = f"{output_path}/{prefix}_{instr_name}"
 
         # Name of the fail output file (generated in case of exception)
-        ffname = "%s.c.fail" % (fname)
+        ffname = f"{fname}.c.fail"
 
-        print_info("Generating %s ..." % (fname))
+        print_info(f"Generating {fname} ...")
 
         instruction = microprobe.code.ins.Instruction()
         instruction.set_arch_type(target.instructions[instr_name])
@@ -300,12 +343,9 @@ def _generate_benchmark(args):
         # generation of the microbenchmark, given a set of passes
         # (a.k.a. transformations) to apply to the an empty internal
         # representation of the microbenchmark
-        synth = microprobe.code.Synthesizer(target,
-                                            cwrapper(),
-                                            value=0b01010101)
+        synth = microprobe.code.Synthesizer(target, cwrapper(), value=RNDINT)
 
-        rand = random.Random()
-        rand.seed(13)
+        rand = RND
 
         # Add the transformation passes
 
@@ -314,7 +354,9 @@ def _generate_benchmark(args):
         #######################################################################
         synth.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                value=_init_value()))
+                value=_init_value()
+            )
+        )
         floating = False
         vector = False
 
@@ -335,7 +377,9 @@ def _generate_benchmark(args):
             ###################################################################
             synth.add_pass(
                 microprobe.passes.initialization.InitializeRegistersPass(
-                    v_value=(1.000000000000001, 64)))
+                    v_value=(1.000000000000001, 64)
+                )
+            )
         elif vector:
             ###################################################################
             # Pass 1.B: if instruction uses vector but not floats, init       #
@@ -343,7 +387,9 @@ def _generate_benchmark(args):
             ###################################################################
             synth.add_pass(
                 microprobe.passes.initialization.InitializeRegistersPass(
-                    v_value=(_init_value(), 64)))
+                    v_value=(_init_value(), 64)
+                )
+            )
         elif floating:
             ###################################################################
             # Pass 1.C: if instruction uses floats, init float                #
@@ -351,20 +397,25 @@ def _generate_benchmark(args):
             ###################################################################
             synth.add_pass(
                 microprobe.passes.initialization.InitializeRegistersPass(
-                    fp_value=1.000000000000001))
+                    fp_value=1.000000000000001
+                )
+            )
 
         #######################################################################
         # Pass 2: Add a building block of size 'size'                         #
         #######################################################################
         synth.add_pass(
-            microprobe.passes.structure.SimpleBuildingBlockPass(size))
+            microprobe.passes.structure.SimpleBuildingBlockPass(size)
+        )
 
         #######################################################################
         # Pass 3: Fill the building block with the instruction sequence       #
         #######################################################################
         synth.add_pass(
             microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-                sequence))
+                sequence
+            )
+        )
 
         #######################################################################
         # Pass 4: Compute addresses of instructions (this pass is needed to   #
@@ -372,7 +423,8 @@ def _generate_benchmark(args):
         #         case addresses are required, they are up to date).          #
         #######################################################################
         synth.add_pass(
-            microprobe.passes.address.UpdateInstructionAddressesPass())
+            microprobe.passes.address.UpdateInstructionAddressesPass()
+        )
 
         #######################################################################
         # Pass 5: Set target of branches to be the next instruction in the    #
@@ -385,8 +437,9 @@ def _generate_benchmark(args):
         #         in a round-robin fashion in stride 256 bytes.               #
         #         The pattern would be: 0, 256, 512, .... 3840, 0, 256, ...   #
         #######################################################################
-        synth.add_pass(microprobe.passes.memory.SingleMemoryStreamPass(
-            16, 256))
+        synth.add_pass(
+            microprobe.passes.memory.SingleMemoryStreamPass(16, 256)
+        )
 
         #######################################################################
         # Pass 7.A: Initialize the storage locations accessed by floating     #
@@ -394,14 +447,17 @@ def _generate_benchmark(args):
         #######################################################################
         synth.add_pass(
             microprobe.passes.float.InitializeMemoryFloatPass(
-                value=1.000000000000001))
+                value=1.000000000000001
+            )
+        )
 
         #######################################################################
         # Pass 7.B: Initialize the storage locations accessed by decimal      #
         #           instructions to have a valid decimal value                #
         #######################################################################
         synth.add_pass(
-            microprobe.passes.decimal.InitializeMemoryDecimalPass(value=1))
+            microprobe.passes.decimal.InitializeMemoryDecimalPass(value=1)
+        )
 
         #######################################################################
         # Pass 8: Set the remaining instructions operands (if not set)        #
@@ -409,7 +465,9 @@ def _generate_benchmark(args):
         #######################################################################
         synth.add_pass(
             microprobe.passes.register.DefaultRegisterAllocationPass(
-                rand, dd=distance))
+                rand, dd=distance
+            )
+        )
 
         # Synthesize the microbenchmark.The synthesize applies the set of
         # transformation passes added before and returns object representing
@@ -419,7 +477,7 @@ def _generate_benchmark(args):
         # Save the microbenchmark to the file 'fname'
         synth.save(fname, bench=bench)
 
-        print_info("%s generated!" % (fname))
+        print_info(f"{fname} generated!")
 
         # Remove fail file if exists
         if os.path.isfile(ffname):
@@ -430,20 +488,20 @@ def _generate_benchmark(args):
         # In case of exception during the generation of the microbenchmark,
         # print the error, write the fail file and exit
         print_error(traceback.format_exc())
-        open(ffname, 'a').close()
+        open(ffname, "a").close()
         exit(-1)
 
 
 def _init_value():
-    """ Return a init value """
-    return 0b0101010101010101010101010101010101010101010101010101010101010101
+    """Return a init value"""
+    return RNDINT
 
 
 # Main
-if __name__ == '__main__':
+if __name__ == "__main__":
     # run main if executed from the command line
     # and the main method exists
 
-    if callable(locals().get('main_setup')):
+    if callable(locals().get("main_setup")):
         main_setup()
         exit(0)

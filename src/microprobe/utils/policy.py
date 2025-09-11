@@ -33,7 +33,7 @@ from microprobe.utils.misc import findfiles
 # Constants
 LOG = get_logger(__name__)
 __all__ = ["find_policy"]
-_POLICY_ATTRIBUTES = ['NAME', 'DESCRIPTION', 'SUPPORTED_TARGETS', 'policy']
+_POLICY_ATTRIBUTES = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
 
 
 # Functions
@@ -41,33 +41,38 @@ def find_policy(target_name, policy_name):
 
     policy = None
 
-    paths = MICROPROBE_RC["architecture_paths"] \
-        + MICROPROBE_RC["default_paths"]
+    paths = (
+        MICROPROBE_RC["architecture_paths"] + MICROPROBE_RC["default_paths"]
+    )
 
-    policyfiles = findfiles(paths, "policies/.*.py$", full=True)
+    policyfiles = findfiles(
+        paths, os.path.join("policies", ".*.py$"), full=True
+    )
 
     for policyfile in policyfiles:
 
-        name = (os.path.basename(policyfile).replace(".py", ""))
+        name = os.path.basename(policyfile).replace(".py", "")
         module = load_source("%s_test" % name, policyfile)
         pdef = dict(inspect.getmembers(module))
 
-        if len(
-            [elem for elem in pdef if elem in _POLICY_ATTRIBUTES]
-        ) != len(_POLICY_ATTRIBUTES):
+        if len([elem for elem in pdef if elem in _POLICY_ATTRIBUTES]) != len(
+            _POLICY_ATTRIBUTES
+        ):
             continue
 
-        if (target_name not in pdef['SUPPORTED_TARGETS'] and
-                "all" not in pdef['SUPPORTED_TARGETS']):
+        if (
+            target_name not in pdef["SUPPORTED_TARGETS"]
+            and "all" not in pdef["SUPPORTED_TARGETS"]
+        ):
             continue
 
-        if pdef['NAME'] != policy_name:
+        if pdef["NAME"] != policy_name:
             continue
 
         if policy is not None:
             raise MicroprobePolicyError(
-                "Multiple policies found for '%s' in target '%s'" %
-                (policy_name, target_name)
+                "Multiple policies found for '%s' in target '%s'"
+                % (policy_name, target_name)
             )
 
         # Reload source for good policy with correct module
@@ -75,14 +80,17 @@ def find_policy(target_name, policy_name):
         module = load_source("%s" % name, policyfile)
         pdef = dict(inspect.getmembers(module))
         policy = Policy(
-            pdef['NAME'], pdef['DESCRIPTION'], pdef['policy'],
-            pdef['SUPPORTED_TARGETS'], pdef
+            pdef["NAME"],
+            pdef["DESCRIPTION"],
+            pdef["policy"],
+            pdef["SUPPORTED_TARGETS"],
+            pdef,
         )
 
     if policy is None:
         raise MicroprobePolicyError(
-            "No policies found for '%s' in target '%s'" %
-            (policy_name, target_name)
+            "No policies found for '%s' in target '%s'"
+            % (policy_name, target_name)
         )
 
     return policy
@@ -90,7 +98,5 @@ def find_policy(target_name, policy_name):
 
 # Classes
 Policy = collections.namedtuple(
-    'Policy', [
-        'name', 'description', 'apply', 'targets', 'extra'
-    ]
+    "Policy", ["name", "description", "apply", "targets", "extra"]
 )

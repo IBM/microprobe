@@ -41,8 +41,7 @@ __all__ = ["NAME", "DESCRIPTION", "SUPPORTED_TARGETS", "policy"]
 NAME = "epi"
 DESCRIPTION = "epi generation policy"
 SUPPORTED_TARGETS = [
-    "riscv_v22-riscv_generic-riscv64_linux_gcc",
-    "riscv_v22-riscv_generic-riscv64_test_p",
+    "riscv_boom-riscv_generic-riscv64_linux_gcc_nolibc",
 ]
 
 
@@ -77,46 +76,49 @@ def policy(target, wrapper, **kwargs):
     instruction.set_arch_type(instr)
     # context = microprobe.code.context.Context()
 
-    # floating = False
-    # vector = False
-    # for operand in instruction.operands():
-    #     if operand.type.immediate:
-    #        continue
+    floating = False
+    vector = False
+    for operand in instruction.operands():
+        if operand.type.immediate:
+            continue
 
-    #     if operand.type.float:
-    #         floating = True
+        if operand.type.float:
+            floating = True
 
-    #    if operand.type.vector:
-    #        vector = True
+        if operand.type.vector:
+            vector = True
 
     synthesizer = microprobe.code.Synthesizer(target, wrapper, value=RNDINT)
 
-    rand = RND
+    synthesizer.add_pass(
+        microprobe.passes.initialization.ReserveRegistersPass(["X0"])
+    )
 
-    # synthesizer.add_pass(
-    #     microprobe.passes.initialization.InitializeRegistersPass(
-    #         value=RNDINT
-    #    )
-    # )
+    synthesizer.add_pass(
+        microprobe.passes.initialization.InitializeRegistersPass(
+            value=RNDINT
+            # value=0xCAFECAFECAFECAFE
+        )
+    )
 
-    # if vector and floating:
-    #    synthesizer.add_pass(
-    #        microprobe.passes.initialization.InitializeRegistersPass(
-    #            v_value=(1.000000000000001, 64)
-    #        )
-    #    )
-    # elif vector:
-    #    synthesizer.add_pass(
-    #        microprobe.passes.initialization.InitializeRegistersPass(
-    #            v_value=(RNDINT, 64)
-    #         )
-    #    )
-    # elif floating:
-    #    synthesizer.add_pass(
-    #        microprobe.passes.initialization.InitializeRegistersPass(
-    #            fp_value=1.000000000000001
-    #        )
-    #    )
+    if vector and floating:
+        synthesizer.add_pass(
+            microprobe.passes.initialization.InitializeRegistersPass(
+                v_value=(1.000000000000001, 64)
+            )
+        )
+    elif vector:
+        synthesizer.add_pass(
+            microprobe.passes.initialization.InitializeRegistersPass(
+                v_value=(RNDINT, 64)
+            )
+        )
+    elif floating:
+        synthesizer.add_pass(
+            microprobe.passes.initialization.InitializeRegistersPass(
+                fp_value=1.000000000000001
+            )
+        )
 
     synthesizer.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
@@ -138,7 +140,7 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
-            [[0, 512, 1, 32, 1, 0, (1, 0)]]
+            [[0, 512, 1, 32, 2, 512, (1, 0)]]
         )
     )
 
@@ -154,14 +156,13 @@ def policy(target, wrapper, **kwargs):
     #    )
     # )
 
-    if kwargs["dependency_distance"] < 1:
-        synthesizer.add_pass(
-            microprobe.passes.register.NoHazardsAllocationPass()
-        )
+    # if kwargs['dependency_distance'] < 1:
+    #    synthesizer.add_pass(
+    #        microprobe.passes.register.NoHazardsAllocationPass())
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            rand, dd=kwargs["dependency_distance"]
+            RND, dd=kwargs["dependency_distance"]
         )
     )
 

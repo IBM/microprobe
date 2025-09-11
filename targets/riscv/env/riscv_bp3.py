@@ -30,20 +30,16 @@ from microprobe.target.env import GenericEnvironment
 # Classes
 class riscv64_bp3(GenericEnvironment):
 
-    _elf_code = ""\
-                ""\
-                ""
+    _elf_code = "" "" ""
 
     def __init__(self, isa):
-        super(
-            riscv64_bp3,
-            self).__init__(
+        super(riscv64_bp3, self).__init__(
             "riscv64_bp3",
             "RISC-V architecture (64bit addressing mode), "
             "Assembly using RISC-V Banana Pi 3",
             isa,
-            little_endian=True
-            )
+            little_endian=True,
+        )
 
         self._default_wrapper = "RiscvBP3"
 
@@ -59,14 +55,11 @@ class riscv64_bp3(GenericEnvironment):
 
     def elf_abi(self, stack_size, start_symbol, **kwargs):
 
-        return super(riscv64_bp3, self).elf_abi(stack_size,
-                                                   start_symbol,
-                                                   stack_alignment=16,
-                                                   **kwargs)
+        return super(riscv64_bp3, self).elf_abi(
+            stack_size, start_symbol, stack_alignment=16, **kwargs
+        )
 
-    def function_call(self, target,
-                      return_address_reg=None,
-                      long_jump=False):
+    def function_call(self, target, return_address_reg=None, long_jump=False):
 
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["X1"]
@@ -79,16 +72,15 @@ class riscv64_bp3(GenericEnvironment):
 
         return [jal_ins]
 
-    def function_return(self,
-                        return_address_reg=None):
+    def function_return(self, return_address_reg=None):
 
         if return_address_reg is None:
             return_address_reg = self.target.isa.registers["X1"]
 
         ret_ins = self.target.new_instruction("JALR_V0")
-        ret_ins.set_operands([0,
-                              return_address_reg,
-                              self.target.isa.registers["X0"]])
+        ret_ins.set_operands(
+            [0, return_address_reg, self.target.isa.registers["X0"]]
+        )
         return [ret_ins]
 
     @property
@@ -96,13 +88,49 @@ class riscv64_bp3(GenericEnvironment):
 
         rlist = []
         for idx in [
-                1, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
-                28, 29, 30, 31]:
-            rlist += [self.target.registers['X%d' % idx]]
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            28,
+            29,
+            30,
+            31,
+        ]:
+            rlist += [self.target.registers["X%d" % idx]]
 
         for idx in [
-                0, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17,
-                28, 29, 30, 31]:
-            rlist += [self.target.registers['F%d' % idx]]
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            28,
+            29,
+            30,
+            31,
+        ]:
+            rlist += [self.target.registers["F%d" % idx]]
 
         return rlist

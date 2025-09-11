@@ -23,8 +23,8 @@ import copy
 import itertools
 import multiprocessing as mp
 import pickle
-from typing import TYPE_CHECKING, List
 import random
+from typing import TYPE_CHECKING, List
 
 # Own modules
 import microprobe.code.ins
@@ -45,6 +45,7 @@ from microprobe.utils.distrib import generate_weighted_profile, \
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import RejectingDict, closest_divisor, \
     Progress, iter_flatten, getnextf
+from microprobe.utils.misc import RND
 
 # Type hinting
 if TYPE_CHECKING:
@@ -362,8 +363,7 @@ class SetRandomInstructionTypePass(microprobe.passes.Pass):
         super(SetRandomInstructionTypePass, self).__init__()
         self._instrs = instructions
         if rand is None:
-            rand = random.Random()
-            rand.seed(13)
+            rand = RND
         self._func = rand.choice
 
     def __call__(self, building_block, target):
@@ -1174,7 +1174,17 @@ class SetInstructionOperandsByOpcodePass(microprobe.passes.Pass):
                         continue
                     if instr.operands()[
                             self._pos].value is None or self._force:
-                        instr.operands()[self._pos].set_value(self._value())
+
+                        val = self._value()
+                        if isinstance(val, str) and val.startswith("relalign"):
+                            # TODO: This is a hack for some specific
+                            # backends that require operands to be aligned
+                            val = int(val.split("_")[1])
+                            val = val - (instr.address.displacement % val)
+                            val = val // 2
+                            instr.operands()[self._pos].set_value(val)
+                        else:
+                            instr.operands()[self._pos].set_value(val)
 
                         if (instr.operands()[self._pos].is_output and
                                 isinstance(
@@ -1414,7 +1424,7 @@ def _get_profile(
             ]
             if len(abovelist) > 0:
                 while cavelatency < avelatency:
-                    index = random.choice(abovelist)
+                    index = RND.choice(abovelist)
                     abovelist.remove(index)
                     values[index] = (values[index][0], values[index][1] + 1)
                     cavelatency = calc_avelatency(values)
@@ -1435,7 +1445,7 @@ def _get_profile(
             ]
             if len(belowlist) > 0:
                 while cavelatency > avelatency:
-                    index = random.choice(belowlist)
+                    index = RND.choice(belowlist)
                     belowlist.remove(index)
                     values[index] = (values[index][0], values[index][1] + 1)
                     cavelatency = calc_avelatency(values)

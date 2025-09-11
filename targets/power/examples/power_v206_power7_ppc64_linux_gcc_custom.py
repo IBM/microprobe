@@ -24,7 +24,6 @@ from __future__ import absolute_import
 # Built-in modules
 import os
 import sys
-import random
 
 # Own modules
 import microprobe.code
@@ -37,7 +36,7 @@ from microprobe.exceptions import MicroprobeTargetDefinitionError
 from microprobe.model.memory import EndlessLoopDataMemoryModel
 from microprobe.target import import_definition
 from microprobe.utils.cmdline import print_error, print_info
-from microprobe.utils.misc import RNDINT
+from microprobe.utils.misc import RND, RNDINT
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -53,13 +52,13 @@ BENCHMARK_SIZE = 8 * 1024
 
 if len(sys.argv) != 2:
     print_info("Usage:")
-    print_info("%s output_dir" % (sys.argv[0]))
+    print_info(f"{sys.argv[0]} output_dir")
     exit(-1)
 
 DIRECTORY = sys.argv[1]
 
 if not os.path.isdir(DIRECTORY):
-    print_info("Output DIRECTORY '%s' does not exists" % (DIRECTORY))
+    print_info(f"Output DIRECTORY '{DIRECTORY}' does not exists")
     exit(-1)
 
 # Get the target definition
@@ -67,7 +66,7 @@ try:
     TARGET = import_definition("power_v206-power7-ppc64_linux_gcc")
 except MicroprobeTargetDefinitionError as exc:
     print_error("Unable to import target definition")
-    print_error("Exception message: %s" % str(exc))
+    print_error(f"Exception message: {str(exc)}")
     exit(-1)
 
 
@@ -76,15 +75,17 @@ except MicroprobeTargetDefinitionError as exc:
 #            level of cache and with dependency distance of 3                 #
 ###############################################################################
 def example_1():
-    """ Example 1 """
+    """Example 1"""
     name = "L1-LOADS"
 
     base_element = [
-        element for element in TARGET.elements.values()
-        if element.name == 'L1D'
+        element
+        for element in TARGET.elements.values()
+        if element.name == "L1D"
     ][0]
     cache_hierarchy = TARGET.cache_hierarchy.get_data_hierarchy_from_element(
-        base_element)
+        base_element
+    )
 
     model = [0] * len(cache_hierarchy)
     model[0] = 100
@@ -104,51 +105,58 @@ def example_1():
             continue
         if "ultiple" in instr.description:  # Skip unsupported mult. ld/sts
             continue
-        if instr.category in ['DS', 'LMA', 'LMV',
-                              'EC']:  # Skip unsupported categories
+        if instr.category in [
+            "DS",
+            "LMA",
+            "LMV",
+            "EC",
+        ]:  # Skip unsupported categories
             continue
         if instr.access_storage_with_update:  # Not supported
             continue
 
         if instr.name in [
-                'LD_V1',
-                'LWZ_V1',
-                'STW_V1',
+            "LD_V1",
+            "LWZ_V1",
+            "STW_V1",
         ]:
             continue
 
-        if (any([moper.is_load for moper in instr.memory_operand_descriptors])
-                and all([
-                    not moper.is_store
-                    for moper in instr.memory_operand_descriptors
-                ])):
+        if any(
+            [moper.is_load for moper in instr.memory_operand_descriptors]
+        ) and all(
+            [not moper.is_store for moper in instr.memory_operand_descriptors]
+        ):
             profile[instr] = 1
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
+    )
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT)
+    )
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegisterPass("GPR1",
-                                                                0,
-                                                                force=True,
-                                                                reserve=True))
+        microprobe.passes.initialization.InitializeRegisterPass(
+            "GPR1", 0, force=True, reserve=True
+        )
+    )
     synth.add_pass(
-        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
+        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile)
+    )
     synth.add_pass(microprobe.passes.memory.GenericMemoryModelPass(mmodel))
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=3))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=3)
+    )
 
-    print_info("Generating %s..." % name)
+    print_info(f"Generating {name}...")
     bench = synth.synthesize()
-    print_info("%s Generated!" % name)
-    synth.save("%s/%s" % (DIRECTORY, name), bench=bench)  # Save the benchmark
+    print_info(f"{name} Generated!")
+    synth.save(f"{DIRECTORY}/{name}", bench=bench)  # Save the benchmark
 
 
 ###############################################################################
@@ -156,29 +164,33 @@ def example_1():
 #            distance of 4                                                    #
 ###############################################################################
 def example_2():
-    """ Example 2 """
+    """Example 2"""
     name = "FXU-MUL"
 
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT)
+    )
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
+    )
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
-            TARGET, [TARGET.elements['MUL_FXU0_Core0_SCM_Processor']], {}))
+            TARGET, [TARGET.elements["MUL_FXU0_Core0_SCM_Processor"]], {}
+        )
+    )
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=4))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=4)
+    )
 
-    print_info("Generating %s..." % name)
+    print_info(f"Generating {name}...")
     bench = synth.synthesize()
-    print_info("%s Generated!" % name)
-    synth.save("%s/%s" % (DIRECTORY, name), bench=bench)  # Save the benchmark
+    print_info(f"{name} Generated!")
+    synth.save(f"{DIRECTORY}/{name}", bench=bench)  # Save the benchmark
 
 
 ###############################################################################
@@ -186,29 +198,33 @@ def example_2():
 #            distance of 1                                                    #
 ###############################################################################
 def example_3():
-    """ Example 3 """
+    """Example 3"""
     name = "FXU-ALU"
 
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT)
+    )
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
+    )
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeByElementPass(
-            TARGET, [TARGET.elements['ALU_FXU0_Core0_SCM_Processor']], {}))
+            TARGET, [TARGET.elements["ALU_FXU0_Core0_SCM_Processor"]], {}
+        )
+    )
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=1))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=1)
+    )
 
-    print_info("Generating %s..." % name)
+    print_info(f"Generating {name}...")
     bench = synth.synthesize()
-    print_info("%s Generated!" % name)
-    synth.save("%s/%s" % (DIRECTORY, name), bench=bench)  # Save the benchmark
+    print_info(f"{name} Generated!")
+    synth.save(f"{DIRECTORY}/{name}", bench=bench)  # Save the benchmark
 
 
 ###############################################################################
@@ -216,34 +232,37 @@ def example_3():
 #            dependency distance 10                                           #
 ###############################################################################
 def example_4():
-    """ Example 4 """
+    """Example 4"""
     name = "VSU-FMUL"
 
     profile = {}
-    profile[TARGET.instructions['FMUL_V0']] = 4
-    profile[TARGET.instructions['FMULS_V0']] = 3
-    profile[TARGET.instructions['FMULx_V0']] = 2
-    profile[TARGET.instructions['FMULSx_V0']] = 1
+    profile[TARGET.instructions["FMUL_V0"]] = 4
+    profile[TARGET.instructions["FMULS_V0"]] = 3
+    profile[TARGET.instructions["FMULx_V0"]] = 2
+    profile[TARGET.instructions["FMULSx_V0"]] = 1
 
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT)
+    )
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
+    )
     synth.add_pass(
-        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
+        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile)
+    )
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=10))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=10)
+    )
 
-    print_info("Generating %s..." % name)
+    print_info(f"Generating {name}...")
     bench = synth.synthesize()
-    print_info("%s Generated!" % name)
-    synth.save("%s/%s" % (DIRECTORY, name), bench=bench)  # Save the benchmark
+    print_info(f"{name} Generated!")
+    synth.save(f"{DIRECTORY}/{name}", bench=bench)  # Save the benchmark
 
 
 ###############################################################################
@@ -251,34 +270,37 @@ def example_4():
 #            dependency distance 1                                            #
 ###############################################################################
 def example_5():
-    """ Example 5 """
+    """Example 5"""
     name = "VSU-FADD"
 
     profile = {}
-    profile[TARGET.instructions['FADD_V0']] = 100
-    profile[TARGET.instructions['FADDx_V0']] = 1
-    profile[TARGET.instructions['FADDS_V0']] = 10
-    profile[TARGET.instructions['FADDSx_V0']] = 1
+    profile[TARGET.instructions["FADD_V0"]] = 100
+    profile[TARGET.instructions["FADDx_V0"]] = 1
+    profile[TARGET.instructions["FADDS_V0"]] = 10
+    profile[TARGET.instructions["FADDSx_V0"]] = 1
 
     cwrapper = microprobe.code.get_wrapper("CInfPpc")
     synth = microprobe.code.Synthesizer(TARGET, cwrapper())
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT))
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT)
+    )
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCHMARK_SIZE)
+    )
     synth.add_pass(
-        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile))
+        microprobe.passes.instruction.SetInstructionTypeByProfilePass(profile)
+    )
     synth.add_pass(
-        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=1))
+        microprobe.passes.register.DefaultRegisterAllocationPass(rand, dd=1)
+    )
 
-    print_info("Generating %s..." % name)
+    print_info(f"Generating {name}...")
     bench = synth.synthesize()
-    print_info("%s Generated!" % name)
-    synth.save("%s/%s" % (DIRECTORY, name), bench=bench)  # Save the benchmark
+    print_info(f"{name} Generated!")
+    synth.save(f"{DIRECTORY}/{name}", bench=bench)  # Save the benchmark
 
 
 ###############################################################################

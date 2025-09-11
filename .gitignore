@@ -50,3 +50,5 @@ TAGS
 doc/error.log
 doc/errors.txt
 get_pip
+targets/z/
+.env

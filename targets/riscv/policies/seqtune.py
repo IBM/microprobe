@@ -17,9 +17,9 @@ docstring
 # Futures
 from __future__ import absolute_import
 
+# Built-in modules
 # Built-in
 import warnings
-import random
 
 # Own modules
 import microprobe.code
@@ -36,7 +36,7 @@ import microprobe.passes.switch
 import microprobe.passes.symbol
 from microprobe.exceptions import MicroprobePolicyError
 from microprobe.utils.logger import get_logger
-from microprobe.utils.misc import RNDINT
+from microprobe.utils.misc import RND, RNDINT
 
 __author__ = "Ramon Bertran"
 __copyright__ = "Copyright 2011-2021 IBM Corporation"
@@ -83,7 +83,7 @@ def policy(target, wrapper, **kwargs):
             " %s" % (NAME, target.name, ",".join(SUPPORTED_TARGETS))
         )
 
-    sequence = kwargs['instructions']
+    sequence = kwargs["instructions"]
 
     floating = False
     vector = False
@@ -101,17 +101,12 @@ def policy(target, wrapper, **kwargs):
             if operand.type.vector:
                 vector = True
 
-    synthesizer = microprobe.code.Synthesizer(
-        target, wrapper, value=0b01010101
-    )
+    synthesizer = microprobe.code.Synthesizer(target, wrapper, value=RNDINT)
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     synthesizer.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(
-            value=RNDINT()
-        )
+        microprobe.passes.initialization.InitializeRegistersPass(value=RNDINT)
     )
 
     if vector and floating:
@@ -123,7 +118,7 @@ def policy(target, wrapper, **kwargs):
     elif vector:
         synthesizer.add_pass(
             microprobe.passes.initialization.InitializeRegistersPass(
-                v_value=(RNDINT(), 64)
+                v_value=(RNDINT, 64)
             )
         )
     elif floating:
@@ -135,7 +130,7 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.structure.SimpleBuildingBlockPass(
-            kwargs['benchmark_size']
+            kwargs["benchmark_size"]
         )
     )
 
@@ -154,7 +149,8 @@ def policy(target, wrapper, **kwargs):
     for addl in kwargs["add_every"]:
         synthesizer.add_pass(
             microprobe.passes.instruction.InsertInstructionSequencePass(
-                addl[0], every=addl[1])
+                addl[0], every=addl[1]
+            )
         )
 
     synthesizer.add_pass(
@@ -162,7 +158,7 @@ def policy(target, wrapper, **kwargs):
     )
 
     br_list = []
-    for elem in kwargs['branch_pattern']:
+    for elem in kwargs["branch_pattern"]:
         if elem == "0":
             br_list.append(4)
         else:
@@ -170,14 +166,12 @@ def policy(target, wrapper, **kwargs):
 
     if len(br_list) != 0:
         warnings.warn(
-            "Branch pattern control not supported. "
-            "Contact developers."
+            "Branch pattern control not supported. " "Contact developers."
         )
 
     if kwargs["branch_switch"]:
         warnings.warn(
-            "Branch pattern control not supported. "
-            "Contact developers."
+            "Branch pattern control not supported. " "Contact developers."
         )
 
     synthesizer.add_pass(
@@ -186,10 +180,10 @@ def policy(target, wrapper, **kwargs):
 
     synthesizer.add_pass(
         microprobe.passes.memory.GenericMemoryStreamsPass(
-            kwargs['memory_streams'],
+            kwargs["memory_streams"],
             switch_stores=kwargs["mem_switch"],
             shift_streams=16,
-            warmstores=True
+            warmstores=True,
         )
     )
 
@@ -204,9 +198,7 @@ def policy(target, wrapper, **kwargs):
     )
 
     synthesizer.add_pass(
-        microprobe.passes.decimal.InitializeMemoryDecimalPass(
-            value=1
-        )
+        microprobe.passes.decimal.InitializeMemoryDecimalPass(value=1)
     )
 
     synthesizer.add_pass(microprobe.passes.branch.BranchNextPass())
@@ -216,14 +208,14 @@ def policy(target, wrapper, **kwargs):
             microprobe.passes.switch.SwitchingInstructions(rand)
         )
 
-    if kwargs['dependency_distance'] < 1:
+    if kwargs["dependency_distance"] < 1:
         synthesizer.add_pass(
-            microprobe.passes.register.NoHazardsAllocationPass())
+            microprobe.passes.register.NoHazardsAllocationPass()
+        )
 
     synthesizer.add_pass(
         microprobe.passes.register.DefaultRegisterAllocationPass(
-            rand,
-            dd=kwargs['dependency_distance']
+            rand, dd=kwargs["dependency_distance"]
         )
     )
 
@@ -235,21 +227,22 @@ def policy(target, wrapper, **kwargs):
         if minstr.disable_asm:
             synthesizer.add_pass(
                 microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-                    instructions=[minstr])
+                    instructions=[minstr]
+                )
             )
 
     warnings.warn("Loop alignment not implemented. Contact developers.")
 
-    if (not synthesizer.wrapper.context().symbolic):
+    if not synthesizer.wrapper.context().symbolic:
 
         synthesizer.add_pass(
             microprobe.passes.address.UpdateInstructionAddressesPass(
-                force=True)
+                force=True
+            )
         )
 
         synthesizer.add_pass(
-            microprobe.passes.symbol.ResolveSymbolicReferencesPass(
-            )
+            microprobe.passes.symbol.ResolveSymbolicReferencesPass()
         )
 
     return synthesizer

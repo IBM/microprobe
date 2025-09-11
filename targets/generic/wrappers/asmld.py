@@ -20,7 +20,6 @@ from __future__ import absolute_import
 # Built-in modules
 import itertools
 from typing import List, Union
-from random import Random
 
 # Own modules
 import microprobe.code.wrapper
@@ -33,6 +32,7 @@ from microprobe.exceptions import MicroprobeCodeGenerationError
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
 from microprobe.code.var import Variable, VariableArray
 from microprobe.target import Target
+from microprobe.utils.misc import RND, RNDINT
 
 # Constants
 LOG = get_logger(__name__)
@@ -96,8 +96,7 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
             # raise NotImplementedError(str(var.address))
 
         # make sure we always have the same state
-        random = Random()
-        random.seed(10)
+        random = RND
 
         assert isinstance(var, VariableArray)
 
@@ -112,11 +111,11 @@ class AsmLd(microprobe.code.wrapper.Wrapper):
         if myvalue is None:
             if var.array():
                 myvalue = [
-                    random.randint(0, (2**(typesize * 8) - 1))
+                    RNDINT(maxmin=(0, (2**(typesize * 8) - 1)))
                     for elem in range(0, var.elems)
                 ]
             else:
-                myvalue = random.randint(0, (2**(typesize * 8) - 1))
+                myvalue = RNDINT(maxmin=(0, (2**(typesize * 8) - 1)))
 
         if not var.array():
             if not isinstance(myvalue, list):

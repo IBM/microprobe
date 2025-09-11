@@ -21,12 +21,10 @@ from __future__ import absolute_import, print_function
 import copy
 import os
 import random
-import types
 import subprocess
+import types
 from tempfile import SpooledTemporaryFile, mkstemp
 from unittest import TestCase, TestSuite, main, skipIf, skipUnless
-
-# Third party modules
 
 # Own modules
 import microprobe.code
@@ -42,7 +40,7 @@ from microprobe.target.isa import import_isa_definition
 from microprobe.utils.asm import interpret_asm
 from microprobe.utils.bin import interpret_bin
 from microprobe.utils.logger import get_logger, set_log_level
-
+from microprobe.utils.misc import RND, RNDINT
 
 # Constants
 LOG = get_logger(__name__)
@@ -74,15 +72,18 @@ else:
 
 # Functions
 def copy_func(f, name=None):
-    return types.FunctionType(f.__code__, copy.copy(f.__globals__), name
-                              or f.__name__, f.__defaults__, f.__closure__)
+    return types.FunctionType(
+        f.__code__,
+        copy.copy(f.__globals__),
+        name or f.__name__,
+        f.__defaults__,
+        f.__closure__,
+    )
 
 
 def _rnd():
-    """
-
-    """
-    return random.randint(0, (2**32))
+    """ """
+    return RNDINT(maxmin=(0, (2**32)))
 
 
 def subins(instructions):
@@ -133,8 +134,7 @@ def power_v206_function(self):
     """
     power_v206_function
     """
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     target = self.target
     instr = target.instructions[self.instr_name]
@@ -147,12 +147,16 @@ def power_v206_function(self):
 
     synth = microprobe.code.Synthesizer(target, cwrapper(), value=_rnd)
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=_rnd))
+        microprobe.passes.initialization.InitializeRegistersPass(value=_rnd)
+    )
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCH_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCH_SIZE)
+    )
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence))
+            sequence
+        )
+    )
     # synth.add_pass(microprobe.passes.branch.BranchNextPass())
     synth.add_pass(microprobe.passes.register.RandomAllocationPass(rand))
     # synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
@@ -171,8 +175,7 @@ def power_v300_function(self):
     """
     power_v300_function
     """
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     target = self.target
     instr = target.instructions[self.instr_name]
@@ -185,12 +188,16 @@ def power_v300_function(self):
 
     synth = microprobe.code.Synthesizer(target, cwrapper(), value=_rnd)
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=_rnd))
+        microprobe.passes.initialization.InitializeRegistersPass(value=_rnd)
+    )
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCH_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCH_SIZE)
+    )
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence))
+            sequence
+        )
+    )
     # synth.add_pass(microprobe.passes.branch.BranchNextPass())
     synth.add_pass(microprobe.passes.register.RandomAllocationPass(rand))
     # synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
@@ -209,8 +216,7 @@ def power_v310_function(self):
     """
     power_v310_function
     """
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     target = self.target
     instr = target.instructions[self.instr_name]
@@ -223,12 +229,16 @@ def power_v310_function(self):
 
     synth = microprobe.code.Synthesizer(target, cwrapper(), value=_rnd)
     synth.add_pass(
-        microprobe.passes.initialization.InitializeRegistersPass(value=_rnd))
+        microprobe.passes.initialization.InitializeRegistersPass(value=_rnd)
+    )
     synth.add_pass(
-        microprobe.passes.structure.SimpleBuildingBlockPass(BENCH_SIZE))
+        microprobe.passes.structure.SimpleBuildingBlockPass(BENCH_SIZE)
+    )
     synth.add_pass(
         microprobe.passes.instruction.SetInstructionTypeBySequencePass(
-            sequence))
+            sequence
+        )
+    )
     # synth.add_pass(microprobe.passes.branch.BranchNextPass())
     synth.add_pass(microprobe.passes.register.RandomAllocationPass(rand))
     # synth.add_pass(microprobe.passes.register.NoHazardsAllocationPass())
@@ -269,9 +279,9 @@ def compile_benchmark(self, function):
     tfile = SpooledTemporaryFile()
 
     try:
-        error_code = subprocess.check_call(cmd,
-                                           stdout=tfile,
-                                           stderr=subprocess.STDOUT)
+        error_code = subprocess.check_call(
+            cmd, stdout=tfile, stderr=subprocess.STDOUT
+        )
     except subprocess.CalledProcessError as exc:
         error_code = exc.returncode
 
@@ -317,11 +327,15 @@ def compile_benchmark(self, function):
     if cmd_output.find("Error: unrecognized opcode:") > -1:
         # Compiler not new enough or check compilation options
         # DO NOT REPORT FAILURE but not PASS
-        self.fail(msg="Update your toolchain: %s not supported\n%s" %
-                  (self.instr_name, _process_as_output(cmd_output)))
+        self.fail(
+            msg="Update your toolchain: %s not supported\n%s"
+            % (self.instr_name, _process_as_output(cmd_output))
+        )
 
-    self.fail(msg="Error compiling using cmd: %s. Output: %s" %
-              (cmd, _process_as_output(cmd_output)))
+    self.fail(
+        msg="Error compiling using cmd: %s. Output: %s"
+        % (cmd, _process_as_output(cmd_output))
+    )
 
 
 def binary_benchmark(self, function):
@@ -343,9 +357,9 @@ def binary_benchmark(self, function):
 
     tfile = SpooledTemporaryFile()
 
-    error_code = subprocess.check_call(cmd,
-                                       stdout=tfile,
-                                       stderr=subprocess.STDOUT)
+    error_code = subprocess.check_call(
+        cmd, stdout=tfile, stderr=subprocess.STDOUT
+    )
 
     if error_code != 0:
         tfile.seek(0)
@@ -385,8 +399,8 @@ def binary_benchmark(self, function):
             asmline_bin = line_bin
         else:
             print(self.filename[1])
-            print("'%s' <-> '%s'" % (line, asmline))
-            print("'%s' = '%s' ?" % (line_bin, asmline_bin))
+            print(f"'{line}' <-> '{asmline}'")
+            print(f"'{line_bin}' = '{asmline_bin}' ?")
             self.assertEqual(line_bin, asmline_bin)
 
 
@@ -406,7 +420,7 @@ def self_codification_function(self, rand: random.Random):
 
             try:
 
-                print("Trial: %s" % trial)
+                print(f"Trial: {trial}")
 
                 instruction = microprobe.code.ins.Instruction()
                 instruction.set_arch_type(instr)
@@ -416,28 +430,32 @@ def self_codification_function(self, rand: random.Random):
                         values.append(operand.type.random_value(rand))
                     operand.set_value(values[idx])
 
-                print("Operands to set: %s" % values)
+                print(f"Operands to set: {values}")
 
                 codification = int(instruction.binary(), 2)
                 code_len = len(instruction.binary())
                 codefmt = "%%0%dX" % (code_len / 4)
                 codification = codefmt % codification
 
-                print("Codification: 0x%s" % codification)
-                print("Assembly: %s" % instruction.assembly())
+                print(f"Codification: 0x{codification}")
+                print(f"Assembly: {instruction.assembly()}")
 
                 instr_def = interpret_bin(codification, target, single=True)[0]
-                print("%s == %s ?" % (instr, instr_def.instruction_type))
+                print(f"{instr} == {instr_def.instruction_type} ?")
 
-                self.assertEqual(instr.mnemonic,
-                                 instr_def.instruction_type.mnemonic)
+                self.assertEqual(
+                    instr.mnemonic, instr_def.instruction_type.mnemonic
+                )
 
-                for orig_operand, new_operand in zip(instruction.operands(),
-                                                     instr_def.operands):
+                for orig_operand, new_operand in zip(
+                    instruction.operands(), instr_def.operands
+                ):
 
-                    print("%s == %s ?" % (orig_operand.value, new_operand))
-                    print("%s == %s ?" %
-                          (type(orig_operand.value), type(new_operand)))
+                    print(f"{orig_operand.value} == {new_operand} ?")
+                    print(
+                        "%s == %s ?"
+                        % (type(orig_operand.value), type(new_operand))
+                    )
                     self.assertEqual(orig_operand.value, new_operand)
 
                 print("CODE OK")
@@ -461,8 +479,7 @@ def self_assembly_function(self):
     target = self.target
     instr = target.instructions[self.instr_name]
 
-    rand = random.Random()
-    rand.seed(13)
+    rand = RND
 
     repetition = 0
     while repetition < REPETITIONS:
@@ -476,15 +493,15 @@ def self_assembly_function(self):
             print(operand)
 
         assembly = instruction.assembly()
-        print("Assembly: %s" % assembly)
+        print(f"Assembly: {assembly}")
 
         instr_def = interpret_asm([assembly], target, [])[0]
 
-        print("%s == %s ?" % (instr, instr_def.instruction_type))
+        print(f"{instr} == {instr_def.instruction_type} ?")
 
         for trial in range(0, TRIALS):
 
-            print("Trial: %s" % trial)
+            print(f"Trial: {trial}")
             try:
 
                 if instr == instr_def.instruction_type:
@@ -495,10 +512,11 @@ def self_assembly_function(self):
                 if trial == TRIALS - 1:
                     self.assertEqual(instr, instr_def.instruction_type)
 
-        for orig_operand, new_operand in zip(instruction.operands(),
-                                             instr_def.operands):
+        for orig_operand, new_operand in zip(
+            instruction.operands(), instr_def.operands
+        ):
 
-            print("%s == %s ?" % (orig_operand.value, new_operand))
+            print(f"{orig_operand.value} == {new_operand} ?")
             self.assertEqual(orig_operand.value, new_operand)
 
         repetition += 1
@@ -543,7 +561,7 @@ def _process_as_output(input_str):
     for idx, line in enumerate(input_lines):
         if idx == 0:
             asm_file = line.split(":")[0]
-            asm_fd = open(asm_file, 'r')
+            asm_fd = open(asm_file, "r")
             asm_lines = asm_fd.readlines()
             continue
 
@@ -551,7 +569,7 @@ def _process_as_output(input_str):
             continue
 
         split_line = line.split(":")
-        print("%s" % split_line)
+        print(f"{split_line}")
 
         asm_file = split_line[0]
         number = split_line[1]
@@ -560,8 +578,9 @@ def _process_as_output(input_str):
 
         asm_line = asm_lines[int(number) - 1][:-1]
 
-        output_lines.append(" : ".join(
-            [asm_file, number, as_type, as_string, asm_line]))
+        output_lines.append(
+            ": ".join([asm_file, number, as_type, as_string, asm_line])
+        )
 
     return "\n".join(output_lines)
 
@@ -593,76 +612,210 @@ def load_tests(loader, dummy_tests, dummy_pattern):
 TARGETS = []
 
 if MP_TESTING_ARCH == "POWER7":
-    TARGETS = [(
-        'power_v206',
-        power_v206_function,
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
-                     "isa", "p-v2_06"),
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
-                     "env", "powerpc64_linux_gcc.py"),
-        # ['SLBFEEx_V0', 'TLBIE_V0']
-        ['MTCRF_V0'],
-        [
-            'LSWX_V0', 'LMW_V0', 'LSWI_V0', 'BA_V0', 'BCA_V0', 'BCCTR_V0',
-            'BCLA_V0', 'BCLRL_V0', 'BCLR_V0', 'BCCTRL_V0', 'BC_V0', 'BCL_V0'
-        ])]
+    TARGETS = [
+        (
+            "power_v206",
+            power_v206_function,
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "isa",
+                "p-v2_06",
+            ),
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "env",
+                "powerpc64_linux_gcc.py",
+            ),
+            # ['SLBFEEx_V0', 'TLBIE_V0']
+            ["MTCRF_V0"],
+            [
+                "LSWX_V0",
+                "LMW_V0",
+                "LSWI_V0",
+                "BA_V0",
+                "BCA_V0",
+                "BCCTR_V0",
+                "BCLA_V0",
+                "BCLRL_V0",
+                "BCLR_V0",
+                "BCCTRL_V0",
+                "BC_V0",
+                "BCL_V0",
+            ],
+        )
+    ]
 elif MP_TESTING_ARCH == "POWER8":
-    TARGETS = [('power_v207', power_v206_function,
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                             "..", "isa", "p-v2_07"),
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                             "..", "env", "powerpc64_linux_gcc.py"),
-                ['MTCRF_V0'], [
-                    'LSWX_V0', 'LMW_V0', 'LSWI_V0', 'LQARX_V0', 'BA_V0',
-                    'BCA_V0', 'BCTAR_V0', 'BCTARL_V0', 'BCCTR_V0', 'BCLA_V0',
-                    'BCLRL_V0', 'BCLR_V0', 'BCCTRL_V0', 'BC_V0', 'BCL_V0'
-                ])]
+    TARGETS = [
+        (
+            "power_v207",
+            power_v206_function,
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "isa",
+                "p-v2_07",
+            ),
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "env",
+                "powerpc64_linux_gcc.py",
+            ),
+            ["MTCRF_V0"],
+            [
+                "LSWX_V0",
+                "LMW_V0",
+                "LSWI_V0",
+                "LQARX_V0",
+                "BA_V0",
+                "BCA_V0",
+                "BCTAR_V0",
+                "BCTARL_V0",
+                "BCCTR_V0",
+                "BCLA_V0",
+                "BCLRL_V0",
+                "BCLR_V0",
+                "BCCTRL_V0",
+                "BC_V0",
+                "BCL_V0",
+            ],
+        )
+    ]
 elif MP_TESTING_ARCH == "POWER9":
-    TARGETS = [('power_v300', power_v300_function,
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                             "..", "isa", "p-v3_00"),
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                             "..", "env", "powerpc64_linux_gcc.py"),
-                ['MTCRF_V0'], [
-                    'LSWX_V0', 'LMW_V0', 'LSWI_V0', 'LQARX_V0', 'BA_V0',
-                    'BCA_V0', 'BCTAR_V0', 'BCTARL_V0', 'BCCTR_V0', 'BCLA_V0',
-                    'BCLRL_V0', 'BCLR_V0', 'BCCTRL_V0', 'BC_V0', 'BCL_V0'
-                ] + [
-                    'LFDPX_V0', 'LFDP_V0', 'RFSCV_V0', 'SCV_V0', 'SLBIAG_V0',
-                    'STFDPX_V0'
-                ])]
+    TARGETS = [
+        (
+            "power_v300",
+            power_v300_function,
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "isa",
+                "p-v3_00",
+            ),
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "env",
+                "powerpc64_linux_gcc.py",
+            ),
+            ["MTCRF_V0"],
+            [
+                "LSWX_V0",
+                "LMW_V0",
+                "LSWI_V0",
+                "LQARX_V0",
+                "BA_V0",
+                "BCA_V0",
+                "BCTAR_V0",
+                "BCTARL_V0",
+                "BCCTR_V0",
+                "BCLA_V0",
+                "BCLRL_V0",
+                "BCLR_V0",
+                "BCCTRL_V0",
+                "BC_V0",
+                "BCL_V0",
+            ]
+            + [
+                "LFDPX_V0",
+                "LFDP_V0",
+                "RFSCV_V0",
+                "SCV_V0",
+                "SLBIAG_V0",
+                "STFDPX_V0",
+            ],
+        )
+    ]
 elif MP_TESTING_ARCH == "POWER10":
-    TARGETS = [(
-        'power_v310',
-        power_v310_function,
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
-                     "isa", "p-v3_10"),
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..",
-                     "env", "powerpc64_linux_gcc.py|ppc64le_linux_gcc"),
-        ['MTCRF_V0', 'STMW_V0', 'STSWI_V0', 'STSWX_V0'],
-        [
-            'LSWX_V0', 'LMW_V0', 'LSWI_V0', 'LQARX_V0', 'BA_V0', 'BCA_V0',
-            'BCTAR_V0', 'BCTARL_V0', 'BCCTR_V0', 'BCLA_V0', 'BCLRL_V0',
-            'BCLR_V0', 'BCCTRL_V0', 'BC_V0', 'BCL_V0'
-        ]
-        # Toolchain unsupported
-        + [
-            'LFDPX_V0', 'LFDP_V0', 'RFSCV_V0', 'SCV_V0', 'SLBIAG_V0',
-            'STFDPX_V0'
-        ] + ['MSGCLRU_V0', 'MSGSNDU_V0', 'STFDP_V0'])]
+    TARGETS = [
+        (
+            "power_v310",
+            power_v310_function,
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "isa",
+                "p-v3_10",
+            ),
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "env",
+                "powerpc64_linux_gcc.py|ppc64le_linux_gcc",
+            ),
+            ["MTCRF_V0", "STMW_V0", "STSWI_V0", "STSWX_V0"],
+            [
+                "LSWX_V0",
+                "LMW_V0",
+                "LSWI_V0",
+                "LQARX_V0",
+                "BA_V0",
+                "BCA_V0",
+                "BCTAR_V0",
+                "BCTARL_V0",
+                "BCCTR_V0",
+                "BCLA_V0",
+                "BCLRL_V0",
+                "BCLR_V0",
+                "BCCTRL_V0",
+                "BC_V0",
+                "BCL_V0",
+            ]
+            # Toolchain unsupported
+            + [
+                "LFDPX_V0",
+                "LFDP_V0",
+                "RFSCV_V0",
+                "SCV_V0",
+                "SLBIAG_V0",
+                "STFDPX_V0",
+            ]
+            + ["MSGCLRU_V0", "MSGSNDU_V0", "STFDP_V0"],
+        )
+    ]
 elif MP_TESTING_ARCH is None:
-    TARGETS = [('power_v310', power_v310_function,
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                             "..", "isa", "p-v3_10"),
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
-                             "..", "env",
-                             "powerpc64_linux_gcc.py|ppc64le_linux_gcc"),
-                ['MTCRF_V0', 'STMW_V0', 'STSWI_V0',
-                 'STSWX_V0'], ['LSWX_V0', 'LMW_V0', 'LSWI_V0'])]
+    TARGETS = [
+        (
+            "power_v310",
+            power_v310_function,
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "isa",
+                "p-v3_10",
+            ),
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..",
+                "..",
+                "env",
+                "powerpc64_linux_gcc.py|ppc64le_linux_gcc",
+            ),
+            ["MTCRF_V0", "STMW_V0", "STSWI_V0", "STSWX_V0"],
+            ["LSWX_V0", "LMW_V0", "LSWI_V0"],
+        )
+    ]
 
 TEST_CLASSES = []
-for name, gen_function, isa_path, env_path, \
-        expected_fails, unsupported in TARGETS:
+for (
+    name,
+    gen_function,
+    isa_path,
+    env_path,
+    expected_fails,
+    unsupported,
+) in TARGETS:
 
     # py2lint: disable=cell-var-from-loop
     isa_obj = import_isa_definition(isa_path)
@@ -683,16 +836,16 @@ for name, gen_function, isa_path, env_path, \
         isa_path = isa_path
         env_path = env_path
         gen_function = gen_function
-        compiler_bin = "MP_TESTING_COMPILER_%s" % (name.upper())
-        compiler_flags = "MP_TESTING_CFLAGS_%s" % (name.upper())
-        asm_flags = "MP_TESTING_AFLAGS_%s" % (name.upper())
-        dump_flags = "MP_TESTING_DFLAGS_%s" % (name.upper())
+        compiler_bin = f"MP_TESTING_COMPILER_{name.upper()}"
+        compiler_flags = f"MP_TESTING_CFLAGS_{name.upper()}"
+        asm_flags = f"MP_TESTING_AFLAGS_{name.upper()}"
+        dump_flags = f"MP_TESTING_DFLAGS_{name.upper()}"
 
         _multiprocess_can_split_ = True
 
         description = name
 
-        def __init__(self, methodName='runTest'):
+        def __init__(self, methodName="runTest"):
             # pylint: disable=E1003
             super(self.__class__, self).__init__(methodName=methodName)
             self.instr_name = getattr(self, methodName).__doc__.split(" ")[1]
@@ -700,9 +853,9 @@ for name, gen_function, isa_path, env_path, \
         @classmethod
         def setUpClass(cls):
             cls.isa_obj = import_isa_definition(cls.isa_path)
-            cls.env_obj = import_env_definition(cls.env_path,
-                                                cls.isa_obj,
-                                                definition_name=env_name)
+            cls.env_obj = import_env_definition(
+                cls.env_path, cls.isa_obj, definition_name=env_name
+            )
             cls.target = Target(cls.isa_obj, env=cls.env_obj)
 
         @classmethod
@@ -710,9 +863,10 @@ for name, gen_function, isa_path, env_path, \
             pass
 
         def setUp(self):
-            tempfile = mkstemp(prefix="microprobe_%s_%s_" %
-                               (self.name, self.instr_name),
-                               suffix=".s")
+            tempfile = mkstemp(
+                prefix="microprobe_%s_%s_" % (self.name, self.instr_name),
+                suffix=".s",
+            )
             os.close(tempfile[0])
             self.filename = [tempfile[1]]
 
@@ -720,13 +874,14 @@ for name, gen_function, isa_path, env_path, \
             for filename in self.filename:
                 os.unlink(filename)
 
-    newclass = type("isa_%s" % name, TestTarget.__bases__,
-                    dict(TestTarget.__dict__))
+    newclass = type(
+        f"isa_{name}", TestTarget.__bases__, dict(TestTarget.__dict__)
+    )
 
     globals().pop("TestTarget")
 
     for instr_name in [
-            elem.name for elem in subins(list(isa_obj.instructions.values()))
+        elem.name for elem in subins(list(isa_obj.instructions.values()))
     ]:
 
         if not SKIPGENERATION:
@@ -734,12 +889,15 @@ for name, gen_function, isa_path, env_path, \
             # Generation function
             #
             f1name = "test_%s_instruction_%s_001_generation" % (
-                name, instr_name.replace(".", "_"))
+                name,
+                instr_name.replace(".", "_"),
+            )
 
             @skipIf(
                 instr_name in unsupported,
                 "Unsupported instruction (implement in microprobe when time "
-                "permits)")
+                "permits)",
+            )
             def function_1(self):
                 """
                 function_1
@@ -750,7 +908,7 @@ for name, gen_function, isa_path, env_path, \
 
             mfunc = getattr(newclass, f1name)
 
-            setattr(mfunc, "__doc__", "%s %s Generation" % (name, instr_name))
+            setattr(mfunc, "__doc__", f"{name} {instr_name} Generation")
             mfunc.__name__ = f1name
 
             globals().pop("mfunc")
@@ -762,25 +920,27 @@ for name, gen_function, isa_path, env_path, \
             # Compilation function
             #
             f2name = "test_%s_instruction_%s_002_compilation" % (
-                name, instr_name.replace(".", "_"))
+                name,
+                instr_name.replace(".", "_"),
+            )
 
             @skipUnless(
-                _check_env(newclass.compiler_bin  # pylint: disable=no-member
-                           ),
-                "Requires environment variable %s to be set" %
-                newclass.compiler_bin  # pylint: disable=no-member
+                _check_env(newclass.compiler_bin),  # pylint: disable=no-member
+                "Requires environment variable %s to be set"
+                % newclass.compiler_bin,  # pylint: disable=no-member
             )
             @skipUnless(
                 _check_executable(
                     newclass.compiler_bin  # pylint: disable=no-member
                 ),
-                "Environment variable %s not set to a correct executable" %
-                newclass.compiler_bin  # pylint: disable=no-member
+                "Environment variable %s not set to a correct executable"
+                % newclass.compiler_bin,  # pylint: disable=no-member
             )
             @skipIf(
                 instr_name in expected_fails,
                 "Tool-chain does not support this instruction. Update it or "
-                "send a bug report")
+                "send a bug report",
+            )
             def function_2(xinstr):
                 """
 
@@ -788,14 +948,16 @@ for name, gen_function, isa_path, env_path, \
                 :type xinstr:
                 """
                 return compile_benchmark(
-                    xinstr, "test_%s_instruction_%s_001_generation" %
-                    (xinstr.name, xinstr.instr_name.replace(".", "_")))
+                    xinstr,
+                    "test_%s_instruction_%s_001_generation"
+                    % (xinstr.name, xinstr.instr_name.replace(".", "_")),
+                )
 
             setattr(newclass, f2name, copy_func(function_2, f2name))
 
             mfunc = getattr(newclass, f2name)
 
-            setattr(mfunc, "__doc__", "%s %s Compilation" % (name, instr_name))
+            setattr(mfunc, "__doc__", f"{name} {instr_name} Compilation")
             mfunc.__name__ = f2name
 
             globals().pop("mfunc")
@@ -807,16 +969,22 @@ for name, gen_function, isa_path, env_path, \
             # Codification function
             #
             f3name = "test_%s_instruction_%s_003_codification" % (
-                name, instr_name.replace(".", "_"))
+                name,
+                instr_name.replace(".", "_"),
+            )
             setattr(
-                newclass, f3name, lambda x: binary_benchmark(
-                    x, "test_%s_instruction_%s_002_compilation" %
-                    (x.name, x.instr_name.replace(".", "_"))))
+                newclass,
+                f3name,
+                lambda x: binary_benchmark(
+                    x,
+                    "test_%s_instruction_%s_002_compilation"
+                    % (x.name, x.instr_name.replace(".", "_")),
+                ),
+            )
 
             mfunc = getattr(newclass, f3name)
 
-            setattr(mfunc, "__doc__",
-                    "%s %s Codification" % (name, instr_name))
+            setattr(mfunc, "__doc__", f"{name} {instr_name} Codification")
 
             mfunc.__name__ = f3name
             globals().pop("f3name")
@@ -827,26 +995,27 @@ for name, gen_function, isa_path, env_path, \
             # Self codification function
             #
             f4name = "test_%s_instruction_%s_004_self_codification" % (
-                name, instr_name.replace(".", "_"))
+                name,
+                instr_name.replace(".", "_"),
+            )
 
             @skipIf(
                 instr_name in unsupported,
                 "Unsupported instruction (implement in microprobe when time "
-                "permits)")
+                "permits)",
+            )
             def function_4(self):
                 """
                 function_4
                 """
-                rand = random.Random()
-                rand.seed(13)
+                rand = RND
                 return self_codification_function(self, rand)
 
             setattr(newclass, f4name, copy_func(function_4, f4name))
 
             mfunc = getattr(newclass, f4name)
 
-            setattr(mfunc, "__doc__",
-                    "%s %s Self-Codification" % (name, instr_name))
+            setattr(mfunc, "__doc__", f"{name} {instr_name} Self-Codification")
             mfunc.__name__ = f4name
 
             globals().pop("f4name")
@@ -858,12 +1027,15 @@ for name, gen_function, isa_path, env_path, \
             # Self assembly function
             #
             f5name = "test_%s_instruction_%s_005_self_assembly" % (
-                name, instr_name.replace(".", "_"))
+                name,
+                instr_name.replace(".", "_"),
+            )
 
             @skipIf(
                 instr_name in unsupported,
                 "Unsupported instruction (implement in microprobe when time "
-                "permits)")
+                "permits)",
+            )
             def function_5(self):
                 """
                 function_5
@@ -874,8 +1046,7 @@ for name, gen_function, isa_path, env_path, \
 
             mfunc = getattr(newclass, f5name)
 
-            setattr(mfunc, "__doc__",
-                    "%s %s Self-Assembly" % (name, instr_name))
+            setattr(mfunc, "__doc__", f"{name} {instr_name} Self-Assembly")
             mfunc.__name__ = f5name
 
             globals().pop("mfunc")
@@ -883,7 +1054,8 @@ for name, gen_function, isa_path, env_path, \
             globals().pop("function_5")
 
     TEST_CLASSES.append(
-        type("isa_%s" % name, newclass.__bases__, dict(newclass.__dict__)))
+        type(f"isa_{name}", newclass.__bases__, dict(newclass.__dict__))
+    )
     globals().pop("newclass")
 
 for test_class in TEST_CLASSES:
@@ -892,7 +1064,7 @@ for test_class in TEST_CLASSES:
 if "test_class" in globals():
     globals().pop("test_class")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
 globals().pop("TEST_CLASSES")

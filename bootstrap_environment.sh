@@ -44,9 +44,9 @@ pip3 install -U $(pip3 list | grep "\." | cut -d " " -f 1)
 
     echo "export PATH=\$PATH:$(find "$(pwd)/targets" -type d -name tools -exec echo -n {}: \;)"
     echo "export PYTHONPATH=$scriptpath/src:\$PYTHONPATH"
-    echo "export MICROPROBEDATA=$scriptpath/targets/"
-    echo "export MICROPROBETEMPLATES=$(find "$(pwd)/targets" -type d -name templates -exec echo -n {}: \;)"
-    echo "export MICROPROBEWRAPPERS=$(find "$(pwd)/targets" -type d -name wrappers -exec echo -n {}: \;)"
+    echo "export MICROPROBEDATA=\"$scriptpath/targets/\""
+    echo "export MICROPROBETEMPLATES=\"$(find "$(pwd)/targets" -type d -name templates -exec echo -n {}\; \;)\""
+    echo "export MICROPROBEWRAPPERS=\"$(find "$(pwd)/targets" -type d -name wrappers -exec echo -n {}\; \;)\""
     echo "echo Microprobe environment activated"
 
 } >> "$scriptpath/venv-$name/bin/activate"

@@ -27,33 +27,47 @@ import random
 import re
 import sys
 import timeit
-
-# Third party modules
-
-# Own modules
-from microprobe.exceptions import MicroprobeDuplicatedValueError
-from microprobe.utils.logger import get_logger
-
 from collections import OrderedDict
 
+# Own modules
+from microprobe import MICROPROBE_RC
+from microprobe.exceptions import MicroprobeDuplicatedValueError
+from microprobe.utils.logger import get_logger
 
 # Constants
 LOG = get_logger(__name__)
 __all__ = [
-    "natural_sort", "dict2OrderedDict", "RejectingDict",
-    "RejectingOrderedDict", "Pickable", "primes", "closest_divisor",
-    "smart_copy_dict", "findfiles", "RNDINT", "RNDFP", "twocs_to_int",
-    "int_to_twocs", "iter_flatten", "which", "Progress",
-    "range_to_sequence", "longest_common_substr", "open_generic_fd",
-    "getnextf", "move_file", "compress_file"
+    "natural_sort",
+    "dict2OrderedDict",
+    "RejectingDict",
+    "RejectingOrderedDict",
+    "Pickable",
+    "primes",
+    "closest_divisor",
+    "smart_copy_dict",
+    "findfiles",
+    "RNDINT",
+    "RNDFP",
+    "twocs_to_int",
+    "int_to_twocs",
+    "iter_flatten",
+    "which",
+    "Progress",
+    "range_to_sequence",
+    "longest_common_substr",
+    "open_generic_fd",
+    "getnextf",
+    "move_file",
+    "compress_file",
+    "RND",
 ]
 
-_RND_SEED = 13  # My favorite number ;)
-_RNDINT = random.Random()
-_RNDINT.seed(_RND_SEED)
+_RND_SEED = MICROPROBE_RC["seed"]  # My favorite number ;)
 
-_RNDFP = random.Random()
-_RNDFP.seed(_RND_SEED)
+RND = random.Random()
+RND.seed(_RND_SEED)
+_RNDINT = RND
+_RNDFP = RND
 
 
 # Functions
@@ -89,7 +103,7 @@ def natural_sort(input_list):
         :param key:
         :type key:
         """
-        return [convert(c) for c in re.split('([0-9]+)', key)]
+        return [convert(c) for c in re.split("([0-9]+)", key)]
 
     return sorted(input_list, key=alphanum_key)
 
@@ -124,9 +138,9 @@ def int_to_twocs(val, bits):
     if val < 0:
         assert len(bin(val)) - 3 <= bits
     else:
-        assert len(bin(val)) - 2 <= bits, "%s - %s" % (bin(val), bits)
+        assert len(bin(val)) - 2 <= bits, f"{bin(val)} - {bits}"
 
-    return int(bin(val & int('0b' + '1' * bits, 2)), 2)
+    return int(bin(val & int(f"0b{'1' * bits}", 2)), 2)
 
 
 def shift_with_sign(val, bits, shift):
@@ -138,8 +152,8 @@ def shift_with_sign(val, bits, shift):
     else:
         assert len(bin(val)) - 2 <= bits
 
-    ormask = int('1' * shift + '0' * (bits - shift), 2)
-    mask = int('1' * bits, 2)
+    ormask = int("1" * shift + "0" * (bits - shift), 2)
+    mask = int("1" * bits, 2)
     return ((val >> shift) | ormask) & mask
 
 
@@ -231,6 +245,9 @@ def findfiles(paths, regexp, full=False, maxcount=10000):
     LOG.debug("Paths: %s", paths)
     LOG.debug("Regexp: '%s'", regexp)
 
+    if os.sep == "\\":
+        regexp = regexp.replace("\\", "\\\\")
+
     results = []
     re_obj = re.compile(regexp)
 
@@ -277,7 +294,23 @@ def findfiles(paths, regexp, full=False, maxcount=10000):
 
 
 def RNDINT(maxmin=None):  # pylint: disable-msg=invalid-name
-    """Returns a random integer between 0 and 2^32. """
+    """Returns a random integer between 0 and 2^64."""
+
+    if MICROPROBE_RC["pattern"] != "random":
+        # Make the call to maintain same state
+        _ = _RNDINT.randint(0, (2**64))
+
+        val = MICROPROBE_RC["pattern"]
+
+        if MICROPROBE_RC["pattern_update"] == "negate":
+            MICROPROBE_RC["pattern"] = ~val & 0xFFFFFFFFFFFFFFFF
+        if MICROPROBE_RC["pattern_update"] == "rotate":
+            MICROPROBE_RC["pattern"] = (
+                (val << 1) | (val >> (64 - 1))
+            ) & 0xFFFFFFFFFFFFFFFF
+
+        return val
+
     if maxmin is None:
         return _RNDINT.randint(0, (2**64))
     else:
@@ -285,7 +318,7 @@ def RNDINT(maxmin=None):  # pylint: disable-msg=invalid-name
 
 
 def RNDFP(x=0, y=1):  # pylint: disable-msg=invalid-name
-    """Returns a random floating point between x and y """
+    """Returns a random floating point between x and y"""
     return _RNDFP.uniform(x, y)
 
 
@@ -305,13 +338,12 @@ def iter_flatten(iterable):
 
 
 def range_to_sequence(start, *args):
-    """
-
-    """
+    """ """
 
     if len(args) > 2:
         raise NotImplementedError(
-            "This function does not support more than 3 arguments")
+            "This function does not support more than 3 arguments"
+        )
 
     step = 1
 
@@ -335,24 +367,23 @@ def range_to_sequence(start, *args):
     retval = list(
         itertools.islice(
             itertools.count(start, step),
-            (end - start + step - 1 + 2 * (step < 0)) // step
+            (end - start + step - 1 + 2 * (step < 0)) // step,
         )
     )
 
     if end - 1 not in retval:
-        retval.append(end-1)
+        retval.append(end - 1)
 
     return retval
 
 
 def range_to_sequence_float(start, *args):
-    """
-
-    """
+    """ """
 
     if len(args) > 2:
         raise NotImplementedError(
-            "This function does not support more than 3 arguments")
+            "This function does not support more than 3 arguments"
+        )
 
     step = 1
     if isinstance(start, str):
@@ -433,8 +464,12 @@ def longest_common_substr(str1, str2):
     if not str1 or not str2:
         return ""
 
-    str1_char, str1_rest, str2_char, str2_rest = \
-        str1[0], str1[1:], str2[0], str2[1:]
+    str1_char, str1_rest, str2_char, str2_rest = (
+        str1[0],
+        str1[1:],
+        str2[0],
+        str2[1:],
+    )
 
     if str1_char == str2_char:
         return str1_char + longest_common_substr(str1_rest, str2_rest)
@@ -442,14 +477,13 @@ def longest_common_substr(str1, str2):
         return max(
             longest_common_substr(str1, str2_rest),
             longest_common_substr(str1_rest, str2),
-            key=len)
+            key=len,
+        )
 
 
 # Classes
 class RejectingDict(dict):
-    """A dictionary that raise an exception if the key is already set.
-
-    """
+    """A dictionary that raise an exception if the key is already set."""
 
     def __setitem__(self, key, value):
         """
@@ -461,16 +495,14 @@ class RejectingDict(dict):
 
         if key in self:
             raise MicroprobeDuplicatedValueError(
-                "Key '%s' is already present" % str(key)
+                f"Key '{str(key)}' is already present"
             )
         else:
             return super(RejectingDict, self).__setitem__(key, value)
 
 
 class RejectingOrderedDict(OrderedDict):
-    """An ordered dictionary that raises an exception if key is already set.
-
-    """
+    """An ordered dictionary that raises an exception if key is already set."""
 
     def __setitem__(self, key, value):  # pylint: disable=arguments-differ
         """
@@ -482,7 +514,7 @@ class RejectingOrderedDict(OrderedDict):
 
         if key in self:
             raise MicroprobeDuplicatedValueError(
-                "Key '%s' is already present" % str(key)
+                f"Key '{str(key)}' is already present"
             )
         else:
             return super(RejectingOrderedDict, self).__setitem__(key, value)
@@ -497,7 +529,7 @@ class Pickable(object):  # pylint: disable-msg=R0903
     """
 
     def __getstate__(self):
-        """  """
+        """ """
         return self.__dict__
 
     def __setstate__(self, state):
@@ -527,9 +559,10 @@ class Progress(object):  # pylint: disable-msg=too-few-public-methods
         self._msg = msg
         self._count = 0
         self._fd = out
-        self._fmt = " %%s  %%%%%dd / %%d (%%%%2.1f/100) " \
-            "ETA: %%%%s                         \r" % (len(str(self._total))
-                                                       )
+        self._fmt = (
+            " %%s  %%%%%dd / %%d (%%%%2.1f/100) "
+            "ETA: %%%%s                         \r" % (len(str(self._total)))
+        )
         self._fmt = self._fmt % (msg, self._total)
         self._start = timeit.default_timer()
         self._eta = "???"
@@ -562,10 +595,11 @@ class Progress(object):  # pylint: disable-msg=too-few-public-methods
 
         if required_time > 1:
             self._fd.write(
-                self._fmt % (
-                    self._count, (
-                        (float(self._count) / self._total)
-                    ) * 100, self._eta
+                self._fmt
+                % (
+                    self._count,
+                    ((float(self._count) / self._total)) * 100,
+                    self._eta,
                 )
             )
 
@@ -576,26 +610,30 @@ class Progress(object):  # pylint: disable-msg=too-few-public-methods
             return
 
         length = len(self._fmt % (0, 0, 0))
-        self._fd.write((" " * length) + "\r")
+        self._fd.write(f"{' ' * length}\r")
         total_time = timeit.default_timer() - self._start
         minut, sec = divmod(total_time, 60)
         hour, minut = divmod(minut, 60)
 
         if minut > 1:
-            time_str = "%s Elapsed time: %dh:%02dm:%02ds\n" % \
-                (self._msg, hour, minut, sec)
+            time_str = "%s Elapsed time: %dh:%02dm:%02ds\n" % (
+                self._msg,
+                hour,
+                minut,
+                sec,
+            )
             self._fd.write(time_str)
 
 
 def open_generic_fd(filename, mode):
 
     if filename.endswith(".gz"):
-        if 'b' not in mode:
-            mode += 'b'
+        if "b" not in mode:
+            mode += "b"
         fd = gzip.open(filename, mode, compresslevel=9)
     elif filename.endswith(".bz2"):
-        if 'b' not in mode:
-            mode += 'b'
+        if "b" not in mode:
+            mode += "b"
         fd = bz2.BZ2File(filename, mode, compresslevel=9)
     else:
         fd = open(filename, mode)
@@ -604,12 +642,12 @@ def open_generic_fd(filename, mode):
 
 
 def compress_file(source):
-    move_file(source, source+".gz")
+    move_file(source, f"{source}.gz")
 
 
 def move_file(source, target):
-    sfd = open_generic_fd(source, 'rb')
-    tfd = open_generic_fd(target, 'wb')
+    sfd = open_generic_fd(source, "rb")
+    tfd = open_generic_fd(target, "wb")
     # tfd.write("".join(sfd.readlines()).encode())
     tfd.writelines(sfd)
     sfd.close()

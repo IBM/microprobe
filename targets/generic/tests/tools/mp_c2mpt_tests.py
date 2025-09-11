@@ -114,13 +114,13 @@ class c2mpt(TestCase):  # pylint: disable=invalid-name
             test_cmd.extend([
                 "--target-c-compiler",
                 os.environ.get("MP_TESTING_COMPILER_RISCV",
-                               "riscv64-linux-gnu-gcc-8")
+                               "riscv64-linux-gnu-gcc")
             ])
             test_cmd.extend([
                 "--target-objdump",
                 os.environ.get("MP_TESTING_COMPILER_RISCV",
-                               "riscv64-linux-gnu-gcc-8").replace(
-                                   "gcc-8", "objdump")
+                               "riscv64-linux-gnu-gcc").replace(
+                                   "gcc", "objdump")
             ])
         print(" ".join(test_cmd))
 

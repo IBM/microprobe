@@ -53,6 +53,7 @@ __all__ = [
     "float_type",
     "int_type",
     "int_range",
+    "int_choices",
     "ParagraphFormatterML",
     "LazyArgumentError",
     "LazyArgumentParser",
@@ -63,7 +64,7 @@ __all__ = [
     "print_warning",
     "string_with_fields",
     "csv_with_integer",
-    "csv_with_ranges"
+    "csv_with_ranges",
 ]
 
 
@@ -85,7 +86,8 @@ def dict_key(dictionary):
             return dictionary[argument]
         except KeyError:
             msg = "'%s' not in the valid values set: %s" % (
-                argument, list(dictionary.keys())
+                argument,
+                list(dictionary.keys()),
             )
             raise argparse.ArgumentTypeError(msg)
 
@@ -111,9 +113,8 @@ def new_file(argument, internal=False):
         msg = "'%s' file already exists" % argument
         raise excep(msg)
 
-    if (
-        os.path.dirname(argument) != "" and
-        not os.path.isdir(os.path.dirname(argument))
+    if os.path.dirname(argument) != "" and not os.path.isdir(
+        os.path.dirname(argument)
     ):
 
         msg = "'%s' does not exist" % os.path.dirname(argument)
@@ -150,8 +151,8 @@ def new_file_ext(extension):
         if not valid:
             raise argparse.ArgumentTypeError(
                 "File name does not finish with any of the valid extensions."
-                " Valid extensions: %s" %
-                ", ".join(extension))
+                " Valid extensions: %s" % ", ".join(extension)
+            )
 
         return value
 
@@ -159,13 +160,11 @@ def new_file_ext(extension):
 
 
 def file_with(base_function):
-    """
-
-    """
+    """ """
 
     def function(argument):
         if os.path.isfile(argument):
-            with open(argument, 'r') as filename_fd:
+            with open(argument, "r") as filename_fd:
                 contents = filename_fd.read()
                 if contents.endswith("\n"):
                     contents = contents[:-1]
@@ -290,7 +289,9 @@ def int_type(min_val, max_val):
 
         if argument < min_val or argument > max_val:
             msg = "'%s' is not within the [%d, %d] range" % (
-                argument, min_val, max_val
+                argument,
+                min_val,
+                max_val,
             )
             raise argparse.ArgumentTypeError(msg)
 
@@ -314,16 +315,38 @@ def int_type(min_val, max_val):
 
         if argument < min_val:
             msg = "'%s' is not within the [%d, %s] range" % (
-                argument, min_val, "+inf"
+                argument,
+                min_val,
+                "+inf",
             )
             raise argparse.ArgumentTypeError(msg)
 
         return argument
 
-    if (max_val == "+inf"):
+    if max_val == "+inf":
         return function2
 
     return function1
+
+
+def int_choices(choices):
+    def function(argument):
+        try:
+            if argument.upper().startswith("0X"):
+                argument = int(argument, base=0)
+            else:
+                argument = int(argument)
+        except ValueError:
+            msg = "'%s' is not a valid." % argument
+            raise argparse.ArgumentTypeError(msg)
+
+        if argument not in choices:
+            msg = "'%s' is not valid values:'%s'" % (argument, choices)
+            raise argparse.ArgumentTypeError(msg)
+
+        return [argument]
+
+    return function
 
 
 def int_range(min_val, max_val):
@@ -352,7 +375,7 @@ def int_range(min_val, max_val):
                     rval.append(val)
                 else:
                     break
-            return (rval)
+            return rval
         else:
             for argument in argumentall.split("-"):
 
@@ -367,7 +390,9 @@ def int_range(min_val, max_val):
 
                 if argument < min_val or argument > max_val:
                     msg = "'%s' is not within the [%d, %d] range" % (
-                        argument, min_val, max_val
+                        argument,
+                        min_val,
+                        max_val,
                     )
                     raise argparse.ArgumentTypeError(msg)
 
@@ -375,10 +400,10 @@ def int_range(min_val, max_val):
 
             if len(rangedef) > 1:
                 if rangedef[0] > rangedef[1]:
-                    msg = "'%s' range is reversed. Change it to " \
-                        "low to high value." % (
-                            argumentall
-                        )
+                    msg = (
+                        "'%s' range is reversed. Change it to "
+                        "low to high value." % (argumentall)
+                    )
                     raise argparse.ArgumentTypeError(msg)
 
             return range_to_sequence(rangedef[0], *rangedef[1:])
@@ -414,7 +439,9 @@ def float_range(min_val, max_val):
 
             if argument < min_val or argument > max_val:
                 msg = "'%s' is not within the [%f, %f] range" % (
-                    argument, min_val, max_val
+                    argument,
+                    min_val,
+                    max_val,
                 )
                 raise argparse.ArgumentTypeError(msg)
 
@@ -422,10 +449,10 @@ def float_range(min_val, max_val):
 
         if len(rangedef) > 1:
             if rangedef[0] > rangedef[1]:
-                msg = "'%s' range is reversed. Change it to " \
-                    "low to high value." % (
-                        argumentall
-                    )
+                msg = (
+                    "'%s' range is reversed. Change it to "
+                    "low to high value." % (argumentall)
+                )
                 raise argparse.ArgumentTypeError(msg)
 
         return range_to_sequence_float(rangedef[0], *rangedef[1:])
@@ -440,15 +467,19 @@ def string_with_fields(sep, min_elem, max_elem, fmt):
         sargument = argument.split(sep)
         if len(sargument) < min_elem:
 
-            msg = "'%s' definition is invalid. Need at least %d " \
-                "elements separated by '%s' character." % (argument,
-                                                           min_elem, sep)
+            msg = (
+                "'%s' definition is invalid. Need at least %d "
+                "elements separated by '%s' character."
+                % (argument, min_elem, sep)
+            )
             raise argparse.ArgumentTypeError(msg)
 
         if len(sargument) > max_elem:
-            msg = "'%s' definition is invalid. Need at most %d " \
-                "elements separated by '%s' character." % (argument,
-                                                           max_elem, sep)
+            msg = (
+                "'%s' definition is invalid. Need at most %d "
+                "elements separated by '%s' character."
+                % (argument, max_elem, sep)
+            )
             raise argparse.ArgumentTypeError(msg)
 
         rargument = []
@@ -484,7 +515,9 @@ def float_type(min_val, max_val):
 
         if argument < min_val or argument > max_val:
             msg = "'%s' is not within the [%f, %f] range" % (
-                argument, min_val, max_val
+                argument,
+                min_val,
+                max_val,
             )
             raise argparse.ArgumentTypeError(msg)
 
@@ -494,9 +527,7 @@ def float_type(min_val, max_val):
 
 
 def string_with_chars(chars):
-    """
-
-    """
+    """ """
 
     def function(argument):
         """
@@ -507,8 +538,10 @@ def string_with_chars(chars):
 
         for char in list(argument):
             if char not in chars:
-                msg = "'%s' contains a character not in '%s'" % \
-                    (argument, chars)
+                msg = "'%s' contains a character not in '%s'" % (
+                    argument,
+                    chars,
+                )
                 raise argparse.ArgumentTypeError(msg)
 
         return argument
@@ -609,7 +642,7 @@ def parse_instruction_list(target, sequence):
     try:
         instructions = []
         for instr in sequence.split(","):
-            if (instr.upper().startswith("0X")):
+            if instr.upper().startswith("0X"):
                 pinstr = interpret_bin(
                     instr[2:], target, safe=True, single=True
                 )
@@ -636,17 +669,16 @@ def parse_instruction_list(target, sequence):
 
 # Classes
 class ParagraphFormatterML(argparse.HelpFormatter):
-    """ A support class for nicer CLI help output.
-    """
+    """A support class for nicer CLI help output."""
 
     def _split_lines(self, text, width):
         return self._para_reformat(text, width, multiline=True)
 
     def _fill_text(self, text, width, indent):
         lines = self._para_reformat(text, width, indent, True)
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
-    def _para_reformat(self, text, width, indent='', multiline=False):
+    def _para_reformat(self, text, width, indent="", multiline=False):
         """
 
         :param text:
@@ -659,10 +691,10 @@ class ParagraphFormatterML(argparse.HelpFormatter):
         :type multiline:
         """
         new_lines = list()
-        main_indent = len(re.match(r'( *)', text).group(1))
+        main_indent = len(re.match(r"( *)", text).group(1))
 
         def blocker(text):
-            '''On each call yields 2-tuple consisting of a boolean
+            """On each call yields 2-tuple consisting of a boolean
             and the next block of text from 'text'.  A block is
             either a single line, or a group of contiguous lines.
             The former is returned when not in multiline mode, the
@@ -672,18 +704,18 @@ class ParagraphFormatterML(argparse.HelpFormatter):
             A block of concatenated text lines up to the next no-
             wrap line is returned when in multiline mode.  The
             boolean value indicates whether text wrapping should
-            be done on the returned text.'''
+            be done on the returned text."""
 
             block = list()
             for line in text.splitlines():
-                line_indent = len(re.match(r'( *)', line).group(1))
+                line_indent = len(re.match(r"( *)", line).group(1))
                 isindented = line_indent - main_indent > 0
-                isblank = re.match(r'\s*$', line)
+                isblank = re.match(r"\s*$", line)
                 if isblank or isindented:  # A no-wrap line.
                     # Yield previously accumulated block .
                     if block:
                         # of text if any, for wrapping.
-                        yield True, ''.join(block)
+                        yield True, "".join(block)
                         block = list()
                     # And now yield our no-wrap line.
                     yield False, line
@@ -696,7 +728,7 @@ class ParagraphFormatterML(argparse.HelpFormatter):
                         yield True, line  # for wrapping.
             # Yield any text block left over.
             if block:
-                yield (True, ''.join(block))
+                yield (True, "".join(block))
 
         for wrap, line in blocker(text):
             if wrap:
@@ -704,14 +736,14 @@ class ParagraphFormatterML(argparse.HelpFormatter):
                 # lines.  Either way, we treat them as a block of text and
                 # wrap them (after reducing multiple whitespace to just
                 # single space characters).
-                line = self._whitespace_matcher.sub(' ', line).strip()
+                line = self._whitespace_matcher.sub(" ", line).strip()
                 # Textwrap will do all the hard work for us.
                 new_lines.extend(
                     textwrap.wrap(
                         text=line,
                         width=width,
                         initial_indent=indent,
-                        subsequent_indent=indent
+                        subsequent_indent=indent,
                     )
                 )
             else:
@@ -722,9 +754,8 @@ class ParagraphFormatterML(argparse.HelpFormatter):
 
 
 class LazyArgumentError(Exception):
-    """An exception class to report argument error.
+    """An exception class to report argument error."""
 
-    """
     pass
 
 
@@ -753,7 +784,7 @@ class LazyArgumentParser(argparse.ArgumentParser):
         return  # TODO: is this safe?
 
     def check_argument_errors(self):
-        """Check for argument errors. """
+        """Check for argument errors."""
 
         if self._error_msg:
             self.force_error(self._error_msg)
@@ -766,31 +797,26 @@ class LazyArgumentParser(argparse.ArgumentParser):
         """
 
         self.print_usage(sys.stderr)
-        self.exit(2, _('%s: error: %s\n') % (self.prog, msg))
+        self.exit(2, _("%s: error: %s\n") % (self.prog, msg))
 
 
 class CLI(object):
-    """Object to define a Command Line Interface.
-
-    """
+    """Object to define a Command Line Interface."""
 
     def __init__(self, description, **kwargs):
-        """ Create a new command line parser.
+        """Create a new command line parser."""
 
-        """
-
-        self._config_options = kwargs.pop('config_options', True)
-        self._target_options = kwargs.pop('target_options', True)
-        self._debug_options = kwargs.pop('debug_options', True)
-        self._mpt_options = kwargs.pop('mpt_options', False)
-        self._avp_options = kwargs.pop('avp_options', False)
-        self._compilation_options = kwargs.pop('compilation_options', False)
-        self._default_config_file = kwargs.pop('default_config_file', None)
-        self._required = kwargs.pop('force_required', [])
+        self._config_options = kwargs.pop("config_options", True)
+        self._target_options = kwargs.pop("target_options", True)
+        self._debug_options = kwargs.pop("debug_options", True)
+        self._mpt_options = kwargs.pop("mpt_options", False)
+        self._avp_options = kwargs.pop("avp_options", False)
+        self._compilation_options = kwargs.pop("compilation_options", False)
+        self._default_config_file = kwargs.pop("default_config_file", None)
+        self._required = kwargs.pop("force_required", [])
 
         self._arg_parser = LazyArgumentParser(
-            formatter_class=ParagraphFormatterML,
-            **kwargs
+            formatter_class=ParagraphFormatterML, **kwargs
         )
         self._options = None
         self._groups = {}
@@ -799,7 +825,7 @@ class CLI(object):
         # self._debug = False
         # self._config_file = None
         # self._config_parser = None
-        kwargs['description'] = description
+        kwargs["description"] = description
         self._kwargs = kwargs
         self._arguments = {}
 
@@ -827,18 +853,16 @@ class CLI(object):
 
     @property
     def arg_parser(self):
-        """
-
-        """
+        """ """
         return self._arg_parser
 
     @property
     def arguments(self):
-        """Dictionary mapping arguments to values. """
+        """Dictionary mapping arguments to values."""
         return self._arguments
 
     def _add_environment_variables(self):
-        """Register the environment variables options to the parser. """
+        """Register the environment variables options to the parser."""
 
         self.add_epilog("Environment variables:\n\n")
         self.add_epilog(
@@ -868,7 +892,7 @@ class CLI(object):
             )
 
     def _add_default_options(self):
-        """Register the default options to the parser. """
+        """Register the default options to the parser."""
 
         self.add_option(
             "default_paths",
@@ -876,14 +900,11 @@ class CLI(object):
             None,
             "Default search paths for microprobe target definitions",
             opt_type=existing_dir,
-            nargs='+',
-            metavar='SEARCH_PATH'
+            nargs="+",
+            metavar="SEARCH_PATH",
         )
 
-        self.add_flag(
-            "version", 'V',
-            "Show Microprobe version and exit"
-        )
+        self.add_flag("version", "V", "Show Microprobe version and exit")
 
         self.add_option(
             "verbosity",
@@ -900,12 +921,14 @@ class CLI(object):
             "Specifying more than four verbosity flags, will default to "
             "the maximum of four. If you need extra information, enable "
             " the debug mode (--debug or -d flags).",
-            action="count"
+            action="count",
         )
 
         self.add_flag(
-            "debug", 'd', "Enable debug mode in Microprobe framework. Lots of "
-            "output messages will be generated"
+            "debug",
+            "d",
+            "Enable debug mode in Microprobe framework. Lots of "
+            "output messages will be generated",
         )
 
     def _add_config_options(self):
@@ -914,8 +937,8 @@ class CLI(object):
         groupname = "Configuration arguments"
 
         self.add_group(
-            groupname, "Command arguments related to configuration file "
-            "handling"
+            groupname,
+            "Command arguments related to configuration file " "handling",
         )
 
         self.add_option(
@@ -930,7 +953,7 @@ class CLI(object):
             opt_type=existing_file,
             nargs="+",
             metavar="CONFIG_FILE",
-            configfile=False
+            configfile=False,
         )
 
         self.add_option(
@@ -943,7 +966,7 @@ class CLI(object):
             group=groupname,
             opt_type=existing_file,
             metavar="FORCE_CONFIG_FILE",
-            configfile=False
+            configfile=False,
         )
 
         self.add_option(
@@ -954,7 +977,7 @@ class CLI(object):
             group=groupname,
             opt_type=new_file,
             metavar="OUTPUT_CONFIG_FILE",
-            configfile=False
+            configfile=False,
         )
 
         self.add_option(
@@ -966,11 +989,11 @@ class CLI(object):
             group=groupname,
             opt_type=new_file,
             metavar="OUTPUT_CONFIG_FILE",
-            configfile=False
+            configfile=False,
         )
 
     def _add_target_options(self):
-        """Register the target options to the parser. """
+        """Register the target options to the parser."""
 
         groupname = "Target path arguments"
 
@@ -984,7 +1007,7 @@ class CLI(object):
             " in these paths for architecture definitions",
             action="append",
             opt_type=existing_dir,
-            group=groupname
+            group=groupname,
         )
 
         self.add_option(
@@ -995,7 +1018,7 @@ class CLI(object):
             "search in these paths for microarchitecture definitions",
             action="append",
             opt_type=existing_dir,
-            group=groupname
+            group=groupname,
         )
 
         self.add_option(
@@ -1006,14 +1029,15 @@ class CLI(object):
             " in these paths for environment definitions",
             action="append",
             opt_type=existing_dir,
-            group=groupname
+            group=groupname,
         )
 
         groupname = "Target arguments"
 
         self.add_group(
-            groupname, "Command arguments related to target specification"
-            " and queries"
+            groupname,
+            "Command arguments related to target specification"
+            " and queries",
         )
 
         self.add_option(
@@ -1031,7 +1055,7 @@ class CLI(object):
             "available in the default search paths or the paths specified "
             "by the different --*-paths options",
             action=None,
-            group=groupname
+            group=groupname,
         )
 
         self.add_flag(
@@ -1040,7 +1064,7 @@ class CLI(object):
             "Generate a list of architectures available in the "
             "defined search paths and exit",
             groupname,
-            configfile=False
+            configfile=False,
         )
 
         self.add_flag(
@@ -1050,7 +1074,7 @@ class CLI(object):
             "the defined search paths and "
             "exit",
             groupname,
-            configfile=False
+            configfile=False,
         )
 
         self.add_flag(
@@ -1059,17 +1083,18 @@ class CLI(object):
             "Generate a list of environments available in the "
             "defined search paths and exit",
             groupname,
-            configfile=False
+            configfile=False,
         )
 
     def _add_mpt_options(self):
-        """Register the MicroprobeTest format file options to the parser. """
+        """Register the MicroprobeTest format file options to the parser."""
 
         groupname = "Microprobe Test arguments"
 
         self.add_group(
-            groupname, "Command arguments related to Microprobe Test (mpt) "
-            "generation"
+            groupname,
+            "Command arguments related to Microprobe Test (mpt) "
+            "generation",
         )
 
         self.add_option(
@@ -1079,7 +1104,7 @@ class CLI(object):
             "Microprobe test (mpt) definition file",
             group=groupname,
             opt_type=existing_file_ext([".mpt", ".mpt.gz", ".mpt.bz2"]),
-            required=True
+            required=True,
         )
 
         # self.add_option(
@@ -1092,7 +1117,7 @@ class CLI(object):
         #    required=True)
 
     def _add_compilation_options(self):
-        """Register the MicroprobeTest compilation options to the parser. """
+        """Register the MicroprobeTest compilation options to the parser."""
 
         groupname = "Compilation arguments"
 
@@ -1107,17 +1132,18 @@ class CLI(object):
             "Local C compiler (Default:'%s')" % os.environ.get("CC", "cc"),
             group=groupname,
             opt_type=existing_cmd,
-            required=False
+            required=False,
         )
 
         self.add_option(
             "host-cxx-compiler",
             None,
             os.environ.get("CXX", "c++"),
-            "Local C++ compiler (Default:'%s')" % os.environ.get("CXX", "c++"),
+            "Local C++ compiler (Default:'%s')"
+            % os.environ.get("CXX", "c++"),
             group=groupname,
             opt_type=existing_cmd,
-            required=False
+            required=False,
         )
 
         self.add_option(
@@ -1127,109 +1153,116 @@ class CLI(object):
             "Target C compiler (Default:'%s')" % os.environ.get("CC", "cc"),
             group=groupname,
             opt_type=existing_cmd,
-            required=False
+            required=False,
         )
 
         self.add_option(
             "target-cxx-compiler",
             None,
-            os.environ.get(
-                "CXX", "c++"
-            ),
-            "Target C++ compiler (Default:'%s')" % os.environ.get(
-                "CXX", "c++"
-            ),
+            os.environ.get("CXX", "c++"),
+            "Target C++ compiler (Default:'%s')"
+            % os.environ.get("CXX", "c++"),
             group=groupname,
             opt_type=existing_cmd,
-            required=False
+            required=False,
         )
 
         self.add_option(
             "target-objdump",
             None,
-            os.environ.get(
-                "TARGET_OBJDUMP", "objdump"
-            ),
-            "Target objdump utility (Default:'%s')" % os.environ.get(
-                "TARGET_OBJDUMP", "objdump"
-            ),
+            os.environ.get("TARGET_OBJDUMP", "objdump"),
+            "Target objdump utility (Default:'%s')"
+            % os.environ.get("TARGET_OBJDUMP", "objdump"),
             group=groupname,
             opt_type=existing_cmd,
-            required=False
+            required=False,
         )
 
         self.add_option(
             "host-c-compiler-flags",
             None,
             os.environ.get(
-                "CFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+                "CFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
-            "Local C compiler flags (Default:'%s')" % os.environ.get(
-                "CFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+            "Local C compiler flags (Default:'%s')"
+            % os.environ.get(
+                "CFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
             group=groupname,
             opt_type=str,
-            required=False
+            required=False,
         )
 
         self.add_option(
             "host-cxx-compiler-flags",
             None,
             os.environ.get(
-                "CXXFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+                "CXXFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
-            "Local C++ compiler flags (Default:'%s')" % os.environ.get(
-                "CXXFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+            "Local C++ compiler flags (Default:'%s')"
+            % os.environ.get(
+                "CXXFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
             group=groupname,
             opt_type=str,
-            required=False
+            required=False,
         )
 
         self.add_option(
             "target-c-compiler-flags",
             None,
             os.environ.get(
-                "CFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+                "CFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
-            "Target C compiler flags (Default:'%s')" % os.environ.get(
-                "CFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+            "Target C compiler flags (Default:'%s')"
+            % os.environ.get(
+                "CFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
             group=groupname,
             opt_type=str,
-            required=False
+            required=False,
         )
 
         self.add_option(
             "target-cxx-compiler-flags",
             None,
             os.environ.get(
-                "CXXFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+                "CXXFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
-            "Target C++ compiler flags (Default:'%s')" % os.environ.get(
-                "CXXFLAGS", "-Wall -Werror -m64 -O3 "
-                "-pedantic -pedantic-errors -std=c99"
+            "Target C++ compiler flags (Default:'%s')"
+            % os.environ.get(
+                "CXXFLAGS",
+                "-Wall -Werror -m64 -O3 "
+                "-pedantic -pedantic-errors -std=c99",
             ),
             group=groupname,
             opt_type=str,
-            required=False
+            required=False,
         )
 
     def _add_avp_options(self):
-        """Register AVP/TST related option to the parser. """
+        """Register AVP/TST related option to the parser."""
 
         groupname = "AVP/TST format arguments"
 
         self.add_group(
-            groupname, "Command arguments related to the format of the AVP/TST"
-            " files generated"
+            groupname,
+            "Command arguments related to the format of the AVP/TST"
+            " files generated",
         )
 
         self.add_option(
@@ -1239,7 +1272,7 @@ class CLI(object):
             "Length of the data strings generated in the AVP/TST file",
             group=groupname,
             choices=[8, 16, 32],
-            opt_type=int
+            opt_type=int,
         )
 
     def _add_debug_options(self):
@@ -1257,7 +1290,7 @@ class CLI(object):
             "show a traceback and starts a python debugger (pdb) "
             "when an error occurs. 'pdb' is an interactive python "
             "shell that facilitates the debugging of errors",
-            group=groupname
+            group=groupname,
         )
         self.add_option(
             "profile",
@@ -1267,7 +1300,7 @@ class CLI(object):
             "file (see 'pstats' module)",
             opt_type=new_file,
             metavar="PROFILE_OUTPUT",
-            group=groupname
+            group=groupname,
         )
 
     def add_description(self, text):
@@ -1305,8 +1338,9 @@ class CLI(object):
         :type description: :class:`~.str`
 
         """
-        assert name not in self._groups, \
+        assert name not in self._groups, (
             "A command line option group named '%s' already exists" % name
+        )
 
         group = self._arg_parser.add_argument_group(name, "\n" + description)
         self._groups[name] = group
@@ -1335,7 +1369,7 @@ class CLI(object):
             opt_type=None,
             action="store_true",
             group=group,
-            configfile=configfile
+            configfile=configfile,
         )
 
     def add_option(
@@ -1351,7 +1385,7 @@ class CLI(object):
         metavar=None,
         required=False,
         nargs=None,
-        configfile=True
+        configfile=True,
     ):
         """Add an option that takes an argument.
 
@@ -1397,16 +1431,20 @@ class CLI(object):
 
         if choices is not None:
 
-            descr = descr + ". Valid values: " + ", ".join(
-                [str(elem) for elem in choices]
+            descr = (
+                descr
+                + ". Valid values: "
+                + ", ".join([str(elem) for elem in choices])
             )
 
             if callable(opt_type) and hasattr(opt_type, "func_name"):
                 # pylint: disable=no-member
                 if opt_type.__name__ == "dict_key_check":
                     # pylint: enable=no-member
-                    descr = descr + ". Valid values: " + ", ".join(
-                        [str(elem) for elem in choices.keys()]
+                    descr = (
+                        descr
+                        + ". Valid values: "
+                        + ", ".join([str(elem) for elem in choices.keys()])
                     )
                     choices = list(choices.values())
 
@@ -1414,10 +1452,11 @@ class CLI(object):
 
         if group is None:
             group = self._arg_parser
-            groupname = 'default'
+            groupname = "default"
         else:
-            assert group in self._groups, \
+            assert group in self._groups, (
                 "Unknown option group name: %s" % group
+            )
             group = self._groups[group]
 
         if name is None and short is None:
@@ -1445,16 +1484,21 @@ class CLI(object):
             required = True
 
         kwargs = {}
-        kwargs['help'] = descr
-        kwargs['action'] = action
-        kwargs['required'] = required
-        kwargs['default'] = default
+        kwargs["help"] = descr
+        kwargs["action"] = action
+        kwargs["required"] = required
+        kwargs["default"] = default
 
-        if action not in ['store_true', 'store_false', 'store_const', 'count']:
-            kwargs['type'] = opt_type
-            kwargs['nargs'] = nargs
-            kwargs['metavar'] = metavar
-            kwargs['choices'] = choices
+        if action not in [
+            "store_true",
+            "store_false",
+            "store_const",
+            "count",
+        ]:
+            kwargs["type"] = opt_type
+            kwargs["nargs"] = nargs
+            kwargs["metavar"] = metavar
+            kwargs["choices"] = choices
 
         if argname is None:
             arg = group.add_argument(argshort, **kwargs)
@@ -1471,7 +1515,7 @@ class CLI(object):
         # self._add_option_defaults(groupname, name, arg, action, type, descr)
 
     def _update_configuration(self):
-        """Update the microprobe configuration based on current arguments. """
+        """Update the microprobe configuration based on current arguments."""
 
         # Update MICROPROBE configuration
         for option in MICROPROBE_RC:
@@ -1493,10 +1537,9 @@ class CLI(object):
         if self.get("traceback") is not None:
             try:
                 from IPython.core import ultratb
+
                 sys.excepthook = ultratb.FormattedTB(
-                    mode='Verbose',
-                    color_scheme='Linux',
-                    call_pdb=1
+                    mode="Verbose", color_scheme="Linux", call_pdb=1
                 )
             except ImportError:
                 LOG.warning(
@@ -1533,11 +1576,14 @@ class CLI(object):
             # it seems that some shells do not have the '_'
             # environment variable
 
-            if (len(options) > 0 and os.environ["_"] == options[0] and
-                    implicit is not None):
+            if (
+                len(options) > 0
+                and os.environ["_"] == options[0]
+                and implicit is not None
+            ):
                 options.insert(0, implicit)
 
-        self.add_description(self._kwargs['description'])
+        self.add_description(self._kwargs["description"])
 
         try:
             self._arguments = vars(self._arg_parser.parse_args(args=options))
@@ -1547,7 +1593,7 @@ class CLI(object):
         # Fix the name space. Some arguments duplicated because the
         # usage of '-'
         for key in list(self._arguments.keys()):
-            if key.find('-') >= 0:
+            if key.find("-") >= 0:
                 self._arguments.pop(key)
 
         # The following statement is done to update the debug flags
@@ -1569,8 +1615,8 @@ class CLI(object):
 
         if self.get("version"):
             print_info(
-                "Microprobe revision: %s" %
-                MICROPROBE_RC['revision_core'])
+                "Microprobe revision: %s" % MICROPROBE_RC["revision_core"]
+            )
             exit(0)
 
         # Check of list options (target lists)
@@ -1584,8 +1630,8 @@ class CLI(object):
                     print("No isa definitions found! Check the paths...")
                 else:
                     print(
-                        "\n%s isa definitions detected. See table below:\n" %
-                        len(definitions)
+                        "\n%s isa definitions detected. See table below:\n"
+                        % len(definitions)
                     )
                     for definition in sorted(definitions):
                         print(definition)
@@ -1625,9 +1671,9 @@ class CLI(object):
                         print(definition)
 
             if (
-                self.get("list-architectures") or
-                self.get("list-microarchitectures") or
-                self.get("list-environments")
+                self.get("list-architectures")
+                or self.get("list-microarchitectures")
+                or self.get("list-environments")
             ):
                 exit(0)
 
@@ -1639,19 +1685,19 @@ class CLI(object):
             # Parse mpt options and create the Microprobe Test Object
             mpt_parser = mpt_parser_factory()
 
-            self._arguments['mpt_definition'] = mpt_parser.parse_filename(
-                self.get('mpt-definition-file')
+            self._arguments["mpt_definition"] = mpt_parser.parse_filename(
+                self.get("mpt-definition-file")
             )
 
         # Write configuration file if specified
-        if self.get('dump-configuration-file'):
-            self.save(self.get('dump-configuration-file'))
+        if self.get("dump-configuration-file"):
+            self.save(self.get("dump-configuration-file"))
 
-        if self.get('dump-full-configuration-file'):
-            self.save(self.get('dump-full-configuration-file'), full=True)
+        if self.get("dump-full-configuration-file"):
+            self.save(self.get("dump-full-configuration-file"), full=True)
 
     def _read_configuration_files(self):
-        """Read the configuration files. """
+        """Read the configuration files."""
 
         # Read configuration options
         config = DuplicateConfigParser()
@@ -1661,9 +1707,8 @@ class CLI(object):
         if self._default_config_file is not None:
 
             filenames = [
-                '%s' % self._default_config_file, os.path.expanduser(
-                    '~/.%s' % self._default_config_file
-                )
+                "%s" % self._default_config_file,
+                os.path.expanduser("~/.%s" % self._default_config_file),
             ]
 
             LOG.debug("Read default configuration files: %s", filenames)
@@ -1685,7 +1730,7 @@ class CLI(object):
                 LOG.debug("Reading file: %s", filename)
                 config.readfp(open(filename))
 
-        for section in ['DEFAULT'] + config.sections():
+        for section in ["DEFAULT"] + config.sections():
             for option, value in config.items(section):
 
                 value = value.strip()
@@ -1693,11 +1738,9 @@ class CLI(object):
 
                 if option in self._arguments:
                     if (
-                        (value.endswith('[') and value.startswith(']')) or
-                        value.replace(
-                            "0x", ""
-                        ).replace(".", "").isdigit() or
-                        value in ['True', 'False']
+                        (value.endswith("[") and value.startswith("]"))
+                        or value.replace("0x", "").replace(".", "").isdigit()
+                        or value in ["True", "False"]
                     ):
                         self._arguments[option] = ast.literal_eval(value)
                     else:
@@ -1709,7 +1752,7 @@ class CLI(object):
         LOG.debug("End reading configuration files")
 
     def _check_and_process_target_tuple(self):
-        """Validate the target string tuple provided. """
+        """Validate the target string tuple provided."""
 
         if not self._target_options:
             return
@@ -1728,14 +1771,17 @@ class CLI(object):
         definitions = find_isa_definitions()
         if isa_def not in [definition.name for definition in definitions]:
             defstr = ",".join([defi.name for defi in definitions])
-            msg = "ISA '%s' not available. "\
-                "Use --list-architectures for full details of the ones "\
+            msg = (
+                "ISA '%s' not available. "
+                "Use --list-architectures for full details of the ones "
                 "available. Available ones: %s" % (isa_def, defstr)
+            )
             self._arg_parser.force_error(msg)
         else:
             isa_def = [
                 definition
-                for definition in definitions if definition.name == isa_def
+                for definition in definitions
+                if definition.name == isa_def
             ][-1]
 
         definitions = find_microarchitecture_definitions()
@@ -1743,10 +1789,12 @@ class CLI(object):
             definition.name for definition in definitions
         ]:
             defstr = ",".join([defi.name for defi in definitions])
-            msg = "Microarchitecture '%s' not available. " \
-                  "Use --list-microarchitectures for full details "\
-                  "of the ones available. Available ones: %s"\
-                  % (architecture_def, defstr)
+            msg = (
+                "Microarchitecture '%s' not available. "
+                "Use --list-microarchitectures for full details "
+                "of the ones available. Available ones: %s"
+                % (architecture_def, defstr)
+            )
             self._arg_parser.force_error(msg)
         else:
             architecture_def = [
@@ -1759,14 +1807,17 @@ class CLI(object):
 
         if env_def not in [definition.name for definition in definitions]:
             defstr = ",".join([defi.name for defi in definitions])
-            msg = "Environment '%s' not available. "\
-                  "Use --list-environments for full details of the ones "\
-                  "available. Available ones: %s" % (env_def, defstr)
+            msg = (
+                "Environment '%s' not available. "
+                "Use --list-environments for full details of the ones "
+                "available. Available ones: %s" % (env_def, defstr)
+            )
             self._arg_parser.force_error(msg)
         else:
             env_def = [
                 definition
-                for definition in definitions if definition.name == env_def
+                for definition in definitions
+                if definition.name == env_def
             ][-1]
 
         self._arguments["target"] = (isa_def, architecture_def, env_def)
@@ -1807,18 +1858,21 @@ class CLI(object):
         implicit = kwargs.pop("implicit", None)
 
         def _local_main():
-            """ _local_main function. """
+            """_local_main function."""
 
             if self.get("profile"):
                 import cProfile
                 import pstats
+
                 profiler = cProfile.Profile()
                 profiler.runcall(main, self._arguments, *args, **kwargs)
                 # profiler.dump_stats(self.get("profile"))
 
                 with open(self.get("profile"), "w") as pfd:
-                    sortby = 'tottime'
-                    pss = pstats.Stats(profiler, stream=pfd).sort_stats(sortby)
+                    sortby = "tottime"
+                    pss = pstats.Stats(profiler, stream=pfd).sort_stats(
+                        sortby
+                    )
                     pss.print_stats()
 
             else:
@@ -1833,10 +1887,8 @@ class CLI(object):
                 _local_main()
             except MicroprobeException as exc:
                 sys.stderr.write(
-                    _("%s: ERROR: %s: %s\n") % (
-                        self._arg_parser.prog, exc.__class__.__name__,
-                        exc
-                    )
+                    _("%s: ERROR: %s: %s\n")
+                    % (self._arg_parser.prog, exc.__class__.__name__, exc)
                 )
                 sys.stderr.write(
                     _(
@@ -1848,15 +1900,13 @@ class CLI(object):
                 sys.exit(1)
             except NotImplementedError as exc:
                 sys.stderr.write(
-                    _("%s: ERROR: %s: %s\n") % (
-                        self._arg_parser.prog, exc.__class__.__name__,
-                        exc
-                    )
+                    _("%s: ERROR: %s: %s\n")
+                    % (self._arg_parser.prog, exc.__class__.__name__, exc)
                 )
                 sys.stderr.write(
                     _(
-                        "%s: INFO: Contact developers for support\n" %
-                        self._arg_parser.prog
+                        "%s: INFO: Contact developers for support\n"
+                        % self._arg_parser.prog
                     )
                 )
                 sys.exit(1)
@@ -1876,7 +1926,7 @@ class CLI(object):
         # if self._config_parser is None:
         config_parser = DuplicateConfigParser()
 
-        for option in self._groupoptions['default']:
+        for option in self._groupoptions["default"]:
 
             key = option.dest.replace("_", "-")
             value = self.get(key)
@@ -1884,13 +1934,14 @@ class CLI(object):
             LOG.debug("Default: %s", (key, value))
 
             config_parser.set(
-                DEFAULTSECT, key,
-                '%s ; %s' % (value, option.help.split(".")[0])
+                DEFAULTSECT,
+                key,
+                "%s ; %s" % (value, option.help.split(".")[0]),
             )
 
         for section in self._groupoptions:
 
-            if section == 'default':
+            if section == "default":
                 continue
 
             if not config_parser.has_section(section):
@@ -1904,8 +1955,9 @@ class CLI(object):
                 LOG.debug("Default: %s", (key, value))
 
                 config_parser.set(
-                    section, key,
-                    '%s ; %s' % (value, option.help.split(".")[0])
+                    section,
+                    key,
+                    "%s ; %s" % (value, option.help.split(".")[0]),
                 )
 
         file_fd = open(filename, "w+")

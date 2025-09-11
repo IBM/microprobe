@@ -24,7 +24,6 @@ from __future__ import absolute_import, division, print_function
 import datetime
 import math
 import os
-import random
 import subprocess
 import tempfile
 import time as runtime
@@ -35,7 +34,7 @@ import time as runtime
 # Own modules
 from microprobe.exceptions import MicroprobeError
 from microprobe.utils.logger import get_logger
-
+from microprobe.utils.misc import RND as random
 
 # pylint: disable=E0401
 # import pyevolve.G1DList  # @UnresolvedImport

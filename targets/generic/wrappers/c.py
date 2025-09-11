@@ -19,25 +19,23 @@ from __future__ import absolute_import, division
 
 # Built-in modules
 import itertools
+from math import gcd
 from time import localtime, strftime
 from typing import Any, Callable, List, Union
-
-# Third party modules
 
 # Own modules
 import microprobe.code.var
 import microprobe.code.wrapper
-from microprobe.code.ins import Instruction
 import microprobe.utils.info as mp_info
+from microprobe.code.ins import Instruction
+from microprobe.code.var import Variable, VariableArray
 from microprobe.utils.logger import get_logger
 from microprobe.utils.misc import getnextf
-from math import gcd
 from microprobe.utils.typeguard_decorator import typeguard_testsuite
-from microprobe.code.var import Variable, VariableArray
 
 # Constants
 LOG = get_logger(__name__)
-__all__ = ["CWrapper", "CInfGen", "CLoopGen"]
+__all__ = ["CWrapper", "CInfGen", "CLoopGen", "CWrapperNoLibC"]
 
 # Functions
 
@@ -89,14 +87,13 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
 
         mstr = [self.wrap_ins(ins) for ins in self.target.get_context()]
         if self._reset:
-            mstr.append("__asm__(\".balign 64\");\n")
+            mstr.append('__asm__(".balign 64");\n')
             mstr.append("while(1){\n")
         return "".join(mstr)
 
-    def start_loop(self,
-                   dummy_instr,
-                   dummy_instr_reset,
-                   dummy_aligned: bool = False):
+    def start_loop(
+        self, dummy_instr, dummy_instr_reset, dummy_aligned: bool = False
+    ):
         """
 
         :param dummy_instr:
@@ -149,13 +146,22 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
                         value = value()
                     valuestr = "%s%s," % (valuestr, value)
 
-                return "%s %s[%d] %s = {%s};\n" % (var.type, var.name,
-                                                   var.size, align, valuestr)
+                return "%s %s[%d] %s = {%s};\n" % (
+                    var.type,
+                    var.name,
+                    var.size,
+                    align,
+                    valuestr,
+                )
 
             else:
 
-                return "%s %s[%d] %s;\n" % (var.type, var.name, var.size,
-                                            align)
+                return "%s %s[%d] %s;\n" % (
+                    var.type,
+                    var.name,
+                    var.size,
+                    align,
+                )
 
         else:
 
@@ -170,8 +176,9 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
             else:
                 return "%s %s %s;\n" % (var.type, var.name, align)
 
-    def init_global_var(self, var: Variable, value: Union[Callable[[], Any],
-                                                          str, int]):
+    def init_global_var(
+        self, var: Variable, value: Union[Callable[[], Any], str, int]
+    ):
         """
 
         :param var:
@@ -187,19 +194,26 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
                         value = value()
 
                     if value == "random":
-                        string = "{FILE *devrandom = fopen(\"/dev/urandom\","\
-                            " \"r\");\n"
-                        string = string + "fread(&%s, sizeof(%s), %d , "\
+                        string = (
+                            '{FILE *devrandom = fopen("/dev/urandom",'
+                            ' "r");\n'
+                        )
+                        string = (
+                            string + "fread(&%s, sizeof(%s), %d , "
                             "devrandom);\n" % (var.name, var.type, var.size)
+                        )
                         string = string + "fclose(devrandom);}\n"
                         self._max_array_var = var
                         self._max_array_var_value = value
                         return string
                     elif isinstance(value, int):
                         value = min(value, 2**31)
-                        value = max(value, -2**31)
-                        return "{memset(&%s, %d, %d);}\n" % (var.name, value,
-                                                             var.size)
+                        value = max(value, -(2**31))
+                        return "{memset(&%s, %d, %d);}\n" % (
+                            var.name,
+                            value,
+                            var.size,
+                        )
                     else:
                         raise NotImplementedError
                 else:
@@ -211,27 +225,47 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
                             self._max_array_var_value = value
 
                             rstr: List[str] = []
-                            rstr.append("{for (int i=0;i<%d;i=i+%d) "
-                                        "memcpy(&%s[i], &%s"
-                                        ", %d);}" %
-                                        ((var.size // varant.size) *
-                                         varant.size, varant.size, var.name,
-                                         varant.name, varant.size))
+                            rstr.append(
+                                "{for (int i=0;i<%d;i=i+%d) "
+                                "memcpy(&%s[i], &%s"
+                                ", %d);}"
+                                % (
+                                    (var.size // varant.size) * varant.size,
+                                    varant.size,
+                                    var.name,
+                                    varant.name,
+                                    varant.size,
+                                )
+                            )
                             rstr.append(
                                 "{for (int i=%d;i<%d;i=i+%d) "
                                 "memcpy(&%s[i], &%s"
-                                ", %d);}" %
-                                ((var.size // varant.size) * varant.size,
-                                 var.size, (var.size % varant.size), var.name,
-                                 varant.name, (var.size % varant.size)))
-                            return "\n".join(rstr) + '\n'
+                                ", %d);}"
+                                % (
+                                    (var.size // varant.size) * varant.size,
+                                    var.size,
+                                    (var.size % varant.size),
+                                    var.name,
+                                    varant.name,
+                                    (var.size % varant.size),
+                                )
+                            )
+                            return "\n".join(rstr) + "\n"
 
                         else:
 
-                            return "{for (int i=0;i<%d;i=i+%d) "\
-                                "memcpy(&%s[i], &%s" ", %d);}\n" % (
-                                    var.size, var.size,
-                                    var.name, varant.name, var.size)
+                            return (
+                                "{for (int i=0;i<%d;i=i+%d) "
+                                "memcpy(&%s[i], &%s"
+                                ", %d);}\n"
+                                % (
+                                    var.size,
+                                    var.size,
+                                    var.name,
+                                    varant.name,
+                                    var.size,
+                                )
+                            )
 
                         #    size = varant.size
                         # else:
@@ -239,16 +273,20 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
 
                         cgdc = gcd(var.size, varant.size)
 
-                        return "{for (int i=0;i<%d;i=i+%d) "\
-                            "memcpy(&%s[i], &%s" ", %d);}\n" % (
-                                var.size, cgdc,
-                                var.name, varant.name, cgdc)
+                        return (
+                            "{for (int i=0;i<%d;i=i+%d) "
+                            "memcpy(&%s[i], &%s"
+                            ", %d);}\n"
+                            % (var.size, cgdc, var.name, varant.name, cgdc)
+                        )
 
                     elif isinstance(value, int):
                         value = min(value, 2**31)
-                        value = max(value, -2**31)
-                        return f"{{memset(&{var.name}, {value}, " \
+                        value = max(value, -(2**31))
+                        return (
+                            f"{{memset(&{var.name}, {value}, "
                             f"{var.size});}}\n"
+                        )
                     else:
                         raise NotImplementedError
             else:
@@ -258,11 +296,12 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
 
             if isinstance(value, int):
                 return "%s = %d;\n" % (var.name, value)
-            elif value == 'random':
+            elif value == "random":
                 return "%s = %d;\n" % (var.name, 0)
             else:
                 raise NotImplementedError(
-                    "Init support for value '%s' not implemented yet" % value)
+                    "Init support for value '%s' not implemented yet" % value
+                )
 
     def start_main(self):
         """ """
@@ -272,9 +311,9 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
         # command line option from the passes
         main.append("void usage(void)")
         main.append("{")
-        main.append("printf(\"Usage:\\n\");")
-        main.append("printf(\"  -h  Print this help\\n\");")
-        main.append("printf(\"  -d  Print micro-benchmark description\\n\");")
+        main.append('printf("Usage:\\n");')
+        main.append('printf("  -h  Print this help\\n");')
+        main.append('printf("  -d  Print micro-benchmark description\\n");')
         main.append("exit(-1);")
         main.append("}")
         main.append("\n")
@@ -283,84 +322,94 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
         main.append("int exit_code = 0;")
         main.append("\n")
 
-        main.append("printf(\"%s\\n\");" % ("=" * 80))
-        main.append("printf(\"Microprobe framework general information:\\n\")"
-                    ";")
-        main.append("printf(\"%s\\n\");" % ("-" * 80))
-        main.append("printf(\"  Microprobe version: %s\\n\");" %
-                    mp_info.VERSION)
-        main.append("printf(\"  Copyright: %s\\n\");" % mp_info.COPYRIGHT)
-        main.append("printf(\"  License: %s\\n\");" % mp_info.LICENSE)
-        main.append("printf(\"  Authors: %s\\n\");" % mp_info.AUTHOR)
-        main.append("printf(\"  Maintainers: %s\\n\");" % mp_info.MAINTAINER)
-        main.append("printf(\"  Email: %s\\n\");" % mp_info.EMAIL)
-        main.append("printf(\"  Software status: %s\\n\");" % mp_info.STATUS)
-        main.append("printf(\"\\n\");")
+        main.append('printf("%s\\n");' % ("=" * 80))
+        main.append(
+            'printf("Microprobe framework general information:\\n")' ";"
+        )
+        main.append('printf("%s\\n");' % ("-" * 80))
+        main.append('printf("  Microprobe version: %s\\n");' % mp_info.VERSION)
+        main.append('printf("  Copyright: %s\\n");' % mp_info.COPYRIGHT)
+        main.append('printf("  License: %s\\n");' % mp_info.LICENSE)
+        main.append('printf("  Authors: %s\\n");' % mp_info.AUTHOR)
+        main.append('printf("  Maintainers: %s\\n");' % mp_info.MAINTAINER)
+        main.append('printf("  Email: %s\\n");' % mp_info.EMAIL)
+        main.append('printf("  Software status: %s\\n");' % mp_info.STATUS)
+        main.append('printf("\\n");')
 
         if mp_info.STATUS == "Development":
-            main.append("printf(\"Development information:\\n\");")
-            main.append("printf(\"%s\\n\");" % ("-" * 80))
-            main.append("printf(\"  %s\\n\");" % mp_info.REVISION)
-            main.append("printf(\"\\n\");")
+            main.append('printf("Development information:\\n");')
+            main.append('printf("%s\\n");' % ("-" * 80))
+            main.append('printf("  %s\\n");' % mp_info.REVISION)
+            main.append('printf("\\n");')
 
-        main.append("printf(\"%s\\n\");" % ("=" * 80))
-        main.append("printf(\"MICRO-BENCHMARK DESCRIPTION\\n\");")
-        main.append("printf(\"%s\\n\");" % ("-" * 80))
-        main.append("printf(\"Generation time: %s\\n\");" %
-                    strftime("%x %X %Z", localtime()))
+        main.append('printf("%s\\n");' % ("=" * 80))
+        main.append('printf("MICRO-BENCHMARK DESCRIPTION\\n");')
+        main.append('printf("%s\\n");' % ("-" * 80))
+        main.append(
+            'printf("Generation time: %s\\n");'
+            % strftime("%x %X %Z", localtime())
+        )
         # main.append("printf(\"\\n\");")
-        main.append("printf(\"Generation policy:\\n\");")
+        main.append('printf("Generation policy:\\n");')
         # main.append("printf(\"%s\\n\");" % ("*"*80))
 
         for index, info in enumerate(self.benchmark.pass_info):
             sinfo = info.split("-", 1)
-            sinfo2 = [sinfo[1][i:i + 45] for i in range(0, len(sinfo[1]), 45)]
+            sinfo2 = [
+                sinfo[1][i: i + 45] for i in range(0, len(sinfo[1]), 45)
+            ]
 
-            main.append("printf(\"  Step:%2s %24s %40s\\n\");" %
-                        (index, sinfo[0], sinfo2[0]))
+            main.append(
+                'printf("  Step:%2s %24s %40s\\n");'
+                % (index, sinfo[0], sinfo2[0])
+            )
             for line in sinfo2[1:]:
-                main.append("printf(\"%s%s\\n\");" % (" " * 36, line.strip()))
+                main.append('printf("%s%s\\n");' % (" " * 36, line.strip()))
 
-        main.append("printf(\"\\n\");")
-        main.append("printf(\"Configured target:\\n\");")
+        main.append('printf("\\n");')
+        main.append('printf("Configured target:\\n");')
         # main.append("printf(\"%s\\n\");" % ("*"*80))
         for description in self.target.description.split("\n"):
-            main.append("printf(\"  %s\\n\");" % description)
-        main.append("printf(\"\\n\");")
+            main.append('printf("  %s\\n");' % description)
+        main.append('printf("\\n");')
 
-        main.append("printf(\"Target requirements:\\n\");")
+        main.append('printf("Target requirements:\\n");')
         # main.append("printf(\"%s\\n\");" % ("*"*80))
         for index, requirement in enumerate(self.benchmark.requirements):
-            main.append("printf(\"  Requirement %2s - %s\\n\");" %
-                        (index, requirement))
+            main.append(
+                'printf("  Requirement %2s - %s\\n");' % (index, requirement)
+            )
 
-        main.append("printf(\"\\n\");")
-        main.append("printf(\"Warnings (includes not checkable requirements)"
-                    ":\\n\");")
+        main.append('printf("\\n");')
+        main.append(
+            'printf("Warnings (includes not checkable requirements)' ':\\n");'
+        )
         # main.append("printf(\"%s\\n\");" % ("*"*80))
 
         num_warnings = 0
         for index, warning in enumerate(self.benchmark.warnings):
-            main.append("printf(\"  Warning %2s - %s\\n\");" %
-                        (index, warning))
+            main.append('printf("  Warning %2s - %s\\n");' % (index, warning))
             num_warnings += 1
-        main.append("printf(\"\\n\");")
+        main.append('printf("\\n");')
 
-        main.append("printf(\"Other Information\\n\");")
+        main.append('printf("Other Information\\n");')
         # main.append("printf(\"%s\\n\");" % ("*"*80))
         for info in enumerate(self.benchmark.info):
-            main.append("printf(\"%s\\n\");" % (info))
-        main.append("printf(\"\\n\");")
+            main.append('printf("%s\\n");' % (info))
+        main.append('printf("\\n");')
 
         main.append("\n")
         main.append("exit(%d);" % num_warnings)
         main.append("}")
         main.append("\n")
-        main.append("void process_parameters("
-                    "int argc, char **argv, char **envp)")
+        main.append(
+            "void process_parameters(" "int argc, char **argv, char **envp)"
+        )
         main.append("{")
-        main.append("if (argc == 1) {printf(\"Running micro-benchmark...\\n\")"
-                    "; return;}")
+        main.append(
+            'if (argc == 1) {printf("Running micro-benchmark...\\n")'
+            "; return;}"
+        )
         main.append("if (argc > 2) {usage();}")
         main.append("if (argv[1][0] != '-') {usage();}")
         main.append("if (argv[1][1] == 'h') {usage();}")
@@ -387,7 +436,7 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
         LOG.debug(type(instr))
         rstrl: List[str] = []
 
-        rstrl.append("__asm__(\"")
+        rstrl.append('__asm__("')
         if isinstance(instr, str):
             rstrl.append(instr)
         elif instr.disable_asm:
@@ -397,14 +446,20 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
             fmtstr = "%%0%dx" % (len(instr.binary()) / 4)
             hstr = fmtstr % int(instr.binary(), 2)
 
-            rstrl.append(".byte " + ",".join(
-                ["0x%s" % hstr[idx:idx + 2]
-                 for idx in range(0, len(hstr), 2)]))
+            rstrl.append(
+                ".byte "
+                + ",".join(
+                    [
+                        "0x%s" % hstr[idx: idx + 2]
+                        for idx in range(0, len(hstr), 2)
+                    ]
+                )
+            )
 
         else:
             rstrl.append(instr.assembly())
 
-        rstrl.append("\");")
+        rstrl.append('");')
         rstr = " ".join(rstrl)
 
         rstr_len = len(rstr)
@@ -453,18 +508,16 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
 class CInfGen(CWrapper):
     """A wrapper for the C language with an infinite loop."""
 
-    def __init__(self,
-                 reset: bool = False,
-                 dithering: int = 0,
-                 delay: int = 0):
+    def __init__(
+        self, reset: bool = False, dithering: int = 0, delay: int = 0
+    ):
         super(CInfGen, self).__init__(reset=reset)
         self._dithering = dithering
         self._delay = delay
 
-    def start_loop(self,
-                   dummy_instr,
-                   dummy_instr_reset,
-                   dummy_aligned: bool = False):
+    def start_loop(
+        self, dummy_instr, dummy_instr_reset, dummy_aligned: bool = False
+    ):
         """
 
         :param dummy_instr:
@@ -479,7 +532,7 @@ class CInfGen(CWrapper):
         if self._reset:
             return "".join(loop)
 
-        loop.append("__asm__(\".balign 64\");\n")
+        loop.append('__asm__(".balign 64");\n')
         loop.append("while(1)\n")
         loop.append("{\n")
         return "".join(loop)
@@ -513,6 +566,141 @@ class CInfGen(CWrapper):
 
 
 @typeguard_testsuite
+class CWrapperNoLibC(CInfGen):
+    """A wrapper for the C language."""
+
+    def headers(self):
+        """ """
+        header = []
+        header.append("#include <stdint.h>\n")
+        return "\n".join(header)
+
+    def init_global_var(
+        self, var: Variable, value: Union[Callable[[], Any], str, int]
+    ):
+        """
+
+        :param var:
+        :param value:
+
+        """
+
+        if var.array():
+            if var.type == "char" or var.type == "uint8_t":
+                if callable(value):
+                    value = value()
+                if value == "random":
+                    return (
+                        "//{for (int i = 0; i < %d; i++) "
+                        "{ %s[i] = my_rand() %% 256 ;};}\n"
+                        % (var.size, var.name)
+                    )
+                elif isinstance(value, int):
+                    value = min(value, 2**31)
+                    value = max(value, -(2**31))
+                    return (
+                        "//{for (int i = 0; i < %d; i++) "
+                        "{ %s[i] = %d ;};}\n"
+                        % (var.size, var.name, value)
+                    )
+                else:
+                    raise NotImplementedError
+            else:
+                raise NotImplementedError
+
+        else:
+            if isinstance(value, int):
+                return "%s = %d;\n" % (var.name, value)
+            elif value == "random":
+                return "%s = %d;\n" % (var.name, 0)
+            else:
+                raise NotImplementedError(
+                    "Init support for value '%s' not implemented yet" % value
+                )
+
+    def start_main(self):
+        main: List[str] = []
+        main.append("unsigned int seed = 0;  // Global seed variable")
+        main.append("unsigned int my_rand() {")
+        main.append("    const unsigned int a = 1664525;  // Multiplier")
+        main.append("    const unsigned int c = 1013904223; // Increment")
+        main.append("    const unsigned int m = 4294967295; // 2^32")
+        main.append("    seed = (a * seed + c) % m; // Update the seed")
+        main.append("    return seed;")
+        main.append("}")
+        main.append("int main(int argc, char **argv, char **envp)")
+        main.append("{")
+        for var in self._vars:
+            main.append(self.declare_global_var(var))
+        return "\n".join(main)
+
+    def declare_global_var(self, var: Variable):
+        """
+
+        :param var:
+
+        """
+        align: Union[int, str, None] = var.align
+        if align is None or align == 0:
+            align = ""
+        else:
+            align = f" __attribute__ ((aligned ({align})))"
+
+        if var.array():
+
+            if var.value is not None:
+
+                valuestr = ""
+
+                value = var.value
+                if not isinstance(value, list):
+                    value = [value]
+
+                get_value = getnextf(itertools.cycle(value))
+
+                assert isinstance(var, VariableArray)
+                for dummy_idx in range(var.elems):
+                    value = get_value()
+                    if callable(value):
+                        value = value()
+                    if var.type == "char":
+                        value = value % 256
+                    valuestr = "%s%s," % (valuestr, value)
+
+                if valuestr.endswith(","):
+                    valuestr = valuestr[:-1]
+                return "%s %s[%d] %s = {%s};\n" % (
+                    var.type,
+                    var.name,
+                    var.size,
+                    align,
+                    valuestr,
+                )
+
+            else:
+
+                return "%s %s[%d] %s;\n" % (
+                    var.type,
+                    var.name,
+                    var.size,
+                    align,
+                )
+
+        else:
+
+            if var.value is not None:
+                val = var.value
+                if isinstance(val, list):
+                    assert len(val) == 1
+                    val = val[0]
+
+                return "%s %s %s = %s;\n" % (var.type, var.name, align, val)
+
+            else:
+                return "%s %s %s;\n" % (var.type, var.name, align)
+
+
+@typeguard_testsuite
 class CLoopGen(CInfGen):
     """A wrapper for the C language with a loop with the given number of
     operations.
@@ -520,26 +708,27 @@ class CLoopGen(CInfGen):
 
     """
 
-    def __init__(self,
-                 size: int,
-                 reset: bool = False,
-                 dithering: int = 0,
-                 delay: int = 0):
+    def __init__(
+        self,
+        size: int,
+        reset: bool = False,
+        dithering: int = 0,
+        delay: int = 0,
+    ):
         """
 
         :param size:
 
         """
-        super(CLoopGen, self).__init__(reset=reset,
-                                       dithering=dithering,
-                                       delay=delay)
+        super(CLoopGen, self).__init__(
+            reset=reset, dithering=dithering, delay=delay
+        )
         self._size = int(size)
         self._vars = [microprobe.code.var.VariableSingle("i", "int")]
 
-    def start_loop(self,
-                   dummy_instr,
-                   dummy_instr_reset,
-                   dummy_aligned: bool = False):
+    def start_loop(
+        self, dummy_instr, dummy_instr_reset, dummy_aligned: bool = False
+    ):
         """
 
         :param dummy_instr:
