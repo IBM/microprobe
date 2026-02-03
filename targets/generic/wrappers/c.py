@@ -144,7 +144,12 @@ class CWrapper(microprobe.code.wrapper.Wrapper):
                     value = get_value()
                     if callable(value):
                         value = value()
+                    if var.type == "char":
+                        value = value % 256
                     valuestr = "%s%s," % (valuestr, value)
+
+                if valuestr.endswith(","):
+                    valuestr = valuestr[:-1]
 
                 return "%s %s[%d] %s = {%s};\n" % (
                     var.type,
@@ -669,6 +674,7 @@ class CWrapperNoLibC(CInfGen):
 
                 if valuestr.endswith(","):
                     valuestr = valuestr[:-1]
+
                 return "%s %s[%d] %s = {%s};\n" % (
                     var.type,
                     var.name,
