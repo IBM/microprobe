@@ -1062,11 +1062,10 @@ class OperandImmRange(Operand):
                     (val << 1) | (val >> (64 - 1))
                 ) & 0xFFFFFFFFFFFFFFFF
 
-
             valid = False
             count = 0
             nvalue = value
-            while not valid:  
+            while not valid:
                 try:
                     valid = self.check(nvalue)
                 except MicroprobeValueError:
@@ -1080,7 +1079,7 @@ class OperandImmRange(Operand):
             if not valid:
                 count = 0
                 nvalue = value
-                while not valid:  
+                while not valid:
                     try:
                         valid = self.check(nvalue)
                     except MicroprobeValueError:

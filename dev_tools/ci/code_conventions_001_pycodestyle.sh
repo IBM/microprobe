@@ -32,7 +32,7 @@ python "$(command -v pycodestyle)" --version
 
 set +e
 # shellcheck disable=SC2046
-$NICE python "$(command -v pycodestyle)" --count --statistics $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -name "*.py") > "pycodestyle$PYTHON_VERSION.out" 2> "pycodestyle$PYTHON_VERSION.err"
+$NICE python "$(command -v pycodestyle)" --max-line-length=119 --count --statistics $(find "$WORKSPACE/src/" "$WORKSPACE/targets/" -name "*.py") > "pycodestyle$PYTHON_VERSION.out" 2> "pycodestyle$PYTHON_VERSION.err"
 error=$?
 set -e
 

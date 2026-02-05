@@ -789,12 +789,12 @@ class InsertInstructionSequencePass(microprobe.passes.Pass):
 
                 newins = []
 
-                for instr in self._instrs:
+                for instr, nops in zip(self._instrs, self._operands):
 
                     nins = target.new_instruction(instr.name)
 
-                    if self._operands is not None:
-                        nins.set_operands(self._operands)
+                    if nops is not None:
+                        nins.set_operands(nops)
 
                     newins.append(nins)
 

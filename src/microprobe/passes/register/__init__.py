@@ -44,6 +44,7 @@ __all__ = [
     "FixRegistersPass",
     "NoHazardsAllocationPass",
     "RandomAllocationPass",
+    "TargetLastWrittenRegisterPass",
 ]
 
 # Functions
@@ -70,6 +71,9 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
         """
         super(DefaultRegisterAllocationPass, self).__init__()
         self._rand = rand
+        self._rand_imm = random.Random()
+        self._rand_imm.setstate(rand.getstate())
+
         self._min = minimize
         if self._min:
             raise NotImplementedError(
@@ -174,7 +178,7 @@ class DefaultRegisterAllocationPass(microprobe.passes.Pass):
 
                         else:
                             operand.set_value(
-                                operand.type.random_value(self._rand)
+                                operand.type.random_value(self._rand_imm)
                             )
 
                     elif operand.type.address_relative:
@@ -896,7 +900,7 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
 
         # Balance things: in case there are lots of inputs/outputs and few inputs or outputs.
         # Make sure we always have a minimum of 4 outputs and inputs
-        
+
         rtypes = set([reg.type for reg in inputoutputs + inputs + outputs])
         for rtype in rtypes:
             for cset in [inputs, outputs]:
@@ -913,10 +917,9 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                         if len(vset) == 0:
                             break
 
-                    cset.append(vset[0]) 
+                    cset.append(vset[0])
                     bset.remove(vset[0])
                     rcset = set([reg for reg in cset if reg.type == rtype])
-        
 
         LOG.debug("-" * 80)
         LOG.debug("BEFORE ALLOCATING 2")
@@ -926,12 +929,12 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
         LOG.debug("Reserved %s", rregs)
         LOG.debug("-" * 80)
 
-        
         for s1, s2 in zip(
                 [inputs, inputoutputs, outputs, rregs],
                 [inputs, inputoutputs, outputs, rregs]):
 
-            if s1 == s2 : continue
+            if s1 == s2:
+                continue
             assert set(s1).isdisjoint(set(s2))
 
         if "MICROPROBEMAXREG" in os.environ:
@@ -1109,7 +1112,6 @@ class NoHazardsAllocationPass(microprobe.passes.Pass):
                     LOG.debug("Operand set to: %s", regs[0])
                     operand.set_value(regs[0])
 
-
                     for value in operand.type.access(operand.value):
 
                         if value in inputoutputs:
@@ -1158,6 +1160,43 @@ class FixRegistersPass(microprobe.passes.Pass):
                         for elem in uses:
                             if elem in self._reads:
                                 operand.unset_value()
+
+
+class TargetLastWrittenRegisterPass(microprobe.passes.Pass):
+    def __init__(self, rand: random.Random, set_inputs=False):
+        super(TargetLastWrittenRegisterPass, self).__init__()
+        self.description = "Set output operand of the current instruction to the last written register operand"
+        self._rand = rand
+        self._si = set_inputs
+
+    def __call__(self, building_block, target):
+
+        wreg = {}
+
+        for bbl in building_block.cfg.bbls:
+            for instr in bbl.instrs:
+                for operand in instr.operands():
+                    if not self._si:
+                        if not operand.is_output:
+                            continue
+
+                    if operand.type.immediate:
+                        continue
+                    regs = list(operand.type.values())
+                    rtype = regs[0].type
+                    if operand.value is not None and operand.is_output:
+                        wreg[rtype] = operand.value
+                    elif operand.value is None:
+                        if rtype not in wreg:
+                            operand.set_value(operand.type.random_value(self._rand))
+                            if operand.is_output:
+                                wreg[rtype] = operand.value
+                        elif wreg[rtype] not in operand.type.values():
+                            operand.set_value(operand.type.random_value(self._rand))
+                            if operand.is_output:
+                                wreg[rtype] = operand.value
+                        else:
+                            operand.set_value(wreg[rtype])
 
 
 class RandomAllocationPass(microprobe.passes.Pass):

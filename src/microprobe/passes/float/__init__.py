@@ -46,9 +46,10 @@ class InitializeMemoryFloatPass(microprobe.passes.Pass):
         super().__init__()
 
         if callable(value):
-            ival = value 
+            ival = value
         else:
-            ival = lambda: value
+            def idem(x): return x
+            ival = idem
 
         self._var = microprobe.code.var.VariableSingle(
             "FP_INITVAL", "double", value=f"{ival():.20f}"
